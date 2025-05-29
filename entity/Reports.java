@@ -8,17 +8,17 @@ package entity;
  *
  * @author Admin
  */
-public class InventoryReport {
+public class Reports {
     private int reportId;
     private String reportType;
-    private String generated_by;
+    private int generated_by;
     private String data;
     private String created_at;
     private String title;
 
     @Override
     public String toString() {
-        return "InventoryReport{" + "reportId=" + reportId + ", reportType=" + reportType + ", generated_by=" + generated_by + ", data=" + data + ", created_at=" + created_at + ", title=" + title + '}';
+        return "Reports{" + "reportId=" + reportId + ", reportType=" + reportType + ", generated_by=" + generated_by + ", data=" + data + ", created_at=" + created_at + ", title=" + title + '}';
     }
 
     public int getReportId() {
@@ -37,11 +37,11 @@ public class InventoryReport {
         this.reportType = reportType;
     }
 
-    public String getGenerated_by() {
+    public int getGenerated_by() {
         return generated_by;
     }
 
-    public void setGenerated_by(String generated_by) {
+    public void setGenerated_by(int generated_by) {
         this.generated_by = generated_by;
     }
 
@@ -69,7 +69,7 @@ public class InventoryReport {
         this.title = title;
     }
 
-    public InventoryReport(int reportId, String reportType, String generated_by, String data, String created_at, String title) {
+    public Reports(int reportId, String reportType, int generated_by, String data, String created_at, String title) {
         this.reportId = reportId;
         this.reportType = reportType;
         this.generated_by = generated_by;
@@ -78,6 +78,7 @@ public class InventoryReport {
         this.title = title;
     }
 
-    public InventoryReport() {
+    public Reports() {
     }
+
 }
