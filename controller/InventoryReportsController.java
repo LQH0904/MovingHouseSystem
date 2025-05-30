@@ -13,12 +13,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.DAOInventoryReports;
+import entity.InventoryReports;
+import jakarta.servlet.RequestDispatcher;
+import java.util.Vector;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "InventoryReportsController", urlPatterns = {"/invR"})
+@WebServlet(name = "InventoryReportsController", urlPatterns = {"/invRURL"})
 public class InventoryReportsController extends HttpServlet {
 
     /**
@@ -37,6 +40,36 @@ public class InventoryReportsController extends HttpServlet {
         HttpSession session = request.getSession(true);
         try (PrintWriter out = response.getWriter()) {
             String service = request.getParameter("service");
+            if (service == null) {
+                service = "listInventoryReports";
+            }
+            if (service.equals("listInventoryReports")) {
+                Vector<InventoryReports> vector;
+                String submit = request.getParameter("submit");
+                if (submit == null) {//list all
+                    vector = dao.getInventoryReports("select * from InventoryReports;");
+                } else {//search
+                    String invRTitle = request.getParameter("invRTitle");
+                    vector = dao.getInventoryReports("select * from InventoryReports where title like '%" + invRTitle + "%'");
+                }
+                request.setAttribute("inventoryReportsData", vector);
+                RequestDispatcher dis = request.getRequestDispatcher("/operator/listInventoryReports.jsp");
+                dis.forward(request, response);
+            }
+            if (service.equals("viewDetail")) {
+                String reportId = request.getParameter("reportId");
+                if (reportId != null && !reportId.isEmpty()) {
+                    Vector<InventoryReports> vector = dao.getInventoryReports(
+                        "select * from InventoryReports where report_id = " + reportId
+                    );
+                    if (!vector.isEmpty()) {
+                        request.setAttribute("reportDetail", vector.get(0));
+                    }
+                }
+                // Chuyển hướng đến trang chi tiết
+                RequestDispatcher dis = request.getRequestDispatcher("/operator/inventoryReportDetail.jsp");
+                dis.forward(request, response);
+            }
         }
     }
 

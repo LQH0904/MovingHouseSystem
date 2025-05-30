@@ -12,26 +12,27 @@ import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  *
  * @author Admin
  */
-public class DAOInventoryReports extends DBContext{
-    
-    
-    public Vector<InventoryReports> getInventoryReports(String sql){
+public class DAOInventoryReports extends DBContext {
+
+    public Vector<InventoryReports> getInventoryReports(String sql) {
         Vector<InventoryReports> vector = new Vector<InventoryReports>();
+
         try {
             Statement state = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet rs = state.executeQuery(sql);
             while (rs.next()) {
-                int reporId = rs.getInt("reporId"),
-                    storageunitId = rs.getInt("storageunitId");
-                String inventoryDetails = rs.getString("inventoryDetails"),
-                       createdAt = rs.getString("createdAt"),
-                       updatedAt = rs.getString("updatedAt"),
-                       title = rs.getString("title");
-                InventoryReports invR = new InventoryReports(reporId, storageunitId, inventoryDetails, createdAt, updatedAt, title);
+                int reportId = rs.getInt("report_id");
+                int storageUnitId = rs.getInt("storage_unit_id");
+                String details = rs.getString("inventory_details");
+                String createdAt = rs.getString("created_at");
+                String updatedAt = rs.getString("updated_at");
+                String title = rs.getString("title");
+                InventoryReports invR = new InventoryReports(reportId, storageUnitId, details, createdAt, updatedAt, title);
                 vector.add(invR);
             }
         } catch (SQLException ex) {
