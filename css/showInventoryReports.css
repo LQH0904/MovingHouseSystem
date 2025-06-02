@@ -8,7 +8,7 @@
 
 .div1 {
     grid-area: 1 / 1 / 7 / 2;
-    background-color: #d12a2a;
+    background-color: rgb(63, 140, 137);
 }
 .div2 {
     grid-area: 1 / 2 / 2 / 7;
@@ -37,13 +37,11 @@ body {
     padding-left: 3%;
 }
 table{
-    padding: 10px 70px 40px 40px;
+    padding: 10px 5px 40px 0px;
     border-collapse: separate;
     border-spacing: 0 10px; /* 15px khoảng cách giữa các hàng */
-    border: 1px solid activeborder;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     margin-left: 5%;
-    margin-bottom: 5%;
+    border-radius: 12px;
 }
 tr:active {
     transform: translateY(2px) scale(0.98);
@@ -78,3 +76,62 @@ tr.clickable-row {
 tr.clickable-row:hover {
     background-color: #f5f5f5;
 }
+
+tr{
+    border-radius: 12px;
+}
+.scroll-list_wrp {
+    width: 85%;
+    max-height: 70vh; /* Sử dụng viewport height thay vì height cố định */
+    min-height: 400px; /* Chiều cao tối thiểu */
+    overflow: auto;
+    padding: 0px;
+    margin-left: 5%;
+    margin-bottom: 3%;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    border: 1px solid activeborder;
+}
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: rgb(112, 136, 191); /* Màu nền để che phần content phía dưới */
+    z-index: 10;
+    padding: 20px 20px 17px 33px;
+    margin: 0;
+    border-bottom: 2px solid #ddd; /* Đường viền phân cách */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Bóng nhẹ */
+}
+.div1> .worklink> a {
+  display: inline-block;
+  width: 105%;
+  height: 50px;
+  background-color: #ccc;
+  text-decoration: none;
+  text-align: center;
+  line-height: 50px; /* Căn chữ nằm giữa theo chiều dọc */
+  font-size: 16px;
+  /* Bước 2: clip-path tạo tam giác */
+  clip-path: polygon(
+    0% 0%,                   /* Góc trên-trái */
+    calc(100% - 5%) 0%,    /* Điểm trên bên phải lệch 25px vào trong */
+    100% 50%,                /* Điểm nhọn chính giữa cạnh phải */
+    calc(100% - 5%) 100%,  /* Điểm dưới bên phải lệch 25px vào trong */
+    0% 100%                  /* Góc dưới-trái */
+  );
+}
+.worklink{
+    margin-top: 104%;
+}
+.div1 .img_log {
+    margin: 0 auto;
+    display: flex;             /* Bật chế độ flex */
+    justify-content: center;   /* Căn giữa nội dung theo ngang */
+    align-items: center;       /* Căn giữa nội dung theo dọc */
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    background-color: white;
+    margin-top: 20%
+}
+

@@ -63,7 +63,7 @@ public class InventoryReportsController extends HttpServlet {
                         "select * from InventoryReports where report_id = " + reportId
                     );
                     if (!vector.isEmpty()) {
-                        request.setAttribute("reportDetail", vector.get(0));
+                        request.setAttribute("invReportDetail", vector);
                     }
                 }
                 // Chuyển hướng đến trang chi tiết

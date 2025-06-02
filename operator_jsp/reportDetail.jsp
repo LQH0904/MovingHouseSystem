@@ -1,6 +1,6 @@
 <%-- 
-    Document   : inventoryReportDetail
-    Created on : May 30, 2025, 10:10:50 PM
+    Document   : reportDetail
+    Created on : May 31, 2025, 10:13:26 PM
     Author     : Admin
 --%>
 
@@ -11,7 +11,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link rel="stylesheet" href="css/showInventoryReportDetail.css">
-        
     </head>
     <body>
         <div class="parent">
@@ -20,34 +19,32 @@
                     ảnh đăng nhập
                 </div>
                 <div class="worklink">
-                    <a id="id1" href='http://localhost:8436/HouseMovingSystem/invRURL' style="background-color: red; color: white;">báo cáo doanh thu</a>
-                    <a id="id1" href='http://localhost:8436/HouseMovingSystem/repURL'>báo cáo tổng quan</a>
+                    <a id="id1" href='http://localhost:8436/HouseMovingSystem/invRURL'>báo cáo doanh thu</a>
+                    <a id="id1" href='http://localhost:8436/HouseMovingSystem/repURL' style="background-color: red; color: white;">báo cáo tổng quan</a>
                 </div>
                 
             </div>
-            <div class="div2">
-                    mau2
-            </div>
+            <div class="div2">mau 2</div>
             <div class="div3">
-                <%@ page import="entity.InventoryReports, java.util.Vector" %>
+                <%@ page import="entity.Reports, java.util.Vector" %>
                 <%
-                  Vector<InventoryReports> vector =
-                      (Vector<InventoryReports>) request.getAttribute("invReportDetail");
+                  Vector<Reports> vector =
+                      (Vector<Reports>) request.getAttribute("reportDetail");
                   if (vector == null) vector = new Vector<>();
                 %>
 
                 <p>chi tiết báo cáo</p>
-                <form action="invRURL" method="">
+                <form action="repURL" method="">
                     <input type="hidden" name="service" value="viewDetail"/>
                     <table>
-                        <% for (InventoryReports invReports : vector) {%>
+                        <% for (Reports reports : vector) {%>
                         <tr>
                             <td class="td1">ngày tạo: </td>
-                            <td><%= invReports.getCreatedAt().substring(0, 10) %></td>
+                            <td><%= reports.getCreatedAt().substring(0, 10) %></td>
                         </tr>
                         <tr>
                             <td class="td1">tiêu đề: </td>
-                            <td><%=invReports.getTitle()%></td>
+                            <td><%=reports.getTitle()%></td>
                         </tr>
                         <tr>
                             <td class="td1">nội dung báo cáo: </td>
@@ -55,19 +52,19 @@
                         </tr>
                         <tr>
                             <td class="td1"></td>
-                            <td class="tdinvRdiv3" id="td2"><%=invReports.getInventoryDetails()%></td>
+                            <td class="tdinvRdiv3" id="td2"><%=reports.getData()%></td>
                         </tr>
                         <%}%>
                     </table>
                 </form>
                 <p>
-                    <button onclick="window.location.href = 'http://localhost:8436/HouseMovingSystem/invRURL'">quay lại</button>
+                    <button onclick="window.location.href = 'http://localhost:8436/HouseMovingSystem/repURL'">quay lại</button>
                     <button>xác nhận</button>
                     <button>gửi thông báo</button>
                 </p>
 
             </div>
         </div>
-        
+
     </body>
 </html>

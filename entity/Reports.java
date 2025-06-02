@@ -11,14 +11,21 @@ package entity;
 public class Reports {
     private int reportId;
     private String reportType;
-    private int generated_by;
+    private int generatedBy;
     private String data;
-    private String created_at;
+    private String createdAt;
     private String title;
 
-    @Override
-    public String toString() {
-        return "Reports{" + "reportId=" + reportId + ", reportType=" + reportType + ", generated_by=" + generated_by + ", data=" + data + ", created_at=" + created_at + ", title=" + title + '}';
+    public Reports(int reportId, String reportType, int generatedBy, String data, String createdAt, String title) {
+        this.reportId = reportId;
+        this.reportType = reportType;
+        this.generatedBy = generatedBy;
+        this.data = data;
+        this.createdAt = createdAt;
+        this.title = title;
+    }
+
+    public Reports() {
     }
 
     public int getReportId() {
@@ -37,12 +44,12 @@ public class Reports {
         this.reportType = reportType;
     }
 
-    public int getGenerated_by() {
-        return generated_by;
+    public int getGeneratedBy() {
+        return generatedBy;
     }
 
-    public void setGenerated_by(int generated_by) {
-        this.generated_by = generated_by;
+    public void setGeneratedBy(int generatedBy) {
+        this.generatedBy = generatedBy;
     }
 
     public String getData() {
@@ -53,12 +60,12 @@ public class Reports {
         this.data = data;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getTitle() {
@@ -69,16 +76,9 @@ public class Reports {
         this.title = title;
     }
 
-    public Reports(int reportId, String reportType, int generated_by, String data, String created_at, String title) {
-        this.reportId = reportId;
-        this.reportType = reportType;
-        this.generated_by = generated_by;
-        this.data = data;
-        this.created_at = created_at;
-        this.title = title;
-    }
-
-    public Reports() {
+    @Override
+    public String toString() {
+        return "Reports{" + "reportId=" + reportId + ", reportType=" + reportType + ", generatedBy=" + generatedBy + ", data=" + data + ", createdAt=" + createdAt + ", title=" + title + '}';
     }
 
 }

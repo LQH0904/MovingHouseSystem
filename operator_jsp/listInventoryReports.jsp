@@ -14,7 +14,16 @@
     </head>
     <body>
         <div class="parent">
-            <div class="div1">mau 1</div>
+            <div class="div1">
+                <div class="img_log">
+                    ảnh đăng nhập
+                </div>
+                <div class="worklink">
+                    <a id="id1" href='http://localhost:8436/HouseMovingSystem/invRURL' style="background-color: red; color: white;">báo cáo doanh thu</a>
+                    <a id="id1" href='http://localhost:8436/HouseMovingSystem/repURL'>báo cáo tổng quan</a>
+                </div>
+                
+            </div>
             <div class="div2">mau 2</div>
             <div class="div3">
                 <%@ page import="entity.InventoryReports, java.util.Vector" %>
@@ -24,17 +33,22 @@
                   if (vector == null) vector = new Vector<>();
                 %>
 
-                <p>bảng thông báo tồn kho</p>
+                <p>xắp xếp</p>
+                <p>tìm kiếm</p>
                 <form action="invRURL" method="">
                     <input type="hidden" name="service" value="listInventoryReports"/>
-                    <table>
-                        <% for (InventoryReports invReports : vector) {%>
-                        <tr onclick="redirectToDetail(<%= invReports.getReporId() %>)" style="cursor: pointer;">
-                            <td class="tdinvRdiv3" id="td1"><%= invReports.getCreatedAt().substring(0, 10) %></td>
-                            <td class="tdinvRdiv3" id="td2"><%=invReports.getTitle()%></td>
-                        </tr>
-                        <%}%>
-                    </table>
+                    <div class="scroll-list_wrp">
+                        <p class="sticky-header">danh sách báo cáo tồn kho</p>
+                        <table class="">   
+                            
+                            <% for (InventoryReports invReports : vector) {%>
+                            <tr onclick="redirectToDetail(<%= invReports.getReporId() %>)" style="cursor: pointer;">
+                                <td class="tdinvRdiv3" id="td1"><%= invReports.getCreatedAt().substring(0, 10) %></td>
+                                <td class="tdinvRdiv3" id="td2"><%=invReports.getTitle()%></td>
+                            </tr>
+                            <%}%>
+                        </table>
+                    </div>
                 </form>
             </div>
         </div>
@@ -43,7 +57,7 @@
             function redirectToDetail(reportId) {
                 // Chuyển hướng đến trang chi tiết với ID của báo cáo
                 window.location.href = 'invRURL?service=viewDetail&reportId=' + reportId;
-                
+
                 // Hoặc chuyển đến URL khác tùy ý
                 // window.location.href = 'your-other-page.jsp?id=' + reportId;
             }

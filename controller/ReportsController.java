@@ -16,6 +16,7 @@ import entity.Reports;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpSession;
 import java.util.Vector;
+
 /**
  *
  * @author Admin
@@ -44,22 +45,29 @@ public class ReportsController extends HttpServlet {
             }
             if (service.equals("listReports")) {
                 Vector<Reports> vector;
-                String submit = request.getParameter("submit");
-                if (submit == null) {//list all
-                    vector = dao.getReports("select * from Reports;");
-                } else {//search
-                    String reportTitle = request.getParameter("reportTitle");
-                    vector = dao.getReports("select * from Reports where title like '%" + reportTitle + "%'");
+                String sort = request.getParameter("sort");
+                String reportTitle = request.getParameter("reportTitle");
+                if (sort != null && sort.equals("desc") && reportTitle != null && !reportTitle.isEmpty()) {
+                    vector = dao.getReports(
+                            "SELECT * FROM Reports WHERE title LIKE '%" + reportTitle + "%' ORDER BY created_at DESC"
+                    );
+                } else if (sort != null && sort.equals("desc")) {
+                    vector = dao.getReports("SELECT * FROM Reports ORDER BY created_at DESC");
+                } else if (reportTitle != null && !reportTitle.isEmpty()) {
+                    vector = dao.getReports(
+                            "SELECT * FROM Reports WHERE title LIKE '%" + reportTitle + "%'"
+                    );
+                } else {
+                    vector = dao.getReports("SELECT * FROM Reports");
                 }
-                request.setAttribute("reportsData", vector);
-                RequestDispatcher dis = request.getRequestDispatcher("/operator/listReports.jsp");
-                dis.forward(request, response);
+                // ...
             }
+
             if (service.equals("viewDetail")) {
                 String reportId = request.getParameter("reportId");
                 if (reportId != null && !reportId.isEmpty()) {
                     Vector<Reports> vector = dao.getReports(
-                        "select * from Reports where report_id = " + reportId
+                            "select * from Reports where report_id = " + reportId
                     );
                     if (!vector.isEmpty()) {
                         request.setAttribute("reportDetail", vector);
