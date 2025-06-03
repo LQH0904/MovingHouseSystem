@@ -8,16 +8,17 @@
 
 .div1 {
     grid-area: 1 / 1 / 7 / 2;
-    background-color: rgb(63, 140, 137);
+    background-color: rgb(84, 193, 233);
 }
 .div2 {
     grid-area: 1 / 2 / 2 / 7;
-    background-color: rgb(12, 77, 135);
+    background-color: rgb(84, 193, 233);
 }
 .div3 {
     grid-area: 2 / 2 / 7 / 7;
     border: 2px solid rgb(62, 49, 49);
     box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
+    border-top-left-radius: 10px;
 }
 body {
     margin: 0;
@@ -59,6 +60,11 @@ p{
     calc(100% - 5%) 100%,  /* Điểm dưới bên phải lệch 25px vào trong */
     0% 100%                  /* Góc dưới-trái */
   );
+  margin-top: 5px;
+  transition: transform 0.3s ease;
+}
+.worklink a:hover{
+    transform: scale(1.1);
 }
 .worklink{
     margin-top: 104%;
@@ -86,6 +92,20 @@ p{
     background-color: white;
     margin-top: 20%
 }
+#icon{
+    margin-top: 11px;
+    margin-left: 2%;
+    color: white;           /* Màu trắng để nổi bật trên nền xanh */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+}
+
+#icon:hover {
+    color: #ff0000;
+    transform: scale(1.2);
+}
+
 
 
 

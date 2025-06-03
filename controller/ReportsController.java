@@ -60,7 +60,9 @@ public class ReportsController extends HttpServlet {
                 } else {
                     vector = dao.getReports("SELECT * FROM Reports");
                 }
-                // ...
+                request.setAttribute("reportsData", vector);
+                RequestDispatcher dis = request.getRequestDispatcher("/operator/listReports.jsp");
+                dis.forward(request, response);
             }
 
             if (service.equals("viewDetail")) {
