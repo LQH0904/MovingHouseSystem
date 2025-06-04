@@ -9,7 +9,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
         <link rel="stylesheet" href="../css/HomePage.css">
         <link rel="stylesheet" href="../css/ListApplication.css">
     </head>
@@ -76,7 +75,6 @@
                                                     <i class="bi bi-inbox"></i>
                                                 </div>
                                                 <h4 class="text-muted">No Registrations Found</h4>
-                                                <p class="text-muted">There are no registration records in the system.</p>
                                             </div>
                                         </c:when>
 
@@ -153,7 +151,7 @@
                                                                 </td>
                                                                 <td>
 
-                                                                    <a href="registrationDetail?id=${item.id}&type=${item.type}" >
+                                                                    <a href="${pageContext.request.contextPath}/applicationdetail?id=${item.id}&type=${item.type}" >
                                                                         <i class="bi bi-pencil-square "></i>
 
                                                                     </a>

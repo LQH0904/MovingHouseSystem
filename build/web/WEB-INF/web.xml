@@ -4,10 +4,16 @@
         <servlet-name>RegistrationListController</servlet-name>
         <servlet-class>controller.RegistrationListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ApplicationDetail</servlet-name>
+        <servlet-class>controller.ApplicationDetailController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationListController</servlet-name>
         <url-pattern>/admin/registrations</url-pattern>
     </servlet-mapping>
-    
-  
+    <servlet-mapping>
+        <servlet-name>ApplicationDetail</servlet-name>
+        <url-pattern>/applicationdetail</url-pattern>
+    </servlet-mapping>
 </web-app>
