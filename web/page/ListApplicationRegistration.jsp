@@ -7,18 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Registration List</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            
-            .type-transport {
-                color: #0066cc;
-                font-weight: bold;
-            }
-            .type-storage {
-                color: #6f42c1;
-                font-weight: bold;
-            }
-        </style>
+
         <link rel="stylesheet" href="../css/HomePage.css">
+        <link rel="stylesheet" href="../css/ListApplication.css">
     </head>
     <body class="bg-light">
         <div class="parent">
@@ -27,15 +18,13 @@
                 <div class="div3"> 
                     <div class="container mt-4">
                         <div class="row">
-                            <div class="col-12">
-                                
-
+                            <div class="col-12">                                
 
                                 <!-- Summary Card -->
                                 <div class="card mb-4">
                                     <div class="card-body">
                                         <div class="row text-center">
-                                            
+
                                             <div class="col-md-3">
                                                 <div class="bg-info text-white p-3 rounded">
                                                     <h4>2</h4>
@@ -78,26 +67,27 @@
                                     </div>
                                     <div class="card-body">
                                     <c:choose>
+                                        
                                         <c:when test="${empty registrations}">
                                             <!-- Empty State -->
-                                            <div class="text-center py-5">
-                                                <div class="mb-4">
-                                                    <i class="bi bi-inbox" style="font-size: 4rem; color: #6c757d;"></i>
+                                            <div class="empty-state text-center py-5">
+                                                <div class="empty-icon mb-4">
+                                                    <i class="bi bi-inbox"></i>
                                                 </div>
                                                 <h4 class="text-muted">No Registrations Found</h4>
                                                 <p class="text-muted">There are no registration records in the system.</p>
-
-
                                             </div>
                                         </c:when>
+
+                                        
                                         <c:otherwise>
                                             <!-- Data Table -->
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover">
-                                                    <thead class="table-dark">
+                                                <table class="table  table-hover">
+                                                    <thead class="table-secondary">
                                                         <tr>
                                                             <th scope="col" width="15%">
-                                                                <i class="bi bi-hash"></i> ID
+                                                                 ID
                                                             </th>
                                                             <th scope="col" width="45%">
                                                                 <i class="bi bi-building"></i> Name
@@ -113,17 +103,12 @@
                                                     <tbody>
                                                         <c:forEach var="item" items="${registrations}" varStatus="status">
                                                             <tr>
-                                                                <!-- ID Column -->
                                                                 <td>
-                                                                    <span class="badge bg-primary fs-6">#${item.id}</span>
+                                                                    <span class="badge bg-primary fs-6">${item.id}</span>
                                                                 </td>
-
-                                                                <!-- Name Column -->
                                                                 <td>
                                                                     <strong>${item.name}</strong>
                                                                 </td>
-
-                                                                <!-- Type Column -->
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${item.type == 'transport'}">
@@ -141,10 +126,8 @@
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
-
-                                                                <!-- Status Column -->
                                                                 <td>
-
+                                                                    <!--  xử lý trạng thái ở đây -->
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
@@ -155,6 +138,7 @@
                                     </c:choose>
                                 </div>
                             </div>
+
 
                             <!-- Footer Actions -->
                             <div class="mt-4 text-center">

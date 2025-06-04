@@ -14,6 +14,8 @@
             href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
             rel="stylesheet"
             />
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
         <link rel="stylesheet" href="../css/SideBar.css">
     </head>
     <body>
@@ -55,7 +57,7 @@
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
+                            <i class="bx bx-task icon"></i>
                             <span class="link">Duyệt Đơn</span>
                         </a>
                     </li>
