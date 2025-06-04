@@ -25,7 +25,7 @@
                 <ul class="lists">
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-home-alt icon"></i>
+                            <i class="bx bx-user icon"></i>
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
@@ -37,13 +37,13 @@
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-bell icon"></i>
+                            <i class="bx bx-cart icon"></i>
                             <span class="link">Đơn Hàng </span>
                         </a>
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-message-rounded icon"></i>
+                            <i class="bx bx-store-alt icon"></i>
                             <span class="link">Kho </span>
                         </a>
                     </li>
