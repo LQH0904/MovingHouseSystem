@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package dao;
 
 import java.util.List;
@@ -21,9 +18,7 @@ public class RegistrationDAO {
         this.dbConnection = new DBConnection();
     }
     
-    /**
-     * Lấy tất cả đơn đăng kí - chỉ 4 trường cơ bản
-     */
+    // Lay tat ca don dang ki voi 4 truong 
     public List<RegistrationItem> getAllRegistrations() {
         List<RegistrationItem> registrations = new ArrayList<>();
         
@@ -76,9 +71,7 @@ public class RegistrationDAO {
         return registrations;
     }
     
-    /**
-     * Test đơn giản
-     */
+    
     public static void main(String[] args) {
         System.out.println("=== DAO TEST ===");
         RegistrationDAO dao = new RegistrationDAO();

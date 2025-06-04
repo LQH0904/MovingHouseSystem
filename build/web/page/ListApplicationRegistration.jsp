@@ -7,6 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Registration List</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
         <link rel="stylesheet" href="../css/HomePage.css">
         <link rel="stylesheet" href="../css/ListApplication.css">
@@ -27,47 +29,46 @@
 
                                             <div class="col-md-3">
                                                 <div class="bg-info text-white p-3 rounded">
-                                                    <h4>2</h4>
-                                                    <p class="mb-0">Total Registrations</p>
-                                                </div>
-                                            </div>
-
-                                            <!-- Pending -->
-                                            <div class="col-md-3">
-                                                <div class="bg-warning text-dark p-3 rounded">
-                                                    <h4>1</h4>
-                                                    <p class="mb-0">Pending</p>
-                                                </div>
-                                            </div>
-
-                                            <!-- Approved -->
-                                            <div class="col-md-3">
-                                                <div class="bg-success text-white p-3 rounded">
-                                                    <h4>1</h4>
-                                                    <p class="mb-0">Approved</p>
-                                                </div>
-                                            </div>
-
-                                            <!-- Rejected -->
-                                            <div class="col-md-3">
-                                                <div class="bg-danger text-white p-3 rounded">
-                                                    <h4>1</h4>
-                                                    <p class="mb-0">Rejected</p>
-                                                </div>
+                                                    <h4>${totalCount}</h4>
+                                                <p class="mb-0">Total Registrations</p>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-3">
+                                            <div class="bg-warning text-dark p-3 rounded">
+                                                <h4>${pendingCount}</h4>
+                                                <p class="mb-0">Pending</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="bg-success text-white p-3 rounded">
+                                                <h4>${approvedCount}</h4>
+                                                <p class="mb-0">Approved</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="bg-danger text-white p-3 rounded">
+                                                <h4>${rejectedCount}</h4>
+                                                <p class="mb-0">Rejected</p>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
+                            </div>
 
 
-                                <!-- Main Data Card -->
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Registration List</h5>
-                                    </div>
-                                    <div class="card-body">
+
+                            <!-- Main Data Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Registration List</h5>
+                                </div>
+                                <div class="card-body">
                                     <c:choose>
-                                        
+
                                         <c:when test="${empty registrations}">
                                             <!-- Empty State -->
                                             <div class="empty-state text-center py-5">
@@ -79,25 +80,27 @@
                                             </div>
                                         </c:when>
 
-                                        
+
                                         <c:otherwise>
                                             <!-- Data Table -->
                                             <div class="table-responsive">
                                                 <table class="table  table-hover">
                                                     <thead class="table-secondary">
                                                         <tr>
-                                                            <th scope="col" width="15%">
-                                                                 ID
+                                                            <th scope="col" width="10%">
+                                                                ID
                                                             </th>
                                                             <th scope="col" width="45%">
                                                                 <i class="bi bi-building"></i> Name
                                                             </th>
-                                                            <th scope="col" width="20%">
+                                                            <th scope="col" width="15%">
                                                                 <i class="bi bi-tag"></i> Type
                                                             </th>
-                                                            <th scope="col" width="20%">
+                                                            <th scope="col" width="15%">
                                                                 <i class="bi bi-check-circle"></i> Status
                                                             </th>
+                                                            <th scope="col" width="15%">
+                                                                <i class="bi bi-chevron-double-down"></i>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -127,8 +130,36 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td>
-                                                                    <!--  xử lý trạng thái ở đây -->
+                                                                    <c:choose>
+                                                                        <c:when test="${item.registrationStatus == 'pending'}">
+                                                                            <span class="badge bg-warning text-dark">
+                                                                                <i class="bi bi-hourglass-split"></i> Pending
+                                                                            </span>
+                                                                        </c:when>
+                                                                        <c:when test="${item.registrationStatus == 'approved'}">
+                                                                            <span class="badge bg-success">
+                                                                                <i class="bi bi-check-circle"></i> Approved
+                                                                            </span>
+                                                                        </c:when>
+                                                                        <c:when test="${item.registrationStatus == 'rejected'}">
+                                                                            <span class="badge bg-danger">
+                                                                                <i class="bi bi-x-circle"></i> Rejected
+                                                                            </span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-secondary">${item.registrationStatus}</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </td>
+                                                                <td>
+
+                                                                    <a href="registrationDetail?id=${item.id}&type=${item.type}" >
+                                                                        <i class="bi bi-pencil-square "></i>
+
+                                                                    </a>
+                                                                </td>
+
+
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>
