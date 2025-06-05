@@ -11,7 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.DAOReports;
+import dao.DAOReports;
 import entity.Reports;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpSession;
@@ -61,7 +61,7 @@ public class ReportsController extends HttpServlet {
                     vector = dao.getReports("SELECT * FROM Reports");
                 }
                 request.setAttribute("reportsData", vector);
-                RequestDispatcher dis = request.getRequestDispatcher("/Layout/listReports.jsp");
+                RequestDispatcher dis = request.getRequestDispatcher("page/operator/listReports.jsp");
                 dis.forward(request, response);
             }
 
@@ -76,7 +76,7 @@ public class ReportsController extends HttpServlet {
                     }
                 }
                 // Chuyển hướng đến trang chi tiết
-                RequestDispatcher dis = request.getRequestDispatcher("/Layout/reportDetail.jsp");
+                RequestDispatcher dis = request.getRequestDispatcher("page/operator/reportDetail.jsp");
                 dis.forward(request, response);
             }
         }

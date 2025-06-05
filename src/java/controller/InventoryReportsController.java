@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.DAOInventoryReports;
+import dao.DAOInventoryReports;
 import entity.InventoryReports;
 import jakarta.servlet.RequestDispatcher;
 import java.util.Vector;
@@ -53,7 +53,7 @@ public class InventoryReportsController extends HttpServlet {
                     vector = dao.getInventoryReports("select * from InventoryReports where title like '%" + invRTitle + "%'");
                 }
                 request.setAttribute("inventoryReportsData", vector);
-                RequestDispatcher dis = request.getRequestDispatcher("/Layout/listInventoryReports.jsp");
+                RequestDispatcher dis = request.getRequestDispatcher("page/operator/listInventoryReports.jsp");
                 dis.forward(request, response);
             }
             if (service.equals("viewDetail")) {
@@ -67,7 +67,7 @@ public class InventoryReportsController extends HttpServlet {
                     }
                 }
                 // Chuyển hướng đến trang chi tiết
-                RequestDispatcher dis = request.getRequestDispatcher("/Layout/inventoryReportDetail.jsp");
+                RequestDispatcher dis = request.getRequestDispatcher("page/operator/inventoryReportDetail.jsp");
                 dis.forward(request, response);
             }
         }
