@@ -9,8 +9,8 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="../css/HomePage.css">
-        <link rel="stylesheet" href="../css/ListApplication.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ListApplication.css">
     </head>
     <body class="bg-light">
         <div class="parent">
