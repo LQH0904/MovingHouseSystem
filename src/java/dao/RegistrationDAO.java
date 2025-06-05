@@ -77,60 +77,67 @@ public class RegistrationDAO {
     }
 
     public RegistrationItem getRegistrationDetail(int id, String type) {
-        String query = "";
-        if ("transport".equalsIgnoreCase(type)) {
-            query = """
-            SELECT t.transport_unit_id as id,
-                    'transport' as type,
-                    t.company_name as name, 
-                    t.contact_info,
-                   t.registration_status as status, 
-                    t.created_at, 
-                    u.username, 
-                    u.email
-            FROM TransportUnits t
-            LEFT JOIN Users u ON t.user_id = u.user_id
-            WHERE t.transport_unit_id = ?
+    System.out.println("getRegistrationDetail called with id: " + id + ", type: " + type);
+    String query = "";
+    if ("transport".equalsIgnoreCase(type)) {
+        query = """
+        SELECT t.transport_unit_id as id,
+                'transport' as type,
+                t.company_name as name, 
+                t.contact_info,
+               t.registration_status as status, 
+                t.created_at, 
+                u.username, 
+                u.email
+        FROM TransportUnits t
+        LEFT JOIN Users u ON t.user_id = u.user_id
+        WHERE t.transport_unit_id = ?
         """;
-        } else if ("storage".equalsIgnoreCase(type)) {
-            query = """
-            SELECT s.storage_unit_id as id,
-                    'storage' as type,
-                    s.warehouse_name as name, 
-                    s.contact_info,
-                   s.registration_status as status,
-                    s.created_at, 
-                    u.username,
-                    u.email
-            FROM StorageUnits s
-            LEFT JOIN Users u ON s.user_id = u.user_id
-            WHERE s.storage_unit_id = ?
+    } else if ("storage".equalsIgnoreCase(type)) {
+        query = """
+        SELECT s.storage_unit_id as id,
+                'storage' as type,
+                s.warehouse_name as name, 
+                s.contact_info,
+               s.registration_status as status,
+                s.created_at, 
+                u.username,
+                u.email
+        FROM StorageUnits s
+        LEFT JOIN Users u ON s.user_id = u.user_id
+        WHERE s.storage_unit_id = ?
         """;
-        } else {
-            return null; // Nếu type không hợp lệ
-        }
-
-        try (Connection conn = dbConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return new RegistrationItem(
-                            rs.getInt("id"),
-                            rs.getString("type"),
-                            rs.getString("name"),
-                            rs.getString("contact_info"),
-                            rs.getString("status"),
-                            rs.getTimestamp("created_at"),
-                            rs.getString("username"),
-                            rs.getString("email")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    } else {
+        System.out.println("Invalid type: " + type);
         return null;
     }
+
+    try (Connection conn = dbConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, id);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                RegistrationItem item = new RegistrationItem(
+                        rs.getInt("id"),
+                        rs.getString("type"),
+                        rs.getString("name"),
+                        rs.getString("contact_info"),
+                        rs.getString("status"),
+                        rs.getTimestamp("created_at"),
+                        rs.getString("username"),
+                        rs.getString("email")
+                );
+                System.out.println("Found item: " + item);
+                return item;
+            } else {
+                System.out.println("No record found for id: " + id + ", type: " + type);
+            }
+        }
+    } catch (SQLException e) {
+        System.err.println("SQL Error: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return null;
+}
 
     public static void main(String[] args) throws SQLException, Exception {
         System.out.println("=== DAO TEST ===");
