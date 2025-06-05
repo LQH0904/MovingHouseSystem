@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <servlet>
+        <servlet-name>RegistrationListController</servlet-name>
+        <servlet-class>controller.RegistrationListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ApplicationDetail</servlet-name>
+        <servlet-class>controller.ApplicationDetailController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegistrationListController</servlet-name>
+        <url-pattern>/admin/registrations</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApplicationDetail</servlet-name>
+        <url-pattern>/applicationdetail</url-pattern>
+    </servlet-mapping>
+</web-app>
