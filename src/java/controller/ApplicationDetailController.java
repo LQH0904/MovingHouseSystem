@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.RegistrationDAO;
+import entity.RegistrationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -52,7 +52,7 @@ public class ApplicationDetailController extends HttpServlet {
             request.setAttribute("registration", item);
 
             // Forward đến trang detail (ví dụ: registrationDetail.jsp)
-            request.getRequestDispatcher("/page/ApplicationRegistrationDetail.jsp").forward(request, response);
+            request.getRequestDispatcher("/page/admin/ApplicationRegistrationDetail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid id format");

@@ -1,6 +1,6 @@
 package controller;
 
-import dao.RegistrationDAO;
+import entity.RegistrationDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -55,7 +55,7 @@ public class RegistrationListController extends HttpServlet {
             request.setAttribute("rejectedCount", rejectedCount);
             
             // Forward den JSP
-            request.getRequestDispatcher("/page/ListApplicationRegistration.jsp").forward(request, response);
+            request.getRequestDispatcher("/page/admin/ListApplicationRegistration.jsp").forward(request, response);
             
         } catch (Exception e) {
             System.err.println("Controller Error: " + e.getMessage());

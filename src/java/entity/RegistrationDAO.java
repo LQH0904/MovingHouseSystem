@@ -1,5 +1,5 @@
 
-package dao;
+package entity;
 
 import java.util.List;
 import model.RegistrationItem;

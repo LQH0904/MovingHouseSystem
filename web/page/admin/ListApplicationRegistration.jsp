@@ -14,8 +14,8 @@
     </head>
     <body class="bg-light">
         <div class="parent">
-            <div class="div1"><jsp:include page="../Layout/SideBar.jsp"></jsp:include> </div>
-            <div class="div2">  <jsp:include page="../Layout/Header.jsp"></jsp:include> </div>
+            <div class="div1"><jsp:include page="../../Layout/SideBar.jsp"></jsp:include> </div>
+            <div class="div2">  <jsp:include page="../../Layout/Header.jsp"></jsp:include> </div>
                 <div class="div3"> 
                     <div class="container mt-4">
                         <div class="row">
