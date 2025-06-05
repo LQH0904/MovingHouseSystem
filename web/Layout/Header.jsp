@@ -16,31 +16,36 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-custom navbar-mainbg">
-            <a class="navbar-brand navbar-logo" href="#">Moving House</a>
+            <a class="navbar-brand navbar-logo" href="#"> Moving House</a>
             <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars text-white"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="hori-selector">
+                    <div class="left"></div>
+                    <div class="right"></div>
+                        
+                </div>
+
                 <ul class="navbar-nav ml-auto">
-                    <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
                     <li class="nav-item active">
                         <a class="nav-link" href="javascript:void(0);"><i class="far fa-address-book"></i>Tài Khoản</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="javascript:void(0);"><i class="far fa-address-book"></i>Tài Khoản</a>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="javascript:void(0);"><i class="fas fa-cog"></i>Cài Đặt</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);"><i class="far fa-copy"></i>Đăng Xuất</a>
+                        <a class="nav-link" href="javascript:void(0);"><i class="fas fa-sign-out-alt"></i>Đăng Xuất</a>
                     </li>
                 </ul>
             </div>
         </nav>
 
-<!--         jQuery + Bootstrap JS 
--->        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <!--         jQuery + Bootstrap JS 
+        -->        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Custom JS -->
-        <script src="../js/Header.js"></script>
+        <script src="${pageContext.request.contextPath}/js/Header.js"></script>
     </body>
 </html>

@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +14,8 @@
             href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
             rel="stylesheet"
             />
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
         <link rel="stylesheet" href="../css/SideBar.css">
     </head>
     <body>
@@ -25,7 +27,7 @@
                 <ul class="lists">
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-home-alt icon"></i>
+                            <i class="bx bx-user icon"></i>
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
@@ -37,13 +39,13 @@
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-bell icon"></i>
+                            <i class="bx bx-cart icon"></i>
                             <span class="link">Đơn Hàng </span>
                         </a>
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-message-rounded icon"></i>
+                            <i class="bx bx-store-alt icon"></i>
                             <span class="link">Kho </span>
                         </a>
                     </li>
@@ -55,7 +57,7 @@
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
+                            <i class="bx bx-task icon"></i>
                             <span class="link">Duyệt Đơn</span>
                         </a>
                     </li>
@@ -65,8 +67,6 @@
                             <span class="link">Files</span>
                         </a>
                     </li>
-                </ul>
-                <div class="bottom-cotent">
                     <li class="list">
                         <a href="#" class="nav-link">
                             <i class="bx bx-cog icon"></i>
@@ -79,10 +79,11 @@
                             <span class="link">Logout</span>
                         </a>
                     </li>
-                </div>
+                </ul>
+               
             </div>
         </div>
 
-        <script src="../js/SideBar.js"></script>
+        <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
     </body>
 </html>
