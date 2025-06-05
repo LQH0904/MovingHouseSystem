@@ -46,6 +46,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Custom JS -->
-        <script src="../js/Header.js"></script>
+        <script src="${pageContext.request.contextPath}/js/Header.js"></script>
     </body>
 </html>

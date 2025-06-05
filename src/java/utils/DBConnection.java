@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class DBConnection {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=systemhouse1;encrypt=true;trustServerCertificate=true";
     private static final String USERNAME = "sa"; // Thay đổi theo cấu hình của bạn
-    private static final String PASSWORD = "sa"; // Thay đổi theo cấu hình của bạn
+    private static final String PASSWORD = "123"; // Thay đổi theo cấu hình của bạn
     
     static {
         try {
