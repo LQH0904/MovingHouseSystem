@@ -12,7 +12,7 @@
     <meta property="og:site_name" content="" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="vi_VN" />
-    <link href="assets/css/changepass.css" rel="stylesheet" type="text/css" />
+    <link href="css/login/changepass.css" rel="stylesheet" type="text/css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 

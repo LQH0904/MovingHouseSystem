@@ -4,7 +4,7 @@
  */
 package controller;
 
-import entity.UserDAO;
+import dao.UserDAO;
 import model.Users;
 import java.io.IOException;
 import jakarta.servlet.ServletException;

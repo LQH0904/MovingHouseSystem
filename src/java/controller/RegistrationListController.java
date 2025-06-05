@@ -1,6 +1,6 @@
 package controller;
 
-import entity.RegistrationDAO;
+import dao.RegistrationDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

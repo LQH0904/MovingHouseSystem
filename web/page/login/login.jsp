@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:include page="../../Layout/Login/head.jsp"/>
+<jsp:include page="../../Layout/Login/head.jsp" />
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,7 +9,7 @@
         <style>
             .left-section {
                 flex: 1;
-                background: url('../../img/bgr.jpg') center center / cover no-repeat;
+                background: url('img/bgr.jpg') center center / cover no-repeat;
                 position: relative;
                 color: white;
                 padding: 30px;
@@ -66,7 +67,7 @@
                     <div class="or-divider">— or —</div>
 
                     <button type="button" class="google-login"
-                            onclick="window.location.href = 'https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/HuynhDuc/LoginGoogleServlet&response_type=code&client_id=820713583757-asdgtkcasbf9maf6uvu91kpc67k5d418.apps.googleusercontent.com&approval_prompt=force'">
+                            onclick="window.location.href = 'https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/HouseMovingSystem/LoginGoogleServlet&response_type=code&client_id=820713583757-asdgtkcasbf9maf6uvu91kpc67k5d418.apps.googleusercontent.com&approval_prompt=force'">
                         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" />
                         Login with Google
                     </button>

@@ -1,7 +1,3 @@
-<%-- 
-    
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
@@ -15,7 +11,7 @@
     <meta property="og:site_name" content="" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="vi_VN" />
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/login/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
