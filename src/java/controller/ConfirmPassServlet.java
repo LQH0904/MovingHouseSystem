@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.UserDAO;
+import entity.UserDAO;
 import model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +35,7 @@ public class ConfirmPassServlet extends HttpServlet {
             return;
         }
         request.setAttribute("resetUsername", resetUsername);
-        request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+        request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ConfirmPassServlet extends HttpServlet {
         String resetUsername = (String) session.getAttribute("resetUsername");
         if (resetUsername == null) {
             request.setAttribute("error", "Session expired. Please start over.");
-            request.getRequestDispatcher("forgot.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             return;
         }
         String newpass = request.getParameter("password");
@@ -59,7 +59,7 @@ public class ConfirmPassServlet extends HttpServlet {
             msg = "User not found!";
             request.setAttribute("error", msg);
             request.setAttribute("resetUsername", resetUsername);
-            request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
             return;
         }
 
@@ -67,7 +67,7 @@ public class ConfirmPassServlet extends HttpServlet {
             msg = "Password confirmation does not match!";
             request.setAttribute("error", msg);
             request.setAttribute("resetUsername", resetUsername);
-            request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
             return;
         }
 
@@ -75,7 +75,7 @@ public class ConfirmPassServlet extends HttpServlet {
             msg = "Password must be at least 6 characters.";
             request.setAttribute("error", msg);
             request.setAttribute("resetUsername", resetUsername);
-            request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
             return;
         }
 
@@ -84,12 +84,12 @@ public class ConfirmPassServlet extends HttpServlet {
             msg = "Change password successfully!";
             session.removeAttribute("resetUsername");
             request.setAttribute("mess", msg);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/login.jsp").forward(request, response);
         } else {
             msg = "Failed to change password!";
             request.setAttribute("error", msg);
             request.setAttribute("resetUsername", resetUsername);
-            request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
         }
     }
 

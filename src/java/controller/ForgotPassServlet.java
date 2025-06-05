@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.UserDAO;
+import entity.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -29,7 +29,7 @@ public class ForgotPassServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("forgot.jsp").forward(request, response);
+        request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
     }
 
     @Override
@@ -70,13 +70,13 @@ public class ForgotPassServlet extends HttpServlet {
                 // Chuyển bước sang nhập code
                 request.setAttribute("email", emailInput);
                 request.setAttribute("step", "enterCode");
-                request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
 
             } else {
                 // Email không tồn tại
                 request.setAttribute("message", "Email không tồn tại!");
                 request.setAttribute("step", "enterEmail");
-                request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             }
 
         } else {
@@ -97,7 +97,7 @@ public class ForgotPassServlet extends HttpServlet {
 
                 // Giả sử bạn muốn chuyển sang trang đổi mật khẩu là newpassword.jsp
                 request.setAttribute("message", "Code verified! Please reset your password.");
-                request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+                request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
 
             } else {
                 // Code sai, giảm số lần còn lại
@@ -112,14 +112,14 @@ public class ForgotPassServlet extends HttpServlet {
 
                     request.setAttribute("message", "Bạn đã nhập sai quá nhiều lần. Vui lòng gửi lại email để nhận mã mới.");
                     request.setAttribute("step", "enterEmail");
-                    request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                    request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
 
                 } else {
                     // Còn lần thử, thông báo còn lại
                     request.setAttribute("message", "Mã không đúng! Bạn còn " + attemptsLeft + " lần thử.");
                     request.setAttribute("email", email);
                     request.setAttribute("step", "enterCode");
-                    request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                    request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
                 }
             }
         }

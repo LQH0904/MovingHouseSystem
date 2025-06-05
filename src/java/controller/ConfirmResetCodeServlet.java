@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.UserDAO;
+import entity.UserDAO;
 import model.Users;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -30,11 +30,11 @@ public class ConfirmResetCodeServlet extends HttpServlet {
         String resetUsername = (String) session.getAttribute("resetUsername");
         if (resetUsername == null) {
             request.setAttribute("error", "Session expired. Please start over.");
-            request.getRequestDispatcher("forgot.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             return;
         }
         request.setAttribute("resetUsername", resetUsername);
-        request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+        request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ConfirmResetCodeServlet extends HttpServlet {
             Users user = ud.checkUserByEmail(email);
             if (user == null) {
                 request.setAttribute("message", "User not found");
-                request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
                 return;
             }
 
@@ -72,7 +72,7 @@ public class ConfirmResetCodeServlet extends HttpServlet {
             session.removeAttribute("attemptsLeft");
             session.setAttribute("resetUsername", email);
             request.setAttribute("check", check);
-            request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+            request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
         } else {
             // Mã sai, giảm số lần thử
             attemptsLeft--;
@@ -87,7 +87,7 @@ public class ConfirmResetCodeServlet extends HttpServlet {
                 message = "Bạn đã nhập sai quá nhiều lần. Vui lòng gửi lại email.";
                 request.setAttribute("message", message);
                 request.setAttribute("step", "enterEmail");
-                request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             } else {
                 // Còn lần thử, thông báo số lần còn lại
                 message = "Mã không đúng! Bạn còn " + attemptsLeft + " lần thử.";
@@ -95,7 +95,7 @@ public class ConfirmResetCodeServlet extends HttpServlet {
                 request.setAttribute("check", check);
                 request.setAttribute("message", message);
                 request.setAttribute("step", "enterCode");
-                request.getRequestDispatcher("forgot.jsp").forward(request, response);
+                request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             }
         }
     }

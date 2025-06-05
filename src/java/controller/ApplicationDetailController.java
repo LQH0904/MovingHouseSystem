@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.RegistrationDAO;
+import entity.RegistrationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

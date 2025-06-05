@@ -1,7 +1,7 @@
 
 package controller;
 
-import dao.UserDAO;
+import entity.UserDAO;
 import model.Constants;
 import model.Users;
 import model.Roles;
