@@ -1,0 +1,330 @@
+.parent {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 250px auto;
+    grid-template-rows: 70px auto;
+    grid-column-gap: 13px;
+    grid-row-gap: 9px;
+}
+
+.div1 {
+    grid-area: 2 / 1 / 3 / 2; /* Sidebar */
+    background: #e3f2fd;
+}
+.div2 {
+    grid-area: 1 / 1 / 2 / 3; /* Header ngang full width */
+}
+.div3 {
+    grid-area: 2 / 2 / 3 / 3; /* Content */
+    border: 2px solid rgb(62, 49, 49);
+    box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
+    border-top-left-radius: 10px;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+/*div2*/
+#icon{
+    margin-top: 11px;
+    margin-left: 2%;
+    color: white;           /* Màu trắng để nổi bật trên nền xanh */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    padding: 0 5px;
+    transition: transform 0.3s ease;
+}
+
+#icon:hover {
+    color: #ff0000;
+    transform: scale(1.1);
+}
+
+#icon2{
+    margin-top: 11px;
+    margin-left: 2%;
+    color: white;           /* Màu trắng để nổi bật trên nền xanh */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    padding: 0 5px;
+    transition: transform 0.6s ease;
+}
+#icon2:hover {
+    color: #ff0000;
+    transform: rotate(90deg);
+}
+
+/*end div2 */
+.img_log {
+    background-color: #ccc;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.div1 .worklink a {
+    display: inline-block;
+    width: 105%;
+    height: 50px;
+    background-color: #ccc;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px; /* Căn chữ nằm giữa theo chiều dọc */
+    font-size: 16px;
+    /* Bước 2: clip-path tạo tam giác */
+    clip-path: polygon(
+        0% 0%,                   /* Góc trên-trái */
+        calc(100% - 5%) 0%,    /* Điểm trên bên phải lệch 25px vào trong */
+        100% 50%,                /* Điểm nhọn chính giữa cạnh phải */
+        calc(100% - 5%) 100%,  /* Điểm dưới bên phải lệch 25px vào trong */
+        0% 100%                  /* Góc dưới-trái */
+        );
+    margin-top: 5px;
+    transition: transform 0.3s ease;
+}
+.worklink a:hover{
+    transform: scale(1.1);
+    background-color: red; 
+    color: white;
+}
+.worklink{
+    margin-top: 104%;
+}
+
+/* CSS cho main content trong div3 */
+.main-content {
+    flex: 1;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* CSS cho calendar widget - không còn absolute */
+.calendar-widget {
+    width: 350px;
+    min-width: 350px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    height: fit-content;
+}
+
+.calendar-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.current-time {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #4a5568;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.current-date {
+    font-size: 0.9em;
+    color: #718096;
+    margin-bottom: 15px;
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.nav-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.month-year {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4a5568;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.day-header {
+    text-align: center;
+    font-weight: bold;
+    color: #667eea;
+    padding: 8px 0;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9em;
+    position: relative;
+    overflow: hidden;
+}
+
+.day-cell:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+.day-cell.other-month {
+    color: #cbd5e0;
+}
+
+.day-cell.today {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 3px 10px rgba(72, 187, 120, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.day-cell.selected {
+    background: linear-gradient(135deg, #ed8936, #dd6b20);
+    color: white;
+    font-weight: bold;
+}
+
+.time-zones {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.timezone-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    transition: all 0.3s ease;
+}
+
+.timezone-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.timezone-name {
+    font-weight: bold;
+    color: #4a5568;
+    margin-bottom: 5px;
+    font-size: 0.8em;
+}
+
+.timezone-time {
+    font-size: 1em;
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* Nội dung mẫu cho main-content */
+.content-section {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.content-section h3 {
+    color: #4a5568;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 1200px) {
+    .div3 {
+        flex-direction: column;
+    }
+
+    .calendar-widget {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .main-content {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .parent {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr;
+        height: auto;
+    }
+
+    .div1 {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .div2 {
+        grid-area: 2 / 1 / 3 / 2;
+    }
+
+    .div3 {
+        grid-area: 3 / 1 / 4 / 2;
+        flex-direction: column;
+    }
+
+    .calendar-widget {
+        width: 100%;
+    }
+}
