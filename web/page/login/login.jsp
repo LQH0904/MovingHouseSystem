@@ -8,7 +8,7 @@
         <style>
             .left-section {
                 flex: 1;
-                background: url('assets/images/bgr.jpg') center center / cover no-repeat;
+                background: url('../../img/bgr.jpg') center center / cover no-repeat;
                 position: relative;
                 color: white;
                 padding: 30px;
