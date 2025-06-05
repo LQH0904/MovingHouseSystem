@@ -1,6 +1,6 @@
 package controller;
 
-import entity.RegistrationDAO;
+import dao.RegistrationDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -45,8 +45,7 @@ public class RegistrationListController extends HttpServlet {
                             break;
                     }
                 }
-            }
-            
+            }            
             // Dat vao request
             request.setAttribute("registrations", registrations);
             request.setAttribute("totalCount", totalCount);
