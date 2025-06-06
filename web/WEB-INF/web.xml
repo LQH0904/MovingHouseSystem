@@ -8,6 +8,10 @@
         <servlet-name>ApplicationListController</servlet-name>
         <servlet-class>controller.ApplicationListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RegisterAppliDetailController</servlet-name>
+        <servlet-class>controller.RegisterAppliDetailController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ApplicationDetail</servlet-name>
         <url-pattern>/applicationdetail</url-pattern>
@@ -15,5 +19,9 @@
     <servlet-mapping>
         <servlet-name>ApplicationListController</servlet-name>
         <url-pattern>/operator/listApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterAppliDetailController</servlet-name>
+        <url-pattern>/appli-detail</url-pattern>
     </servlet-mapping>
 </web-app>

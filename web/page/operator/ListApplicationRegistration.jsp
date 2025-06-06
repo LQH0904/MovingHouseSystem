@@ -22,51 +22,51 @@
                             <div class="col-12">                                
 
                                 <!-- Summary Card -->
-                               <div class="card mb-4">
-    <div class="card-body">
-        <div class="row text-center">
-
-            <div class="col-md-3">
-                <div class="bg-info text-white p-3 rounded">
-                    <h4>${total}</h4>
-                    <p class="mb-0">Total Registrations</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="bg-warning text-dark p-3 rounded">
-                    <h4>${pending}</h4>
-                    <p class="mb-0">Pending</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="bg-success text-white p-3 rounded">
-                    <h4>${approved}</h4>
-                    <p class="mb-0">Approved</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="bg-danger text-white p-3 rounded">
-                    <h4>${rejected}</h4>
-                    <p class="mb-0">Rejected</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-
-                                <!-- Main Data Card -->
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Registration List</h5>
-                                    </div>
+                                <div class="card mb-4">
                                     <div class="card-body">
+                                        <div class="row text-center">
+
+                                            <div class="col-md-3">
+                                                <div class="bg-info text-white p-3 rounded">
+                                                    <h4>${total}</h4>
+                                                <p class="mb-0">Total Registrations</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="bg-warning text-dark p-3 rounded">
+                                                <h4>${pending}</h4>
+                                                <p class="mb-0">Pending</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="bg-success text-white p-3 rounded">
+                                                <h4>${approved}</h4>
+                                                <p class="mb-0">Approved</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="bg-danger text-white p-3 rounded">
+                                                <h4>${rejected}</h4>
+                                                <p class="mb-0">Rejected</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <!-- Main Data Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Registration List</h5>
+                                </div>
+                                <div class="card-body">
                                     <c:choose>
 
                                         <c:when test="${empty applications}">
@@ -162,7 +162,7 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td>
-                                                                    <a href="#">
+                                                                    <a href="${pageContext.request.contextPath}/appli-detail?id=${item.application_id}">
                                                                         <i class="bi bi-pencil-square"></i>
                                                                     </a>
                                                                 </td>
