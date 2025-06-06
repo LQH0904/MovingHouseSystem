@@ -5,26 +5,21 @@
 <%@ page import="model.Complaint" %>
 
 <%
-    // Get issueId from request
     String issueIdParam = request.getParameter("issueId");
-    int issueId = -1; // Default value
-    Complaint currentComplaint = null; // Current complaint object
-    ComplaintDAO complaintDAO = new ComplaintDAO(); // Initialize DAO to fetch data
+    int issueId = -1;
+    Complaint currentComplaint = null;
+    ComplaintDAO complaintDAO = new ComplaintDAO();
 
-    // Attempt to convert issueId to integer and retrieve complaint information
     try {
         if (issueIdParam != null && !issueIdParam.isEmpty()) {
             issueId = Integer.parseInt(issueIdParam);
             currentComplaint = complaintDAO.getComplaintById(issueId);
         }
     } catch (NumberFormatException e) {
-        // Log error and display message to the user if ID is invalid
         System.err.println("Lỗi: ID khiếu nại không hợp lệ trong replyComplaint.jsp. ID nhận được: " + issueIdParam);
         e.printStackTrace();
     }
 
-    // The 'updateStatus' parameter from URL is no longer directly used for display
-    // as we will show success/failure via JavaScript modal on submission.
     String updateStatus = request.getParameter("updateStatus");
 %>
 <!DOCTYPE html>
@@ -68,9 +63,15 @@
                                 else if ("in_progress".equals(status)) out.print("bg-info text-dark");
                                 else if ("resolved".equals(status)) out.print("bg-success");
                                 else if ("escalated".equals(status)) out.print("bg-danger");
-                                else out.print("bg-light text-dark"); // Fallback
+                                else out.print("bg-light text-dark");
                             %>">
-                            <%= currentComplaint.getStatus() %>
+                            <%
+                                if ("open".equals(status)) out.print("Mở");
+                                else if ("in_progress".equals(status)) out.print("Đang xử lý");
+                                else if ("resolved".equals(status)) out.print("Đã xử lý");
+                                else if ("escalated".equals(status)) out.print("Chuyển cấp cao");
+                                else out.print(status);
+                            %>
                         </span>
                     </div>
                 </div>
@@ -82,9 +83,15 @@
                                 String priority = currentComplaint.getPriority();
                                 if ("high".equals(priority)) out.print("bg-warning text-dark");
                                 else if ("normal".equals(priority)) out.print("bg-secondary");
-                                else out.print("bg-light text-dark"); // Fallback
+                                else if ("low".equals(priority)) out.print("bg-info text-dark");
+                                else out.print("bg-light text-dark");
                             %>">
-                            <%= currentComplaint.getPriority() %>
+                            <%
+                                if ("high".equals(priority)) out.print("Cao");
+                                else if ("normal".equals(priority)) out.print("Bình thường");
+                                else if ("low".equals(priority)) out.print("Thấp");
+                                else out.print(priority);
+                            %>
                         </span>
                     </div>
                 </div>
@@ -122,11 +129,11 @@
 
             <div class="mb-3">
                 <label for="replyContent" class="form-label fw-bold">Nội dung phản hồi:</label>
-                <textarea class="form-control" id="replyContent" name="replyContent" rows="4" placeholder="Nhập nội dung phản hồi của bạn..." **required**></textarea>
+                <textarea class="form-control" id="replyContent" name="replyContent" rows="4" placeholder="Nhập nội dung phản hồi của bạn..." required></textarea>
                 <div class="invalid-feedback">Vui lòng nhập nội dung phản hồi.</div>
             </div>
 
-            <button type="submit" class="btn btn-success me-2" onclick="showSuccessMessage(event)">
+            <button type="submit" class="btn btn-success me-2" onclick="handleReplySubmission(event)">
                 <i class="bi bi-send-fill me-1"></i> Gửi phản hồi
             </button>
 
@@ -162,7 +169,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JavaScript for Bootstrap form validation
         (function () {
             'use strict'
             var forms = document.querySelectorAll('.needs-validation')
@@ -178,7 +184,6 @@
                 })
         })()
 
-        // Get parameters from URL (still useful if you have redirects from Servlet for other purposes)
         const urlParams = new URLSearchParams(window.location.search);
         const updateStatus = urlParams.get('updateStatus');
         const issueIdFromUrl = urlParams.get('issueId'); 
@@ -186,11 +191,10 @@
         const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
         const modalTitle = document.getElementById('messageModalLabel');
         const modalBody = document.getElementById('modalBodyContent');
-        const currentStatusBadge = document.getElementById('currentStatusBadge'); // For optional UI update
-        const statusSelect = document.getElementById('status'); // For optional UI update
-        const replyContentTextarea = document.getElementById('replyContent'); // For clearing content
+        const currentStatusBadge = document.getElementById('currentStatusBadge');
+        const statusSelect = document.getElementById('status');
+        const replyContentTextarea = document.getElementById('replyContent');
 
-        // Display modal based on updateStatus parameter (from initial page load/redirect)
         window.onload = function() {
             if (updateStatus === 'success') {
                 modalTitle.textContent = 'Cập nhật thành công!';
@@ -201,55 +205,88 @@
                 modalBody.innerHTML = '<i class="bi bi-x-circle-fill text-danger fs-3 me-2"></i> Không thể cập nhật trạng thái khiếu nại #' + issueIdFromUrl + '. Vui lòng thử lại.';
                 messageModal.show();
             }
-            // Clear URL parameters after displaying message to prevent re-showing on refresh
             if (updateStatus) {
+                // Clear the updateStatus parameter from the URL after showing the message
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?issueId=' + issueIdFromUrl;
                 window.history.replaceState({}, document.title, newUrl);
             }
         };
 
-        // --- Logic for "Gửi phản hồi" button ---
-        function showSuccessMessage(event) {
-            event.preventDefault(); // Prevent default form submission
-
+        function handleReplySubmission(event) {
             const form = event.target.closest('form');
+            const replyContent = document.getElementById('replyContent').value.trim();
+            const status = document.getElementById('status').value;
 
-            // Manually trigger Bootstrap's validation display
+            // Apply Bootstrap's validation styles
             form.classList.add('was-validated');
 
-            // Check if the form is valid (this includes the 'required' textarea)
-            if (form.checkValidity()) {
-                // If the form is valid, display the success modal
-                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-
-                // Optional: Update the displayed status on the page
-                const newStatus = statusSelect.value;
-                if (currentStatusBadge) {
-                    currentStatusBadge.textContent = newStatus;
-                    currentStatusBadge.className = 'badge rounded-pill p-2'; // Reset classes
-                    if (newStatus === "open") currentStatusBadge.classList.add("bg-secondary");
-                    else if (newStatus === "in_progress") currentStatusBadge.classList.add("bg-info", "text-dark");
-                    else if (newStatus === "resolved") currentStatusBadge.classList.add("bg-success");
-                    else if (newStatus === "escalated") currentStatusBadge.classList.add("bg-danger");
-                    else currentStatusBadge.classList.add("bg-light", "text-dark");
-                }
-                
-                // Optional: Clear the reply content and reset form validation state
-                replyContentTextarea.value = ''; // Clear the text area
-                form.classList.remove('was-validated'); // Reset validation styling
-                statusSelect.value = ''; // Optionally reset the status selection to default "-- Chọn trạng thái --"
-                
-                // IMPORTANT: As per your request, the form data is NOT submitted to the server here.
-                // If you need to send data to the server AND stay on the same page,
-                // you would need to implement an AJAX call (e.g., using Fetch API) here
-                // instead of simply preventing the default form submission and showing a modal.
-            } else {
-                // If the form is not valid, Bootstrap's built-in validation messages
-                // (e.g., "Vui lòng nhập nội dung phản hồi.") will appear automatically.
-                // No separate modal is needed for validation errors.
+            if (!status) {
+                event.preventDefault(); // Stop form submission
+                showCustomMessageModal('Lỗi nhập liệu!', 'Vui lòng chọn một trạng thái cho khiếu nại.', 'warning');
+                return;
             }
+
+            if (replyContent === '') {
+                event.preventDefault(); // Stop form submission
+                showCustomMessageModal('Bạn phải nhập nội dung phản hồi', 'Vui lòng nhập nội dung phản hồi.', 'danger');
+                return; 
+            }
+
+            // If both status and replyContent are valid, proceed with the original success logic
+            // This is the part that reverts to your original request for the success modal
+            event.preventDefault(); // Prevent default form submission to handle it via JS
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+
+            // Update status badge on success modal show (client-side visual update)
+            const newStatus = statusSelect.value;
+            if (currentStatusBadge) {
+                currentStatusBadge.textContent = newStatus;
+                currentStatusBadge.className = 'badge rounded-pill p-2';
+                if (newStatus === "open") currentStatusBadge.classList.add("bg-secondary");
+                else if (newStatus === "in_progress") currentStatusBadge.classList.add("bg-info", "text-dark");
+                else if (newStatus === "resolved") currentStatusBadge.classList.add("bg-success");
+                else if (newStatus === "escalated") currentStatusBadge.classList.add("bg-danger");
+                else currentStatusBadge.classList.add("bg-light", "text-dark");
+            }
+
+            // Clear form fields and remove validation classes after showing success message
+            replyContentTextarea.value = '';
+            form.classList.remove('was-validated');
+            statusSelect.value = ''; // Clear status selection too
+            
+            // Optionally, submit the form after a short delay or user interaction with the success modal
+            // For now, it will just show the success modal and clear the form.
+            // If you intend for the data to be sent to the server after this client-side success,
+            // you would need to use AJAX or manually trigger form.submit() *after* the modal is closed,
+            // or modify the server-side logic to always redirect with updateStatus parameters.
+            // For this specific request, we're mimicking the original client-side success behavior.
         }
+
+        function showCustomMessageModal(title, message, type) {
+            const customModal = new bootstrap.Modal(document.getElementById('customMessageModal'));
+            const customModalTitle = document.getElementById('customMessageModalLabel');
+            const customModalBody = document.getElementById('customModalBodyContent');
+            
+            customModalTitle.textContent = title;
+            let iconClass = '';
+            let textColorClass = '';
+
+            if (type === 'success') {
+                iconClass = 'bi bi-check-circle-fill';
+                textColorClass = 'text-success';
+            } else if (type === 'danger') {
+                iconClass = 'bi bi-x-circle-fill';
+                textColorClass = 'text-danger';
+            } else if (type === 'warning') {
+                iconClass = 'bi bi-exclamation-triangle-fill';
+                textColorClass = 'text-warning';
+            }
+
+            customModalBody.innerHTML = `<i class="${iconClass} ${textColorClass} fs-3 me-2"></i> ${message}`;
+            customModal.show();
+        }
+
     </script>
 
     <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
@@ -261,6 +298,23 @@
                 </div>
                 <div class="modal-body d-flex align-items-center">
                     <div id="modalBodyContent"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="customMessageModal" tabindex="-1" aria-labelledby="customMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customMessageModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex align-items-center">
+                    <div id="customModalBodyContent"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
