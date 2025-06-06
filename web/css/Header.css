@@ -15,6 +15,16 @@ i {
         padding-left: 5px;
 	color: #fff;
 }
+.navbar-logo img {
+  /* Cho phép hình ảnh chuyển động mượt khi hover */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Khi di chuột vào tấm ảnh thì ảnh sẽ nhúc lên và đổ bóng */
+.navbar-logo img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+}
 .navbar-mainbg{
 	background-color: #5161ce;
 	padding: 0px;

@@ -15,10 +15,10 @@
     <body>
         <div class="parent">
             <div class="div1">
-                <jsp:include page="../../Layout/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
             </div>
             <div class="div2">
-                <jsp:include page="../../Layout/Header.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
             </div>
             <div class="div3">
                 <%@ page import="entity.InventoryReports, java.util.Vector" %>

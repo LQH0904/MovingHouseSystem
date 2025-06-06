@@ -33,7 +33,7 @@ public class DBContext {
     }
     
     public DBContext(){
-        this("jdbc:sqlserver://localhost:1433;databaseName=transport_management", "sa", "123456");
+        this("jdbc:sqlserver://localhost:1433;databaseName=systemhouse1", "sa", "123456");
     }
     public ResultSet getData(String sql){
         ResultSet rs = null;

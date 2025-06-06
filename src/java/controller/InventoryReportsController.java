@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import dao.DAOInventoryReports;
-import entity.InventoryReports;
+import model.InventoryReports;
 import jakarta.servlet.RequestDispatcher;
 import java.util.Vector;
 

@@ -4,7 +4,7 @@
  */
 package dao;
 import utils.DBContext;
-import entity.Reports;
+import model.Reports;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

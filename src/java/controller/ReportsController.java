@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.DAOReports;
-import entity.Reports;
+import model.Reports;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpSession;
 import java.util.Vector;
