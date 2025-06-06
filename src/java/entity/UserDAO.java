@@ -193,5 +193,35 @@ public class UserDAO {
         }
         return false;
     }
+    public String checkDuplicate(String email, String username) {
+        String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?)";
+        String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            // Check email
+            try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
+                ps.setString(1, email.toLowerCase());
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return "email_exists";
+                }
+            }
+
+            // Check username
+            try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
+                ps.setString(1, username.toLowerCase());
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return "username_exists";
+                }
+            }
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicate", e);
+        }
+
+        return "none";
+    }
 
 }

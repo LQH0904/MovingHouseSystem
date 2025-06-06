@@ -64,14 +64,14 @@ public class LoginServlet extends HttpServlet {
             switch (user.getRoleId()) {
                 case 1: // Admin
                     if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "/page/admin/ListApplicationRegistration.jsp");
+                        response.sendRedirect(request.getContextPath() + "/admin/registrations");
                     } else {
                         response.sendRedirect("error.jsp");
                     }
                     break;
                 case 2: // Operator
                     if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "/admin/ListApplicationRegistration.jsp");
+                        response.sendRedirect(request.getContextPath() + "/homeOperator");
                     } else {
                         response.sendRedirect("error.jsp");
                     }
