@@ -206,7 +206,6 @@
                 messageModal.show();
             }
             if (updateStatus) {
-                // Clear the updateStatus parameter from the URL after showing the message
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?issueId=' + issueIdFromUrl;
                 window.history.replaceState({}, document.title, newUrl);
             }
@@ -217,28 +216,24 @@
             const replyContent = document.getElementById('replyContent').value.trim();
             const status = document.getElementById('status').value;
 
-            // Apply Bootstrap's validation styles
             form.classList.add('was-validated');
 
             if (!status) {
-                event.preventDefault(); // Stop form submission
+                event.preventDefault();
                 showCustomMessageModal('Lỗi nhập liệu!', 'Vui lòng chọn một trạng thái cho khiếu nại.', 'warning');
                 return;
             }
 
             if (replyContent === '') {
-                event.preventDefault(); // Stop form submission
+                event.preventDefault();
                 showCustomMessageModal('Bạn phải nhập nội dung phản hồi', 'Vui lòng nhập nội dung phản hồi.', 'danger');
-                return; 
+                return;
             }
 
-            // If both status and replyContent are valid, proceed with the original success logic
-            // This is the part that reverts to your original request for the success modal
-            event.preventDefault(); // Prevent default form submission to handle it via JS
+            event.preventDefault();
             var successModal = new bootstrap.Modal(document.getElementById('successModal'));
             successModal.show();
 
-            // Update status badge on success modal show (client-side visual update)
             const newStatus = statusSelect.value;
             if (currentStatusBadge) {
                 currentStatusBadge.textContent = newStatus;
@@ -250,17 +245,9 @@
                 else currentStatusBadge.classList.add("bg-light", "text-dark");
             }
 
-            // Clear form fields and remove validation classes after showing success message
             replyContentTextarea.value = '';
             form.classList.remove('was-validated');
-            statusSelect.value = ''; // Clear status selection too
-            
-            // Optionally, submit the form after a short delay or user interaction with the success modal
-            // For now, it will just show the success modal and clear the form.
-            // If you intend for the data to be sent to the server after this client-side success,
-            // you would need to use AJAX or manually trigger form.submit() *after* the modal is closed,
-            // or modify the server-side logic to always redirect with updateStatus parameters.
-            // For this specific request, we're mimicking the original client-side success behavior.
+            statusSelect.value = '';
         }
 
         function showCustomMessageModal(title, message, type) {
