@@ -53,7 +53,7 @@
                     </table>
                 </form>
                 <p>
-                    <button onclick="window.location.href = 'http://localhost:8082/HouseMovingSystem_HE182014/invRURL'">quay lại</button>
+                    <button onclick="window.location.href = 'http://localhost:9999/HouseMovingSystem_HE182014/invRURL'">quay lại</button>
                     <button>xác nhận</button>
                     <button>gửi thông báo</button>
                 </p>
