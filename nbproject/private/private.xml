@@ -3,10 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/admin/Desktop/HouseMovingSystem/web/Test.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/HouseMovingSystem/web/Common/Header.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/HouseMovingSystem/web/css/StyleOperator.css</file>
-            <file>file:/C:/Users/admin/Desktop/HouseMovingSystem/web/Common/Navbar.jsp</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/web/page/admin/ListApplicationRegistration.jsp</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/web/page/admin/ApplicationRegistrationDetail.jsp</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/ComplaintServlet.java</file>
         </group>
     </open-files>
 </project-private>

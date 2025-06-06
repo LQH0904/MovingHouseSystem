@@ -170,19 +170,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
             Array.prototype.slice.call(forms)
                 .forEach(function (form) {
                     form.addEventListener('submit', function (event) {
                         if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
+                            event.preventDefault();
+                            event.stopPropagation();
                         }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
 
         const urlParams = new URLSearchParams(window.location.search);
         const updateStatus = urlParams.get('updateStatus');
