@@ -16,7 +16,7 @@
             />
         <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
+        <link rel="stylesheet" href="../css/SideBar.css">
     </head>
     <body>
         
@@ -84,6 +84,6 @@
             </div>
         </div>
 
-        <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
+        <script src="../js/SideBar.js"></script>
     </body>
 </html>
