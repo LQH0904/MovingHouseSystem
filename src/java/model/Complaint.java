@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Timestamp;
+import java.sql.Timestamp; 
 
 public class Complaint {
     private int issueId;
@@ -8,13 +8,11 @@ public class Complaint {
     private String description;
     private String status;
     private String priority;
-    private Timestamp createdAt;
-
-    // Constructor mặc định (THÊM HOẶC ĐẢM BẢO CÓ DÒNG NÀY!)
+    private Timestamp createdAt; 
+    
     public Complaint() {
     }
 
-    // Constructor đầy đủ tham số của bạn
     public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt) {
         this.issueId = issueId;
         this.username = username;
@@ -24,7 +22,6 @@ public class Complaint {
         this.createdAt = createdAt;
     }
 
-    // --- Getters và Setters ---
     public int getIssueId() {
         return issueId;
     }
@@ -65,11 +62,11 @@ public class Complaint {
         this.priority = priority;
     }
 
-    public Timestamp getCreatedAt() {
+    public Timestamp getCreatedAt() { 
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Timestamp createdAt) { 
         this.createdAt = createdAt;
     }
 

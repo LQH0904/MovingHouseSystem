@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
 
-    <!-- ✅ Thêm CSS tùy chỉnh vào đây -->
+    <!-- Custom CSS -->
     <style>
         .table {
             border-radius: 10px;
@@ -67,8 +67,11 @@
         <h3 class="mb-4 text-primary">Danh sách khiếu nại</h3>
 
         <%
+            // Initialize DAO and get all complaints
             ComplaintDAO dao = new ComplaintDAO();
             List<Complaint> list = dao.getAllComplaints();
+            // SimpleDateFormat for formatting dates (if needed, though toString() handles it)
+            // SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         %>
 
         <div class="table-responsive">
@@ -81,27 +84,42 @@
                     <th>Trạng thái</th>
                     <th>Ưu tiên</th>
                     <th>Ngày tạo</th>
+                    <th>Hành động</th> <%-- NEW COLUMN FOR ACTIONS --%>
                 </tr>
                 </thead>
                 <tbody>
                 <%
-                    for (Complaint c : list) {
+                    if (list != null && !list.isEmpty()) {
+                        for (Complaint c : list) {
                 %>
                 <tr>
                     <td><a href="complaintDetail.jsp?issueId=<%= c.getIssueId() %>" class="text-decoration-none"><%= c.getIssueId() %></a></td>
                     <td><%= c.getUsername() %></td>
                     <td><%= c.getDescription() %></td>
                     <td>
-                        <span class="badge 
+                        <span class="badge
                             <%= c.getStatus().equals("resolved") ? "bg-success" :
-                                 c.getStatus().equals("in_progress") ? "bg-warning text-dark" :
-                                 c.getStatus().equals("escalated") ? "bg-danger" :
-                                 "bg-secondary" %>">
+                                c.getStatus().equals("in_progress") ? "bg-warning text-dark" :
+                                c.getStatus().equals("escalated") ? "bg-danger" :
+                                "bg-secondary" %>">
                             <%= c.getStatus() %>
                         </span>
                     </td>
                     <td><%= c.getPriority() %></td>
-                    <td><%= c.getCreatedAt() %></td>
+                    <td><%= c.getCreatedAt() != null ? c.getCreatedAt() : "N/A" %></td>
+                    <td>
+                        <%-- DETAIL BUTTON --%>
+                        <a href="replyComplaint.jsp?issueId=<%= c.getIssueId() %>" class="btn btn-sm btn-info text-white">
+                            <i class="bi bi-info-circle"></i> Chi tiết
+                        </a>
+                    </td>
+                </tr>
+                <%
+                        }
+                    } else {
+                %>
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Không có khiếu nại nào để hiển thị.</td>
                 </tr>
                 <%
                     }
