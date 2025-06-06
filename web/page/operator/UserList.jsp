@@ -26,9 +26,9 @@
                             <option value="1" <%= "1".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị quản trị viên</option>
                             <option value="2" <%= "2".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị người điều hành</option>
                             <option value="3" <%= "3".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị Nhân viên</option>
-                            <option value="4" <%= "4".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị khách hàng</option>
-                            <option value="5" <%= "5".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị đơn vị vận chuyển</option>
-                            <option value="6" <%= "6".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị kho bãi</option>
+                            <option value="6" <%= "4".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị khách hàng</option>
+                            <option value="4" <%= "5".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị đơn vị vận chuyển</option>
+                            <option value="5" <%= "6".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị kho bãi</option>
                         </select>
                     </form>
 
