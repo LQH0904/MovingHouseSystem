@@ -35,10 +35,11 @@
                         <a class="nav-link" href="javascript:void(0);"><i class="fas fa-cog"></i>Cài Đặt</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);"><i class="fas fa-sign-out-alt"></i>Đăng Xuất</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/logout">
+                            <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                        </a>
                     </li>
-                </ul>
-            </div>
+
         </nav>
 
         <!--         jQuery + Bootstrap JS 
