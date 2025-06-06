@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
 
-    <!-- Custom CSS -->
     <style>
         .table {
             border-radius: 10px;
@@ -98,14 +97,42 @@
                     <td><%= c.getDescription() %></td>
                     <td>
                         <span class="badge
-                            <%= c.getStatus().equals("resolved") ? "bg-success" :
-                                c.getStatus().equals("in_progress") ? "bg-warning text-dark" :
-                                c.getStatus().equals("escalated") ? "bg-danger" :
-                                "bg-secondary" %>">
-                            <%= c.getStatus() %>
+                            <%
+                                String status = c.getStatus();
+                                if ("resolved".equals(status)) out.print("bg-success");
+                                else if ("in_progress".equals(status)) out.print("bg-warning text-dark");
+                                else if ("escalated".equals(status)) out.print("bg-danger");
+                                else if ("open".equals(status)) out.print("bg-secondary"); // Added for "open"
+                                else out.print("bg-secondary"); // Fallback for any other status
+                            %>">
+                            <%
+                                // Translate status to Vietnamese
+                                if ("resolved".equals(status)) out.print("Đã xử lý");
+                                else if ("in_progress".equals(status)) out.print("Đang xử lý");
+                                else if ("escalated".equals(status)) out.print("Chuyển cấp cao");
+                                else if ("open".equals(status)) out.print("Mở");
+                                else out.print(status); // Fallback to original if no translation
+                            %>
                         </span>
                     </td>
-                    <td><%= c.getPriority() %></td>
+                    <td>
+                        <span class="badge
+                            <%
+                                String priority = c.getPriority();
+                                if ("high".equals(priority)) out.print("bg-warning text-dark");
+                                else if ("normal".equals(priority)) out.print("bg-secondary");
+                                else if ("low".equals(priority)) out.print("bg-info text-dark"); // Assuming 'low' might be another priority
+                                else out.print("bg-light text-dark"); // Fallback
+                            %>">
+                            <%
+                                // Translate priority to Vietnamese
+                                if ("high".equals(priority)) out.print("Cao");
+                                else if ("normal".equals(priority)) out.print("Bình thường");
+                                else if ("low".equals(priority)) out.print("Thấp"); // Assuming 'low' might be another priority
+                                else out.print(priority); // Fallback to original if no translation
+                            %>
+                        </span>
+                    </td>
                     <td><%= c.getCreatedAt() != null ? c.getCreatedAt() : "N/A" %></td>
                     <td>
                         <%-- DETAIL BUTTON --%>
@@ -130,7 +157,6 @@
     </div>
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
