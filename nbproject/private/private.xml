@@ -3,32 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/ConfirmPassServlet.java</file>
+            <file>file:/C:/MovingHouseSystem/src/java/entity/UserDAO.java</file>
             <file>file:/C:/MovingHouseSystem/web/page/login/forgot.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/css/ListApplication.css</file>
-            <file>file:/C:/MovingHouseSystem/web/css/login/bootstrap.min.css</file>
+            <file>file:/C:/MovingHouseSystem/web/page/login/loginSuccess.jsp</file>
+            <file>file:/C:/MovingHouseSystem/web/page/login/login.jsp</file>
             <file>file:/C:/MovingHouseSystem/web/page/admin/ListApplicationRegistration.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/css/StyleStaff.css</file>
+            <file>file:/C:/MovingHouseSystem/web/page/login/home.jsp</file>
+            <file>file:/C:/MovingHouseSystem/web/WEB-INF/web.xml</file>
+            <file>file:/C:/MovingHouseSystem/web/Layout/operator/SideBar.jsp</file>
+            <file>file:/C:/MovingHouseSystem/web/page/login/pass.jsp</file>
+            <file>file:/C:/MovingHouseSystem/web/page/login/head.jsp</file>
             <file>file:/C:/MovingHouseSystem/web/page/admin/ApplicationRegistrationDetail.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/js/Header.js</file>
-            <file>file:/C:/MovingHouseSystem/web/css/Stylecommon.css</file>
-            <file>file:/C:/MovingHouseSystem/web/css/StyleAdmin.css</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/ConfirmResetCodeServlet.java</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/ForgotPassServlet.java</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/LoginGoogleServlet.java</file>
-            <file>file:/C:/MovingHouseSystem/web/css/StyleOperator.css</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/ApplicationDetailController.java</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/LogoutServlet.java</file>
-            <file>file:/C:/MovingHouseSystem/web/css/Header.css</file>
-            <file>file:/C:/MovingHouseSystem/src/java/configs/Captcha.java</file>
-            <file>file:/C:/MovingHouseSystem/web/css/SideBar.css</file>
-            <file>file:/C:/MovingHouseSystem/web/css/login/changepass.css</file>
-            <file>file:/C:/MovingHouseSystem/web/js/SideBar.js</file>
+            <file>file:/C:/MovingHouseSystem/web/page/login/newpassword.jsp</file>
+            <file>file:/C:/MovingHouseSystem/web/index.html</file>
             <file>file:/C:/MovingHouseSystem/src/java/controller/LoginServlet.java</file>
-            <file>file:/C:/MovingHouseSystem/web/css/Style.css</file>
-            <file>file:/C:/MovingHouseSystem/web/css/HomePage.css</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/RegistrationListController.java</file>
-            <file>file:/C:/MovingHouseSystem/web/img/bgr.jpg</file>
+            <file>file:/C:/MovingHouseSystem/web/Layout/operator/Header.jsp</file>
         </group>
     </open-files>
 </project-private>
