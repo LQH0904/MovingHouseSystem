@@ -16,12 +16,10 @@ public class RegistrationListController extends HttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
-            // Lay du lieu tu DAO
             RegistrationDAO dao = new RegistrationDAO();
             List<RegistrationItem> registrations = dao.getAllRegistrations();            
             System.out.println("Found " + registrations.size() + " registrations");
             
-            // Dem so luong 
             int totalCount = registrations.size();
             int pendingCount = 0;
             int approvedCount = 0;
@@ -46,14 +44,12 @@ public class RegistrationListController extends HttpServlet {
                     }
                 }
             }            
-            // Dat vao request
             request.setAttribute("registrations", registrations);
             request.setAttribute("totalCount", totalCount);
             request.setAttribute("pendingCount", pendingCount);
             request.setAttribute("approvedCount", approvedCount);
             request.setAttribute("rejectedCount", rejectedCount);
             
-            // Forward den JSP
             request.getRequestDispatcher("/page/admin/ListApplicationRegistration.jsp").forward(request, response);
             
         } catch (Exception e) {

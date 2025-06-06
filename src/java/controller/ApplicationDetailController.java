@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import dao.RegistrationDAO;
@@ -13,10 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.RegistrationItem;
 
-/**
- *
- * @author Admin
- */
 public class ApplicationDetailController extends HttpServlet {
 
     private RegistrationDAO dao;
@@ -27,7 +19,7 @@ public class ApplicationDetailController extends HttpServlet {
         dao = new RegistrationDAO();
     }
 
-   
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -48,10 +40,8 @@ public class ApplicationDetailController extends HttpServlet {
                 return;
             }
 
-            // Đặt đối tượng vào request để JSP sử dụng
             request.setAttribute("registration", item);
 
-            // Forward đến trang detail (ví dụ: registrationDetail.jsp)
             request.getRequestDispatcher("/page/admin/ApplicationRegistrationDetail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {

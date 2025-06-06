@@ -66,11 +66,8 @@
         <h3 class="mb-4 text-primary">Danh sách khiếu nại</h3>
 
         <%
-            // Initialize DAO and get all complaints
             ComplaintDAO dao = new ComplaintDAO();
             List<Complaint> list = dao.getAllComplaints();
-            // SimpleDateFormat for formatting dates (if needed, though toString() handles it)
-            // SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         %>
 
         <div class="table-responsive">
@@ -83,7 +80,7 @@
                     <th>Trạng thái</th>
                     <th>Ưu tiên</th>
                     <th>Ngày tạo</th>
-                    <th>Hành động</th> <%-- NEW COLUMN FOR ACTIONS --%>
+                    <th>Hành động</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -102,16 +99,15 @@
                                 if ("resolved".equals(status)) out.print("bg-success");
                                 else if ("in_progress".equals(status)) out.print("bg-warning text-dark");
                                 else if ("escalated".equals(status)) out.print("bg-danger");
-                                else if ("open".equals(status)) out.print("bg-secondary"); // Added for "open"
-                                else out.print("bg-secondary"); // Fallback for any other status
+                                else if ("open".equals(status)) out.print("bg-secondary");
+                                else out.print("bg-secondary");
                             %>">
                             <%
-                                // Translate status to Vietnamese
                                 if ("resolved".equals(status)) out.print("Đã xử lý");
                                 else if ("in_progress".equals(status)) out.print("Đang xử lý");
                                 else if ("escalated".equals(status)) out.print("Chuyển cấp cao");
                                 else if ("open".equals(status)) out.print("Mở");
-                                else out.print(status); // Fallback to original if no translation
+                                else out.print(status);
                             %>
                         </span>
                     </td>
@@ -121,21 +117,19 @@
                                 String priority = c.getPriority();
                                 if ("high".equals(priority)) out.print("bg-warning text-dark");
                                 else if ("normal".equals(priority)) out.print("bg-secondary");
-                                else if ("low".equals(priority)) out.print("bg-info text-dark"); // Assuming 'low' might be another priority
-                                else out.print("bg-light text-dark"); // Fallback
+                                else if ("low".equals(priority)) out.print("bg-info text-dark");
+                                else out.print("bg-light text-dark");
                             %>">
                             <%
-                                // Translate priority to Vietnamese
                                 if ("high".equals(priority)) out.print("Cao");
                                 else if ("normal".equals(priority)) out.print("Bình thường");
-                                else if ("low".equals(priority)) out.print("Thấp"); // Assuming 'low' might be another priority
-                                else out.print(priority); // Fallback to original if no translation
+                                else if ("low".equals(priority)) out.print("Thấp");
+                                else out.print(priority);
                             %>
                         </span>
                     </td>
                     <td><%= c.getCreatedAt() != null ? c.getCreatedAt() : "N/A" %></td>
                     <td>
-                        <%-- DETAIL BUTTON --%>
                         <a href="replyComplaint.jsp?issueId=<%= c.getIssueId() %>" class="btn btn-sm btn-info text-white">
                             <i class="bi bi-info-circle"></i> Chi tiết
                         </a>

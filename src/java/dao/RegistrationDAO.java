@@ -20,7 +20,6 @@ public class RegistrationDAO {
         this.dbConnection = new DBConnection();
     }
 
-    // Lay tat ca don dang ki voi 4 truong 
     public List<RegistrationItem> getAllRegistrations() {
         List<RegistrationItem> registrations = new ArrayList<>();
 

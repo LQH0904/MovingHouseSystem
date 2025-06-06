@@ -42,40 +42,30 @@ public class ReplyComplaintServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Retrieve parameters from the form submission
         String issueIdParam = request.getParameter("issueId");
         String status = request.getParameter("status");
 
-        int issueId = -1; // Default invalid issue ID
-
+        int issueId = -1; 
         try {
-            // Attempt to parse the issueId from string to integer
             if (issueIdParam != null && !issueIdParam.isEmpty()) {
                 issueId = Integer.parseInt(issueIdParam);
             }
         } catch (NumberFormatException e) {
-            // Log the error for debugging purposes
             System.err.println("Invalid issue ID format received: " + issueIdParam);
             e.printStackTrace();
-            // Send a bad request error to the client
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Complaint ID format.");
-            return; // Stop further processing
+            return; 
         }
 
-        // Validate that issueId is valid and status is not null/empty
         if (issueId != -1 && status != null && !status.isEmpty()) {
-            // Call the DAO to update the complaint status
             boolean success = complaintDAO.updateComplaintStatus(issueId, status);
 
             if (success) {
-                // If update is successful, redirect back to the detail page with a success flag
                 response.sendRedirect("complaintDetail.jsp?issueId=" + issueId + "&updateStatus=success");
             } else {
-                // If update fails, redirect back with an error flag
                 response.sendRedirect("complaintDetail.jsp?issueId=" + issueId + "&updateStatus=error");
             }
         } else {
-            // Handle cases where essential parameters are missing
             System.err.println("Missing required parameters for complaint update. Issue ID: " + issueIdParam + ", Status: " + status);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters (issueId or status).");
         }
@@ -95,12 +85,10 @@ public class ReplyComplaintServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // It's generally not good practice to handle data updates via GET.
-        // For this servlet, GET requests will be considered as an invalid operation.
+        
         System.err.println("GET request to ReplyComplaintServlet is not allowed for data modification.");
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "GET method is not supported for this operation. Please use POST.");
-        // Optionally, you could redirect to the complaint list or detail page without attempting an update.
-        // response.sendRedirect("complaintDetail.jsp?issueId=" + request.getParameter("issueId"));
+        
     }
 
     /**

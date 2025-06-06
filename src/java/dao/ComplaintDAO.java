@@ -45,7 +45,6 @@ public class ComplaintDAO {
 
     public Complaint getComplaintById(int issueId) {
         Complaint complaint = null;
-        // Truy vấn SQL để lấy chi tiết của một khiếu nại cụ thể
         String sql = "SELECT i.issue_id, u.username, i.description, i.status, i.priority, i.created_at " +
                      "FROM Issues i " +
                      "JOIN Users u ON i.user_id = u.user_id " +

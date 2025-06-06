@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class RegistrationItem {
     private int id;
-    private String type; // "transport" / "storage"
+    private String type; 
     private String name; 
     private String contactInfo; 
     private String registrationStatus;
