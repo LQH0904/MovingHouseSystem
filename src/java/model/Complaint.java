@@ -10,6 +10,11 @@ public class Complaint {
     private String priority;
     private Timestamp createdAt;
 
+    // Constructor mặc định (THÊM HOẶC ĐẢM BẢO CÓ DÒNG NÀY!)
+    public Complaint() {
+    }
+
+    // Constructor đầy đủ tham số của bạn
     public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt) {
         this.issueId = issueId;
         this.username = username;
@@ -19,6 +24,7 @@ public class Complaint {
         this.createdAt = createdAt;
     }
 
+    // --- Getters và Setters ---
     public int getIssueId() {
         return issueId;
     }
@@ -65,5 +71,17 @@ public class Complaint {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Complaint{" +
+               "issueId=" + issueId +
+               ", username='" + username + '\'' +
+               ", description='" + description + '\'' +
+               ", status='" + status + '\'' +
+               ", priority='" + priority + '\'' +
+               ", createdAt=" + createdAt +
+               '}';
     }
 }
