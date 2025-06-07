@@ -96,25 +96,43 @@ public class RegisterApplicationDAO {
 
     
      public static void main(String[] args) {
-        RegisterApplicationDAO dao = new RegisterApplicationDAO();
+         
+         RegisterApplicationDAO dao = new RegisterApplicationDAO();
 
-        int applicationId = 2; // Bạn có thể thay đổi ID này để test
+        List<RegisterApplication> applications = dao.getAllApplications();
 
-        RegisterApplicationDetail dto = dao.getApplicationDetailById(applicationId);
-
-        if (dto != null) {
-            System.out.println("==== Chi tiết đơn đăng ký ====");
-            System.out.println("Application ID: " + dto.getApplicationId());
-            System.out.println("Username      : " + dto.getUsername());
-            System.out.println("Email         : " + dto.getEmail());
-            System.out.println("Role          : " + dto.getRoleName());
-            System.out.println("Status Name   : " + dto.getStatusName());
-            System.out.println("Created At    : " + dto.getCreatedAt());
-            System.out.println("User Status   : " + dto.getUserStatus());
-            System.out.println("Note          : " + dto.getNote());
+        if (applications.isEmpty()) {
+            System.out.println("Không có đơn đăng ký nào.");
         } else {
-            System.out.println("Không tìm thấy application với ID = " + applicationId);
+            for (RegisterApplication app : applications) {
+                System.out.println("ID: " + app.getApplication_id());
+                System.out.println("Username: " + app.getUsername());
+                System.out.println("Role ID: " + app.getRole_id());
+                System.out.println("Status ID: " + app.getStatus_id());
+                System.out.println("Note: " + app.getNote());
+                System.out.println("---------------------------");
+            }
         }
+    
+//        RegisterApplicationDAO dao = new RegisterApplicationDAO();
+//
+//        int applicationId = 2; // Bạn có thể thay đổi ID này để test
+//
+//        RegisterApplicationDetail dto = dao.getApplicationDetailById(applicationId);
+//
+//        if (dto != null) {
+//            System.out.println("==== Chi tiết đơn đăng ký ====");
+//            System.out.println("Application ID: " + dto.getApplicationId());
+//            System.out.println("Username      : " + dto.getUsername());
+//            System.out.println("Email         : " + dto.getEmail());
+//            System.out.println("Role          : " + dto.getRoleName());
+//            System.out.println("Status Name   : " + dto.getStatusName());
+//            System.out.println("Created At    : " + dto.getCreatedAt());
+//            System.out.println("User Status   : " + dto.getUserStatus());
+//            System.out.println("Note          : " + dto.getNote());
+//        } else {
+//            System.out.println("Không tìm thấy application với ID = " + applicationId);
+//        }
     }
     
     
