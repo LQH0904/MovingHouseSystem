@@ -2,14 +2,14 @@
 package model;
 
 
-public class Roles {
+public class Role {
     private int roleId;
     private String roleName;
 
-    public Roles() {
+    public Role() {
     }
 
-    public Roles(int roleId, String roleName) {
+    public Role(int roleId, String roleName) {
         this.roleId = roleId;
         this.roleName = roleName;
     }

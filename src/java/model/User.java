@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author Admin
  */
-public class Users {
+public class User {
     private int user_id;
     private String username;
     private String password_hash;
@@ -20,10 +20,10 @@ public class Users {
     private Date updated_at;
     private String status; 
 
-    public Users() {
+    public User() {
     }
 
-    public Users(int user_id, String username, String password_hash, String email, int role_id, Date created_at, Date updated_at, String status) {
+    public User(int user_id, String username, String password_hash, String email, int role_id, Date created_at, Date updated_at, String status) {
         this.user_id = user_id;
         this.username = username;
         this.password_hash = password_hash;
