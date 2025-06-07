@@ -112,7 +112,7 @@
         </div>
 
         <h4 class="mb-3 text-primary border-bottom pb-2">Trả lời Khiếu nại</h4>
-        <form action="${pageContext.request.contextPath}/ReplyComplaintServlet" method="post" class="needs-validation" novalidate>
+        <form action="${pageContext.request.contextPath}/replyComplaint" method="post" class="needs-validation" novalidate>
             <input type="hidden" name="issueId" value="<%= issueId %>">
 
             <div class="mb-3">
@@ -154,7 +154,7 @@
                 </div>
             </div>
 
-            <a href="${pageContext.request.contextPath}/page/operator/complaintList.jsp" class="btn btn-secondary">
+            <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="btn btn-secondary">
                 <i class="bi bi-arrow-left-circle me-1"></i> Quay lại danh sách
             </a>
         </form>

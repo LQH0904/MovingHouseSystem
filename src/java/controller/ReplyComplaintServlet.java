@@ -1,47 +1,61 @@
-package controller; // Changed package to controller as per your file
+package controller;
 
 import dao.ComplaintDAO;
+import model.Complaint;
 import java.io.IOException;
-// import java.io.PrintWriter; // Not needed if redirecting
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Servlet responsible for handling updates to complaint statuses.
- * It receives POST requests, updates the complaint via ComplaintDAO,
- * and redirects back to the complaint detail page.
- */
-@WebServlet(name = "ReplyComplaintServlet", urlPatterns = {"/replyComplaint"}) // Changed URL pattern for consistency and readability
+@WebServlet(name = "ReplyComplaintServlet", urlPatterns = {"/replyComplaint"})
 public class ReplyComplaintServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L; // Recommended for servlets
-    private ComplaintDAO complaintDAO; // Declare an instance of ComplaintDAO
+    private static final long serialVersionUID = 1L;
+    private ComplaintDAO complaintDAO;
 
-    /**
-     * Initializes the servlet, creating an instance of ComplaintDAO.
-     * This method is called once when the servlet is first loaded.
-     */
     @Override
     public void init() throws ServletException {
-        super.init(); // Call super.init()
-        complaintDAO = new ComplaintDAO(); // Initialize the DAO instance
+        super.init();
+        complaintDAO = new ComplaintDAO();
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     * This method processes the form submission for updating complaint status.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Handles GET requests - displays the reply form
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String issueIdParam = request.getParameter("issueId");
+        
+        if (issueIdParam != null && !issueIdParam.isEmpty()) {
+            try {
+                int issueId = Integer.parseInt(issueIdParam);
+                Complaint complaint = complaintDAO.getComplaintById(issueId);
+                
+                if (complaint != null) {
+                    // Forward to the JSP page with the correct path
+                    request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Complaint not found");
+                }
+            } catch (NumberFormatException e) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid complaint ID");
+            }
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing complaint ID");
+        }
+    }
+
+    /**
+     * Handles POST requests - processes the form submission
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String issueIdParam = request.getParameter("issueId");
         String status = request.getParameter("status");
 
@@ -61,9 +75,10 @@ public class ReplyComplaintServlet extends HttpServlet {
             boolean success = complaintDAO.updateComplaintStatus(issueId, status);
 
             if (success) {
-                response.sendRedirect("complaintDetail.jsp?issueId=" + issueId + "&updateStatus=success");
+                // Redirect to the servlet with GET method to show the updated form
+                response.sendRedirect("replyComplaint?issueId=" + issueId + "&updateStatus=success");
             } else {
-                response.sendRedirect("complaintDetail.jsp?issueId=" + issueId + "&updateStatus=error");
+                response.sendRedirect("replyComplaint?issueId=" + issueId + "&updateStatus=error");
             }
         } else {
             System.err.println("Missing required parameters for complaint update. Issue ID: " + issueIdParam + ", Status: " + status);
@@ -71,32 +86,8 @@ public class ReplyComplaintServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     * For this servlet, GET requests are not expected to perform data modification.
-     * If a GET request comes to this URL, it indicates an incorrect access pattern.
-     * You might choose to display an error or redirect to a relevant page.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        System.err.println("GET request to ReplyComplaintServlet is not allowed for data modification.");
-        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "GET method is not supported for this operation. Please use POST.");
-        
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Servlet for updating complaint status";
+        return "Servlet for handling complaint replies and status updates";
     }
 }

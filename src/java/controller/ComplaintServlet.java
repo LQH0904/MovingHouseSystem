@@ -63,7 +63,7 @@ public class ComplaintServlet extends HttpServlet {
         
         request.setAttribute("complaintList", complaintList);
         
-        request.getRequestDispatcher("complaintList.jsp").forward(request, response);
+        request.getRequestDispatcher("/page/operator/complaintList.jsp").forward(request, response);
 
     } 
 

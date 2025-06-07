@@ -130,7 +130,7 @@
                     </td>
                     <td><%= c.getCreatedAt() != null ? c.getCreatedAt() : "N/A" %></td>
                     <td>
-                        <a href="replyComplaint.jsp?issueId=<%= c.getIssueId() %>" class="btn btn-sm btn-info text-white">
+                        <a href="page/operator/replyComplaint.jsp?issueId=<%= c.getIssueId() %>" class="btn btn-sm btn-info text-white">
                             <i class="bi bi-info-circle"></i> Chi tiết
                         </a>
                     </td>

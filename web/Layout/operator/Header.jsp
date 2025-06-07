@@ -11,7 +11,7 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-        <link rel="stylesheet" href="css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
     </head>
     <body>
         <nav class="navbar navbar-expand-custom navbar-mainbg">
@@ -40,6 +40,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Custom JS -->
-        <script src="js/Header.js"></script>
+        <script src="${pageContext.request.contextPath}/js/Header.js"></script>
     </body>
 </html>

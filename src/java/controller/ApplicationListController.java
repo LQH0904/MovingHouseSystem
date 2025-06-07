@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.RegisterApplication;
 
-
+@WebServlet(name = "ApplicationListController", urlPatterns = {"/operator/listApplication"})
 public class ApplicationListController extends HttpServlet {
 
     
