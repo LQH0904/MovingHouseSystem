@@ -8,17 +8,17 @@ package model;
  *
  * @author Admin
  */
-public class RegisterApplicationDTO {
+public class RegisterApplication {
     private int application_id;
     private String username;
     private int role_id;
     private int status_id;
     private String note;
 
-    public RegisterApplicationDTO() {
+    public RegisterApplication() {
     }
 
-    public RegisterApplicationDTO(int application_id, String username, int role_id, int status_id, String note) {
+    public RegisterApplication(int application_id, String username, int role_id, int status_id, String note) {
         this.application_id = application_id;
         this.username = username;
         this.role_id = role_id;

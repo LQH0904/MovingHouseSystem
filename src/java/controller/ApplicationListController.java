@@ -13,7 +13,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.RegisterApplicationDTO;
+import model.RegisterApplication;
 
 
 public class ApplicationListController extends HttpServlet {
@@ -42,7 +42,7 @@ public class ApplicationListController extends HttpServlet {
             throws ServletException, IOException {
         
         RegisterApplicationDAO dao = new RegisterApplicationDAO();
-        List<RegisterApplicationDTO> applications = dao.getAllApplications();
+        List<RegisterApplication> applications = dao.getAllApplications();
         
         // Đếm theo status_id
     int total = applications.size();
@@ -50,7 +50,7 @@ public class ApplicationListController extends HttpServlet {
     int approved = 0;
     int rejected = 0;
 
-    for (RegisterApplicationDTO app : applications) {
+    for (RegisterApplication app : applications) {
         int statusId = app.getStatus_id();
 
         switch (statusId) {

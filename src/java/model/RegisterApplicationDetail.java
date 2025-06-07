@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  *
  * @author Admin
  */
-public class RegisterApplicationDetailDTO {
+public class RegisterApplicationDetail {
      private int applicationId;
     private String username;
     private String email;
@@ -20,10 +20,10 @@ public class RegisterApplicationDetailDTO {
     private String userStatus;
     private String note;
 
-    public RegisterApplicationDetailDTO() {
+    public RegisterApplicationDetail() {
     }
 
-    public RegisterApplicationDetailDTO(int applicationId, String username, String email, String roleName, String statusName, Timestamp createdAt, String userStatus, String note) {
+    public RegisterApplicationDetail(int applicationId, String username, String email, String roleName, String statusName, Timestamp createdAt, String userStatus, String note) {
         this.applicationId = applicationId;
         this.username = username;
         this.email = email;

@@ -5,8 +5,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.RegisterApplicationDTO;
-import model.RegisterApplicationDetailDTO;
+import model.RegisterApplication;
+import model.RegisterApplicationDetail;
 import utils.DBConnection;
 /**
  *
@@ -16,8 +16,8 @@ public class RegisterApplicationDAO {
     
     
     
-    public List<RegisterApplicationDTO> getAllApplications() {
-        List<RegisterApplicationDTO> applications = new ArrayList<>();
+    public List<RegisterApplication> getAllApplications() {
+        List<RegisterApplication> applications = new ArrayList<>();
 
         String query = """
             SELECT ra.application_id, u.username, u.role_id, ra.status_id, ra.note
@@ -30,7 +30,7 @@ public class RegisterApplicationDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                RegisterApplicationDTO app = new RegisterApplicationDTO(
+                RegisterApplication app = new RegisterApplication(
                     rs.getInt("application_id"),
                     rs.getString("username"),
                     rs.getInt("role_id"),
@@ -47,7 +47,7 @@ public class RegisterApplicationDAO {
         return applications;
     }
     
-    public RegisterApplicationDetailDTO getApplicationDetailById(int applicationId) {
+    public RegisterApplicationDetail getApplicationDetailById(int applicationId) {
     String query = """
         SELECT 
             ra.application_id,
@@ -72,7 +72,7 @@ public class RegisterApplicationDAO {
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            RegisterApplicationDetailDTO dto = new RegisterApplicationDetailDTO();
+            RegisterApplicationDetail dto = new RegisterApplicationDetail();
             dto.setApplicationId(rs.getInt("application_id"));
             dto.setUsername(rs.getString("username"));
             dto.setEmail(rs.getString("email"));
@@ -100,7 +100,7 @@ public class RegisterApplicationDAO {
 
         int applicationId = 2; // Bạn có thể thay đổi ID này để test
 
-        RegisterApplicationDetailDTO dto = dao.getApplicationDetailById(applicationId);
+        RegisterApplicationDetail dto = dao.getApplicationDetailById(applicationId);
 
         if (dto != null) {
             System.out.println("==== Chi tiết đơn đăng ký ====");

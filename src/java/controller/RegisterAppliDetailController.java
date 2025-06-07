@@ -11,7 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.RegisterApplicationDetailDTO;
+import model.RegisterApplicationDetail;
 
 /**
  *
@@ -34,7 +34,7 @@ public class RegisterAppliDetailController extends HttpServlet {
 
         try {
             int applicationId = Integer.parseInt(idParam);
-            RegisterApplicationDetailDTO detail = dao.getApplicationDetailById(applicationId);
+            RegisterApplicationDetail detail = dao.getApplicationDetailById(applicationId);
 
             if (detail != null) {
                 request.setAttribute("detail", detail);
