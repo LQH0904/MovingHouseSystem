@@ -72,7 +72,7 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/logout" class="nav-link">
                             <i class="bx bx-log-out icon"></i>
                             <span class="link">Logout</span>
                         </a>
