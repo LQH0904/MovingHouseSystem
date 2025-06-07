@@ -60,8 +60,8 @@
 </head>
 <body class="bg-light">
 <div class="parent">
-    <div class="div1"><jsp:include page="../../Layout/SideBar.jsp"/></div>
-    <div class="div2"><jsp:include page="../../Layout/Header.jsp"/></div>
+    <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"/></div>
+    <div class="div2"><jsp:include page="../../Layout/operator/Header.jsp"/></div>
     <div class="div3 px-4 pt-4">
         <h3 class="mb-4 text-primary">Danh sách khiếu nại</h3>
 

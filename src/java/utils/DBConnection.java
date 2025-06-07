@@ -1,4 +1,7 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package utils;
 
 import java.sql.Connection;
@@ -12,7 +15,7 @@ import java.sql.SQLException;
 public class DBConnection {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=systemhouse1;encrypt=true;trustServerCertificate=true";
     private static final String USERNAME = "sa"; 
-    private static final String PASSWORD = "123"; 
+    private static final String PASSWORD = "123456"; 
     
     static {
         try {

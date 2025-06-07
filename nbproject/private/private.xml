@@ -3,17 +3,28 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/css/Header.css</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/css/SideBar.css</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/Layout/operator/SideBar.jsp</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/css/homeOperator.css</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/src/java/utils/DBContext.java</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/page/operator/reportDetail.jsp</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/page/operator/listInventoryReports.jsp</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/Layout/operator/Header.jsp</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/page/operator/homeOperator.jsp</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/page/operator/inventoryReportDetail.jsp</file>
-            <file>file:/D:/hoc_vscode/MovingHouseSystem-main/HouseMovingSystem_HE182014/web/page/operator/listReports.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/controller/UserListServlet.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/controller/homeOperator.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/reportDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/Layout/operator/Header.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/listReports.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/controller/InventoryReportsController.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/utils/DBConnection.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/AddUser.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/UserList.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/css/Header.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/replyComplaint.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/css/operator/AddUser.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/controller/ReplyComplaintServlet.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/homeOperator.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/listInventoryReports.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/css/SideBar.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/controller/ComplaintServlet.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/Layout/operator/SideBar.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/css/operator/UserList.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/src/java/utils/DBContext.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/inventoryReportDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(1)/MovingHouseSystem-merge_code/web/page/operator/complaintList.jsp</file>
         </group>
     </open-files>
 </project-private>

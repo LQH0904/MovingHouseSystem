@@ -24,13 +24,13 @@
             <div class="sidebar-content">
                 <ul class="lists">
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/page/operator/UserList.jsp" class="nav-link">
                             <i class="bx bx-home-alt icon"></i>
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem_HE182014/invRURL" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
                             <i class="bx bx-bar-chart-alt-2 icon"></i>
                             <span class="link">Báo Cáo Doanh Thu </span>
                         </a>
@@ -42,13 +42,13 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem_HE182014/repURL" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/repURL" class="nav-link">
                             <i class="bx bx-message-rounded icon"></i>
                             <span class="link">Báo Cáo Tồn Kho </span>
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/page/operator/complaintList.jsp" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Khiếu Nại</span>
                         </a>

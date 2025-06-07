@@ -21,7 +21,7 @@
                 <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
             </div>
             <div class="div3">
-                <%@ page import="entity.Reports, java.util.Vector" %>
+                <%@ page import="model.Reports, java.util.Vector" %>
                 <%
                   Vector<Reports> vector =
                       (Vector<Reports>) request.getAttribute("reportDetail");
@@ -53,7 +53,7 @@
                     </table>
                 </form>
                 <p>
-                    <button onclick="window.location.href = 'http://localhost:9999/HouseMovingSystem_HE182014/repURL'">quay lại</button>
+                    <button onclick="window.location.href = 'http://localhost:9999/HouseMovingSystem/repURL'">quay lại</button>
                     <button>xác nhận</button>
                     <button>gửi thông báo</button>
                 </p>
