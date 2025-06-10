@@ -1,6 +1,6 @@
 .parent {
     display: grid;
-    height: 100vh;
+    height: 100vh; /* Đảm bảo parent chiếm toàn bộ chiều cao viewport */
     grid-template-columns: 250px auto;
     grid-template-rows: 70px auto;
     grid-column-gap: 13px;
@@ -10,9 +10,11 @@
 .div1 {
     grid-area: 2 / 1 / 3 / 2; /* Sidebar */
     background: #e3f2fd;
+    /* Không cần position: fixed; ở đây */
 }
 .div2 {
     grid-area: 1 / 1 / 2 / 3; /* Header ngang full width */
+    /* Không cần position: fixed; ở đây */
 }
 .div3 {
     grid-area: 2 / 2 / 3 / 3; /* Content */
@@ -20,6 +22,9 @@
     box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
     border-top-left-radius: 10px;
     background-color: white;
+
+    /* Thêm thuộc tính này để chỉ div3 có thể cuộn */
+    overflow-y: auto; /* hoặc scroll */
 }
 body {
     margin: 0;
