@@ -11,11 +11,11 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-        <link rel="stylesheet" href="css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
     </head>
     <body>
         <nav class="navbar navbar-expand-custom navbar-mainbg">
-            <a class="navbar-brand navbar-logo" href="http://localhost:9999/HouseMovingSystem_HE182014/homeOperator" style="display: flex;"><img id="imgId" src="https://i.pinimg.com/736x/ac/dd/88/acdd8847a3687ed9a02728b63a0d7453.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
+            <a class="navbar-brand navbar-logo" href="http://localhost:9999/HouseMovingSystem/homeOperator" style="display: flex;"><img id="imgId" src="img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
             <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars text-white"></i>
             </button>
@@ -40,6 +40,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Custom JS -->
-        <script src="js/Header.js"></script>
+        <script src="${pageContext.request.contextPath}/js/Header.js"></script>
     </body>
 </html>

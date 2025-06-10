@@ -36,7 +36,7 @@
                 </form>
 
 
-                <%@ page import="entity.Reports, java.util.Vector" %>
+                <%@ page import="model.Reports, java.util.Vector" %>
                 <%
                   Vector<Reports> vector =
                       (Vector<Reports>) request.getAttribute("reportsData");

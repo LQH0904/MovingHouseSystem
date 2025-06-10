@@ -21,7 +21,7 @@
                 <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
             </div>
             <div class="div3">
-                <%@ page import="entity.InventoryReports, java.util.Vector" %>
+                <%@ page import="model.InventoryReports, java.util.Vector" %>
                 <%
                   Vector<InventoryReports> vector =
                       (Vector<InventoryReports>) request.getAttribute("inventoryReportsData");

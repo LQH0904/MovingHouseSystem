@@ -22,7 +22,7 @@
             <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
             </div>
 
-            <div class="div3">
+            <div class="div3">         
                 <!-- Nội dung chính của div3 -->
                 <div class="main-content">
                     <div class="content-section">
