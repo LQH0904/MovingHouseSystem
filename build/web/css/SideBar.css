@@ -55,7 +55,7 @@ nav.open .sidebar {
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
-  padding: 30px 16px;
+  padding: 30px 16px !important;
 }
 .sidebar-content .list {
   list-style: none;
@@ -101,4 +101,3 @@ nav.open ~ .overlay {
   left: 260px;
   pointer-events: auto;
 }
-

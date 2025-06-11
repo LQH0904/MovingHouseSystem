@@ -5,14 +5,14 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
-        <link rel="stylesheet" href="../css/HomePage.css">
+        <link rel="stylesheet" href="../../css/HomePage.css">
 
     </head>
     <body>
         
         <div class="parent">
-            <div class="div1"><jsp:include page="../Layout/SideBar.jsp"></jsp:include> </div>
-            <div class="div2">  <jsp:include page="../Layout/Header.jsp"></jsp:include> </div>
+            <div class="div1"><jsp:include page="../Layout/operator/SideBar.jsp"></jsp:include> </div>
+            <div class="div2">  <jsp:include page="../Layout/operator/Header.jsp"></jsp:include> </div>
             <div class="div3"> </div>
         </div>
     </body>
