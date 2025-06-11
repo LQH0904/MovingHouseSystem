@@ -21,7 +21,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
+                    <li class="hori-selector">
+                        <div class="left"></div>
+                        <div class="right"></div>
+                            
+                    </li>
                     <li class="nav-item active">
                         <a class="nav-link" href="javascript:void(0);"><i class="far fa-address-book"></i>Tài Khoản</a>
                     </li>

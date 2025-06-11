@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,8 +15,8 @@
     </head>
     <body class="bg-light">
         <div class="parent">
-            <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include> </div>
-            <div class="div2">  <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include> </div>
+            <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include> </div>
+            <div class="div2">  <jsp:include page="/Layout/operator/Header.jsp"></jsp:include> </div>
                 <div class="div3"> 
                     <div class="container mt-4">
                         <div class="row">
