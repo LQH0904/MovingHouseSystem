@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Timestamp; 
+import java.sql.Timestamp;
 
 public class Complaint {
     private int issueId;
@@ -8,8 +8,8 @@ public class Complaint {
     private String description;
     private String status;
     private String priority;
-    private Timestamp createdAt; 
-    
+    private Timestamp createdAt;
+
     public Complaint() {
     }
 
@@ -62,23 +62,23 @@ public class Complaint {
         this.priority = priority;
     }
 
-    public Timestamp getCreatedAt() { 
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) { 
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
     @Override
     public String toString() {
         return "Complaint{" +
-               "issueId=" + issueId +
-               ", username='" + username + '\'' +
-               ", description='" + description + '\'' +
-               ", status='" + status + '\'' +
-               ", priority='" + priority + '\'' +
-               ", createdAt=" + createdAt +
-               '}';
+                "issueId=" + issueId +
+                ", username='" + username + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", priority='" + priority + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
