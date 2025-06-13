@@ -18,7 +18,7 @@
 }
 .div3 {
     grid-area: 2 / 2 / 3 / 3; /* Content */
-    border: 2px solid rgb(62, 49, 49);
+    border: 0px solid rgb(62, 49, 49);
     box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
     border-top-left-radius: 10px;
     background-color: white;

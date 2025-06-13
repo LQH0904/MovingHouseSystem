@@ -35,9 +35,7 @@
 
         <c:if test="${currentComplaint != null}">
             <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white fs-5">
-                    Thông tin khiếu nại
-                </div>
+                <div class="card-header bg-primary text-white fs-5">Thông tin khiếu nại</div>
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>ID Khiếu nại:</strong></div>
@@ -68,7 +66,6 @@
                                     <c:when test="${currentComplaint.status eq 'resolved'}">Đã xử lý</c:when>
                                     <c:when test="${currentComplaint.status eq 'escalated'}">Chuyển cấp cao</c:when>
                                     <c:otherwise><c:out value="${currentComplaint.status}"/></c:otherwise>
-                                라는
                                 </c:choose>
                             </span>
                         </div>
@@ -115,7 +112,7 @@
                     <select name="status" id="status" class="form-select" required>
                         <option value="">-- Chọn trạng thái --</option>
                         <option value="open" <c:if test="${currentComplaint.status eq 'open'}">selected</c:if>>Mở</option>
-                        <option value="in_progress" <c:if test="${currentComplaint.status eq 'in_progress'}">selected</c:if>>Đang xử lý</c:option>
+                        <option value="in_progress" <c:if test="${currentComplaint.status eq 'in_progress'}">selected</c:if>>Đang xử lý</option>
                         <option value="resolved" <c:if test="${currentComplaint.status eq 'resolved'}">selected</c:if>>Đã xử lý</option>
                         <option value="escalated" <c:if test="${currentComplaint.status eq 'escalated'}">selected</c:if>>Chuyển cấp cao</option>
                     </select>
@@ -135,11 +132,12 @@
                     <i class="bi bi-arrow-left-circle me-1"></i> Quay lại danh sách
                 </a>
             </form>
-
         </c:if>
+
         <c:if test="${currentComplaint == null}">
             <div class="alert alert-warning text-center" role="alert">
-                Không tìm thấy thông tin khiếu nại. Vui lòng kiểm tra lại ID khiếu nại hoặc quay lại <a href="${pageContext.request.contextPath}/ComplaintServlet">danh sách khiếu nại</a>.
+                Không tìm thấy thông tin khiếu nại. Vui lòng kiểm tra lại ID khiếu nại hoặc quay lại
+                <a href="${pageContext.request.contextPath}/ComplaintServlet">danh sách khiếu nại</a>.
             </div>
         </c:if>
     </div>
@@ -177,6 +175,5 @@
         }
     };
 </script>
-
 </body>
 </html>
