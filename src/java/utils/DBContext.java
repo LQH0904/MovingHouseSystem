@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class DBContext {
 //    conn: quan ly ket noi sql va database, cac cau lenh sql thuc hien thong qua conn.
     public Connection conn=null;
