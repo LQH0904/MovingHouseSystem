@@ -1,83 +1,94 @@
-package controller;
+package controller; // Đảm bảo package này đúng với package của bạn
 
 import dao.ComplaintDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
+import model.Complaint;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
-import model.Complaint;
 
-@WebServlet(name="ComplaintServlet", urlPatterns={"/ComplaintServlet"})
+@WebServlet("/ComplaintServlet") // Đảm bảo mapping này đúng
 public class ComplaintServlet extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ComplaintServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ComplaintServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
+    private ComplaintDAO complaintDAO;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        ComplaintDAO complaintDAO = new ComplaintDAO();
+    public void init() throws ServletException {
+        super.init();
+        complaintDAO = new ComplaintDAO();
+    }
 
-        int page = 1;
-        int recordsPerPage = 20;
-        if (request.getParameter("page") != null) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if (action != null && action.equals("view")) {
+            int issueId = 0;
             try {
-                page = Integer.parseInt(request.getParameter("page"));
+                issueId = Integer.parseInt(request.getParameter("issueId"));
             } catch (NumberFormatException e) {
-                page = 1;
+                response.sendRedirect(request.getContextPath() + "/ComplaintServlet");
+                return;
             }
+
+            Complaint currentComplaint = complaintDAO.getComplaintById(issueId);
+            request.setAttribute("currentComplaint", currentComplaint);
+            // Đảm bảo đường dẫn này đúng với vị trí file ReplyComplaint.jsp của bạn trong WEB-INF/views/
+            request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
+        } else {
+            String searchTerm = request.getParameter("search");
+            String statusFilter = request.getParameter("statusFilter");
+            String priorityFilter = request.getParameter("priorityFilter");
+
+            int currentPage = 1;
+            if (request.getParameter("page") != null) {
+                try {
+                    currentPage = Integer.parseInt(request.getParameter("page"));
+                } catch (NumberFormatException e) {
+                    currentPage = 1;
+                }
+            }
+            int recordsPerPage = 10;
+            int offset = (currentPage - 1) * recordsPerPage;
+
+            int totalComplaints = complaintDAO.getTotalComplaintCount(searchTerm, statusFilter, priorityFilter);
+            int totalPages = (int) Math.ceil((double) totalComplaints / recordsPerPage);
+
+            List<Complaint> complaints = complaintDAO.getAllComplaints(searchTerm, statusFilter, priorityFilter, offset, recordsPerPage);
+
+            request.setAttribute("complaints", complaints);
+            request.setAttribute("totalComplaints", totalComplaints);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("searchTerm", searchTerm);
+            request.setAttribute("statusFilter", statusFilter);
+            request.setAttribute("priorityFilter", priorityFilter);
+
+            // Đảm bảo đường dẫn này đúng với vị trí file ComplaintList.jsp của bạn trong WEB-INF/views/
+            request.getRequestDispatcher("/page/operator/complaintList.jsp").forward(request, response);
         }
-
-        String searchTerm = request.getParameter("searchTerm");
-        String statusFilter = request.getParameter("statusFilter");
-        String priorityFilter = request.getParameter("priorityFilter");
-
-        int offset = (page - 1) * recordsPerPage;
-
-        int totalComplaints = complaintDAO.getTotalComplaintCount(searchTerm, statusFilter, priorityFilter);
-        int totalPages = (int) Math.ceil(totalComplaints * 1.0 / recordsPerPage);
-
-        List<Complaint> complaintList = complaintDAO.getAllComplaints(searchTerm, statusFilter, priorityFilter, offset, recordsPerPage);
-
-        request.setAttribute("complaintList", complaintList);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("totalComplaints", totalComplaints);
-        request.setAttribute("recordsPerPage", recordsPerPage);
-
-        request.setAttribute("searchTerm", searchTerm);
-        request.setAttribute("statusFilter", statusFilter);
-        request.setAttribute("priorityFilter", priorityFilter);
-
-        // This path must be correct relative to your web app's root.
-        request.getRequestDispatcher("/page/operator/complaintList.jsp").forward(request, response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        doGet(request, response);
-    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int issueId = 0;
+        try {
+            issueId = Integer.parseInt(request.getParameter("issueId"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=Invalid_Issue_ID");
+            return;
+        }
+        String newStatus = request.getParameter("status");
+        String replyContent = request.getParameter("replyContent");
 
-    @Override
-    public String getServletInfo() {
-        return "Complaint Management Servlet";
+        boolean success = complaintDAO.updateComplaintStatus(issueId, newStatus);
+
+        if (success) {
+            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=success");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?action=view&issueId=" + issueId + "&updateStatus=error");
+        }
     }
 }

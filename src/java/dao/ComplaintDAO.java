@@ -9,6 +9,7 @@ import java.util.List;
 public class ComplaintDAO {
 
     private Connection getConnection() throws SQLException {
+        // Đảm bảo DBConnection.getConnection() hoạt động và trả về kết nối hợp lệ
         return DBConnection.getConnection();
     }
 
@@ -52,9 +53,6 @@ public class ComplaintDAO {
             stmt.setInt(i++, offset);
             stmt.setInt(i++, limit);
 
-            System.out.println("Debug: Executing SQL query: " + sql.toString());
-            System.out.println("Debug: Parameters: " + params + ", Offset: " + offset + ", Limit: " + limit);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Complaint complaint = new Complaint();
@@ -66,7 +64,6 @@ public class ComplaintDAO {
                     complaint.setCreatedAt(rs.getTimestamp("created_at"));
                     complaints.add(complaint);
                 }
-                System.out.println("Debug: Total complaints retrieved by DAO: " + complaints.size());
             }
         } catch (SQLException e) {
             System.err.println("Database error in getAllComplaints: " + e.getMessage());
@@ -156,7 +153,7 @@ public class ComplaintDAO {
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            System.err.println("Database error in updateComplaintStatus: " + e.getMessage());
+            System.err.println("Database error in updateComplaintStatus for issueId " + issueId + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }

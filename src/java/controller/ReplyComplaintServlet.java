@@ -21,9 +21,6 @@ public class ReplyComplaintServlet extends HttpServlet {
         complaintDAO = new ComplaintDAO();
     }
 
-    /**
-     * Handles GET requests - displays the reply form
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -36,53 +33,55 @@ public class ReplyComplaintServlet extends HttpServlet {
                 Complaint complaint = complaintDAO.getComplaintById(issueId);
                 
                 if (complaint != null) {
-                    // Forward to the JSP page with the correct path
+                    request.setAttribute("currentComplaint", complaint);
                     request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
                 } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Complaint not found");
+                    request.setAttribute("errorMessage", "Complaint not found with ID: " + issueIdParam);
+                    request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
                 }
             } catch (NumberFormatException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid complaint ID");
+                System.err.println("Invalid complaint ID format in ReplyComplaintServlet doGet: " + issueIdParam);
+                request.setAttribute("errorMessage", "Invalid complaint ID format.");
+                request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing complaint ID");
+            request.setAttribute("errorMessage", "Missing complaint ID.");
+            request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
         }
     }
 
-    /**
-     * Handles POST requests - processes the form submission
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         String issueIdParam = request.getParameter("issueId");
         String status = request.getParameter("status");
+        String replyContent = request.getParameter("replyContent");
 
-        int issueId = -1; 
+        int issueId = -1;    
         try {
             if (issueIdParam != null && !issueIdParam.isEmpty()) {
                 issueId = Integer.parseInt(issueIdParam);
             }
         } catch (NumberFormatException e) {
-            System.err.println("Invalid issue ID format received: " + issueIdParam);
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Complaint ID format.");
-            return; 
+            System.err.println("Invalid issue ID format received in ReplyComplaintServlet doPost: " + issueIdParam);
+            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&issueId=" + issueIdParam);
+            return;    
         }
 
         if (issueId != -1 && status != null && !status.isEmpty()) {
-            boolean success = complaintDAO.updateComplaintStatus(issueId, status);
+            // Assume complaintDAO.updateComplaintStatus handles the replyContent if needed
+            // If you need to store replyContent, you'll need to modify this method in DAO
+            boolean success = complaintDAO.updateComplaintStatus(issueId, status); 
 
             if (success) {
-                // Redirect to the servlet with GET method to show the updated form
-                response.sendRedirect("replyComplaint?issueId=" + issueId + "&updateStatus=success");
+                response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=success&issueId=" + issueId);
             } else {
-                response.sendRedirect("replyComplaint?issueId=" + issueId + "&updateStatus=error");
+                response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&issueId=" + issueId);
             }
         } else {
             System.err.println("Missing required parameters for complaint update. Issue ID: " + issueIdParam + ", Status: " + status);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters (issueId or status).");
+            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&issueId=" + issueId);
         }
     }
 

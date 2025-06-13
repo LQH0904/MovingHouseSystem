@@ -17,10 +17,10 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     </head>
     <body>
-        
+
         <!-- Sidebar -->
         <div class="sidebar">
-            
+
             <div class="sidebar-content">
                 <ul class="lists">
                     <li class="list">
@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Khiếu Nại</span>
                         </a>
@@ -78,7 +78,7 @@
                         </a>
                     </li>
                 </ul>
-               
+
             </div>
         </div>
 

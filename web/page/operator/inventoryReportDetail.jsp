@@ -16,11 +16,11 @@
         <div class="parent">
             <div class="div1">
                 <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
-            </div>
-            <div class="div2">
+                </div>
+                <div class="div2">
                 <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
-            </div>
-            <div class="div3">
+                </div>
+                <div class="div3">
                 <%@ page import="model.InventoryReports, java.util.Vector" %>
                 <%
                   Vector<InventoryReports> vector =
@@ -60,6 +60,6 @@
 
             </div>
         </div>
-        
+
     </body>
 </html>
