@@ -22,4 +22,18 @@
     padding: 0.4em 0.7em;
 }
 
+.card h4 {
+    font-weight: bold;
+}
+
+.card .bi {
+    margin-right: 4px;
+}
+
+.empty-state .bi {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+
 
