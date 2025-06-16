@@ -1,83 +1,94 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import dao.RegisterApplicationDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
+import model.RegisterApplication;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import java.util.List;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.RegisterApplication;
+import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "ApplicationListController", urlPatterns = {"/operator/listApplication"})
 public class ApplicationListController extends HttpServlet {
 
-    
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ApplicationListController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ApplicationListController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        RegisterApplicationDAO dao = new RegisterApplicationDAO();
-        List<RegisterApplication> applications = dao.getAllApplications();
-        
-        // Đếm theo status_id
-    int total = applications.size();
-    int pending = 0;
-    int approved = 0;
-    int rejected = 0;
 
-    for (RegisterApplication app : applications) {
-        int statusId = app.getStatus_id();
-
-        switch (statusId) {
-            case 1 -> pending++;
-            case 2 -> approved++;
-            case 3 -> rejected++;
+        String keyword = request.getParameter("keyword");
+        if (keyword == null) {
+            keyword = "";
         }
+
+        String statusParam = request.getParameter("status");
+        int statusId = -1; // -1 nghĩa là ALL
+
+        if (statusParam != null) {
+            switch (statusParam.toLowerCase()) {
+                case "pending" -> statusId = 1;
+                case "approved" -> statusId = 2;
+                case "rejected" -> statusId = 3;
+                case "all" -> statusId = -1;
+            }
+        }
+
+        int page = 1;
+        int pageSize = 4;
+
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            try {
+                page = Integer.parseInt(pageParam);
+                if (page < 1) page = 1;
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int offset = (page - 1) * pageSize;
+
+        RegisterApplicationDAO dao = new RegisterApplicationDAO();
+        List<RegisterApplication> applications;
+        int totalRecords;
+
+        if (statusId == -1) {
+            // Không lọc theo trạng thái
+            applications = dao.getApplicationsPaginated(keyword, offset, pageSize);
+            totalRecords = dao.countApplications(keyword);
+        } else {
+            // Lọc theo trạng thái
+            applications = dao.getApplicationsByStatusPaginated(keyword, statusId, offset, pageSize);
+            totalRecords = dao.countApplicationsByStatus(keyword, statusId);
+        }
+
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+        // Lấy tổng số cho các card (đếm toàn cục)
+        int total = dao.countApplications("");
+        int pending = dao.countApplicationsByStatus("", 1);
+        int approved = dao.countApplicationsByStatus("", 2);
+        int rejected = dao.countApplicationsByStatus("", 3);
+
+        // Truyền dữ liệu sang JSP
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("status", statusParam); // Dùng để tô đậm hoặc giữ trạng thái lọc
+        request.setAttribute("applications", applications);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("total", total);
+        request.setAttribute("pending", pending);
+        request.setAttribute("approved", approved);
+        request.setAttribute("rejected", rejected);
+
+        request.getRequestDispatcher("/page/operator/ListApplicationRegistration.jsp")
+                .forward(request, response);
     }
 
-    // Set attribute cho JSP
-   
-    request.setAttribute("total", total);
-    request.setAttribute("pending", pending);
-    request.setAttribute("approved", approved);
-    request.setAttribute("rejected", rejected);
-        
-        // Gửi dữ liệu đến JSP
-        request.setAttribute("applications", applications);
-        
-        // Forward  trang JSP
-        request.getRequestDispatcher("/page/operator/ListApplicationRegistration.jsp").forward(request, response);
-    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        doGet(request, response);
     }
-
-   
 }
