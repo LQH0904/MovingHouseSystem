@@ -1,7 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
+%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -32,6 +36,12 @@
         <h3 class="mb-4 text-primary border-bottom pb-2">
             Chi tiết Khiếu nại #<c:out value="${currentComplaint.issueId != null ? currentComplaint.issueId : 'Không xác định'}"/>
         </h3>
+
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger" role="alert">
+                <c:out value="${errorMessage}"/>
+            </div>
+        </c:if>
 
         <c:if test="${currentComplaint != null}">
             <div class="card mb-4 border-primary">
@@ -100,23 +110,45 @@
                             </c:choose>
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Ngày xử lý:</strong></div>
+                        <div class="col-md-9">
+                            <c:choose>
+                                <c:when test="${currentComplaint.resolvedAt != null}">
+                                    <fmt:formatDate value="${currentComplaint.resolvedAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </c:when>
+                                <c:otherwise>Chưa xử lý</c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <h4 class="mb-3 text-primary border-bottom pb-2">Trả lời Khiếu nại</h4>
-            <form action="${pageContext.request.contextPath}/ComplaintServlet" method="post" class="needs-validation" novalidate>
+            <form action="${pageContext.request.contextPath}/replyComplaint" method="post" class="needs-validation" novalidate>
                 <input type="hidden" name="issueId" value="${currentComplaint.issueId}">
 
                 <div class="mb-3">
                     <label for="status" class="form-label fw-bold">Trạng thái mới:</label>
                     <select name="status" id="status" class="form-select" required>
-                        <option value="">-- Chọn trạng thái --</option>
+                        <%-- Xóa dòng này: <option value="">-- Chọn trạng thái --</option> --%>
                         <option value="open" <c:if test="${currentComplaint.status eq 'open'}">selected</c:if>>Mở</option>
                         <option value="in_progress" <c:if test="${currentComplaint.status eq 'in_progress'}">selected</c:if>>Đang xử lý</option>
                         <option value="resolved" <c:if test="${currentComplaint.status eq 'resolved'}">selected</c:if>>Đã xử lý</option>
                         <option value="escalated" <c:if test="${currentComplaint.status eq 'escalated'}">selected</c:if>>Chuyển cấp cao</option>
                     </select>
                     <div class="invalid-feedback">Vui lòng chọn một trạng thái.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="priority" class="form-label fw-bold">Mức độ ưu tiên:</label>
+                    <select name="priority" id="priority" class="form-select" required>
+                        <%-- Xóa dòng này: <option value="">-- Chọn ưu tiên --</option> --%>
+                        <option value="low" <c:if test="${currentComplaint.priority eq 'low'}">selected</c:if>>Thấp</option>
+                        <option value="normal" <c:if test="${currentComplaint.priority eq 'normal'}">selected</c:if>>Bình thường</option>
+                        <option value="high" <c:if test="${currentComplaint.priority eq 'high'}">selected</c:if>>Cao</option>
+                    </select>
+                    <div class="invalid-feedback">Vui lòng chọn mức độ ưu tiên.</div>
                 </div>
 
                 <div class="mb-3">
@@ -159,21 +191,6 @@
                 }, false);
             });
     })();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const updateStatus = urlParams.get('updateStatus');
-    const issueIdFromUrl = urlParams.get('issueId');
-
-    window.onload = function() {
-        if (updateStatus === 'success') {
-            alert('Cập nhật trạng thái khiếu nại thành công!');
-            window.location.href = '${pageContext.request.contextPath}/ComplaintServlet';
-        } else if (updateStatus === 'error') {
-            alert('Lỗi: Không thể cập nhật trạng thái khiếu nại. Vui lòng thử lại.');
-            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?action=view&issueId=' + issueIdFromUrl;
-            window.history.replaceState({}, document.title, newUrl);
-        }
-    };
 </script>
 </body>
 </html>

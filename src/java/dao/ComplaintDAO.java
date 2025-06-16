@@ -9,7 +9,6 @@ import java.util.List;
 public class ComplaintDAO {
 
     private Connection getConnection() throws SQLException {
-        // Đảm bảo DBConnection.getConnection() hoạt động và trả về kết nối hợp lệ
         return DBConnection.getConnection();
     }
 
@@ -46,12 +45,13 @@ public class ComplaintDAO {
             for (Object param : params) {
                 if (param instanceof String) {
                     stmt.setString(i++, (String) param);
-                } else if (param instanceof Integer) {
-                    stmt.setInt(i++, (Integer) param);
                 }
             }
             stmt.setInt(i++, offset);
             stmt.setInt(i++, limit);
+
+            System.out.println("ComplaintDAO: Executing getAllComplaints SQL: " + sql.toString());
+            System.out.println("ComplaintDAO: Parameters: " + params + ", Offset: " + offset + ", Limit: " + limit);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -98,10 +98,11 @@ public class ComplaintDAO {
             for (Object param : params) {
                 if (param instanceof String) {
                     stmt.setString(i++, (String) param);
-                } else if (param instanceof Integer) {
-                    stmt.setInt(i++, (Integer) param);
                 }
             }
+
+            System.out.println("ComplaintDAO: Executing getTotalComplaintCount SQL: " + sql.toString());
+            System.out.println("ComplaintDAO: Parameters: " + params);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -117,7 +118,7 @@ public class ComplaintDAO {
 
     public Complaint getComplaintById(int issueId) {
         Complaint complaint = null;
-        String sql = "SELECT i.issue_id, u.username, i.description, i.status, i.priority, i.created_at " +
+        String sql = "SELECT i.issue_id, u.username, i.description, i.status, i.priority, i.created_at, i.resolved_at " +
                      "FROM Issues i " +
                      "JOIN Users u ON i.user_id = u.user_id " +
                      "WHERE i.issue_id = ?";
@@ -126,6 +127,7 @@ public class ComplaintDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, issueId);
+            System.out.println("ComplaintDAO: Executing getComplaintById SQL for issueId: " + issueId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     complaint = new Complaint();
@@ -135,6 +137,7 @@ public class ComplaintDAO {
                     complaint.setStatus(rs.getString("status"));
                     complaint.setPriority(rs.getString("priority"));
                     complaint.setCreatedAt(rs.getTimestamp("created_at"));
+                    complaint.setResolvedAt(rs.getTimestamp("resolved_at"));
                 }
             }
         } catch (SQLException e) {
@@ -144,16 +147,25 @@ public class ComplaintDAO {
         return complaint;
     }
 
-    public boolean updateComplaintStatus(int issueId, String status) {
-        String sql = "UPDATE Issues SET status = ?, resolved_at = GETDATE() WHERE issue_id = ?";
+    public boolean updateComplaintStatusAndPriority(int issueId, String status, String priority) {
+        String sql = "";
+        if ("resolved".equalsIgnoreCase(status)) {
+            sql = "UPDATE Issues SET status = ?, priority = ?, resolved_at = GETDATE() WHERE issue_id = ?";
+        } else {
+            sql = "UPDATE Issues SET status = ?, priority = ?, resolved_at = NULL WHERE issue_id = ?";
+        }
+
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
-            ps.setInt(2, issueId);
+            ps.setString(2, priority);
+            ps.setInt(3, issueId);
             int rowsAffected = ps.executeUpdate();
+
+            System.out.println("ComplaintDAO: Cập nhật Issue ID " + issueId + " - Trạng thái: " + status + ", Ưu tiên: " + priority + ". Số hàng bị ảnh hưởng: " + rowsAffected);
             return rowsAffected > 0;
         } catch (SQLException e) {
-            System.err.println("Database error in updateComplaintStatus for issueId " + issueId + ": " + e.getMessage());
+            System.err.println("Database error in updateComplaintStatusAndPriority for issueId " + issueId + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }

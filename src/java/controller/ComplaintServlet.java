@@ -1,4 +1,4 @@
-package controller; // Đảm bảo package này đúng với package của bạn
+package controller;
 
 import dao.ComplaintDAO;
 import model.Complaint;
@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/ComplaintServlet") // Đảm bảo mapping này đúng
+@WebServlet("/ComplaintServlet")
 public class ComplaintServlet extends HttpServlet {
 
     private ComplaintDAO complaintDAO;
@@ -22,7 +22,11 @@ public class ComplaintServlet extends HttpServlet {
         complaintDAO = new ComplaintDAO();
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String action = request.getParameter("action");
 
         if (action != null && action.equals("view")) {
@@ -30,15 +34,15 @@ public class ComplaintServlet extends HttpServlet {
             try {
                 issueId = Integer.parseInt(request.getParameter("issueId"));
             } catch (NumberFormatException e) {
+                System.err.println("ComplaintServlet: Invalid issue ID format for view action: " + request.getParameter("issueId"));
                 response.sendRedirect(request.getContextPath() + "/ComplaintServlet");
                 return;
             }
 
-            Complaint currentComplaint = complaintDAO.getComplaintById(issueId);
-            request.setAttribute("currentComplaint", currentComplaint);
-            // Đảm bảo đường dẫn này đúng với vị trí file ReplyComplaint.jsp của bạn trong WEB-INF/views/
-            request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
-        } else {
+            response.sendRedirect(request.getContextPath() + "/replyComplaint?issueId=" + issueId);
+            return;
+        }
+        else {
             String searchTerm = request.getParameter("search");
             String statusFilter = request.getParameter("statusFilter");
             String priorityFilter = request.getParameter("priorityFilter");
@@ -67,28 +71,23 @@ public class ComplaintServlet extends HttpServlet {
             request.setAttribute("statusFilter", statusFilter);
             request.setAttribute("priorityFilter", priorityFilter);
 
-            // Đảm bảo đường dẫn này đúng với vị trí file ComplaintList.jsp của bạn trong WEB-INF/views/
+            String updateStatus = request.getParameter("updateStatus");
+            if ("success".equals(updateStatus)) {
+                request.setAttribute("updateMessage", "Cập nhật khiếu nại thành công!");
+                request.setAttribute("updateMessageType", "success");
+            } else if ("error".equals(updateStatus)) {
+                String errorMessage = request.getParameter("message");
+                if (errorMessage == null) errorMessage = "Có lỗi xảy ra khi cập nhật khiếu nại.";
+                request.setAttribute("updateMessage", "Lỗi: " + errorMessage);
+                request.setAttribute("updateMessageType", "danger");
+            }
+
             request.getRequestDispatcher("/page/operator/complaintList.jsp").forward(request, response);
         }
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int issueId = 0;
-        try {
-            issueId = Integer.parseInt(request.getParameter("issueId"));
-        } catch (NumberFormatException e) {
-            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=Invalid_Issue_ID");
-            return;
-        }
-        String newStatus = request.getParameter("status");
-        String replyContent = request.getParameter("replyContent");
-
-        boolean success = complaintDAO.updateComplaintStatus(issueId, newStatus);
-
-        if (success) {
-            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=success");
-        } else {
-            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?action=view&issueId=" + issueId + "&updateStatus=error");
-        }
+        doGet(request, response);
     }
 }
