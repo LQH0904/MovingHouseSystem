@@ -27,10 +27,14 @@ public class ApplicationListController extends HttpServlet {
 
         if (statusParam != null) {
             switch (statusParam.toLowerCase()) {
-                case "pending" -> statusId = 1;
-                case "approved" -> statusId = 2;
-                case "rejected" -> statusId = 3;
-                case "all" -> statusId = -1;
+                case "pending" ->
+                    statusId = 1;
+                case "approved" ->
+                    statusId = 2;
+                case "rejected" ->
+                    statusId = 3;
+                case "all" ->
+                    statusId = -1;
             }
         }
 
@@ -41,7 +45,9 @@ public class ApplicationListController extends HttpServlet {
         if (pageParam != null) {
             try {
                 page = Integer.parseInt(pageParam);
-                if (page < 1) page = 1;
+                if (page < 1) {
+                    page = 1;
+                }
             } catch (NumberFormatException e) {
                 page = 1;
             }

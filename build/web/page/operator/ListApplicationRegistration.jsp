@@ -26,52 +26,52 @@
             <div class="div3">
                 <div class="container mt-4">
 
-                   <!-- Summary Cards -->
-<div class="row text-center g-4 mb-4">
-    <div class="col-md-3">
-        <a href="listApplication?status=all&keyword=${keyword}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 bg-info text-white">
-                <div class="card-body">
-                    <h4>${total}</h4>
-                    <p class="mb-0"><i class="bi bi-people"></i> All </p>
-                </div>
-            </div>
-        </a>
-    </div>
+                    <!-- Summary Cards -->
+                    <div class="row text-center g-4 mb-4">
+                        <div class="col-md-3">
+                            <a href="listApplication?status=all&keyword=${keyword}" class="text-decoration-none">
+                                <div class="card shadow-sm border-0 bg-info text-white">
+                                    <div class="card-body">
+                                        <h4>${total}</h4>
+                                        <p class="mb-0"><i class="bi bi-people"></i> All </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
 
-    <div class="col-md-3">
-        <a href="listApplication?status=pending&keyword=${keyword}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 bg-warning text-dark">
-                <div class="card-body">
-                    <h4>${pending}</h4>
-                    <p class="mb-0"><i class="bi bi-hourglass-split"></i> Pending</p>
-                </div>
-            </div>
-        </a>
-    </div>
+                        <div class="col-md-3">
+                            <a href="listApplication?status=pending&keyword=${keyword}" class="text-decoration-none">
+                                <div class="card shadow-sm border-0 bg-warning text-dark">
+                                    <div class="card-body">
+                                        <h4>${pending}</h4>
+                                        <p class="mb-0"><i class="bi bi-hourglass-split"></i> Pending</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
 
-    <div class="col-md-3">
-        <a href="listApplication?status=approved&keyword=${keyword}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 bg-success text-white">
-                <div class="card-body">
-                    <h4>${approved}</h4>
-                    <p class="mb-0"><i class="bi bi-check-circle"></i> Approved</p>
-                </div>
-            </div>
-        </a>
-    </div>
+                        <div class="col-md-3">
+                            <a href="listApplication?status=approved&keyword=${keyword}" class="text-decoration-none">
+                                <div class="card shadow-sm border-0 bg-success text-white">
+                                    <div class="card-body">
+                                        <h4>${approved}</h4>
+                                        <p class="mb-0"><i class="bi bi-check-circle"></i> Approved</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
 
-    <div class="col-md-3">
-        <a href="listApplication?status=rejected&keyword=${keyword}" class="text-decoration-none">
-            <div class="card shadow-sm border-0 bg-danger text-white">
-                <div class="card-body">
-                    <h4>${rejected}</h4>
-                    <p class="mb-0"><i class="bi bi-x-circle"></i> Rejected</p>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
+                        <div class="col-md-3">
+                            <a href="listApplication?status=rejected&keyword=${keyword}" class="text-decoration-none">
+                                <div class="card shadow-sm border-0 bg-danger text-white">
+                                    <div class="card-body">
+                                        <h4>${rejected}</h4>
+                                        <p class="mb-0"><i class="bi bi-x-circle"></i> Rejected</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
 
 
                     <!-- Main Data Card -->
@@ -195,7 +195,7 @@
                             </div>
 
                         </div>
-                       
+
 
 
                     </div>
