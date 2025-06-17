@@ -10,7 +10,8 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/TransportProcess.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     </head>
     <body>
         <div class="parent">
@@ -23,19 +24,19 @@
                         <h3><i class="bi bi-grid-1x2"></i>Thông tin đơn hàng</h3>
                         <div class="info-row">
                             <div class="info-col">
-                                <label>Mã Đơn hàng:</label>
+                                <label><i class="bi bi-file-code-fill"></i>Mã Đơn hàng</label>
                                 <p>${order.orderId}</p>
                             </div>
                             <div class="info-col">
-                                <label>Đơn vị vận chuyển:</label>
+                                <label><i class="bi bi-truck-front-fill"></i>Đơn vị vận chuyển</label>
                                 <p>${order.transportCompanyName}</p>
                             </div>
                             <div class="info-col">
-                                <label>Kho bãi:</label>
+                                <label><i class="bi bi-box-seam-fill"></i>Kho bãi</label>
                                 <p>${order.warehouseName}</p>
                             </div>
                             <div class="info-col">
-                                <label>Khách hàng:</label>
+                                <label><i class="bi bi-file-person"></i>Khách hàng</label>
                                 <p>${order.customerName}</p>
                             </div>
                         </div>
@@ -88,8 +89,9 @@
                         <div id="detail1" class="detail-box card shadow-sm border-0 mt-4" style="display: none;">
                             <div class="card-body">
                                 <h5 class="card-title mb-4 text-primary">
-                                    <i class="bi bi-truck-front-fill me-2"></i>Thông tin: Địa chỉ nhận → Kho
+                                    <i class="bi bi-info-circle"></i>Thông tin
                                 </h5>
+                                
 
                                 <c:if test="${not empty tp}">
                                     <div class="row mb-4">
@@ -127,7 +129,7 @@
                         <div id="detail2" class="detail-box card shadow-sm border-0 mt-4" style="display: none;">
                             <div class="card-body">
                                 <h5 class="card-title mb-4 text-primary">
-                                    <i class="bi bi-truck-flatbed me-2"></i>Thông tin: Kho → Địa chỉ trả
+                                    <i class="bi bi-info-circle"></i>Thông tin
                                 </h5>
 
                                 <c:if test="${not empty tp}">
@@ -168,5 +170,6 @@
             </div>
         </div>
     </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/operator/TransportProcess.js"></script>
 </html>
