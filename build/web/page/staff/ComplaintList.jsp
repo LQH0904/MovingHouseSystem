@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
+    // Header for preventing caching
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
@@ -11,31 +12,31 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Danh Sách Khiếu Nại (Staff)</title>
+        <title>Danh Sách Khiếu Nại</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="../CSS/HomePage.css">
-        <%-- ĐÃ THÊM CSS RIÊNG CỦA STAFF --%>
-        <link rel="stylesheet" href="../CSS/staff/staffStyle.css">
-        <link rel="stylesheet" href="../CSS/staff/complaintListStaff.css"> <%-- Giữ lại nếu có CSS riêng cho list --%>
-
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <%-- Đường dẫn CSS cụ thể cho trang danh sách khiếu nại --%>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/complaintList.css">
 
     </head>
-    <body class="bg-light staff-page"> <%-- Thêm class staff-page vào body --%>
+    <body class="bg-light">
         <div class="parent">
             <div class="div1">
-                <jsp:include page="../../Layout/staff/SideBarStaff.jsp"></jsp:include>
+                <%-- Sidebar và Header là các thành phần Layout chung, đường dẫn include vẫn giữ nguyên --%>
+                <jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include>
             </div>
 
             <div class="div2">
-                <jsp:include page="../../Layout/staff/HeaderStaff.jsp"></jsp:include>
+                <jsp:include page="/Layout/operator/Header.jsp"></jsp:include>
             </div>
 
-            <div class="div3">
-                <h3 class="mb-4 text-primary border-bottom pb-2">Danh Sách Khiếu nại (Staff)</h3>
+            <div class="div3 p-4"> <%-- Thêm padding để nội dung không dính vào lề --%>
+                <h3 class="mb-4 text-primary border-bottom pb-2">Danh Sách Khiếu Nại</h3>
 
+                <%-- Hiển thị thông báo cập nhật (nếu có) --%>
                 <c:if test="${not empty updateMessage}">
                     <div class="alert alert-${updateMessageType} alert-dismissible fade show" role="alert">
                         <c:out value="${updateMessage}"/>
@@ -43,7 +44,8 @@
                     </div>
                 </c:if>
 
-                <form action="${pageContext.request.contextPath}/StaffComplaintServlet" method="get" class="mb-4">
+                <%-- Form tìm kiếm và lọc --%>
+                <form action="${pageContext.request.contextPath}/ComplaintServlet" method="get" class="mb-4">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <input type="text" name="search" class="form-control"
@@ -53,17 +55,17 @@
                         <div class="col-md-3">
                             <select name="statusFilter" class="form-select">
                                 <option value="">-- Trạng thái --</option>
-                                <option value="escalated" ${statusFilter eq 'escalated' ? 'selected' : ''}>Chuyển cấp cao</option>
+                                <option value="open" ${statusFilter eq 'open' ? 'selected' : ''}>Mở</option>
                                 <option value="in_progress" ${statusFilter eq 'in_progress' ? 'selected' : ''}>Đang xử lý</option>
                                 <option value="resolved" ${statusFilter eq 'resolved' ? 'selected' : ''}>Đã xử lý</option>
-                                <option value="open" ${statusFilter eq 'open' ? 'selected' : ''}>Mở</option>
+                                <option value="escalated" ${statusFilter eq 'escalated' ? 'selected' : ''}>Chuyển cấp cao</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <select name="priorityFilter" class="form-select">
                                 <option value="">-- Ưu tiên --</option>
                                 <option value="low" ${priorityFilter eq 'low' ? 'selected' : ''}>Thấp</option>
-                                <option value="normal" ${priorityFilter eq 'normal'}">Bình thường</option>
+                                <option value="normal" ${priorityFilter eq 'normal' ? 'selected' : ''}>Bình thường</option>
                                 <option value="high" ${priorityFilter eq 'high' ? 'selected' : ''}>Cao</option>
                             </select>
                         </div>
@@ -73,6 +75,7 @@
                     </div>
                 </form>
 
+                <%-- Bảng hiển thị danh sách khiếu nại --%>
                 <div class="table-responsive">
                     <table class="table table-hover table-striped">
                         <thead class="table-primary">
@@ -130,8 +133,9 @@
                                             </td>
                                             <td><fmt:formatDate value="${complaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/StaffComplaintServlet?action=view&issueId=${complaint.issueId}"
-                                                   class="btn btn-sm btn-info">Chi tiết / Xử lý</a>
+                                                <%-- Đường dẫn đến trang chi tiết/trả lời khiếu nại --%>
+                                                <a href="${pageContext.request.contextPath}/ComplaintServlet?action=view&issueId=${complaint.issueId}"
+                                                   class="btn btn-sm btn-info">Chi tiết / Trả lời</a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -142,40 +146,44 @@
                                     </tr>
                                 </c:otherwise>
                             </c:choose>
-                        </table>
-                    <div class="pagination-wrapper">
-                        <ul class="pagination">
-                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                        </tbody>
+                    </table>
+                </div>
+
+                <%-- Phần phân trang --%>
+                <div class="pagination-wrapper mt-3 d-flex justify-content-center">
+                    <ul class="pagination">
+                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/ComplaintServlet?page=${currentPage - 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <c:forEach var="i" begin="1" end="${totalPages}">
+                            <li class="page-item ${currentPage == i ? 'active' : ''}">
                                 <a class="page-link"
-                                   href="${pageContext.request.contextPath}/StaffComplaintServlet?page=${currentPage - 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}"
-                                   aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
+                                   href="${pageContext.request.contextPath}/ComplaintServlet?page=${i}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}">${i}</a>
                             </li>
-                            <c:forEach var="i" begin="1" end="${totalPages}">
-                                <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/StaffComplaintServlet?page=${i}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}">${i}</a>
-                                </li>
-                            </c:forEach>
-                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                <a class="page-link"
-                                   href="${pageContext.request.contextPath}/StaffComplaintServlet?page=${currentPage + 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}"
-                                   aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                        </c:forEach>
+                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/ComplaintServlet?page=${currentPage + 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="../js/Header.js"></script>
+        <script src="${pageContext.request.contextPath}/js/Header.js"></script> <%-- Giả sử Header.js là file JS chung --%>
         <script>
-            window.onload = function() {
+            // Xóa các tham số `updateStatus` và `message` khỏi URL sau khi trang tải để URL sạch hơn
+            window.onload = function () {
                 const url = new URL(window.location);
                 if (url.searchParams.has("updateStatus")) {
                     url.searchParams.delete("updateStatus");

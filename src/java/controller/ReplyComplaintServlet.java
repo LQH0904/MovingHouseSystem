@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
 
 @WebServlet(name = "ReplyComplaintServlet", urlPatterns = {"/replyComplaint"})
 public class ReplyComplaintServlet extends HttpServlet {
@@ -24,6 +25,9 @@ public class ReplyComplaintServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String issueIdParam = request.getParameter("issueId");
 
         if (issueIdParam != null && !issueIdParam.isEmpty()) {
@@ -33,19 +37,19 @@ public class ReplyComplaintServlet extends HttpServlet {
 
                 if (complaint != null) {
                     request.setAttribute("currentComplaint", complaint);
-                    request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
+                    request.getRequestDispatcher("/page/staff/replyComplaint.jsp").forward(request, response);
                 } else {
-                    request.setAttribute("errorMessage", "Complaint not found with ID: " + issueIdParam);
-                    request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
+                    request.setAttribute("errorMessage", "Không tìm thấy khiếu nại với ID: " + issueIdParam);
+                    request.getRequestDispatcher("/page/staff/replyComplaint.jsp").forward(request, response);
                 }
             } catch (NumberFormatException e) {
                 System.err.println("Invalid complaint ID format in ReplyComplaintServlet doGet: " + issueIdParam);
-                request.setAttribute("errorMessage", "Invalid complaint ID format.");
-                request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
+                request.setAttribute("errorMessage", "Định dạng ID khiếu nại không hợp lệ.");
+                request.getRequestDispatcher("/page/staff/replyComplaint.jsp").forward(request, response);
             }
         } else {
-            request.setAttribute("errorMessage", "Missing complaint ID.");
-            request.getRequestDispatcher("/page/operator/replyComplaint.jsp").forward(request, response);
+            request.setAttribute("errorMessage", "Thiếu ID khiếu nại.");
+            request.getRequestDispatcher("/page/staff/replyComplaint.jsp").forward(request, response);
         }
     }
 
