@@ -18,11 +18,12 @@
             <div class="div2"><jsp:include page="/Layout/operator/Header.jsp"/></div>
             <div class="div3">
                 <div class="container">
+                    <!-- Thong tin cơ bản của đơn hàng  -->
                     <div class="card">
-                        <h3>Thông tin đơn hàng</h3>
+                        <h3><i class="bi bi-grid-1x2"></i>Thông tin đơn hàng</h3>
                         <div class="info-row">
                             <div class="info-col">
-                                <label>ID Đơn hàng:</label>
+                                <label>Mã Đơn hàng:</label>
                                 <p>${order.orderId}</p>
                             </div>
                             <div class="info-col">
@@ -37,9 +38,10 @@
                                 <label>Khách hàng:</label>
                                 <p>${order.customerName}</p>
                             </div>
-
                         </div>
                     </div>
+
+                    <!-- Thong tin cơ bản của đơn hàng  -->
 
                     <div class="card">
                         <h3 class="mb-4 text-primary"><i class="bi bi-diagram-3-fill me-2"></i>Quy trình vận chuyển</h3>
@@ -83,82 +85,82 @@
 
 
                         <!-- Chi tiết 1: Địa chỉ nhận → Kho -->
-<div id="detail1" class="detail-box card shadow-sm border-0 mt-4" style="display: none;">
-    <div class="card-body">
-        <h5 class="card-title mb-4 text-primary">
-            <i class="bi bi-truck-front-fill me-2"></i>Thông tin: Địa chỉ nhận → Kho
-        </h5>
+                        <div id="detail1" class="detail-box card shadow-sm border-0 mt-4" style="display: none;">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4 text-primary">
+                                    <i class="bi bi-truck-front-fill me-2"></i>Thông tin: Địa chỉ nhận → Kho
+                                </h5>
 
-        <c:if test="${not empty tp}">
-            <div class="row mb-4">
-                <div class="col-md-6 mb-3">
-                    <i class="bi bi-geo-alt-fill text-info me-2"></i><strong>Địa chỉ nhận:</strong>
-                    <p><c:out value="${tp.pickupLocation}" /></p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <i class="bi bi-calendar-event-fill text-success me-2"></i><strong>Ngày nhận:</strong>
-                    <p><c:out value="${tp.pickupDate}" /></p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <i class="bi bi-building-fill text-warning me-2"></i><strong>Địa chỉ kho:</strong>
-                    <p><c:out value="${tp.warehouseLocation}" /></p>
-                </div>
-                <div class="col-md-6">
-                    <i class="bi bi-box-arrow-in-down text-danger me-2"></i><strong>Ngày nhập kho:</strong>
-                    <p><c:out value="${tp.warehouseDate}" /></p>
-                </div>
-            </div>
+                                <c:if test="${not empty tp}">
+                                    <div class="row mb-4">
+                                        <div class="col-md-6 mb-3">
+                                            <i class="bi bi-geo-alt-fill text-info me-2"></i><strong>Địa chỉ nhận:</strong>
+                                            <p><c:out value="${tp.pickupLocation}" /></p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <i class="bi bi-calendar-event-fill text-success me-2"></i><strong>Ngày nhận:</strong>
+                                            <p><c:out value="${tp.pickupDate}" /></p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <i class="bi bi-building-fill text-warning me-2"></i><strong>Địa chỉ kho:</strong>
+                                            <p><c:out value="${tp.warehouseLocation}" /></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <i class="bi bi-box-arrow-in-down text-danger me-2"></i><strong>Ngày nhập kho:</strong>
+                                            <p><c:out value="${tp.warehouseDate}" /></p>
+                                        </div>
+                                    </div>
 
-            <div class="map-container border rounded overflow-hidden">
-                <iframe 
-                    src="${tp.pickupWarehouseDist}" 
-                    style="width: 100%; height: 500px; border: none;" 
-                    allowfullscreen 
-                    loading="lazy">
-                </iframe>
-            </div>
-        </c:if>
-    </div>
-</div>
+                                    <div class="map-container border rounded overflow-hidden">
+                                        <iframe 
+                                            src="${tp.pickupWarehouseDist}" 
+                                            style="width: 100%; height: 500px; border: none;" 
+                                            allowfullscreen 
+                                            loading="lazy">
+                                        </iframe>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </div>
 
-<!-- Chi tiết 2: Kho → Địa chỉ trả -->
-<div id="detail2" class="detail-box card shadow-sm border-0 mt-4" style="display: none;">
-    <div class="card-body">
-        <h5 class="card-title mb-4 text-primary">
-            <i class="bi bi-truck-flatbed me-2"></i>Thông tin: Kho → Địa chỉ trả
-        </h5>
+                        <!-- Chi tiết 2: Kho → Địa chỉ trả -->
+                        <div id="detail2" class="detail-box card shadow-sm border-0 mt-4" style="display: none;">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4 text-primary">
+                                    <i class="bi bi-truck-flatbed me-2"></i>Thông tin: Kho → Địa chỉ trả
+                                </h5>
 
-        <c:if test="${not empty tp}">
-            <div class="row mb-4">
-                <div class="col-md-6 mb-3">
-                    <i class="bi bi-building-fill text-info me-2"></i><strong>Địa chỉ kho:</strong>
-                    <p><c:out value="${tp.warehouseLocation}" /></p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <i class="bi bi-calendar-check-fill text-success me-2"></i><strong>Ngày nhập kho:</strong>
-                    <p><c:out value="${tp.warehouseDate}" /></p>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <i class="bi bi-geo-alt-fill text-info me-2"></i><strong>Địa chỉ trả:</strong>
-                    <p><c:out value="${tp.shippingLocation}" /></p>
-                </div>
-                <div class="col-md-6">
-                    <i class="bi bi-calendar-fill text-danger me-2"></i><strong>Ngày trả:</strong>
-                    <p><c:out value="${tp.shippingDate}" /></p>
-                </div>
-            </div>
+                                <c:if test="${not empty tp}">
+                                    <div class="row mb-4">
+                                        <div class="col-md-6 mb-3">
+                                            <i class="bi bi-building-fill text-info me-2"></i><strong>Địa chỉ kho:</strong>
+                                            <p><c:out value="${tp.warehouseLocation}" /></p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <i class="bi bi-calendar-check-fill text-success me-2"></i><strong>Ngày nhập kho:</strong>
+                                            <p><c:out value="${tp.warehouseDate}" /></p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <i class="bi bi-geo-alt-fill text-info me-2"></i><strong>Địa chỉ trả:</strong>
+                                            <p><c:out value="${tp.shippingLocation}" /></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <i class="bi bi-calendar-fill text-danger me-2"></i><strong>Ngày trả:</strong>
+                                            <p><c:out value="${tp.shippingDate}" /></p>
+                                        </div>
+                                    </div>
 
-            <div class="map-container border rounded overflow-hidden">
-                <iframe 
-                    src="${tp.warehouseShippingDist}" 
-                    style="width: 100%; height: 500px; border: none;" 
-                    allowfullscreen 
-                    loading="lazy">
-                </iframe>
-            </div>
-        </c:if>
-    </div>
-</div>
+                                    <div class="map-container border rounded overflow-hidden">
+                                        <iframe 
+                                            src="${tp.warehouseShippingDist}" 
+                                            style="width: 100%; height: 500px; border: none;" 
+                                            allowfullscreen 
+                                            loading="lazy">
+                                        </iframe>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </div>
 
 
                     </div>
