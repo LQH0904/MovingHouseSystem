@@ -21,21 +21,21 @@
                         <div class="info-row">
                             <div class="info-col">
                                 <label>ID Đơn hàng:</label>
-                                <p>DH00123</p>
+                                <p>${order.orderId}</p>
                             </div>
                             <div class="info-col">
                                 <label>Đơn vị vận chuyển:</label>
-                                <p>Giao hàng Tiết kiệm</p>
+                                <p>${order.transportCompanyName}</p>
                             </div>
                             <div class="info-col">
                                 <label>Kho bãi:</label>
-                                <p>Kho Hà Nội - Mỹ Đình</p>
+                                <p>${order.warehouseName}</p>
                             </div>
                             <div class="info-col">
                                 <label>Khách hàng:</label>
-                                <p>Nguyễn Văn A - 0901234567</p>
+                                <p>${order.customerName}</p>
                             </div>
-                            
+
                         </div>
                     </div>
 
