@@ -85,16 +85,25 @@
 }
 
 .circle {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #007bff, #00bfff);
+    color: #fff;
     border-radius: 50%;
-    background-color: #007bff;
-    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.circle i {
+    font-size: 25px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    
+    
 }
 
 .label {
@@ -106,7 +115,7 @@
 /* Đường nối có thể click */
 .line-clickable {
     flex-grow: 1;
-    height: 2px;
+    height: 5px;
     background-color: #007bff;
     position: relative;
     top: -10px;
