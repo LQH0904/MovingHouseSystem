@@ -8,10 +8,9 @@
         <meta charset="UTF-8">
         <title>Transport Process</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/TransportProcess.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/TransportProcess.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<!--        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
     </head>
     <body>
         <div class="parent">
@@ -171,5 +170,5 @@
         </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/operator/TransportProcess.js"></script>
+    <script src="${pageContext.request.contextPath}/js/staff/TransportProcess.js"></script>
 </html>

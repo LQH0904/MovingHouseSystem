@@ -44,7 +44,7 @@ public class TransportProcessController extends HttpServlet {
             if (order != null) {
                 request.setAttribute("order", order);
                 request.setAttribute("tp", tp); // có thể là null, JSP nên kiểm tra trước khi hiển thị
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/page/operator/TransportProcess.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/page/staff/TransportProcess.jsp");
                 dispatcher.forward(request, response);
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy đơn hàng.");
