@@ -246,7 +246,7 @@
                             </div>
                         </div> 
 
-                        <!-- Order Timeline - Moved to Bottom -->
+                         <!-- Order Timeline - Dynamic based on status -->
                         <div class="row mt-3">
                             <div class="col-12">
                                 <div class="info-card">
@@ -255,47 +255,264 @@
                                         Lịch sử giao hàng
                                     </div>
                                     <div class="card-body-custom">
-                                        <div class="timeline-horizontal">
-                                            <div class="timeline-item-horizontal completed">
-                                                <div class="timeline-icon">
-                                                    <i class="fas fa-plus"></i>
-                                                </div>
-                                                <div class="timeline-content">
-                                                    <h6>Đơn hàng được tạo</h6>
-                                                    <small>17/06/2025 - 10:45</small>
-                                                </div>
-                                            </div>
+                                        <c:choose>
+                                            <%-- DELIVERED STATUS TIMELINE --%>
+                                            <c:when test="${orderDetail.orderStatus == 'delivered'}">
+                                                <div class="timeline-horizontal status-delivered">
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-plus"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đơn hàng được tạo</h6>
+                                                            <small>${orderDetail.createdAt}</small>
+                                                        </div>
+                                                    </div>
 
-                                            <div class="timeline-item-horizontal completed">
-                                                <div class="timeline-icon">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </div>
-                                                <div class="timeline-content">
-                                                    <h6>Đã xác nhận</h6>
-                                                    <small>17/06/2025 - 14:20</small>
-                                                </div>
-                                            </div>
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã xác nhận</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
 
-                                            <div class="timeline-item-horizontal completed">
-                                                <div class="timeline-icon">
-                                                    <i class="fas fa-truck"></i>
-                                                </div>
-                                                <div class="timeline-content">
-                                                    <h6>Đang giao hàng</h6>
-                                                    <small>18/06/2025 - 07:30</small>
-                                                </div>
-                                            </div>
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-box"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã đóng gói</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
 
-                                            <div class="timeline-item-horizontal completed">
-                                                <div class="timeline-icon">
-                                                    <i class="fas fa-check"></i>
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-truck"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đang giao hàng</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã giao hàng</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="timeline-content">
-                                                    <h6>Đã giao hàng</h6>
-                                                    <small>18/06/2025 - 09:00</small>
+                                            </c:when>
+
+                                            <%-- IN PROGRESS STATUS TIMELINE --%>
+                                            <c:when test="${orderDetail.orderStatus == 'in_progress'}">
+                                                <div class="timeline-horizontal status-in-progress">
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-plus"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đơn hàng được tạo</h6>
+                                                            <small>${orderDetail.createdAt}</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã xác nhận</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-box"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã đóng gói</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal active">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-truck"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đang giao hàng</h6>
+                                                            <small>Đang thực hiện...</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Giao hàng thành công</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </c:when>
+
+                                            <%-- PENDING STATUS TIMELINE --%>
+                                            <c:when test="${orderDetail.orderStatus == 'pending'}">
+                                                <div class="timeline-horizontal status-pending">
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-plus"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đơn hàng được tạo</h6>
+                                                            <small>${orderDetail.createdAt}</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal active">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-clock"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Chờ xác nhận</h6>
+                                                            <small>Đang xử lý...</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-box"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đóng gói</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-truck"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Giao hàng</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Hoàn thành</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </c:when>
+
+                                            <%-- CANCELLED STATUS TIMELINE --%>
+                                            <c:when test="${orderDetail.orderStatus == 'cancelled'}">
+                                                <div class="timeline-horizontal status-cancelled">
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-plus"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đơn hàng được tạo</h6>
+                                                            <small>${orderDetail.createdAt}</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal completed">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã xác nhận</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal cancelled">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-times"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đã hủy</h6>
+                                                            <small></small>
+                                                        </div>
+                                                    </div>
+
+                                                    
+                                                </div>
+                                            </c:when>
+
+                                            <%-- DEFAULT/ORDER_STATUS TIMELINE --%>
+                                            <c:otherwise>
+                                                <div class="timeline-horizontal status-order-status">
+                                                    <div class="timeline-item-horizontal active">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-plus"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đơn hàng được tạo</h6>
+                                                            <small>${orderDetail.createdAt}</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-clock"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Chờ xử lý</h6>
+                                                            <small>Sẽ được xử lý sớm</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-box"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Đóng gói</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-truck"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Giao hàng</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item-horizontal pending">
+                                                        <div class="timeline-icon">
+                                                            <i class="fas fa-check"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h6>Hoàn thành</h6>
+                                                            <small>Chờ thực hiện</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
                             </div>
