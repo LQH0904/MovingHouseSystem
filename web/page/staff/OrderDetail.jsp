@@ -56,6 +56,7 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- Status display with dynamic colors -->
                                                 <div class="info-item">
                                                     <div class="info-icon icon-success">
                                                         <i class="fas fa-check-circle"></i>
@@ -63,9 +64,34 @@
                                                     <div class="info-content">
                                                         <div class="info-label">Trạng thái</div>
                                                         <div class="info-value">
-                                                            <span class="status-badge status-delivered">
-                                                                <i class="fas fa-check"></i> Đã giao
-                                                            </span>
+                                                            <!-- Dynamic status badge -->
+                                                            <c:choose>
+                                                                <c:when test="${orderDetail.orderStatus == 'delivered'}">
+                                                                    <span class="status-badge status-delivered">
+                                                                        <i class="fas fa-check"></i>
+                                                                        Đã giao
+                                                                    </span>
+                                                                </c:when>
+                                                                <c:when test="${orderDetail.orderStatus == 'in_progress'}">
+                                                                    <span class="status-badge status-in-progress">
+                                                                        <i class="fas fa-truck"></i>
+                                                                        Đang giao hàng
+                                                                    </span>
+                                                                </c:when>
+                                                                <c:when test="${orderDetail.orderStatus == 'pending'}">
+                                                                    <span class="status-badge status-pending">
+                                                                        <i class="fas fa-clock"></i>
+                                                                        Chờ xử lý
+                                                                    </span>
+                                                                </c:when>
+                                                                <c:when test="${orderDetail.orderStatus == 'cancelled'}">
+                                                                    <span class="status-badge status-cancelled">
+                                                                        <i class="fas fa-times"></i>
+                                                                        Đã hủy
+                                                                    </span>
+                                                                </c:when>
+                                                                
+                                                            </c:choose>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -219,8 +245,8 @@
                                 </div>
                             </div>
                         </div> 
-                         
-                           <!-- Order Timeline - Moved to Bottom -->
+
+                        <!-- Order Timeline - Moved to Bottom -->
                         <div class="row mt-3">
                             <div class="col-12">
                                 <div class="info-card">
