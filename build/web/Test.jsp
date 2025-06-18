@@ -15,8 +15,8 @@
             height: 100%;
         }
         .main-content {
-            margin-left: 220px; 
-            margin-top: 60px; 
+            margin-left: 220px; /* tránh bị menu che */
+            margin-top: 60px; /* tránh bị header che */
             padding: 20px;
             max-width: calc(100vw - 220px);
             box-sizing: border-box;

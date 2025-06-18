@@ -14,9 +14,7 @@
             href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
             rel="stylesheet"
             />
-        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
-        <link rel="stylesheet" href="../css/SideBar.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     </head>
     <body>
         
@@ -26,38 +24,38 @@
             <div class="sidebar-content">
                 <ul class="lists">
                     <li class="list">
-                        <a href="#" class="nav-link">
-                            <i class="bx bx-user icon"></i>
+                        <a href="http://localhost:9999/HouseMovingSystem/UserListServlet" class="nav-link">
+                            <i class="bx bx-home-alt icon"></i>
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/repURL" class="nav-link">
                             <i class="bx bx-bar-chart-alt-2 icon"></i>
-                            <span class="link">Doanh Thu </span>
+                            <span class="link">Báo Cáo Doanh Thu </span>
                         </a>
                     </li>
                     <li class="list">
                         <a href="#" class="nav-link">
-                            <i class="bx bx-cart icon"></i>
+                            <i class="bx bx-bell icon"></i>
                             <span class="link">Đơn Hàng </span>
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
-                            <i class="bx bx-store-alt icon"></i>
-                            <span class="link">Kho </span>
+                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
+                            <i class="bx bx-message-rounded icon"></i>
+                            <span class="link">Báo Cáo Tồn Kho </span>
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Khiếu Nại</span>
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
-                            <i class="bx bx-task icon"></i>
+                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
+                            <i class="bx bx-heart icon"></i>
                             <span class="link">Duyệt Đơn</span>
                         </a>
                     </li>
@@ -74,7 +72,7 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/logout" class="nav-link">
                             <i class="bx bx-log-out icon"></i>
                             <span class="link">Logout</span>
                         </a>
