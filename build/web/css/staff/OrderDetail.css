@@ -380,13 +380,6 @@ body {
 
 
 
-/* Additional icon centering fixes */
-.fas, .far, .fab {
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-}
-
 /* Specific icon adjustments if needed */
 .fa-hashtag,
 .fa-check,

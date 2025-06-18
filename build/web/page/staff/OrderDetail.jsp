@@ -227,6 +227,8 @@
 
 
                                         </div>
+                                        <!-- Shipping Process Button - Added at bottom of card -->
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -286,8 +288,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
