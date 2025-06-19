@@ -95,7 +95,6 @@ public class ForgotPassServlet extends HttpServlet {
                 session.removeAttribute("email");
                 session.removeAttribute("attemptsLeft");
 
-                // Giả sử bạn muốn chuyển sang trang đổi mật khẩu là newpassword.jsp
                 request.setAttribute("message", "Code verified! Please reset your password.");
                 request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
 

@@ -1,4 +1,3 @@
-
 package controller;
 
 import dao.UserDAO;
@@ -14,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import model.PasswordUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
@@ -36,7 +36,7 @@ public class LoginGoogleServlet extends HttpServlet {
             Users a = null;
 
             if (code == null || code.isEmpty()) {
-                response.sendRedirect("LoginServlet");
+                response.sendRedirect("login");
             } else {
                 String accessToken = getToken(code);
                 model.LoginGoogle user = getUserInfo(accessToken);
@@ -44,6 +44,7 @@ public class LoginGoogleServlet extends HttpServlet {
 
                 UserDAO adao = new UserDAO();
                 Users aemail = adao.checkUserByEmail(email);
+                String hashedPassword = PasswordUtils.hashPassword("google_oauth");
 
                 if (aemail == null) {
                     // Tạo user mới
@@ -51,7 +52,7 @@ public class LoginGoogleServlet extends HttpServlet {
                             -1,
                             user.getName(),
                             email,
-                            "google_oauth",
+                            hashedPassword,
                             6,
                             null,
                             null,
@@ -61,7 +62,7 @@ public class LoginGoogleServlet extends HttpServlet {
                     boolean success = adao.signupAccount(a);
                     if (!success) {
                         request.setAttribute("error", "Không thể tạo tài khoản mới.");
-                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        request.getRequestDispatcher("page/login/login.jsp").forward(request, response);
                         return;
                     }
 
@@ -74,16 +75,46 @@ public class LoginGoogleServlet extends HttpServlet {
                 session.invalidate();
                 session = request.getSession(true);
                 session.setAttribute("acc", a);
+                session.setAttribute("username", a.getUsername());
+                session.setAttribute("email", a.getEmail());
 
-                // Redirect thay vì forward để ẩn URL tham số code
-                response.sendRedirect("loginSuccess.jsp");
+                // Kiểm tra trạng thái tài khoản
+                if (!"active".equalsIgnoreCase(a.getStatus())) {
+                    response.sendRedirect("not_activite.jsp");
+                    return;
+                }
+
+                switch (a.getRoleId()) {
+                    case 1: // Admin
+                        response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                        break;
+                    case 2: // Operator
+                        response.sendRedirect(request.getContextPath() + "/homeOperator");
+                        break;
+                    case 3: // Staff
+                    case 4: // Transport Unit
+                        response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
+                        break;
+                    case 5: // Storage Unit
+                        response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
+                        break;
+                    case 6: // Customer
+                        response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
+                        break;
+                    default:
+                        response.sendRedirect("404.jsp");
+                        break;
+                }
+
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
-            request.setAttribute("error", "Đăng nhập bằng Google gặp lỗi, vui lòng thử lại.");
-            //  redirect về login.jsp 
-            response.sendRedirect("login.jsp");
+            ex.printStackTrace(); // Ghi log đầy đủ lỗi ra console
+            System.out.println("Google login error: " + ex.getMessage()); // Ghi nội dung lỗi
+            HttpSession session = request.getSession();
+            session.setAttribute("error", "Đăng nhập bằng Google gặp lỗi, vui lòng thử lại.");
+            response.sendRedirect(request.getContextPath() + "/login");
         }
+
     }
 
     // Lấy token access từ google

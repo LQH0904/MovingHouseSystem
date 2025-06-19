@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.PasswordUtils;
 
 /**
  *
@@ -79,7 +80,8 @@ public class ConfirmPassServlet extends HttpServlet {
             return;
         }
 
-        boolean updated = dao.updatePassByEmail(newpass, resetUsername);
+        String hashedPassword = PasswordUtils.hashPassword(newpass);
+        boolean updated = dao.updatePassByEmail(hashedPassword, resetUsername);
         if (updated) {
             msg = "Change password successfully!";
             session.removeAttribute("resetUsername");

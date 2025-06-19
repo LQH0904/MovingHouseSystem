@@ -13,7 +13,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.Timestamp;
+import java.util.logging.Logger;
+import model.PasswordUtils;
 
 /**
  *
@@ -37,6 +38,8 @@ public class LoginServlet extends HttpServlet {
         request.getRequestDispatcher("page/login/login.jsp").forward(request, response);
     }
 
+        private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,72 +49,91 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         UserDAO dao = new UserDAO();
-        Users user = dao.getAccountLoginByEmail(email, password);
-
+        Users user = dao.getUser(email);
         if (user != null) {
-            HttpSession session = request.getSession();
-            HttpSession oldSession = request.getSession(false);
-            if (oldSession != null) {
-                oldSession.invalidate();
+            boolean passwordMatch = false;
+            try {
+                // Kiểm tra mật khẩu bằng BCrypt
+                passwordMatch = PasswordUtils.checkPassword(password, user.getPasswordHash());
+            } catch (Exception e) {
+                LOGGER.warning("Error checking password for user: " + email + ": " + e.getMessage());
+                request.getRequestDispatcher("/page/login/login.jsp").forward(request, response);
+                return;
             }
 
-            // Tạo session mới
-            HttpSession newSession = request.getSession(true);
-            newSession.setAttribute("acc", user);
-            newSession.setAttribute("username", user.getUsername());
-            newSession.setAttribute("email", user.getEmail());
+            if (passwordMatch) {
+                if (!"active".equalsIgnoreCase(user.getStatus())) {
+                    response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                    return;
+                }
 
-            switch (user.getRoleId()) {
-                case 1: // Admin
-                    if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "/admin/registrations");
-                    } else {
-                        response.sendRedirect("error.jsp");
-                    }
-                    break;
-                case 2: // Operator
-                    if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "/homeOperator");
-                    } else {
-                        response.sendRedirect("error.jsp");
-                    }
-                    break;
-                case 3: // Staff
-                    if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "admin/ListApplicationRegistration.jsp");
-                    } else {
-                        response.sendRedirect("error.jsp");
-                    }
-                    break;
-                case 4: // Transport Unit
-                    if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "admin/ListApplicationRegistration.jsp");
-                    } else {
-                        response.sendRedirect("error.jsp");
-                    }
-                    break;
-                case 5: // Storage Unit
-                    if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "admin/ListApplicationRegistration.jsp");
-                    } else {
-                        response.sendRedirect("error.jsp");
-                    }
-                    break;
-                case 6: // Customer
-                    if ("active".equalsIgnoreCase(user.getStatus())) {
-                        response.sendRedirect(request.getContextPath() + "admin/ListApplicationRegistration.jsp");
-                    } else {
-                        response.sendRedirect("error.jsp");
-                    }
-                    break;
-                default:
-                    response.sendRedirect("error.jsp");
-                    break;
+                HttpSession oldSession = request.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
+
+                // Tạo session mới
+                HttpSession newSession = request.getSession(true);
+                newSession.setAttribute("acc", user);
+                newSession.setAttribute("username", user.getUsername());
+                newSession.setAttribute("email", user.getEmail());
+
+                switch (user.getRoleId()) {
+                    case 1: // Admin
+                        if ("active".equalsIgnoreCase(user.getStatus())) {
+                            response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
+                        }
+                        break;
+                    case 2: // Operator
+                        if ("active".equalsIgnoreCase(user.getStatus())) {
+                            response.sendRedirect(request.getContextPath() + "/homeOperator");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                        }
+                        break;
+                    case 3: // Staff
+                        if ("active".equalsIgnoreCase(user.getStatus())) {
+                            response.sendRedirect(request.getContextPath() + "/admin/ListApplicationRegistration.jsp");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                        }
+                        break;
+                    case 4: // Transport Unit
+                        if ("active".equalsIgnoreCase(user.getStatus())) {
+                            response.sendRedirect(request.getContextPath() + "updateLater.jsp");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                        }
+                        break;
+                    case 5: // Storage Unit
+                        if ("active".equalsIgnoreCase(user.getStatus())) {
+                            response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                        }
+                        break;
+                    case 6: // Customer
+                        if ("active".equalsIgnoreCase(user.getStatus())) {
+                            response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                        }
+                        break;
+                    default:
+                        response.sendRedirect(request.getContextPath() + "404.jsp");
+                        break;
+                }
+            } else {
+                request.setAttribute("mess", "Tài khoản hoặc mật khẩu của bạn chưa đúng");
+                request.setAttribute("email", email);
+                request.getRequestDispatcher("/page/login/login.jsp").forward(request, response);
             }
-
         } else {
-            request.setAttribute("mess", "Wrong email or password!");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            request.setAttribute("mess", "Tài khoản hoặc mật khẩu của bạn chưa đúng");
+            request.setAttribute("email", email);
+            request.getRequestDispatcher("/page/login/login.jsp").forward(request, response);
         }
     }
 

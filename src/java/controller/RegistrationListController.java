@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import model.RegistrationItem;
 
+@WebServlet(name = "RegistrationListController", urlPatterns = {"/admin/registrations"})
 public class RegistrationListController extends HttpServlet {
 
    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
