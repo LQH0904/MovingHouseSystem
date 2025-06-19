@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import model.TransportProcess;
 
-@WebServlet(name = "TransportProcessController", urlPatterns = {"/order/detail/*"})
+@WebServlet(name = "TransportProcessController", urlPatterns = {"/order/process/*"})
 public class TransportProcessController extends HttpServlet {
 
      private OrderDAO orderDAO;

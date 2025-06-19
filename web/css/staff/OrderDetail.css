@@ -64,6 +64,29 @@ body {
     color: var(--gray-800);
 }
 
+.tracking-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    text-decoration: none !important;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    border: none;
+    outline: none;
+    white-space: nowrap;
+}
+
 .card-body-custom {
     padding: 1rem;
 }

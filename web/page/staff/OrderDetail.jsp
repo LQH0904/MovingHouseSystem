@@ -41,9 +41,13 @@
                                 <!-- Order Information -->
                                 <div class="info-card">
                                     <div class="card-header-custom ">
-                                        <i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng                                        
+                                        <i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng  
+                                        <a href="${pageContext.request.contextPath}/order/process/${orderDetail.orderId}" class="tracking-button">
+                                            <i class="fas fa-route"></i>
+                                            Quá Trình vận chuyển
+                                        </a>
                                     </div>
-                                    
+
                                     <div class="card-body-custom">
                                         <div class="row">
                                             <div class="col-md-6">
