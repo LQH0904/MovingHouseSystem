@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:include page="../../page/login/head.jsp" />
+<%@page import="model.Users"%>
 
+<jsp:include page="/page/login/head.jsp"/>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -37,7 +38,7 @@
                 <div class="left-header">
                     <span>Work for Day</span>
                     <div class="buttons">
-                        <button onclick="location.href = 'login'">Sign In</button>
+                        <button onclick="location.href = 'signup'">Sign Up</button>
                         <button onclick="location.href = 'home.jsp'">Home</button>
                     </div>
                 </div>
@@ -47,15 +48,31 @@
             <div class="right-section">
                 <p class="logo">Welcome to Website</p>
 
-                <% String mess = (String) request.getAttribute("mess"); %>
-                <% if (mess != null) { %>
+                <%
+                String mess = (String) request.getAttribute("mess");
+                if (mess != null) {
+                %>
                 <p style="color: red; font-weight: bold;"><%= mess %></p>
-                <% } %>
+                <%
+                }
+                %>
+
+
+                <%
+                String error = (String) request.getAttribute("error"); 
+                if (error != null) {
+                %>
+                <p style="color: red; font-weight: bold;"><%= error %></p>
+                <%
+                }
+                %>
+
+
 
 
                 <form action="login" method="post">
                     <div class="form-group">
-                        <input type="text" name="email" required />
+                        <input type="text" name="email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" required />
                         <label>Email</label>
                     </div>
                     <div class="form-group">
@@ -73,21 +90,15 @@
                     </button>
 
                     <button type="submit" class="login-btn">Login</button>
+
+                    <button type="button" class="google-login"
+                            onclick="location.href = 'signup'"
+                            style="margin-top: 10px; width: 100%; padding: 10px; color: black; border: none; border-radius: 10px; cursor: pointer;">
+                        Create an Account
+                    </button>
+
                 </form>
             </div>
         </div>
     </body>
 </html>
-
-<script>
-    document.querySelector("form").addEventListener("submit", function (e) {
-        const email = this.querySelector("input[name='email']").value;
-        const password = this.querySelector("input[name='password']").value;
-
-        if (email.trim() === "" || password.trim() === "") {
-            e.preventDefault();
-            this.classList.add("shake");
-            setTimeout(() => this.classList.remove("shake"), 500);
-        }
-    });
-</script>
