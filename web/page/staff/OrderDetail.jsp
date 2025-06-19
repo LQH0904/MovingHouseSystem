@@ -40,9 +40,10 @@
                             <div class="col-lg-8">
                                 <!-- Order Information -->
                                 <div class="info-card">
-                                    <div class="card-header-custom">
-                                        <i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng
+                                    <div class="card-header-custom ">
+                                        <i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng                                        
                                     </div>
+                                    
                                     <div class="card-body-custom">
                                         <div class="row">
                                             <div class="col-md-6">
@@ -90,7 +91,7 @@
                                                                         Đã hủy
                                                                     </span>
                                                                 </c:when>
-                                                                
+
                                                             </c:choose>
                                                         </div>
                                                     </div>
@@ -144,7 +145,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Customer Information -->
+                                <!-- Thông tin khách hàng  -->
                                 <div class="info-card">
                                     <div class="card-header-custom">
                                         <i class="fas fa-user me-2"></i>Thông tin khách hàng
@@ -179,7 +180,7 @@
                                 </div>
                             </div>
 
-                            <!-- Right Column - Shipping & Warehouse -->
+                            <!-- Thông tin Kho & Vận Chuyển  -->
                             <div class="col-lg-4">
                                 <div class="info-card">
                                     <div class="card-header-custom">
@@ -241,12 +242,13 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div> 
 
-                         <!-- Order Timeline - Dynamic based on status -->
+                        <!-- Lịch sử giao hàng  -->
                         <div class="row mt-3">
                             <div class="col-12">
                                 <div class="info-card">
@@ -256,7 +258,7 @@
                                     </div>
                                     <div class="card-body-custom">
                                         <c:choose>
-                                            <%-- DELIVERED STATUS TIMELINE --%>
+                                            <%-- Trạng Thái Delivered --%>
                                             <c:when test="${orderDetail.orderStatus == 'delivered'}">
                                                 <div class="timeline-horizontal status-delivered">
                                                     <div class="timeline-item-horizontal completed">
@@ -275,17 +277,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã xác nhận</h6>
-                                                            <small></small>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="timeline-item-horizontal completed">
-                                                        <div class="timeline-icon">
-                                                            <i class="fas fa-box"></i>
-                                                        </div>
-                                                        <div class="timeline-content">
-                                                            <h6>Đã đóng gói</h6>
-                                                            <small></small>
+                                                            <small>${orderDetail.acceptedAt}</small>
                                                         </div>
                                                     </div>
 
@@ -295,7 +287,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đang giao hàng</h6>
-                                                            <small></small>
+                                                            <small>${orderDetail.deliverySchedule}</small>
                                                         </div>
                                                     </div>
 
@@ -305,13 +297,13 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã giao hàng</h6>
-                                                            <small></small>
+                                                            <small>${orderDetail.deliveredAt}</small>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </c:when>
 
-                                            <%-- IN PROGRESS STATUS TIMELINE --%>
+                                            <%-- Trạng Thái Inprocess --%>
                                             <c:when test="${orderDetail.orderStatus == 'in_progress'}">
                                                 <div class="timeline-horizontal status-in-progress">
                                                     <div class="timeline-item-horizontal completed">
@@ -330,19 +322,9 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã xác nhận</h6>
-                                                            <small></small>
+                                                            <small>${orderDetail.acceptedAt}</small>
                                                         </div>
-                                                    </div>
-
-                                                    <div class="timeline-item-horizontal completed">
-                                                        <div class="timeline-icon">
-                                                            <i class="fas fa-box"></i>
-                                                        </div>
-                                                        <div class="timeline-content">
-                                                            <h6>Đã đóng gói</h6>
-                                                            <small></small>
-                                                        </div>
-                                                    </div>
+                                                    </div>                                                    
 
                                                     <div class="timeline-item-horizontal active">
                                                         <div class="timeline-icon">
@@ -359,14 +341,14 @@
                                                             <i class="fas fa-check"></i>
                                                         </div>
                                                         <div class="timeline-content">
-                                                            <h6>Giao hàng thành công</h6>
+                                                            <h6>Đã giao hàng </h6>
                                                             <small>Chờ thực hiện</small>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </c:when>
 
-                                            <%-- PENDING STATUS TIMELINE --%>
+                                            <%-- Trạng Thái Pending --%>
                                             <c:when test="${orderDetail.orderStatus == 'pending'}">
                                                 <div class="timeline-horizontal status-pending">
                                                     <div class="timeline-item-horizontal completed">
@@ -386,16 +368,6 @@
                                                         <div class="timeline-content">
                                                             <h6>Chờ xác nhận</h6>
                                                             <small>Đang xử lý...</small>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="timeline-item-horizontal pending">
-                                                        <div class="timeline-icon">
-                                                            <i class="fas fa-box"></i>
-                                                        </div>
-                                                        <div class="timeline-content">
-                                                            <h6>Đóng gói</h6>
-                                                            <small>Chờ thực hiện</small>
                                                         </div>
                                                     </div>
 
@@ -421,7 +393,7 @@
                                                 </div>
                                             </c:when>
 
-                                            <%-- CANCELLED STATUS TIMELINE --%>
+                                            <%-- Trạng Thái CANCELLED  --%>
                                             <c:when test="${orderDetail.orderStatus == 'cancelled'}">
                                                 <div class="timeline-horizontal status-cancelled">
                                                     <div class="timeline-item-horizontal completed">
@@ -454,7 +426,7 @@
                                                         </div>
                                                     </div>
 
-                                                    
+
                                                 </div>
                                             </c:when>
 

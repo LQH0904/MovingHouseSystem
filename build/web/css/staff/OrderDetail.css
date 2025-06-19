@@ -55,6 +55,7 @@ body {
 }
 
 .card-header-custom {
+    
     background: var(--gray-50);
     border-bottom: 1px solid var(--gray-200);
     padding: 0.875rem 1rem;
@@ -260,7 +261,7 @@ body {
 }
 
 .status-pending {
-    background-color: #fef3c7;
+    background-color: #dbeafe;
     color: #92400e;
 }
 
@@ -668,6 +669,7 @@ body {
   background-color: #ef4444;
   border-color: #ef4444;
   color: white;
+  margin-right: 100px
 }
 
 .timeline-item-horizontal.cancelled .timeline-content h6 {
