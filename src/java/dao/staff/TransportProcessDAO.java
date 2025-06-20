@@ -1,4 +1,4 @@
-package dao;
+package dao.staff;
 
 import model.TransportProcess;
 import utils.DBConnection;

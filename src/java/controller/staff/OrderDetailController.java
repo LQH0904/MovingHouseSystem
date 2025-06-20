@@ -1,6 +1,6 @@
-package controller;
+package controller.staff;
 
-import dao.OrderDetailDAO;
+import dao.staff.OrderDetailDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;

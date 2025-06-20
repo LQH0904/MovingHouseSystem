@@ -1,4 +1,4 @@
-package dao;
+package dao.staff;
 
 import model.Order;
 import utils.DBConnection;
