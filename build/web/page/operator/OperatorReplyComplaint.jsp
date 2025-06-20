@@ -1,168 +1,160 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    response.setHeader("Pragma", "no-cache");
-    response.setDateHeader("Expires", 0);
-%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết Khiếu nại Cấp Cao và Xử lý (Operator)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <%-- KHÔNG BAO GỒM CSS TÙY CHỈNH TẠI ĐÂY THEO YÊU CẦU --%>
-
+    <title>Danh sách Khiếu nại Chuyển Cấp cao</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .filter-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .table th {
+            background-color: #d6e0e7;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="parent">
-    
-    <div class="div3 px-4 pt-4">
-        <h3 class="mb-4 text-primary border-bottom pb-2">
-            Chi tiết Khiếu nại Cấp Cao #<c:out value="${currentComplaint.issueId != null ? currentComplaint.issueId : 'Không xác định'}"/>
-        </h3>
+<body>
+    <div class="container">
+        <h2>Danh sách Khiếu nại Chuyển Cấp cao</h2>
 
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success" role="alert">
+                ${successMessage}
+            </div>
+        </c:if>
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger" role="alert">
-                <c:out value="${errorMessage}"/>
+                ${errorMessage}
             </div>
         </c:if>
 
-        <c:if test="${currentComplaint != null}">
-            <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white fs-5">Thông tin khiếu nại</div>
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>ID Khiếu nại:</strong></div>
-                        <div class="col-md-9"><c:out value="${currentComplaint.issueId}"/></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Người gửi:</strong></div>
-                        <div class="col-md-9"><c:out value="${currentComplaint.username}"/></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Mô tả:</strong></div>
-                        <div class="col-md-9"><c:out value="${currentComplaint.description}"/></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Trạng thái hiện tại:</strong></div>
-                        <div class="col-md-9">
-                            <span id="currentStatusBadge" class="badge rounded-pill p-2 bg-danger">
-                                Chuyển cấp cao
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Ưu tiên:</strong></div>
-                        <div class="col-md-9">
-                            <span class="badge rounded-pill p-2
-                                  <c:choose>
-                                      <c:when test="${currentComplaint.priority eq 'high'}">bg-warning text-dark</c:when>
-                                      <c:when test="${currentComplaint.priority eq 'normal'}">bg-secondary</c:when>
-                                      <c:when test="${currentComplaint.priority eq 'low'}">bg-info text-dark</c:when>
-                                      <c:otherwise>bg-light text-dark</c:otherwise>
-                                  </c:choose>">
-                                <c:choose>
-                                    <c:when test="${currentComplaint.priority eq 'high'}">Cao</c:when>
-                                    <c:when test="${currentComplaint.priority eq 'normal'}">Bình thường</c:when>
-                                    <c:when test="${currentComplaint.priority eq 'low'}">Thấp</c:when>
-                                    <c:otherwise><c:out value="${currentComplaint.priority}"/></c:otherwise>
-                                </c:choose>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Ngày tạo:</strong></div>
-                        <div class="col-md-9">
-                            <c:choose>
-                                <c:when test="${currentComplaint.createdAt != null}">
-                                    <fmt:formatDate value="${currentComplaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
-                                </c:when>
-                                <c:otherwise>Không có</c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Ngày xử lý:</strong></div>
-                        <div class="col-md-9">
-                            <c:choose>
-                                <c:when test="${currentComplaint.resolvedAt != null}">
-                                    <fmt:formatDate value="${currentComplaint.resolvedAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
-                                </c:when>
-                                <c:otherwise>Chưa xử lý</c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
+        <div class="filter-form">
+            <form action="${pageContext.request.contextPath}/operatorComplaintList" method="get" class="form-inline justify-content-center">
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="searchTerm" class="sr-only">Tìm kiếm</label>
+                    <input type="text" class="form-control" id="searchTerm" name="searchTerm"
+                           placeholder="Tên, ID hoặc Mô tả" value="${searchTerm}">
                 </div>
-            </div>
-
-            <h4 class="mb-3 text-primary border-bottom pb-2">Xử lý Khiếu nại Cấp Cao</h4>
-            <form action="${pageContext.request.contextPath}/OperatorReplyComplaintServlet" method="post" class="needs-validation" novalidate>
-                <input type="hidden" name="issueId" value="${currentComplaint.issueId}">
-
-                <div class="mb-3">
-                    <label for="status" class="form-label fw-bold">Trạng thái mới:</label>
-                    <select name="status" id="status" class="form-select" required>
-                        <option value="escalated" <c:if test="${currentComplaint.status eq 'escalated'}">selected</c:if>>Chuyển cấp cao</option>
-                        <option value="in_progress" <c:if test="${currentComplaint.status eq 'in_progress'}">selected</c:if>>Đang xử lý</option>
-                        <option value="resolved" <c:if test="${currentComplaint.status eq 'resolved'}">selected</c:if>>Đã xử lý</option>
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="priorityFilter" class="mr-2">Mức độ ưu tiên:</label>
+                    <select class="form-control" id="priorityFilter" name="priorityFilter">
+                        <option value="">Tất cả</option>
+                        <option value="low" <c:if test="${priorityFilter eq 'low'}">selected</c:if>>Thấp</option>
+                        <option value="normal" <c:if test="${priorityFilter eq 'normal'}">selected</c:if>>Bình thường</option>
+                        <option value="high" <c:if test="${priorityFilter eq 'high'}">selected</c:if>>Cao</option>
                     </select>
-                    <div class="invalid-feedback">Vui lòng chọn một trạng thái.</div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="priority" class="form-label fw-bold">Mức độ ưu tiên:</label>
-                    <select name="priority" id="priority" class="form-select" required>
-                        <option value="low" <c:if test="${currentComplaint.priority eq 'low'}">selected</c:if>>Thấp</option>
-                        <option value="normal" <c:if test="${currentComplaint.priority eq 'normal'}">selected</c:if>>Bình thường</option>
-                        <option value="high" <c:if test="${currentComplaint.priority eq 'high'}">selected</c:if>>Cao</option>
-                    </select>
-                    <div class="invalid-feedback">Vui lòng chọn mức độ ưu tiên.</div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="replyContent" class="form-label fw-bold">Nội dung phản hồi (ghi chú xử lý):</label>
-                    <textarea class="form-control" id="replyContent" name="replyContent" rows="4" placeholder="Nhập nội dung phản hồi hoặc ghi chú xử lý của bạn..." required></textarea>
-                    <div class="invalid-feedback">Vui lòng nhập nội dung phản hồi.</div>
-                </div>
-
-                <button type="submit" class="btn btn-success me-2">
-                    <i class="bi bi-send-fill me-1"></i> Gửi phản hồi và cập nhật
-                </button>
-                <a href="${pageContext.request.contextPath}/OperatorComplaintServlet" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left-circle me-1"></i> Quay lại danh sách
-                </a>
+                <button type="submit" class="btn btn-primary mb-2">Tìm kiếm & Lọc</button>
             </form>
-        </c:if>
+        </div>
 
-        <c:if test="${currentComplaint == null}">
-            <div class="alert alert-warning text-center" role="alert">
-                Không tìm thấy thông tin khiếu nại cấp cao. Vui lòng kiểm tra lại ID khiếu nại hoặc quay lại
-                <a href="${pageContext.request.contextPath}/OperatorComplaintServlet">danh sách khiếu nại cấp cao</a>.
-            </div>
-        </c:if>
+        <c:choose>
+            <c:when test="${not empty escalatedComplaints}">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID Khiếu nại</th>
+                            <th>Tên người dùng</th>
+                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
+                            <th>Độ ưu tiên</th>
+                            <th>Thời gian tạo</th>
+                            <th>Lý do chuyển cấp cao</th>
+                            <th>ID Người chuyển cấp cao</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="complaint" items="${escalatedComplaints}">
+                            <tr>
+                                <td>${complaint.issueId}</td>
+                                <td>${complaint.username}</td>
+                                <td>${complaint.description}</td>
+                                <td>${complaint.status}</td>
+                                <td>${complaint.priority}</td>
+                                <td><fmt:formatDate value="${complaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
+                                <td>${complaint.escalationReason}</td>
+                                <td><c:choose><c:when test="${complaint.escalatedByUserId != null}">${complaint.escalatedByUserId}</c:when><c:otherwise>N/A</c:otherwise></c:choose></td>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/OperatorReplyComplaintServlet?issueId=${complaint.issueId}" class="btn btn-info btn-sm">Chi tiết</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation" class="pagination-container">
+                    <ul class="pagination">
+                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="${pageContext.request.contextPath}/operatorComplaintList?page=1&searchTerm=${searchTerm}&priorityFilter=${priorityFilter}" aria-label="First">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="${pageContext.request.contextPath}/operatorComplaintList?page=${currentPage - 1}&searchTerm=${searchTerm}&priorityFilter=${priorityFilter}" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                            </a>
+                        </li>
+                        <c:forEach begin="${1}" end="${totalPages}" var="i">
+                            <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                <a class="page-link" href="${pageContext.request.contextPath}/operatorComplaintList?page=${i}&searchTerm=${searchTerm}&priorityFilter=${priorityFilter}">${i}</a>
+                            </li>
+                        </c:forEach>
+                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="${pageContext.request.contextPath}/operatorComplaintList?page=${currentPage + 1}&searchTerm=${searchTerm}&priorityFilter=${priorityFilter}" aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="${pageContext.request.contextPath}/operatorComplaintList?page=${totalPages}&searchTerm=${searchTerm}&priorityFilter=${priorityFilter}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                   <div class="text-center mt-3">
+                       <p>Hiển thị ${totalComplaints} khiếu nại chuyển cấp cao.</p>
+                   </div>
+            </c:when>
+            <c:otherwise>
+                <div class="alert alert-info" role="alert">
+                    Không tìm thấy khiếu nại nào ở trạng thái "chuyển cấp cao" phù hợp với tiêu chí tìm kiếm.
+                </div>
+            </c:otherwise>
+        </c:choose>
+
+        <p><a href="${pageContext.request.contextPath}/ComplaintServlet" class="btn btn-secondary mt-3">Quay lại danh sách khiếu nại chung</a></p>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    (function () {
-        'use strict';
-        var forms = document.querySelectorAll('.needs-validation');
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-    })();
-</script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

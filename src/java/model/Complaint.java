@@ -9,13 +9,13 @@ public class Complaint {
     private String status;
     private String priority;
     private Timestamp createdAt;
-    private Timestamp resolvedAt; // Thuộc tính mới được thêm vào
+    private Timestamp resolvedAt;
+    private String escalationReason;
+    private Integer escalatedByUserId;
 
     public Complaint() {
-        // Constructor mặc định
     }
 
-    // Constructor với tất cả các trường, bao gồm resolvedAt
     public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt) {
         this.issueId = issueId;
         this.username = username;
@@ -23,10 +23,11 @@ public class Complaint {
         this.status = status;
         this.priority = priority;
         this.createdAt = createdAt;
-        this.resolvedAt = resolvedAt; // Khởi tạo resolvedAt
+        this.resolvedAt = resolvedAt;
+        this.escalationReason = null;
+        this.escalatedByUserId = null;
     }
 
-    // Constructor cũ, bạn có thể giữ lại hoặc xóa nếu không cần
     public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt) {
         this.issueId = issueId;
         this.username = username;
@@ -34,8 +35,21 @@ public class Complaint {
         this.status = status;
         this.priority = priority;
         this.createdAt = createdAt;
-        // resolvedAt sẽ mặc định là null hoặc bạn có thể gán giá trị mặc định khác ở đây
         this.resolvedAt = null;
+        this.escalationReason = null;
+        this.escalatedByUserId = null;
+    }
+
+    public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt, String escalationReason, Integer escalatedByUserId) {
+        this.issueId = issueId;
+        this.username = username;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.createdAt = createdAt;
+        this.resolvedAt = resolvedAt;
+        this.escalationReason = escalationReason;
+        this.escalatedByUserId = escalatedByUserId;
     }
 
     public int getIssueId() {
@@ -86,13 +100,28 @@ public class Complaint {
         this.createdAt = createdAt;
     }
 
-    // Getter và Setter cho resolvedAt
     public Timestamp getResolvedAt() {
         return resolvedAt;
     }
 
     public void setResolvedAt(Timestamp resolvedAt) {
         this.resolvedAt = resolvedAt;
+    }
+
+    public String getEscalationReason() {
+        return escalationReason;
+    }
+
+    public void setEscalationReason(String escalationReason) {
+        this.escalationReason = escalationReason;
+    }
+
+    public Integer getEscalatedByUserId() {
+        return escalatedByUserId;
+    }
+
+    public void setEscalatedByUserId(Integer escalatedByUserId) {
+        this.escalatedByUserId = escalatedByUserId;
     }
 
     @Override
@@ -104,7 +133,9 @@ public class Complaint {
                 ", status='" + status + '\'' +
                 ", priority='" + priority + '\'' +
                 ", createdAt=" + createdAt +
-                ", resolvedAt=" + resolvedAt + // Thêm resolvedAt vào toString
+                ", resolvedAt=" + resolvedAt +
+                ", escalationReason='" + escalationReason + '\'' +
+                ", escalatedByUserId=" + escalatedByUserId +
                 '}';
     }
 }

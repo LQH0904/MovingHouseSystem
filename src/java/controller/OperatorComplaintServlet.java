@@ -1,100 +1,81 @@
 package controller;
 
-import dao.OperatorComplaintDAO; // Đã đổi import
+import dao.ComplaintDAO;
 import model.Complaint;
-
+import java.io.IOException;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
+import jakarta.servlet.http.HttpSession; // Keep this import
 
-@WebServlet("/OperatorComplaintServlet")
-public class OperatorComplaintServlet extends HttpServlet {
+@WebServlet(name = "OperatorComplaintListServlet", urlPatterns = {"/operatorComplaintList"})
+public class OperatorComplaintServlet extends HttpServlet { // Renamed from OperatorComplaintListServlet to OperatorComplaintServlet for consistency with mapping
 
-    private OperatorComplaintDAO operatorComplaintDAO; // Đã đổi tên biến
+    private static final long serialVersionUID = 1L;
+    private ComplaintDAO complaintDAO;
+    private static final int RECORDS_PER_PAGE = 5;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        operatorComplaintDAO = new OperatorComplaintDAO(); // Đã khởi tạo OperatorComplaintDAO
+        complaintDAO = new ComplaintDAO();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        String action = request.getParameter("action");
+        String searchTerm = request.getParameter("searchTerm");
+        String priorityFilter = request.getParameter("priorityFilter");
 
-        if (action != null && action.equals("view")) {
-            int issueId = 0;
+        int page = 1;
+        if (request.getParameter("page") != null) {
             try {
-                issueId = Integer.parseInt(request.getParameter("issueId"));
+                page = Integer.parseInt(request.getParameter("page"));
             } catch (NumberFormatException e) {
-                System.err.println("OperatorComplaintServlet: Invalid issue ID format for view action: " + request.getParameter("issueId"));
-                response.sendRedirect(request.getContextPath() + "/OperatorComplaintServlet");
-                return;
+                page = 1;
             }
-
-            // Chuyển hướng đến Servlet xử lý chi tiết/phản hồi riêng cho Operator
-            // Đảm bảo OperatorReplyComplaintServlet tồn tại và xử lý issueId
-            response.sendRedirect(request.getContextPath() + "/OperatorReplyComplaintServlet?issueId=" + issueId);
-            return;
         }
-        else {
-            String searchTerm = request.getParameter("search");
-            // String statusFilter = "escalated"; // KHÔNG CẦN THIẾT NỮA VÌ ĐÃ CỐ ĐỊNH TRONG DAO
-            String priorityFilter = request.getParameter("priorityFilter");
+        int offset = (page - 1) * RECORDS_PER_PAGE;
 
-            int currentPage = 1;
-            if (request.getParameter("page") != null) {
-                try {
-                    currentPage = Integer.parseInt(request.getParameter("page"));
-                } catch (NumberFormatException e) {
-                    currentPage = 1; // Mặc định về trang 1 nếu lỗi
-                }
-            }
-            int recordsPerPage = 10;
-            int offset = (currentPage - 1) * recordsPerPage;
+        int totalComplaints = complaintDAO.getTotalEscalatedComplaintCount(searchTerm, priorityFilter);
+        int totalPages = (int) Math.ceil((double) totalComplaints / RECORDS_PER_PAGE);
 
-            // Gọi phương thức DAO đã được sửa để lấy tổng số lượng khiếu nại cấp cao
-            // Đã thay đổi đối số: không còn statusFilter
-            int totalComplaints = operatorComplaintDAO.getTotalEscalatedComplaintCount(searchTerm, priorityFilter);
-            int totalPages = (int) Math.ceil((double) totalComplaints / recordsPerPage);
+        List<Complaint> escalatedComplaints = complaintDAO.getEscalatedComplaints(searchTerm, priorityFilter, offset, RECORDS_PER_PAGE);
 
-            // Gọi phương thức DAO đã được sửa để lấy danh sách khiếu nại cấp cao
-            // Đã thay đổi đối số: không còn statusFilter
-            List<Complaint> complaints = operatorComplaintDAO.getAllEscalatedComplaints(searchTerm, priorityFilter, offset, recordsPerPage);
+        request.setAttribute("escalatedComplaints", escalatedComplaints);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalComplaints", totalComplaints);
+        request.setAttribute("searchTerm", searchTerm);
+        request.setAttribute("priorityFilter", priorityFilter);
 
-            request.setAttribute("complaints", complaints);
-            request.setAttribute("totalComplaints", totalComplaints);
-            request.setAttribute("totalPages", totalPages);
-            request.setAttribute("currentPage", currentPage);
-            request.setAttribute("searchTerm", searchTerm);
-            request.setAttribute("statusFilter", "escalated"); // Vẫn truyền để giữ nhất quán trên JSP nếu cần hiển thị
-            request.setAttribute("priorityFilter", priorityFilter);
-
-            String updateStatus = request.getParameter("updateStatus");
-            if ("success".equals(updateStatus)) {
-                request.setAttribute("updateMessage", "Cập nhật khiếu nại thành công!");
-                request.setAttribute("updateMessageType", "success");
-            } else if ("error".equals(updateStatus)) {
-                String errorMessage = request.getParameter("message");
-                if (errorMessage == null) errorMessage = "Có lỗi xảy ra khi cập nhật khiếu nại.";
-                request.setAttribute("updateMessage", "Lỗi: " + errorMessage);
-                request.setAttribute("updateMessageType", "danger");
-            }
-
-            // Chuyển tiếp đến JSP riêng cho Operator
-            request.getRequestDispatcher("/page/operator/OperatorComplaintList.jsp").forward(request, response);
+        String updateStatus = request.getParameter("updateStatus");
+        if ("success_escalated".equals(updateStatus)) {
+            request.setAttribute("successMessage", "Khiếu nại đã được chuyển cấp cao thành công!");
+        } else if ("success".equals(updateStatus)) { // Handle success from operator replying
+            request.setAttribute("successMessage", "Phản hồi đã được gửi thành công!");
         }
+        else if ("error".equals(updateStatus)) {
+            String errorMessageParam = request.getParameter("message");
+            if (errorMessageParam != null && !errorMessageParam.isEmpty()) {
+                request.setAttribute("errorMessage", "Có lỗi xảy ra: " + errorMessageParam.replace("_", " "));
+            } else {
+                request.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật khiếu nại.");
+            }
+        }
+
+        request.getRequestDispatcher("/page/operator/OperatorComplaintList.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         doGet(request, response);
     }
 }

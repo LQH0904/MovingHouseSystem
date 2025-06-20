@@ -24,25 +24,30 @@ public class ComplaintServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Đảm bảo mã hóa UTF-8 cho yêu cầu và phản hồi
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
 
+        // Xử lý hành động "view" để xem chi tiết một khiếu nại
         if (action != null && action.equals("view")) {
             int issueId = 0;
             try {
                 issueId = Integer.parseInt(request.getParameter("issueId"));
             } catch (NumberFormatException e) {
-                System.err.println("ComplaintServlet: Invalid issue ID format for view action: " + request.getParameter("issueId"));
+                System.err.println("ComplaintServlet: Định dạng ID khiếu nại không hợp lệ cho hành động xem: " + request.getParameter("issueId"));
+                // Chuyển hướng về trang danh sách nếu ID không hợp lệ
                 response.sendRedirect(request.getContextPath() + "/ComplaintServlet");
                 return;
             }
 
+            // Chuyển hướng tới ReplyComplaintServlet để xử lý việc xem và phản hồi
             response.sendRedirect(request.getContextPath() + "/replyComplaint?issueId=" + issueId);
-            return;
+            return; // Quan trọng: dừng xử lý ở đây sau khi chuyển hướng
         }
         else {
+            // Xử lý hiển thị danh sách khiếu nại với tìm kiếm, lọc và phân trang
             String searchTerm = request.getParameter("search");
             String statusFilter = request.getParameter("statusFilter");
             String priorityFilter = request.getParameter("priorityFilter");
@@ -52,17 +57,21 @@ public class ComplaintServlet extends HttpServlet {
                 try {
                     currentPage = Integer.parseInt(request.getParameter("page"));
                 } catch (NumberFormatException e) {
+                    // Đặt lại về trang 1 nếu tham số page không hợp lệ
                     currentPage = 1;
                 }
             }
-            int recordsPerPage = 10;
+            int recordsPerPage = 10; // Số lượng bản ghi mỗi trang
             int offset = (currentPage - 1) * recordsPerPage;
 
+            // Lấy tổng số khiếu nại để tính toán phân trang
             int totalComplaints = complaintDAO.getTotalComplaintCount(searchTerm, statusFilter, priorityFilter);
             int totalPages = (int) Math.ceil((double) totalComplaints / recordsPerPage);
 
+            // Lấy danh sách khiếu nại đã được lọc và phân trang
             List<Complaint> complaints = complaintDAO.getAllComplaints(searchTerm, statusFilter, priorityFilter, offset, recordsPerPage);
 
+            // Đặt các thuộc tính vào request để JSP có thể truy cập
             request.setAttribute("complaints", complaints);
             request.setAttribute("totalComplaints", totalComplaints);
             request.setAttribute("totalPages", totalPages);
@@ -71,23 +80,31 @@ public class ComplaintServlet extends HttpServlet {
             request.setAttribute("statusFilter", statusFilter);
             request.setAttribute("priorityFilter", priorityFilter);
 
+            // Xử lý thông báo cập nhật (ví dụ: từ ReplyComplaintServlet chuyển hướng đến)
             String updateStatus = request.getParameter("updateStatus");
             if ("success".equals(updateStatus)) {
                 request.setAttribute("updateMessage", "Cập nhật khiếu nại thành công!");
+                request.setAttribute("updateMessageType", "success"); // Để hiển thị CSS phù hợp (ví dụ: màu xanh)
+            } else if ("success_escalated".equals(updateStatus)) { // Trường hợp chuyển cấp thành công
+                request.setAttribute("updateMessage", "Khiếu nại đã được chuyển cấp thành công!");
                 request.setAttribute("updateMessageType", "success");
-            } else if ("error".equals(updateStatus)) {
+            }
+            else if ("error".equals(updateStatus)) {
                 String errorMessage = request.getParameter("message");
                 if (errorMessage == null) errorMessage = "Có lỗi xảy ra khi cập nhật khiếu nại.";
                 request.setAttribute("updateMessage", "Lỗi: " + errorMessage);
-                request.setAttribute("updateMessageType", "danger");
+                request.setAttribute("updateMessageType", "danger"); // Để hiển thị CSS phù hợp (ví dụ: màu đỏ)
             }
 
+            // Chuyển tiếp tới trang JSP để hiển thị danh sách
             request.getRequestDispatcher("/page/staff/ComplaintList.jsp").forward(request, response);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Với servlet này, POST request thường được sử dụng cho các hành động như tìm kiếm/lọc,
+        // nên việc gọi doGet là hợp lý để hiển thị lại danh sách với các tiêu chí mới.
         doGet(request, response);
     }
 }
