@@ -67,6 +67,7 @@ nav.open .sidebar {
   padding: 14px 12px;
   border-radius: 8px;
   text-decoration: none;
+  position: relative;
 }
 .lists .nav-link:hover {
   background-color: #4070f4;
@@ -80,11 +81,110 @@ nav.open .sidebar {
   font-size: 16px;
   color: #707070;
   font-weight: 400;
+  flex: 1;
 }
 .lists .nav-link:hover .icon,
 .lists .nav-link:hover .link {
   color: #fff;
 }
+
+/* Submenu Styles */
+.has-submenu .nav-link {
+  justify-content: space-between;
+}
+
+.arrow {
+  font-size: 16px;
+  color: #707070;
+  transition: transform 0.3s ease;
+  margin-left: auto;
+}
+
+.lists .nav-link:hover .arrow {
+  color: #fff;
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background-color: transparent;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.has-submenu.active .submenu {
+  max-height: 200px;
+}
+
+.submenu-item {
+  list-style: none;
+}
+
+.submenu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  border-radius: 6px;
+  margin: 2px 8px;
+  transition: all 0.3s ease;
+  background-color: #e8f4fd; /* Màu xanh nhạt như trong hình */
+}
+
+.submenu-link:hover {
+  background-color: #4070f4;
+  text-decoration: none;
+}
+
+.submenu-link:focus {
+  text-decoration: none;
+  outline: none;
+}
+
+.submenu-link:visited {
+  text-decoration: none;
+}
+
+.submenu-link .icon {
+  margin-right: 12px;
+  font-size: 16px;
+  color: #707070;
+}
+
+.submenu-link .link {
+  font-size: 14px;
+  color: #707070;
+  font-weight: 400;
+}
+
+.submenu-link:hover .icon,
+.submenu-link:hover .link {
+  color: #fff;
+}
+
+/* Active state for parent menu */
+.has-submenu.active > .nav-link {
+  background-color: #4070f4;
+}
+
+.has-submenu.active > .nav-link .icon,
+.has-submenu.active > .nav-link .link,
+.has-submenu.active > .nav-link .arrow {
+  color: #fff;
+}
+
+
+.has-submenu.active .submenu-link {
+  background-color: #e8f4fd; 
+  text-decoration: none;
+}
+
+.has-submenu.active .submenu-link:hover {
+  background-color: #4070f4; /* Màu xanh đậm khi hover */
+  text-decoration: none;
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -101,4 +201,3 @@ nav.open ~ .overlay {
   left: 260px;
   pointer-events: auto;
 }
-
