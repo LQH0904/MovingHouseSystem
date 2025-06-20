@@ -32,7 +32,7 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/repURL" class="nav-link">
                             <i class="bx bx-bar-chart-alt-2 icon"></i>
-                            <span class="link">Báo Cáo Doanh Thu </span>
+                            <span class="link">Báo Cáo Tổng Quát  </span>
                         </a>
                     </li>
                     <li class="list">
@@ -82,6 +82,6 @@
             </div>
         </div>
 
-        <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
+        <script src="../../js/SideBar.js"></script>
     </body>
 </html>
