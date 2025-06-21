@@ -19,10 +19,11 @@
     border: 2px solid rgb(62, 49, 49);
     box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
     border-top-left-radius: 10px;
+    background-color: white;
+
+    /* Thêm thuộc tính này để chỉ div3 có thể cuộn */
+    overflow-y: auto; /* hoặc scroll */
     display: flex;
-    padding: 20px;
-    gap: 20px;
-    overflow: hidden;
 }
 
 body {
@@ -93,7 +94,7 @@ body {
 }
 .worklink a:hover{
     transform: scale(1.1);
-    background-color: red; 
+    background-color: red;
     color: white;
 }
 .worklink{
@@ -120,6 +121,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border: 2px solid rgba(102, 126, 234, 0.2);
     height: fit-content;
+    margin: 10px;
 }
 
 .calendar-header {
@@ -328,3 +330,512 @@ body {
         width: 100%;
     }
 }
+
+
+.user-char{
+    display: flex;
+    height: 250px;
+    padding: 0 20px;
+    margin: 20px;
+    justify-content:center;
+    border: 1px solid black;
+    border-radius: 10px;
+
+}
+.char-use{
+    width: 70%;
+}
+.stats-list {
+    list-style: none;
+}
+
+.stats-item {
+    display: grid;
+    grid-template-columns: 140px 1fr 60px;
+    align-items: center;
+    gap: 20px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ts-item:first-child {
+    padding-top: 0.1rem;
+}
+
+.stats-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0.5rem;
+}
+
+.stats-label {
+    display: flex;
+    align-items: center;
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.stats-bar {
+    height: 10px;
+    background-color: #f1f5f9;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.stats-progress {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stats-value {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 1rem;
+    text-align: right;
+}
+
+/* Progress bar colors */
+.progress-purple {
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+}
+.progress-yellow {
+    background: linear-gradient(90deg, #f59e0b, #eab308);
+}
+.progress-red {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+.progress-blue {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+.progress-indigo {
+    background: linear-gradient(90deg, #6366f1, #4f46e5);
+}
+.progress-4{
+    background: rgba(58, 223, 146, 0.933);
+}
+.progress-5{
+    background: #8b5cf6;
+}
+.progress-6{
+    background: rgba(218, 223, 58, 0.91);
+}
+.progress-7{
+    background:  rgba(233, 152, 46, 0.91);
+}
+.progress-8{
+    background:  rgba(221, 46, 233, 0.91);
+}
+.title-user{
+    width: 42%;
+    padding: 17px;
+}
+
+.title1{
+    color: rebeccapurple;
+    padding-bottom:0px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 10px;
+    font-size: 19px;
+    font-weight: bold;
+}
+.title1:after{
+    content: ""; /* Bắt buộc */
+    position: absolute; /* Định vị tuyệt đối */
+    bottom: 0; /* Đặt ở dưới cùng của phần tử cha */
+    left: 0; /* Bắt đầu từ bên trái */
+    width: 100%; /* Chiều rộng bằng với phần tử cha */
+    height: 1px; /* Độ dày của đường gạch */
+    background-color: rgba(64, 133, 244, 0.232); /* Màu của đường gạch */
+}
+.title2{
+    padding: 2px;
+    font-family: 'Roboto', sans-serif;
+}
+.title_form_1{
+    padding: 20px;
+    position: relative;
+    font-weight: 800;
+    font-size: 25px;
+    padding-left: 5%;
+}
+.title_form_1:after{
+    content: "";
+    position: absolute; /* Định vị tuyệt đối */
+    bottom: 8px; /* Đặt ở dưới cùng của phần tử cha */
+    left: 2%; /* Bắt đầu từ bên trái */
+    width: 97%; /* Chiều rộng bằng với phần tử cha */
+    height: 3px; /* Độ dày của đường gạch */
+    background-color: rgba(64, 133, 244, 0.632); /* Màu của đường gạch */
+}
+.user{
+    margin: 5px 0 5px 5px;
+    border-radius: 10px;
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 40%;
+    margin-bottom: 20px;
+}
+
+.center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+.center-text h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+.center-text p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* CSS cho legend hiển thị 2 cột, mỗi cột 3 items */
+.legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 cột bằng nhau */
+    gap: 21px 12px; /* Khoảng cách giữa các items */
+    padding: 15px;
+    width: 60%;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    border-left: 4px solid;
+    transition: transform 0.2s;
+}
+
+.legend-item:hover {
+    transform: translateX(5px);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.legend-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.legend-value {
+    font-weight: bold;
+    color: #333;
+}
+.char-doughnut{
+    width: 100%;
+    display: flex;
+    height: 240px;
+}
+.title3 {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 35px 40px;
+    margin: 20px 4% -50px 3%;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 10px 20px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1.7;
+    font-size: 16px;
+    color: #2d3748;
+}
+
+.title3::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,
+        #4299e1 0%,
+        #38b2ac 25%,
+        #48bb78 50%,
+        #ed8936 75%,
+        #e53e3e 100%);
+    opacity: 0.8;
+}
+
+.title3:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.15),
+        0 15px 30px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.status-highlight {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 2.5px 8px;
+    transition: all 0.2s ease;
+}
+
+.status-open {
+    background: linear-gradient(135deg, #3182ce, #4299e1);
+    color: white;
+    box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+}
+
+.status-progress {
+    background: linear-gradient(135deg, #d69e2e, #ed8936);
+    color: white;
+    box-shadow: 0 2px 8px rgba(214, 158, 46, 0.3);
+}
+
+.status-resolved {
+    background: linear-gradient(135deg, #38a169, #48bb78);
+    color: white;
+    box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+}
+
+.status-escalated {
+    background: linear-gradient(135deg, #c53030, #e53e3e);
+    color: white;
+    box-shadow: 0 2px 8px rgba(197, 48, 48, 0.3);
+}
+
+.status-highlight:hover {
+    transform: scale(1.05);
+}
+
+.intro-text {
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.description-text {
+    color: #4a5568;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+/* Icon cho các trạng thái */
+.status-highlight::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    margin-right: 6px;
+    display: inline-block;
+}
+
+/* Animation cho hiệu ứng loading */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.status-progress::before {
+    animation: pulse 2s infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .title3 {
+        padding: 25px 30px;
+        margin: 15px 10px;
+        font-size: 15px;
+    }
+
+    .status-highlight {
+        margin: 2px 2px;
+        font-size: 13px;
+    }
+}
+/* CSS cho bảng */
+.table-issue {
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.table-issue table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.table-issue thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.table-issue th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 13px;
+    border: none;
+    position: relative;
+}
+
+.table-issue th:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.table-issue tbody tr {
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.table-issue tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.table-issue tbody tr:hover {
+    background: #e3f2fd;
+    transform: scale(1.002);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-issue td {
+    padding: 16px 20px;
+    border: none;
+    border-bottom: 1px solid #e9ecef;
+    color: #333;
+    line-height: 1.5;
+}
+
+.table-issue tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .table-issue {
+        margin: 10px 0;
+        border-radius: 8px;
+    }
+
+    .table-issue th,
+    .table-issue td {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    .table-issue th {
+        font-size: 12px;
+    }
+}
+
+/* Animation khi load */
+.table-issue {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Style cho status column (cột trạng thái) */
+.table-issue td:last-child {
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Có thể thêm màu cho các status khác nhau */
+.status-active {
+    color: #28a745;
+    background: #d4edda;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.status-pending {
+    color: #ffc107;
+    background: #fff3cd;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.status-inactive {
+    color: #dc3545;
+    background: #f8d7da;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Dark mode (tùy chọn) */
+@media (prefers-color-scheme: dark) {
+    .table-issue {
+        background: #2d3748;
+    }
+
+    .table-issue tbody tr {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+
+    .table-issue tbody tr:nth-child(even) {
+        background: #4a5568;
+    }
+
+    .table-issue tbody tr:hover {
+        background: #4a5568;
+    }
+
+    .table-issue td {
+        border-bottom-color: #4a5568;
+        color: #e2e8f0;
+    }
+}
+

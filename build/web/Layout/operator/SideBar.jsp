@@ -30,9 +30,9 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/repURL" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="nav-link">
                             <i class="bx bx-bar-chart-alt-2 icon"></i>
-                            <span class="link">Báo Cáo Doanh Thu </span>
+                            <span class="link">báo cáo tổng quát</span>
                         </a>
                     </li>
                     <li class="list">
@@ -42,7 +42,7 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="nav-link">
                             <i class="bx bx-message-rounded icon"></i>
                             <span class="link">Báo Cáo Tồn Kho </span>
                         </a>
