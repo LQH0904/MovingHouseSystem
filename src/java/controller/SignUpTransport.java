@@ -214,7 +214,9 @@ public class SignUpTransport extends HttpServlet {
         String tempFilePath = (String) session.getAttribute("tempFilePath");
 
         if (storedCode == null || expiryTime == null || user == null || transportUnit == null || tempFilePath == null) {
-            new File(tempFilePath).delete();
+            if (tempFilePath != null) {
+                new File(tempFilePath).delete();
+            }
             session.invalidate();
             request.setAttribute("error", "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);

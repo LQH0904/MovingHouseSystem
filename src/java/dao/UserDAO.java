@@ -152,10 +152,9 @@ public class UserDAO {
      * @return Đối tượng Users nếu tồn tại, null nếu không
      */
     public Users getUser(String email, int roleId) {
-        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status " +
-                       "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, email);
             ps.setInt(2, roleId);
             ResultSet rs = ps.executeQuery();
@@ -185,10 +184,9 @@ public class UserDAO {
      * @return Đối tượng Users nếu tồn tại, null nếu không
      */
     public Users checkUserByEmail(String email, int roleId) {
-        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status " +
-                       "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, email);
             ps.setInt(2, roleId);
             ResultSet rs = ps.executeQuery();
@@ -220,8 +218,7 @@ public class UserDAO {
      */
     public boolean updatePassByEmail(String newPass, String email, int roleId) {
         String query = "UPDATE Users SET password_hash = ?, updated_at = ? WHERE LOWER(email) = LOWER(?) AND role_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, newPass);
             ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
             ps.setString(3, email);
@@ -234,10 +231,10 @@ public class UserDAO {
         return false;
     }
 
-   
     public String checkDuplicate(String email, String username, int roleId) {
         String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
         String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
+        String transportUnitQuery = "SELECT 1 FROM TransportUnits WHERE LOWER(company_name) = LOWER(?)";
         String roleCheckQuery = "SELECT 1 FROM Roles WHERE role_id = ?";
 
         try (Connection conn = DBConnection.getConnection()) {
@@ -267,11 +264,23 @@ public class UserDAO {
             }
 
             // Kiểm tra username
-            try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
-                ps.setString(1, username.toLowerCase());
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    return "username_exists";
+            if (roleId == 4) {
+                // Với role_id = 4, kiểm tra company_name trong TransportUnits
+                try (PreparedStatement ps = conn.prepareStatement(transportUnitQuery)) {
+                    ps.setString(1, username.toLowerCase());
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return "username_exists";
+                    }
+                }
+            } else {
+                // Với các role_id khác, kiểm tra username trong Users
+                try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
+                    ps.setString(1, username.toLowerCase());
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return "username_exists";
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -439,6 +448,7 @@ public class UserDAO {
 
     // Lưu thông tin Transport Unit
     public boolean saveTransportUnit(TransportUnit unit, int userId) {
+        // Kiểm tra role_id của user
         String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
             ps.setInt(1, userId);
@@ -451,9 +461,11 @@ public class UserDAO {
             return false;
         }
 
+        // Sửa query để sử dụng transport_unit_id làm khóa chính
         String query = "INSERT INTO TransportUnits (transport_unit_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, registration_status, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            // Kiểm tra dữ liệu đầu vào
             if (unit.getCompanyName() == null || unit.getCompanyName().trim().isEmpty()) {
                 throw new IllegalArgumentException("Company name cannot be null or empty");
             }
@@ -467,7 +479,7 @@ public class UserDAO {
                 throw new IllegalArgumentException("Loader count cannot be negative");
             }
 
-            ps.setInt(1, userId); 
+            ps.setInt(1, userId); // Sử dụng userId làm transport_unit_id
             ps.setString(2, truncate(unit.getCompanyName(), 150));
             ps.setString(3, truncate(unit.getContactInfo(), 255));
             ps.setString(4, truncate(unit.getLocation(), 100));
@@ -475,9 +487,10 @@ public class UserDAO {
             ps.setBigDecimal(6, BigDecimal.valueOf(unit.getCapacity()).setScale(2, RoundingMode.HALF_UP));
             ps.setInt(7, unit.getLoader());
             ps.setString(8, truncate(unit.getBusinessCertificate(), 2000));
+
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                LOGGER.warning("No rows affected when inserting TransportUnit for company: " + unit.getCompanyName());
+                LOGGER.warning("Eror: ");
             }
             return rows > 0;
         } catch (SQLException e) {
