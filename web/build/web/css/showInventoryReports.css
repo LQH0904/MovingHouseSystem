@@ -1,0 +1,181 @@
+.parent {
+    display: grid;
+    height: 100vh; /* Đảm bảo parent chiếm toàn bộ chiều cao viewport */
+    grid-template-columns: 250px auto;
+    grid-template-rows: 70px auto;
+    grid-column-gap: 13px;
+    grid-row-gap: 9px;
+}
+
+.div1 {
+    grid-area: 2 / 1 / 3 / 2; /* Sidebar */
+    background: #e3f2fd;
+    /* Không cần position: fixed; ở đây */
+}
+.div2 {
+    grid-area: 1 / 1 / 2 / 3; /* Header ngang full width */
+    /* Không cần position: fixed; ở đây */
+}
+.div3 {
+    grid-area: 2 / 2 / 3 / 3; /* Content */
+    border: 2px solid rgb(62, 49, 49);
+    box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
+    border-top-left-radius: 10px;
+    background-color: white;
+
+    /* Thêm thuộc tính này để chỉ div3 có thể cuộn */
+    overflow-y: auto; /* hoặc scroll */
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+.tdinvRdiv3{
+    box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+#td2{
+    width: 53%;
+    padding-left: 10%;
+}
+#td1{
+    width: 10%;
+    padding-left: 3%;
+}
+table{
+    padding: 10px 5px 40px 0px;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* 15px khoảng cách giữa các hàng */
+    margin-left: 5%;
+    border-radius: 12px;
+}
+tr:active {
+    transform: translateY(2px) scale(0.98);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+p{
+    font-size: 20px;
+    padding-left: 20px;
+    padding-top: 20px;
+}
+
+/* Style cho link */
+.report-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.report-link:hover {
+    text-decoration: underline;
+    color: #0066cc;
+}
+
+/* Style cho row có thể click (nếu dùng JavaScript) */
+tr.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+tr.clickable-row:hover {
+    background-color: #f5f5f5;
+}
+
+tr{
+    border-radius: 12px;
+}
+.scroll-list_wrp {
+    width: 85%;
+    max-height: 70vh; /* Sử dụng viewport height thay vì height cố định */
+    min-height: 400px; /* Chiều cao tối thiểu */
+    overflow: auto;
+    padding: 0px;
+    margin-left: 5%;
+    margin-bottom: 3%;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    border: 1px solid activeborder;
+}
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: rgb(112, 136, 191); /* Màu nền để che phần content phía dưới */
+    z-index: 10;
+    padding: 20px 20px 17px 33px;
+    margin: 0;
+    border-bottom: 2px solid #ddd; /* Đường viền phân cách */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Bóng nhẹ */
+}
+.div1 .worklink a {
+    display: inline-block;
+    width: 105%;
+    height: 50px;
+    background-color: #ccc;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px; /* Căn chữ nằm giữa theo chiều dọc */
+    font-size: 16px;
+    /* Bước 2: clip-path tạo tam giác */
+    clip-path: polygon(
+        0% 0%,                   /* Góc trên-trái */
+        calc(100% - 5%) 0%,    /* Điểm trên bên phải lệch 25px vào trong */
+        100% 50%,                /* Điểm nhọn chính giữa cạnh phải */
+        calc(100% - 5%) 100%,  /* Điểm dưới bên phải lệch 25px vào trong */
+        0% 100%                  /* Góc dưới-trái */
+        );
+    margin-top: 5px;
+    transition: transform 0.3s ease;
+}
+.worklink a:hover{
+    transform: scale(1.1);
+    background-color: red;
+    color: white;
+}
+.worklink{
+    margin-top: 104%;
+}
+.div1 .img_log {
+    margin: 0 auto;
+    display: flex;             /* Bật chế độ flex */
+    justify-content: center;   /* Căn giữa nội dung theo ngang */
+    align-items: center;       /* Căn giữa nội dung theo dọc */
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    background-color: white;
+    margin-top: 20%
+}
+#icon{
+    margin-top: 11px;
+    margin-left: 2%;
+    color: white;           /* Màu trắng để nổi bật trên nền xanh */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    padding: 0 5px;
+    transition: transform 0.3s ease;
+}
+
+#icon:hover {
+    color: #ff0000;
+    transform: scale(1.1);
+}
+
+#icon2{
+    margin-top: 11px;
+    margin-left: 2%;
+    color: white;           /* Màu trắng để nổi bật trên nền xanh */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    padding: 0 5px;
+    transition: transform 0.6s ease;
+}
+#icon2:hover {
+    color: #ff0000;
+    transform: rotate(90deg);
+}

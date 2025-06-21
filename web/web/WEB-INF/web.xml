@@ -17,6 +17,18 @@
         <servlet-name>FeeConfigurationServlet</servlet-name>
         <servlet-class>controller.FeeConfigurationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddOperationProceduresServlet</servlet-name>
+        <servlet-class>controller.AddOperationProceduresServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddOperationPoliciesServlet</servlet-name>
+        <servlet-class>controller.AddOperationPoliciesServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddFeeConfigurationsServlet</servlet-name>
+        <servlet-class>controller.AddFeeConfigurationsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/UserListServlet</url-pattern>
@@ -63,5 +75,17 @@
     <servlet-mapping>
         <servlet-name>FeeConfigurationServlet</servlet-name>
         <url-pattern>/FeeConfigurationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddOperationProceduresServlet</servlet-name>
+        <url-pattern>/AddOperationProceduresServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddOperationPoliciesServlet</servlet-name>
+        <url-pattern>/AddOperationPoliciesServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddFeeConfigurationsServlet</servlet-name>
+        <url-pattern>/AddFeeConfigurationsServlet</url-pattern>
     </servlet-mapping>
 </web-app>
