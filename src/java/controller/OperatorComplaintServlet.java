@@ -1,3 +1,4 @@
+// File: src/main/java/controller/OperatorComplaintServlet.java
 package controller;
 
 import dao.ComplaintDAO;
@@ -9,13 +10,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession; // Keep this import
+import jakarta.servlet.http.HttpSession; // Đảm bảo bạn cần HttpSession, nếu không có thể bỏ qua
 
 @WebServlet(name = "OperatorComplaintListServlet", urlPatterns = {"/operatorComplaintList"})
-public class OperatorComplaintServlet extends HttpServlet { // Renamed from OperatorComplaintListServlet to OperatorComplaintServlet for consistency with mapping
+public class OperatorComplaintServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private ComplaintDAO complaintDAO;
+
     private static final int RECORDS_PER_PAGE = 5;
 
     @Override
@@ -43,9 +45,11 @@ public class OperatorComplaintServlet extends HttpServlet { // Renamed from Oper
         }
         int offset = (page - 1) * RECORDS_PER_PAGE;
 
+        // Gọi phương thức từ ComplaintDAO mới
         int totalComplaints = complaintDAO.getTotalEscalatedComplaintCount(searchTerm, priorityFilter);
         int totalPages = (int) Math.ceil((double) totalComplaints / RECORDS_PER_PAGE);
 
+        // Đã sửa tên phương thức từ getAllEscalatedComplaints thành getEscalatedComplaints
         List<Complaint> escalatedComplaints = complaintDAO.getEscalatedComplaints(searchTerm, priorityFilter, offset, RECORDS_PER_PAGE);
 
         request.setAttribute("escalatedComplaints", escalatedComplaints);
@@ -58,10 +62,9 @@ public class OperatorComplaintServlet extends HttpServlet { // Renamed from Oper
         String updateStatus = request.getParameter("updateStatus");
         if ("success_escalated".equals(updateStatus)) {
             request.setAttribute("successMessage", "Khiếu nại đã được chuyển cấp cao thành công!");
-        } else if ("success".equals(updateStatus)) { // Handle success from operator replying
+        } else if ("success".equals(updateStatus)) {
             request.setAttribute("successMessage", "Phản hồi đã được gửi thành công!");
-        }
-        else if ("error".equals(updateStatus)) {
+        } else if ("error".equals(updateStatus)) {
             String errorMessageParam = request.getParameter("message");
             if (errorMessageParam != null && !errorMessageParam.isEmpty()) {
                 request.setAttribute("errorMessage", "Có lỗi xảy ra: " + errorMessageParam.replace("_", " "));

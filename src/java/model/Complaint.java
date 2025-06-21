@@ -1,9 +1,11 @@
+// File: src/main/java/model/Complaint.java
 package model;
 
 import java.sql.Timestamp;
 
 public class Complaint {
     private int issueId;
+    private int userId; // THÊM TRƯỜNG NÀY
     private String username;
     private String description;
     private String status;
@@ -16,8 +18,10 @@ public class Complaint {
     public Complaint() {
     }
 
-    public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt) {
+    // CẬP NHẬT CONSTRUCTOR NÀY
+    public Complaint(int issueId, int userId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt) {
         this.issueId = issueId;
+        this.userId = userId; // Gán userId
         this.username = username;
         this.description = description;
         this.status = status;
@@ -28,8 +32,10 @@ public class Complaint {
         this.escalatedByUserId = null;
     }
 
-    public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt) {
+    // CẬP NHẬT CONSTRUCTOR NÀY
+    public Complaint(int issueId, int userId, String username, String description, String status, String priority, Timestamp createdAt) {
         this.issueId = issueId;
+        this.userId = userId; // Gán userId
         this.username = username;
         this.description = description;
         this.status = status;
@@ -40,8 +46,10 @@ public class Complaint {
         this.escalatedByUserId = null;
     }
 
-    public Complaint(int issueId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt, String escalationReason, Integer escalatedByUserId) {
+    // CẬP NHẬT CONSTRUCTOR NÀY
+    public Complaint(int issueId, int userId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt, String escalationReason, Integer escalatedByUserId) {
         this.issueId = issueId;
+        this.userId = userId; // Gán userId
         this.username = username;
         this.description = description;
         this.status = status;
@@ -58,6 +66,15 @@ public class Complaint {
 
     public void setIssueId(int issueId) {
         this.issueId = issueId;
+    }
+
+    // THÊM GETTER VÀ SETTER CHO userId
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -128,6 +145,7 @@ public class Complaint {
     public String toString() {
         return "Complaint{" +
                 "issueId=" + issueId +
+                ", userId=" + userId + // THÊM VÀO toString()
                 ", username='" + username + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +

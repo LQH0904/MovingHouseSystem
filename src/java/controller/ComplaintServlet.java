@@ -1,3 +1,4 @@
+// File: src/main/java/controller/ComplaintServlet.java
 package controller;
 
 import dao.ComplaintDAO;
@@ -84,8 +85,8 @@ public class ComplaintServlet extends HttpServlet {
             String updateStatus = request.getParameter("updateStatus");
             if ("success".equals(updateStatus)) {
                 request.setAttribute("updateMessage", "Cập nhật khiếu nại thành công!");
-                request.setAttribute("updateMessageType", "success"); // Để hiển thị CSS phù hợp (ví dụ: màu xanh)
-            } else if ("success_escalated".equals(updateStatus)) { // Trường hợp chuyển cấp thành công
+                request.setAttribute("updateMessageType", "success");
+            } else if ("success_escalated".equals(updateStatus)) {
                 request.setAttribute("updateMessage", "Khiếu nại đã được chuyển cấp thành công!");
                 request.setAttribute("updateMessageType", "success");
             }
@@ -93,7 +94,7 @@ public class ComplaintServlet extends HttpServlet {
                 String errorMessage = request.getParameter("message");
                 if (errorMessage == null) errorMessage = "Có lỗi xảy ra khi cập nhật khiếu nại.";
                 request.setAttribute("updateMessage", "Lỗi: " + errorMessage);
-                request.setAttribute("updateMessageType", "danger"); // Để hiển thị CSS phù hợp (ví dụ: màu đỏ)
+                request.setAttribute("updateMessageType", "danger");
             }
 
             // Chuyển tiếp tới trang JSP để hiển thị danh sách
@@ -103,8 +104,6 @@ public class ComplaintServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Với servlet này, POST request thường được sử dụng cho các hành động như tìm kiếm/lọc,
-        // nên việc gọi doGet là hợp lý để hiển thị lại danh sách với các tiêu chí mới.
         doGet(request, response);
     }
 }
