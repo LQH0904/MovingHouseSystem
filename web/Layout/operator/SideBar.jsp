@@ -41,19 +41,19 @@
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/repURL?type=daily" class="submenu-link">
                                     <i class="bx bx-calendar icon"></i>
-                                    <span class="link">Báo Cáo Hàng Ngày</span>
+                                    <span class="link">Báo Cáo Vận Chuyển </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/repURL?type=monthly" class="submenu-link">
                                     <i class="bx bx-calendar-week icon"></i>
-                                    <span class="link">Báo Cáo Hàng Tháng</span>
+                                    <span class="link">Báo Cáo Kho Bãi </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/repURL?type=yearly" class="submenu-link">
                                     <i class="bx bx-calendar-alt icon"></i>
-                                    <span class="link">Báo Cáo Hàng Năm</span>
+                                    <span class="link">Báo Cáo Khách Hàng </span>
                                 </a>
                             </li>
                         </ul>
