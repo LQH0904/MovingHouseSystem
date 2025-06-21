@@ -18,11 +18,11 @@
             }
             .main-content {
                 overflow-y: auto;
-                padding: 10px; 
+                padding: 10px;
                 max-height: calc(100vh - 60px);
                 position: relative;
                 z-index: 1;
-                width: 100%; 
+                width: 100%;
             }
             .container-fluid {
                 background: white;
@@ -84,9 +84,9 @@
                 background: #718096;
             }
             .table {
-                width: 100%; 
-                table-layout: fixed; 
-                border-collapse: collapse; 
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
                 margin: 0; /* Loại bỏ margin thừa */
                 padding: 0; /* Loại bỏ padding thừa */
             }
@@ -109,10 +109,10 @@
                 color: #2D3748;
                 border-bottom: 1px solid #E2E8F0;
                 text-align: center;
-                width: 9.09%; 
-                overflow: hidden; 
-                white-space: nowrap; 
-                text-overflow: ellipsis; 
+                width: 9.09%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
             .table tbody tr:hover {
                 background: #EDF2F7;
@@ -183,7 +183,7 @@
             @media (max-width: 768px) {
                 .table thead th, .table tbody td {
                     width: auto;
-                    min-width: 80px; 
+                    min-width: 80px;
                     padding: 8px;
                 }
                 .container-fluid {
@@ -258,17 +258,17 @@
                     <table class="table table-bordered mt-4">
                         <thead>
                             <tr>
-                                <th>ID Đơn hàng</th>
-                                <th>Khách hàng</th>
-                                <th>Đơn vị vận chuyển</th>
-                                <th>Đơn vị kho bãi</th>
-                                <th>Trạng thái</th>
-                                <th>Ngày tạo</th>
-                                <th>Ngày cập nhật</th>
-                                <th>Lịch giao</th>
-                                <th>Tổng phí</th>
-                                <th>Ngày chấp nhận</th>
-                                <th>Ngày giao</th>
+                                <th style="width:3%;">ID</th>
+                                <th style="width:12%;">Khách hàng</th>
+                                <th style="width:14%;">Đơn vị vận chuyển</th>
+                                <th style="width:14%;">Đơn vị kho bãi</th>
+                                <th style="width:8%;">Trạng thái</th>
+                                <th style="width:10%;">Ngày tạo</th>
+                                <th style="width:11%;">Ngày cập nhật</th>
+                                <th style="width:10%;">Lịch giao</th>
+                                <th style="width:8%;">Tổng phí</th>
+                                <th style="width:13%;">Ngày chấp nhận</th>
+                                <th style="width:10%;">Ngày giao</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -307,6 +307,7 @@
                             </c:forEach>
                         </tbody>
                     </table>
+
 
                     <!-- Phân trang -->
                     <div class="pagination-wrapper">

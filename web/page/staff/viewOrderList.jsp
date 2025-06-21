@@ -43,7 +43,7 @@ if (session.getAttribute("acc") == null) {
             }
             .container-fluid {
                 background: white;
-                padding: 15px; 
+                padding: 15px;
                 border-radius: 12px;
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
                 margin-bottom: 40px;
@@ -275,17 +275,17 @@ if (session.getAttribute("acc") == null) {
                     <table class="table table-bordered mt-4">
                         <thead>
                             <tr>
-                                <th>ID Đơn hàng</th>
-                                <th>Khách hàng</th>
-                                <th>Đơn vị vận chuyển</th>
-                                <th>Đơn vị kho bãi</th>
-                                <th>Trạng thái</th>
-                                <th>Ngày tạo</th>
-                                <th>Ngày cập nhật</th>
-                                <th>Lịch giao</th>
-                                <th>Tổng phí</th>
-                                <th>Ngày chấp nhận</th>
-                                <th>Ngày giao</th>
+                                <th style="width:3%;">ID</th>
+                                <th style="width:12%;">Khách hàng</th>
+                                <th style="width:14%;">Đơn vị vận chuyển</th>
+                                <th style="width:14%;">Đơn vị kho bãi</th>
+                                <th style="width:8%;">Trạng thái</th>
+                                <th style="width:10%;">Ngày tạo</th>
+                                <th style="width:11%;">Ngày cập nhật</th>
+                                <th style="width:10%;">Lịch giao</th>
+                                <th style="width:8%;">Tổng phí</th>
+                                <th style="width:13%;">Ngày chấp nhận</th>
+                                <th style="width:10%;">Ngày giao</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -324,6 +324,7 @@ if (session.getAttribute("acc") == null) {
                             </c:forEach>
                         </tbody>
                     </table>
+
 
                     <!-- Phân trang -->
                     <div class="pagination-wrapper">
