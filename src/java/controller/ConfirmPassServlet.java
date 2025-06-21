@@ -6,36 +6,37 @@ package controller;
 
 import dao.UserDAO;
 import model.Users;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.PasswordUtils;
 
-/**
- *
- * @author Admin
- */
 @WebServlet(name = "ConfirmPassServlet", urlPatterns = {"/confirmpass"})
 public class ConfirmPassServlet extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(ConfirmPassServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy username từ session để truyền ra JSP
         HttpSession session = request.getSession();
-        String resetUsername = (String) session.getAttribute("resetUsername");
+        String email = (String) session.getAttribute("resetUsername");
+        Integer roleId = (Integer) session.getAttribute("resetRoleId");
 
-        if (resetUsername == null) {
-            // Chưa có username reset -> chuyển về trang reset code hoặc login
-            response.sendRedirect("resetcode.jsp");
+        if (email == null || roleId == null) {
+            request.setAttribute("message", "Phiên đã hết hạn. Vui lòng bắt đầu lại.");
+            request.setAttribute("step", "enterEmail");
+            request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             return;
         }
-        request.setAttribute("resetUsername", resetUsername);
+
+        request.setAttribute("resetUsername", email);
+        request.setAttribute("resetRoleId", roleId);
         request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
     }
 
@@ -43,56 +44,64 @@ public class ConfirmPassServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String resetUsername = (String) session.getAttribute("resetUsername");
-        if (resetUsername == null) {
-            request.setAttribute("error", "Session expired. Please start over.");
+        String email = (String) session.getAttribute("resetUsername");
+        Integer roleId = (Integer) session.getAttribute("resetRoleId");
+
+        if (email == null || roleId == null) {
+            request.setAttribute("message", "Phiên đã hết hạn. Vui lòng bắt đầu lại.");
+            request.setAttribute("step", "enterEmail");
             request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             return;
         }
-        String newpass = request.getParameter("password");
-        String cfnewpass = request.getParameter("cfpassword");
-        String msg;
 
-        UserDAO dao = new UserDAO();
-        Users user = dao.getUserByEmail(resetUsername);
+        String newPass = request.getParameter("password");
+        String cfNewPass = request.getParameter("cfpassword");
+
+        UserDAO dao = UserDAO.INSTANCE;
+        Users user = dao.getUser(email, roleId);
 
         if (user == null) {
-            msg = "User not found!";
-            request.setAttribute("error", msg);
-            request.setAttribute("resetUsername", resetUsername);
+            request.setAttribute("error", "Tài khoản không tồn tại");
+            request.setAttribute("resetUsername", email);
+            request.setAttribute("resetRoleId", roleId);
             request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
             return;
         }
 
-        if (!newpass.equals(cfnewpass)) {
-            msg = "Password confirmation does not match!";
-            request.setAttribute("error", msg);
-            request.setAttribute("resetUsername", resetUsername);
+        if (!newPass.equals(cfNewPass)) {
+            request.setAttribute("error", "Mật khẩu xác nhận không khớp!");
+            request.setAttribute("resetUsername", email);
+            request.setAttribute("resetRoleId", roleId);
             request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
             return;
         }
 
-        if (newpass.length() < 6) {
-            msg = "Password must be at least 6 characters.";
-            request.setAttribute("error", msg);
-            request.setAttribute("resetUsername", resetUsername);
+        if (newPass.length() < 6) {
+            request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
+            request.setAttribute("resetUsername", email);
+            request.setAttribute("resetRoleId", roleId);
             request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
             return;
         }
 
-        String hashedPassword = PasswordUtils.hashPassword(newpass);
-        boolean updated = dao.updatePassByEmail(hashedPassword, resetUsername);
+        String hashedPassword = PasswordUtils.hashPassword(newPass);
+        boolean updated = dao.updatePassByEmail(hashedPassword, email, roleId);
+
         if (updated) {
-            msg = "Change password successfully!";
             session.removeAttribute("resetUsername");
-            request.setAttribute("mess", msg);
+            session.removeAttribute("resetRoleId");
+            request.setAttribute("mess", "Thay đổi mật khẩu thành công!");
             request.getRequestDispatcher("page/login/login.jsp").forward(request, response);
         } else {
-            msg = "Failed to change password!";
-            request.setAttribute("error", msg);
-            request.setAttribute("resetUsername", resetUsername);
+            request.setAttribute("error", "Không thể thay đổi mật khẩu!");
+            request.setAttribute("resetUsername", email);
+            request.setAttribute("resetRoleId", roleId);
             request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
         }
     }
 
+    @Override
+    public String getServletInfo() {
+        return "Confirm Password Servlet";
+    }
 }

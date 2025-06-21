@@ -1,9 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+
 package controller;
 
 import dao.UserDAO;
 import model.Constants;
 import model.Users;
-import model.Roles;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
@@ -21,103 +25,143 @@ import org.apache.http.client.fluent.Request;
 @WebServlet(name = "LoginGoogleServlet", urlPatterns = {"/LoginGoogleServlet"})
 public class LoginGoogleServlet extends HttpServlet {
 
-    /**
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             response.setContentType("text/html;charset=UTF-8");
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getAttribute("acc") != null) {
+                Users user = (Users) session.getAttribute("acc");
+                switch (user.getRoleId()) {
+                    case 1:
+                        response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                        break;
+                    case 2:
+                        response.sendRedirect(request.getContextPath() + "/homeOperator");
+                        break;
+                    case 3:
+                        response.sendRedirect(request.getContextPath() + "/homeStaff");
+                        break;
+                    case 4:
+                        response.sendRedirect(request.getContextPath() + "/transport/dashboard");
+                        break;
+                    case 5:
+                        response.sendRedirect(request.getContextPath() + "/storage/dashboard");
+                        break;
+                    case 6:
+                        response.sendRedirect(request.getContextPath() + "/customer/dashboard");
+                        break;
+                    default:
+                        response.sendRedirect(request.getContextPath() + "/orderList");
+                        break;
+                }
+                return;
+            }
+
             String code = request.getParameter("code");
-            Users a = null;
+            String state = request.getParameter("state");
+            String roleIdStr = null;
+
+            if (state != null && state.startsWith("role_id=")) {
+                roleIdStr = state.substring("role_id=".length());
+            }
+
+            int roleId;
+            try {
+                roleId = Integer.parseInt(roleIdStr);
+                if (roleId < 1 || roleId > 6) {
+                    session = request.getSession(true);
+                    session.setAttribute("error", "Vai trò không hợp lệ");
+                    response.sendRedirect(request.getContextPath() + "/login");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                session = request.getSession(true);
+                session.setAttribute("error", "Vai trò không hợp lệ");
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
 
             if (code == null || code.isEmpty()) {
-                response.sendRedirect("login");
-            } else {
-                String accessToken = getToken(code);
-                model.LoginGoogle user = getUserInfo(accessToken);
-                String email = user.getEmail();
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
 
-                UserDAO adao = new UserDAO();
-                Users aemail = adao.checkUserByEmail(email);
-                String hashedPassword = PasswordUtils.hashPassword("google_oauth");
+            String accessToken = getToken(code);
+            model.LoginGoogle googleUser = getUserInfo(accessToken);
+            String email = googleUser.getEmail();
 
-                if (aemail == null) {
-                    // Tạo user mới
-                    a = new Users(
-                            -1,
-                            user.getName(),
-                            email,
-                            hashedPassword,
-                            6,
-                            null,
-                            null,
-                            "active"
-                    );
+            UserDAO dao = UserDAO.INSTANCE;
+            Users user = dao.checkUserByEmail(email, roleId);
 
-                    boolean success = adao.signupAccount(a);
-                    if (!success) {
-                        request.setAttribute("error", "Không thể tạo tài khoản mới.");
-                        request.getRequestDispatcher("page/login/login.jsp").forward(request, response);
-                        return;
-                    }
+            if (user == null) {
+                // Nếu email chưa tồn tại, tạo tài khoản mới với role_id = 6 (Customer)
+                String hashedPassword = PasswordUtils.hashPassword("123");
+                user = new Users(
+                        -1,
+                        googleUser.getName(),
+                        email,
+                        hashedPassword,
+                        6, 
+                        null,
+                        null,
+                        "active"
+                );
 
-                    a = adao.getUserbyEmail(email);
-                } else {
-                    a = aemail;
-                }
-
-                // Tạo session mới để tránh session fixation
-                session.invalidate();
-                session = request.getSession(true);
-                session.setAttribute("acc", a);
-                session.setAttribute("username", a.getUsername());
-                session.setAttribute("email", a.getEmail());
-
-                // Kiểm tra trạng thái tài khoản
-                if (!"active".equalsIgnoreCase(a.getStatus())) {
-                    response.sendRedirect("not_activite.jsp");
+                boolean success = dao.signupAccount(user);
+                if (!success) {
+                    session = request.getSession(true);
+                    session.setAttribute("error", "Không thể tạo tài khoản mới");
+                    response.sendRedirect(request.getContextPath() + "/login");
                     return;
                 }
 
-                switch (a.getRoleId()) {
-                    case 1: // Admin
-                        response.sendRedirect(request.getContextPath() + "/admin/registrations");
-                        break;
-                    case 2: // Operator
-                        response.sendRedirect(request.getContextPath() + "/homeOperator");
-                        break;
-                    case 3: // Staff
-                    case 4: // Transport Unit
-                        response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
-                        break;
-                    case 5: // Storage Unit
-                        response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
-                        break;
-                    case 6: // Customer
-                        response.sendRedirect(request.getContextPath() + "/updateLater.jsp");
-                        break;
-                    default:
-                        response.sendRedirect("404.jsp");
-                        break;
-                }
+                user = dao.checkUserByEmail(email, 6);
+            }
 
+            if (!"active".equalsIgnoreCase(user.getStatus())) {
+                session = request.getSession(true);
+                session.setAttribute("error", "Tài khoản chưa được kích hoạt hoặc bị khóa");
+                response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                return;
+            }
+
+            session.invalidate();
+            session = request.getSession(true);
+            session.setAttribute("acc", user);
+            session.setAttribute("username", user.getUsername());
+            session.setAttribute("email", user.getEmail());
+
+            switch (user.getRoleId()) {
+                case 1:
+                    response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                    break;
+                case 2:
+                    response.sendRedirect(request.getContextPath() + "/homeOperator");
+                    break;
+                case 3:
+                    response.sendRedirect(request.getContextPath() + "/homeStaff");
+                    break;
+                case 4:
+                    response.sendRedirect(request.getContextPath() + "/transport/dashboard");
+                    break;
+                case 5:
+                    response.sendRedirect(request.getContextPath() + "/storage/dashboard");
+                    break;
+                case 6:
+                    response.sendRedirect(request.getContextPath() + "/customer/dashboard");
+                    break;
+                default:
+                    response.sendRedirect(request.getContextPath() + "/orderList");
+                    break;
             }
         } catch (Exception ex) {
-            ex.printStackTrace(); // Ghi log đầy đủ lỗi ra console
-            System.out.println("Google login error: " + ex.getMessage()); // Ghi nội dung lỗi
-            HttpSession session = request.getSession();
-            session.setAttribute("error", "Đăng nhập bằng Google gặp lỗi, vui lòng thử lại.");
+            HttpSession session = request.getSession(true);
+            session.setAttribute("error", "Đăng nhập bằng Google gặp lỗi, vui lòng thử lại");
             response.sendRedirect(request.getContextPath() + "/login");
         }
-
     }
 
-    // Lấy token access từ google
     public static String getToken(String code) throws ClientProtocolException, IOException {
         String response = Request.Post(Constants.GOOGLE_LINK_GET_TOKEN)
                 .bodyForm(Form.form()
@@ -133,51 +177,26 @@ public class LoginGoogleServlet extends HttpServlet {
         return jobj.get("access_token").getAsString();
     }
 
-    // Lấy thông tin người dùng từ Google bằng accessToken
     public static model.LoginGoogle getUserInfo(final String accessToken) throws ClientProtocolException, IOException {
         String link = Constants.GOOGLE_LINK_GET_USER_INFO + accessToken;
         String response = Request.Get(link).execute().returnContent().asString();
         return new Gson().fromJson(response, model.LoginGoogle.class);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Google OAuth login servlet";
+    }
 }

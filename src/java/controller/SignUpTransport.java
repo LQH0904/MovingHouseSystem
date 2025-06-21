@@ -104,40 +104,62 @@ public class SignUpTransport extends HttpServlet {
         }
         String fileName = filePart.getSubmittedFileName();
         if (!fileName.matches(".*\\.(jpg|jpeg|png)$")) {
-            request.setAttribute("error", "File giấy phép phải là định dạng .jpg, .jpeg hoặc .png");
+            request.setAttribute("error", "File giấy phép phải có định dạng .jpg, .jpeg hoặc .png");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
 
         UserDAO dao = UserDAO.INSTANCE;
-        String duplicate = dao.checkDuplicate(email, companyName);
-        if ("email_exists".equals(duplicate)) {
-            request.setAttribute("error", "Email đã được sử dụng");
-            request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
-            return;
-        }
-        if ("username_exists".equals(duplicate)) {
-            request.setAttribute("error", "Tên công ty đã được sử dụng");
+        try {
+            String duplicate = dao.checkDuplicate(email, companyName, 4);
+            if ("email_exists".equals(duplicate)) {
+                request.setAttribute("error", "Email đã được sử dụng cho vai trò vận chuyển");
+                request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
+                return;
+            }
+            if ("username_exists".equals(duplicate)) {
+                request.setAttribute("error", "Tên công ty đã được sử dụng");
+                request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
+                return;
+            }
+        } catch (RuntimeException e) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicates: " + e.getMessage(), e);
+            request.setAttribute("error", "Lỗi kiểm tra trùng lặp: " + e.getMessage());
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
 
-        // Handle file upload
-        String uploadPath = getServletContext().getRealPath("/img");
-        LOGGER.info("Upload path: " + uploadPath);
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            boolean created = uploadDir.mkdirs();
-            LOGGER.info("Created upload directory: " + created);
+        // Lưu file tạm thời vào thư mục /temp
+        String tempPath = getServletContext().getRealPath("/temp");
+        File tempDir = new File(tempPath);
+        if (!tempDir.exists()) {
+            boolean created = tempDir.mkdirs();
+            if (!created) {
+                LOGGER.severe("Failed to create temporary directory: " + tempPath);
+                request.setAttribute("error", "Lỗi hệ thống: Không thể tạo thư mục tạm");
+                request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
+                return;
+            }
+            LOGGER.info("Created temporary directory: " + created);
         }
-        if (!uploadDir.canWrite()) {
-            LOGGER.severe("Upload directory is not writable: " + uploadPath);
-            request.setAttribute("error", "Lỗi hệ thống: Không thể lưu file ảnh");
+        if (!tempDir.canWrite()) {
+            LOGGER.severe("Temporary directory is not writable: " + tempPath);
+            request.setAttribute("error", "Lỗi hệ thống: Không thể lưu trữ file tạm");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
-        String newFileName = "business_certificate_" + System.currentTimeMillis() + "_" + fileName;
-        String filePath = uploadPath + File.separator + newFileName;
+        String tempFileName = "temp_business_certificate_" + System.currentTimeMillis() + "_" + fileName;
+        String tempFilePath = tempPath + File.separator + tempFileName;
+
+        try {
+            filePart.write(tempFilePath);
+            LOGGER.info("Temporary file saved at: " + tempFilePath);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "IOException saving temporary file: " + e.getMessage(), e);
+            request.setAttribute("error", "Lỗi lưu file tạm: " + e.getMessage());
+            request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
+            return;
+        }
 
         String hashedPassword = PasswordUtils.hashPassword(password);
         String code = generateVerificationCode();
@@ -147,117 +169,37 @@ public class SignUpTransport extends HttpServlet {
         user.setUsername(companyName);
         user.setEmail(email);
         user.setPasswordHash(hashedPassword);
-        user.setRoleId(4); // Transport Unit
+        user.setRoleId(4);
         user.setStatus("pending");
 
         TransportUnit transportUnit = new TransportUnit();
         transportUnit.setCompanyName(companyName);
         transportUnit.setContactInfo(contactInfo);
-        transportUnit.setBusinessCertificate("/img/" + newFileName);
+        transportUnit.setBusinessCertificate("/img/" + tempFileName.replace("temp_", "")); // Tên file cuối cùng
         transportUnit.setLocation(location);
         transportUnit.setVehicleCount(vehicleCount);
         transportUnit.setCapacity(capacity);
         transportUnit.setLoader(loader);
         transportUnit.setRegistrationStatus("pending");
 
-        Connection conn = null;
-        int userId = 0;
+        // Lưu thông tin tạm vào session
+        session.setAttribute("pendingUser", user);
+        session.setAttribute("pendingTransportUnit", transportUnit);
+        session.setAttribute("tempFilePath", tempFilePath);
+        session.setAttribute("verificationCode", code);
+        session.setAttribute("codeExpiry", expiryTime);
+
+        String subject = "Xác nhận đăng ký Đơn vị Vận chuyển";
+        String message = buildEmailContent(companyName, code);
+
         try {
-            conn = DBConnection.getConnection();
-            conn.setAutoCommit(false); // Bắt đầu transaction
-
-            // Lưu file ảnh trước khi commit
-            filePart.write(filePath);
-            LOGGER.info("File saved at: " + filePath);
-
-            // Lưu user và lấy user_id
-            userId = dao.signupAccount2(user);
-            if (userId == 0) {
-                throw new SQLException("Không thể lưu tài khoản người dùng");
-            }
-
-            // Lưu Transport Unit với user_id làm user_id
-            if (!dao.saveTransportUnit(transportUnit, userId)) {
-                throw new SQLException("Không thể lưu thông tin Transport Unit");
-            }
-
-            session.setAttribute("pendingUser", user);
-            session.setAttribute("pendingTransportUnit", transportUnit);
-            session.setAttribute("verificationCode", code);
-            session.setAttribute("codeExpiry", expiryTime);
-
-            String subject = "Xác nhận đăng ký Đơn vị Vận chuyển";
-            String message = buildEmailContent(companyName, code);
-
-            try {
-                emailUtil.sendEmail(subject, message, email);
-            } catch (Exception e) {
-                LOGGER.warning("Failed to send email: " + e.getMessage());
-                // Không ném ngoại lệ để tránh rollback transaction
-            }
-
-            conn.commit(); // Commit transaction
+            emailUtil.sendEmail(subject, message, email);
             response.sendRedirect(request.getContextPath() + "/signup_transport?action=confirm");
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException in signup process: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Rollback transaction
-                    // Xóa bản ghi Users nếu đã tạo
-                    if (userId != 0) {
-                        dao.deleteUser(userId);
-                    }
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error rolling back transaction: " + ex.getMessage(), ex);
-                }
-            }
-            new File(filePath).delete();
-            String errorMsg = e.getSQLState() != null && e.getSQLState().equals("23000") ? 
-                "Tài khoản đã được đăng ký làm đơn vị vận chuyển" : 
-                "Đăng ký thất bại: " + e.getMessage() + " (SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode() + ")";
-            request.setAttribute("error", errorMsg);
-            request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "IOException saving file: " + e.getMessage(), e);
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Rollback transaction
-                    // Xóa bản ghi Users nếu đã tạo
-                    if (userId != 0) {
-                        dao.deleteUser(userId);
-                    }
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error rolling back transaction: " + ex.getMessage(), ex);
-                }
-            }
-            new File(filePath).delete();
-            request.setAttribute("error", "Lỗi lưu file ảnh: " + e.getMessage());
-            request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error in signup process: " + e.getMessage(), e);
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Rollback transaction
-                    // Xóa bản ghi Users nếu đã tạo
-                    if (userId != 0) {
-                        dao.deleteUser(userId);
-                    }
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error rolling back transaction: " + ex.getMessage(), ex);
-                }
-            }
-            new File(filePath).delete();
-            request.setAttribute("error", "Đăng ký thất bại: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error sending email: " + e.getMessage(), e);
+            new File(tempFilePath).delete();
+            request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error closing connection: " + ex.getMessage(), ex);
-                }
-            }
         }
     }
 
@@ -267,14 +209,20 @@ public class SignUpTransport extends HttpServlet {
         String inputCode = request.getParameter("code");
         String storedCode = (String) session.getAttribute("verificationCode");
         Long expiryTime = (Long) session.getAttribute("codeExpiry");
+        Users user = (Users) session.getAttribute("pendingUser");
+        TransportUnit transportUnit = (TransportUnit) session.getAttribute("pendingTransportUnit");
+        String tempFilePath = (String) session.getAttribute("tempFilePath");
 
-        if (storedCode == null || expiryTime == null) {
+        if (storedCode == null || expiryTime == null || user == null || transportUnit == null || tempFilePath == null) {
+            new File(tempFilePath).delete();
+            session.invalidate();
             request.setAttribute("error", "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
             return;
         }
 
         if (System.currentTimeMillis() > expiryTime) {
+            new File(tempFilePath).delete();
             session.invalidate();
             request.setAttribute("error", "Mã xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
@@ -287,10 +235,81 @@ public class SignUpTransport extends HttpServlet {
             return;
         }
 
-        // Xác nhận thành công, giữ trạng thái pending chờ admin duyệt
-        session.invalidate();
-        request.setAttribute("success", "Xác nhận tài khoản thành công! Vui lòng chờ admin duyệt.");
-        request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
+        // Di chuyển file từ /temp sang /img
+        String uploadPath = getServletContext().getRealPath("/img");
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        String finalFileName = transportUnit.getBusinessCertificate().substring("/img/".length());
+        String finalFilePath = uploadPath + File.separator + finalFileName;
+        File tempFile = new File(tempFilePath);
+        File finalFile = new File(finalFilePath);
+
+        try {
+            if (!tempFile.renameTo(finalFile)) {
+                throw new IOException("Không thể di chuyển file từ " + tempFilePath + " sang " + finalFilePath);
+            }
+            LOGGER.info("File moved to: " + finalFilePath);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error moving file: " + e.getMessage(), e);
+            tempFile.delete();
+            session.invalidate();
+            request.setAttribute("error", "Lỗi di chuyển file: " + e.getMessage());
+            request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
+            return;
+        }
+
+        // Lưu dữ liệu vào cơ sở dữ liệu
+        UserDAO dao = UserDAO.INSTANCE;
+        Connection conn = null;
+        int userId = 0;
+        try {
+            conn = DBConnection.getConnection();
+            if (conn == null) {
+                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            conn.setAutoCommit(false);
+
+            userId = dao.signupAccount2(user);
+            if (userId == 0) {
+                throw new SQLException("Không thể lưu tài khoản người dùng");
+            }
+
+            if (!dao.saveTransportUnit(transportUnit, userId)) {
+                throw new SQLException("Không thể lưu thông tin Transport Unit");
+            }
+
+            conn.commit();
+            session.invalidate();
+            request.setAttribute("success", "Xác nhận tài khoản thành công! Vui lòng chờ admin duyệt.");
+            request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "SQLException in confirm process: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    if (userId != 0) {
+                        dao.deleteUser(userId);
+                    }
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "Error rolling back transaction: " + ex.getMessage(), ex);
+                }
+            }
+            finalFile.delete();
+            session.invalidate();
+            request.setAttribute("error", "Đăng ký thất bại: " + (e.getSQLState().equals("23000") ? "Tên công ty đã được sử dụng" : e.getMessage()));
+            request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "Error closing connection: " + ex.getMessage(), ex);
+                }
+            }
+        }
     }
 
     private void handleResendCode(HttpServletRequest request, HttpServletResponse response)
@@ -298,8 +317,11 @@ public class SignUpTransport extends HttpServlet {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("pendingUser");
         TransportUnit transportUnit = (TransportUnit) session.getAttribute("pendingTransportUnit");
+        String tempFilePath = (String) session.getAttribute("tempFilePath");
 
-        if (user == null || transportUnit == null) {
+        if (user == null || transportUnit == null || tempFilePath == null) {
+            new File(tempFilePath).delete();
+            session.invalidate();
             request.setAttribute("error", "Phiên đăng ký đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;

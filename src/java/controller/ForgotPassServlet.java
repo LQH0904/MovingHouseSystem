@@ -5,25 +5,22 @@
 package controller;
 
 import dao.UserDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
+import model.Email;
+import model.Users;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.Random;
-import model.Email;
-import model.Users;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * 
- */
 @WebServlet(name = "ForgotPassServlet", urlPatterns = {"/forgot"})
 public class ForgotPassServlet extends HttpServlet {
-
+    private static final Logger LOGGER = Logger.getLogger(ForgotPassServlet.class.getName());
     private static final int MAX_ATTEMPTS = 3;
 
     @Override
@@ -35,92 +32,75 @@ public class ForgotPassServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
-
-        // Kiểm tra xem session đã có code chưa
         String codeSession = (String) session.getAttribute("code");
-        Integer attemptsLeft = (Integer) session.getAttribute("attemptsLeft");
 
         if (codeSession == null) {
             // Bước 1: Chưa gửi mail, xử lý gửi mail
-
             String emailInput = request.getParameter("email");
-            UserDAO ud = new UserDAO();
-            Email handleEmail = new Email();
+            String roleIdStr = request.getParameter("role_id");
+            int roleId;
 
-            Users user = ud.checkUserByEmail(emailInput);
+            try {
+                roleId = Integer.parseInt(roleIdStr);
+                if (roleId < 1 || roleId > 6) {
+                    request.setAttribute("message", "Vai trò không hợp lệ");
+                    request.setAttribute("step", "enterEmail");
+                    request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("message", "Vai trò không hợp lệ");
+                request.setAttribute("step", "enterEmail");
+                request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
+                return;
+            }
+
+            UserDAO dao = UserDAO.INSTANCE;
+            Email handleEmail = new Email();
+            Users user = dao.checkUserByEmail(emailInput, roleId);
 
             if (user != null) {
-                // Tạo code mới
+                // Tạo mã khôi phục
                 Random random = new Random();
                 Integer code = 100000 + random.nextInt(900000);
                 String codeStr = code.toString();
 
-                // Gửi mail
+                // Gửi email
                 String subject = handleEmail.subjectForgotPass();
                 String msgEmail = handleEmail.messageForgotPass(user.getUsername(), code);
-                handleEmail.sendEmail(subject, msgEmail, emailInput);
+                try {
+                    handleEmail.sendEmail(subject, msgEmail, emailInput);
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Error sending email: " + e.getMessage(), e);
+                    request.setAttribute("message", "Gửi email thất bại, vui lòng thử lại");
+                    request.setAttribute("step", "enterEmail");
+                    request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
+                    return;
+                }
 
-                // Lưu code, email, số lần thử vào session
+                // Lưu thông tin vào session
                 session.setAttribute("code", codeStr);
                 session.setAttribute("email", emailInput);
+                session.setAttribute("role_id", roleId);
                 session.setAttribute("attemptsLeft", MAX_ATTEMPTS);
 
-                // Chuyển bước sang nhập code
+                // Chuyển sang bước nhập mã
                 request.setAttribute("email", emailInput);
+                request.setAttribute("role_id", roleId);
                 request.setAttribute("step", "enterCode");
                 request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
-
             } else {
-                // Email không tồn tại
-                request.setAttribute("message", "Email không tồn tại!");
+                request.setAttribute("message", "Email hoặc vai trò không đúng");
                 request.setAttribute("step", "enterEmail");
                 request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
             }
-
         } else {
-            // Bước 2: Đã gửi mail, đang xác nhận code
-
-            String codeInput = request.getParameter("resetcode");
-            String email = (String) session.getAttribute("email");
-
-            if (attemptsLeft == null) {
-                attemptsLeft = MAX_ATTEMPTS;
-            }
-
-            if (codeSession.equals(codeInput)) {
-                // Code đúng, xóa session
-                session.removeAttribute("code");
-                session.removeAttribute("email");
-                session.removeAttribute("attemptsLeft");
-
-                request.setAttribute("message", "Code verified! Please reset your password.");
-                request.getRequestDispatcher("page/login/newpassword.jsp").forward(request, response);
-
-            } else {
-                // Code sai, giảm số lần còn lại
-                attemptsLeft--;
-                session.setAttribute("attemptsLeft", attemptsLeft);
-
-                if (attemptsLeft <= 0) {
-                    // Hết lần thử, xóa session
-                    session.removeAttribute("code");
-                    session.removeAttribute("email");
-                    session.removeAttribute("attemptsLeft");
-
-                    request.setAttribute("message", "Bạn đã nhập sai quá nhiều lần. Vui lòng gửi lại email để nhận mã mới.");
-                    request.setAttribute("step", "enterEmail");
-                    request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
-
-                } else {
-                    // Còn lần thử, thông báo còn lại
-                    request.setAttribute("message", "Mã không đúng! Bạn còn " + attemptsLeft + " lần thử.");
-                    request.setAttribute("email", email);
-                    request.setAttribute("step", "enterCode");
-                    request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
-                }
-            }
+            // Bước 2: Đã gửi mail, chuyển sang xác nhận mã
+            request.setAttribute("email", session.getAttribute("email"));
+            request.setAttribute("role_id", session.getAttribute("role_id"));
+            request.setAttribute("step", "enterCode");
+            request.getRequestDispatcher("page/login/forgot.jsp").forward(request, response);
         }
     }
 
@@ -129,3 +109,4 @@ public class ForgotPassServlet extends HttpServlet {
         return "Forgot Password Servlet";
     }
 }
+

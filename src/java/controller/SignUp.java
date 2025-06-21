@@ -11,12 +11,15 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.PasswordUtils;
+import java.sql.SQLException;
+
 
 @WebServlet(name = "SignUp", urlPatterns = {"/signup"})
 public class SignUp extends HttpServlet {
 
     private static final int CODE_LENGTH = 6;
     private static final long CODE_EXPIRY_MS = 10 * 60 * 1000;
+    private static final Logger LOGGER = Logger.getLogger(SignUpStorage.class.getName());
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
@@ -59,13 +62,20 @@ public class SignUp extends HttpServlet {
         }
 
         UserDAO dao = new UserDAO();
-        String duplicate = dao.checkDuplicate(email, username);
-        if ("email_exists".equals(duplicate)) {
-            request.setAttribute("error", "Email đã được sử dụng");
-            request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
-            return;
-        } else if ("username_exists".equals(duplicate)) {
-            request.setAttribute("error", "Tên đăng nhập đã được sử dụng");
+        try {
+            String duplicate = dao.checkDuplicate(email, username, 6);
+            if ("email_exists".equals(duplicate)) {
+                request.setAttribute("error", "Email đã được sử dụng cho vai trò khách hàng");
+                request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
+                return;
+            } else if ("username_exists".equals(duplicate)) {
+                request.setAttribute("error", "Tên đăng nhập đã được sử dụng");
+                request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
+                return;
+            }
+        } catch (RuntimeException e) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicates: " + e.getMessage(), e);
+            request.setAttribute("error", "Lỗi kiểm tra trùng lặp: " + e.getMessage());
             request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
             return;
         }
@@ -79,7 +89,7 @@ public class SignUp extends HttpServlet {
         user.setEmail(email);
         user.setPasswordHash(hashedPassword);
         user.setRoleId(6);
-        user.setStatus("pending");
+        user.setStatus("active"); // Lưu trực tiếp trạng thái active
 
         session.setAttribute("pendingUser", user);
         session.setAttribute("verificationCode", code);
@@ -92,7 +102,7 @@ public class SignUp extends HttpServlet {
             emailUtil.sendEmail(subject, message, email);
             response.sendRedirect(request.getContextPath() + "/signup?action=confirm");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error sending email: " + e.getMessage(), e);
             request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
             request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
         }
@@ -104,17 +114,19 @@ public class SignUp extends HttpServlet {
         String inputCode = request.getParameter("code");
         String storedCode = (String) session.getAttribute("verificationCode");
         Long expiryTime = (Long) session.getAttribute("codeExpiry");
+        Users user = (Users) session.getAttribute("pendingUser");
 
-        if (storedCode == null || expiryTime == null) {
+        if (storedCode == null || expiryTime == null || user == null) {
+            session.invalidate();
             request.setAttribute("error", "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại");
-            request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
             return;
         }
 
         if (System.currentTimeMillis() > expiryTime) {
             session.invalidate();
             request.setAttribute("error", "Mã xác nhận đã hết hạn, vui lòng đăng ký lại");
-            request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
             return;
         }
 
@@ -124,22 +136,18 @@ public class SignUp extends HttpServlet {
             return;
         }
 
-        Users user = (Users) session.getAttribute("pendingUser");
-        if (user == null) {
-            request.setAttribute("error", "Không tìm thấy thông tin đăng ký");
-            request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
-            return;
-        }
-
-        user.setStatus("active");
+        // Lưu dữ liệu vào cơ sở dữ liệu
         UserDAO dao = new UserDAO();
-
-        if (dao.signupAccount(user)) {
+        try {
+            if (!dao.signupAccount(user)) {
+                throw new SQLException("Không thể lưu tài khoản người dùng");
+            }
             session.invalidate();
-            // Redirect về signup?action=confirm&success=1
             response.sendRedirect(request.getContextPath() + "/signup?action=confirm&success=1");
-        } else {
-            request.setAttribute("error", "Không thể tạo tài khoản, vui lòng thử lại");
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "SQLException in confirm process: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            session.invalidate();
+            request.setAttribute("error", "Đăng ký thất bại: " + (e.getSQLState().equals("23000") ? "Tên đăng nhập đã được sử dụng" : e.getMessage()));
             request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
         }
     }
@@ -150,6 +158,7 @@ public class SignUp extends HttpServlet {
         Users user = (Users) session.getAttribute("pendingUser");
 
         if (user == null) {
+            session.invalidate();
             request.setAttribute("error", "Phiên đăng ký đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
             return;
@@ -166,10 +175,10 @@ public class SignUp extends HttpServlet {
 
         try {
             emailUtil.sendEmail(subject, message, user.getEmail());
-            // Redirect về signup?action=confirm&resent=1
-            response.sendRedirect(request.getContextPath() + "/signup?action=confirm&resent=1");
+            request.setAttribute("success", "Mã xác nhận đã được gửi lại!");
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error resending email: " + e.getMessage(), e);
             request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
             request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
         }

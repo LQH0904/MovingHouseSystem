@@ -145,15 +145,19 @@ public class UserDAO {
     }
 
     /**
-     * Lấy thông tin người dùng từ email.
+     * Lấy thông tin người dùng dựa trên email và role_id.
      *
      * @param email Email người dùng
+     * @param roleId ID vai trò
      * @return Đối tượng Users nếu tồn tại, null nếu không
      */
-    public Users getUserByEmail(String email) {
-        String query = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+    public Users getUser(String email, int roleId) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status " +
+                       "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, email);
+            ps.setInt(2, roleId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Users(
@@ -167,22 +171,26 @@ public class UserDAO {
                         rs.getString("status")
                 );
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting user: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
         }
         return null;
     }
 
     /**
-     * Lấy thông tin người dùng từ email.
+     * Kiểm tra người dùng dựa trên email và role_id.
      *
      * @param email Email người dùng
+     * @param roleId ID vai trò
      * @return Đối tượng Users nếu tồn tại, null nếu không
      */
-    public Users getUser(String email) {
-        String query = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+    public Users checkUserByEmail(String email, int roleId) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status " +
+                       "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, email);
+            ps.setInt(2, roleId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Users(
@@ -196,49 +204,69 @@ public class UserDAO {
                         rs.getString("status")
                 );
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking user by email: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
         }
         return null;
     }
 
     /**
-     * Cập nhật mật khẩu mới cho người dùng dựa trên email.
+     * Cập nhật mật khẩu mới cho người dùng dựa trên email và role_id.
      *
      * @param newPass Mật khẩu mới (hash)
      * @param email Email người dùng
+     * @param roleId ID vai trò
      * @return true nếu cập nhật thành công, false nếu thất bại
      */
-    public boolean updatePassByEmail(String newPass, String email) {
-        String query = "UPDATE users SET password_hash = ?, updated_at = ? WHERE email = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+    public boolean updatePassByEmail(String newPass, String email, int roleId) {
+        String query = "UPDATE Users SET password_hash = ?, updated_at = ? WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, newPass);
             ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
             ps.setString(3, email);
+            ps.setInt(4, roleId);
             int rows = ps.executeUpdate();
             return rows > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating password: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
         }
         return false;
     }
 
-    public String checkDuplicate(String email, String username) {
-        String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?)";
+   
+    public String checkDuplicate(String email, String username, int roleId) {
+        String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
         String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
+        String roleCheckQuery = "SELECT 1 FROM Roles WHERE role_id = ?";
 
         try (Connection conn = DBConnection.getConnection()) {
+            // Kiểm tra kết nối cơ sở dữ liệu
+            if (conn == null) {
+                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
+            }
 
-            // Check email
+            // Kiểm tra roleId hợp lệ
+            try (PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
+                ps.setInt(1, roleId);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    LOGGER.log(Level.SEVERE, "Invalid role_id: " + roleId);
+                    throw new SQLException("role_id không hợp lệ: " + roleId);
+                }
+            }
+
+            // Kiểm tra email với role_id
             try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
                 ps.setString(1, email.toLowerCase());
+                ps.setInt(2, roleId);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
                     return "email_exists";
                 }
             }
 
-            // Check username
+            // Kiểm tra username
             try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
                 ps.setString(1, username.toLowerCase());
                 ResultSet rs = ps.executeQuery();
@@ -246,9 +274,9 @@ public class UserDAO {
                     return "username_exists";
                 }
             }
-
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error checking duplicate", e);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicate: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            throw new RuntimeException("Lỗi kiểm tra trùng lặp: " + e.getMessage(), e);
         }
 
         return "none";
