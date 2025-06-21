@@ -9,3 +9,4 @@ const navBar = document.querySelector("nav"),
      overlay.addEventListener("click", () => {
        navBar.classList.remove("open");
      });
+     
