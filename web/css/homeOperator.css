@@ -814,28 +814,5 @@ body {
     font-size: 12px;
 }
 
-/* Dark mode (tùy chọn) */
-@media (prefers-color-scheme: dark) {
-    .table-issue {
-        background: #2d3748;
-    }
 
-    .table-issue tbody tr {
-        background: #2d3748;
-        color: #e2e8f0;
-    }
-
-    .table-issue tbody tr:nth-child(even) {
-        background: #4a5568;
-    }
-
-    .table-issue tbody tr:hover {
-        background: #4a5568;
-    }
-
-    .table-issue td {
-        border-bottom-color: #4a5568;
-        color: #e2e8f0;
-    }
-}
 

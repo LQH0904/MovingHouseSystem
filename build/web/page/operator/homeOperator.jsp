@@ -28,7 +28,10 @@
                 <div class="div3">
                     <div class="content-part">
                         <div class="user">
-                            <div class="title_form_1">Về người dùng</div>
+                            <div>
+                                <div class="title_form_1">Về người dùng</div>
+                            </div>
+                            
                             <div class="user-char">
                                 <div class="title-user">
                                     <div class="title1">Tổng quan người dung</div>
@@ -123,7 +126,7 @@
                         </div>
                     </div>
                     
-                    <img src="img/tam.jpg" alt="test ảnh" style="width: 100%; padding: 20px">
+                    <img src="img/Lukasz Buda.gif" alt="test ảnh" style="width: 375px; padding: 10px; margin: 15px 0; border-radius: 22px;">
                     
                     <div class="table-issue" style="width: 100%">
                         <table border="1">
@@ -140,9 +143,13 @@
                                     <td>${user.value}</td>
                                 </tr>
                                 </c:forEach>
+                                <tr>
+                                    <td>...</td>
+                                    <td>...</td>
+                                </tr>
                             </tbody>
                         </table>
-
+                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" style="padding: 7%;">Xem thêm</a>
                     </div>
                 </dix>
 
@@ -428,7 +435,7 @@
                             roam: false, // Tắt zoom và pan
                             nodeClick: false, // Tắt click vào node
                             sort: 'desc', // Sắp xếp theo giá trị giảm dần
-                            squareRatio: 0.5, // Điều chỉnh tỷ lệ để tạo layout 2 cột
+                            squareRatio: 0.6, // Điều chỉnh tỷ lệ để tạo layout 2 cột
                             breadcrumb: {
                                 show: false // Ẩn breadcrumb
                             },
