@@ -17,7 +17,7 @@
         </tr>
         <%
             List<OperationProcedure> procedureList = (List<OperationProcedure>) request.getAttribute("procedures");
-            if (procedureList != null) {
+            if (procedureList != null && !procedureList.isEmpty()) {
                 for (OperationProcedure procedure : procedureList) {
         %>
         <tr>

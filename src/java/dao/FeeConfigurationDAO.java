@@ -11,11 +11,15 @@ public class FeeConfigurationDAO {
 
     public FeeConfiguration getFeeConfig() {
         String sql = "SELECT * FROM FeeConfigurations";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = new DBContext().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                return new FeeConfiguration(rs.getInt("id"), rs.getString("content"));
+                return new FeeConfiguration(
+                        rs.getInt("id"),
+                        rs.getString("fee_type"), // phải khớp với cột trong DB
+                        rs.getString("description")
+                );
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -25,8 +29,7 @@ public class FeeConfigurationDAO {
 
     public void updateFeeConfiguration(String content) {
         String sql = "UPDATE FeeConfigurations SET content = ? WHERE id = 1";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, content);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -38,5 +41,4 @@ public class FeeConfigurationDAO {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    
 }

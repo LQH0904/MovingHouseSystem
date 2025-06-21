@@ -13,9 +13,9 @@ public class FeeConfiguration {
         this.description = description;
     }
 
-    public FeeConfiguration(int aInt, String string) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    public FeeConfiguration(int aInt, String string) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
 
     public int getId() {
         return id;
