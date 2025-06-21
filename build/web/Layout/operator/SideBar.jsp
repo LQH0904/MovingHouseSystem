@@ -39,13 +39,13 @@
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/repURL?type=daily" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="submenu-link">
                                     <i class="bx bx-calendar icon"></i>
                                     <span class="link">Báo Cáo Vận Chuyển </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/repURL?type=monthly" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="submenu-link">
                                     <i class="bx bx-calendar-week icon"></i>
                                     <span class="link">Báo Cáo Kho Bãi </span>
                                 </a>
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
                             <i class="bx bx-message-rounded icon"></i>
                             <span class="link">Báo Cáo Tồn Kho</span>
                         </a>
