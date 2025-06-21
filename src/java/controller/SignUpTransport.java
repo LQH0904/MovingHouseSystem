@@ -175,7 +175,7 @@ public class SignUpTransport extends HttpServlet {
         TransportUnit transportUnit = new TransportUnit();
         transportUnit.setCompanyName(companyName);
         transportUnit.setContactInfo(contactInfo);
-        transportUnit.setBusinessCertificate("/img/" + tempFileName.replace("temp_", "")); // Tên file cuối cùng
+        transportUnit.setBusinessCertificate("/img/" + tempFileName.replace("temp_", ""));
         transportUnit.setLocation(location);
         transportUnit.setVehicleCount(vehicleCount);
         transportUnit.setCapacity(capacity);

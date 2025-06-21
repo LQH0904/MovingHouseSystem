@@ -286,7 +286,6 @@ if (session.getAttribute("acc") == null) {
                                 <th>Tổng phí</th>
                                 <th>Ngày chấp nhận</th>
                                 <th>Ngày giao</th>
-                                <th>Action.....</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -321,7 +320,6 @@ if (session.getAttribute("acc") == null) {
                                     <td>${order.totalFee}</td>
                                     <td>${order.acceptedAt != null ? order.acceptedAt : 'N/A'}</td>
                                     <td>${order.deliveredAt != null ? order.deliveredAt : 'N/A'}</td>
-                                    <td>.......</td>
                                 </tr>
                             </c:forEach>
                         </tbody>

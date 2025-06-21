@@ -439,7 +439,6 @@ public class UserDAO {
 
     // Lưu thông tin Transport Unit
     public boolean saveTransportUnit(TransportUnit unit, int userId) {
-        // Kiểm tra role_id của user
         String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
             ps.setInt(1, userId);
@@ -452,10 +451,9 @@ public class UserDAO {
             return false;
         }
 
-        String query = "INSERT INTO TransportUnits (user_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, registration_status, created_at) "
+        String query = "INSERT INTO TransportUnits (transport_unit_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, registration_status, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-            // Kiểm tra dữ liệu đầu vào
             if (unit.getCompanyName() == null || unit.getCompanyName().trim().isEmpty()) {
                 throw new IllegalArgumentException("Company name cannot be null or empty");
             }
@@ -469,7 +467,7 @@ public class UserDAO {
                 throw new IllegalArgumentException("Loader count cannot be negative");
             }
 
-            ps.setInt(1, userId); // Sử dụng user_id làm user_id (khóa chính)
+            ps.setInt(1, userId); 
             ps.setString(2, truncate(unit.getCompanyName(), 150));
             ps.setString(3, truncate(unit.getContactInfo(), 255));
             ps.setString(4, truncate(unit.getLocation(), 100));

@@ -29,7 +29,7 @@ public class OrderDAO {
                 + "o.delivery_schedule, o.total_fee, o.accepted_at, o.delivered_at "
                 + "FROM Orders o "
                 + "LEFT JOIN Customers c ON o.customer_id = c.customer_id "
-                + "LEFT JOIN TransportUnits t ON o.transport_unit_id = t.user_id "
+                + "LEFT JOIN TransportUnits t ON o.transport_unit_id = t.transport_unit_id "
                 + "LEFT JOIN StorageUnits s ON o.storage_unit_id = s.storage_unit_id WHERE 1=1");
 
         // Thêm điều kiện lọc
