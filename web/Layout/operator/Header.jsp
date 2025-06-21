@@ -15,7 +15,7 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-custom navbar-mainbg">
-            <a class="navbar-brand navbar-logo" href="http://localhost:9999/HouseMovingSystem/homeOperator" style="display: flex;"><img id="imgId" src="img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
+            <a class="navbar-brand navbar-logo" href="http://localhost:8080/HouseMovingSystem/homeOperator" style="display: flex;"><img id="imgId" src="img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
             <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars text-white"></i>
             </button>

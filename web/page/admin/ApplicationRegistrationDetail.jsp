@@ -5,7 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Application Registration Detail Page</title>
-        <link rel="stylesheet" href="../css/HomePage.css">
+        <link rel="stylesheet" href="../../css/HomePage.css">
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
@@ -58,8 +58,8 @@
     </head>
     <body>
         <div class="parent">
-            <div class="div1"><jsp:include page="../Layout/SideBar.jsp"></jsp:include> </div>
-            <div class="div2">  <jsp:include page="../Layout/Header.jsp"></jsp:include> </div>
+            <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include> </div>
+            <div class="div2">  <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include> </div>
                 <div class="div3"> 
                     <div class="container">
                         <div class="card detail-card bg-white p-4">

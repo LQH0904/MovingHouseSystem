@@ -79,6 +79,9 @@
             }
             .nav-tabs {
                 margin-bottom: 20px;
+                display: flex;
+                flex-wrap: nowrap; 
+                width: 100%;
                 border-bottom: 2px solid #007bff;
             }
             .nav-tabs .nav-link {
@@ -100,12 +103,24 @@
                 color: #0056b3;
             }
             @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-20px); }
-                to { opacity: 1; transform: translateY(0); }
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
             @media (max-width: 576px) {
-                .signup-container { margin: 20px; padding: 20px; }
-                .nav-tabs .nav-link { padding: 8px 12px; font-size: 0.9rem; }
+                .signup-container {
+                    margin: 20px;
+                    padding: 20px;
+                }
+                .nav-tabs .nav-link {
+                    padding: 8px 12px;
+                    font-size: 0.9rem;
+                }
             }
         </style>
     </head>

@@ -1,8 +1,4 @@
-<%-- 
-    Document   : homeOperator
-    Created on : Jun 3, 2025, 8:16:35 AM
-    Author     : Admin
---%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -16,17 +12,17 @@
     <body>
         <div class="parent">
             <div class="div1">
-                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
             </div>
             <div class="div2">
-            <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
+            <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
             </div>
 
             <div class="div3">         
                 <!-- Nội dung chính của div3 -->
                 <div class="main-content">
                     <div class="content-section">
-                        <h3>Thống kê tổng quan</h3>
+                        <h3>Thống kê tổng quan cua Staff</h3>
                         <p>Đây là khu vực hiển thị nội dung chính của ứng dụng. Bạn có thể thêm các biểu đồ, bảng dữ liệu, hoặc thông tin khác vào đây.</p>
                     </div>
 

@@ -15,7 +15,8 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-custom navbar-mainbg">
-            <a class="navbar-brand navbar-logo" href="http://localhost:9999/HouseMovingSystem/homeOperator" style="display: flex;"><img id="imgId" src="img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
+            <a class="navbar-brand navbar-logo" href="${pageContext.request.contextPath}/homeStaff" style="display: flex;">
+                <img id="imgId" src="img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
             <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars text-white"></i>
             </button>
@@ -33,10 +34,8 @@
                     </li>
                 </ul>
             </div>
-        </nav>
-
-<!--         jQuery + Bootstrap JS 
--->        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        </nav>                             
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Custom JS -->

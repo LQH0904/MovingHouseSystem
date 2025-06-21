@@ -17,10 +17,10 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     </head>
     <body>
-        
+
         <!-- Sidebar -->
         <div class="sidebar">
-            
+
             <div class="sidebar-content">
                 <ul class="lists">
                     <li class="list">
@@ -36,9 +36,9 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
                             <i class="bx bx-bell icon"></i>
-                            <span class="link">Đơn Hàng </span>
+                            <span class="link">Đơn Hàng</span>
                         </a>
                     </li>
                     <li class="list">
@@ -78,7 +78,7 @@
                         </a>
                     </li>
                 </ul>
-               
+
             </div>
         </div>
 
