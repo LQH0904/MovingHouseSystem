@@ -6,40 +6,35 @@ package model;
 
 /**
  *
- * @author Admin
+ * @author admin
  */
-public class transportUnit {
-    private int transportUnitId;
+public class TransportUnit {
+
     private String companyName;
     private String contactInfo;
-    private String registrationStatus;
-    private String createdAt;
     private String location;
     private int vehicleCount;
-    private int capacity;
+    private double capacity;
+    private int loader;
+    private String businessCertificate;
+    private String registrationStatus;
 
-    public transportUnit() {
-    }
-
-    public transportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, int capacity) {
-        this.transportUnitId = transportUnitId;
+    public TransportUnit(String companyName, String contactInfo, String location, int vehicleCount, double capacity, int loader, String businessCertificate, String registrationStatus) {
         this.companyName = companyName;
         this.contactInfo = contactInfo;
-        this.registrationStatus = registrationStatus;
-        this.createdAt = createdAt;
         this.location = location;
         this.vehicleCount = vehicleCount;
         this.capacity = capacity;
+        this.loader = loader;
+        this.businessCertificate = businessCertificate;
+        this.registrationStatus = registrationStatus;
     }
 
-    public int getTransportUnitId() {
-        return transportUnitId;
+    public TransportUnit() {
     }
 
-    public void setTransportUnitId(int transportUnitId) {
-        this.transportUnitId = transportUnitId;
-    }
-
+    
+    // Getters and Setters
     public String getCompanyName() {
         return companyName;
     }
@@ -54,22 +49,6 @@ public class transportUnit {
 
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
-    }
-
-    public String getRegistrationStatus() {
-        return registrationStatus;
-    }
-
-    public void setRegistrationStatus(String registrationStatus) {
-        this.registrationStatus = registrationStatus;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getLocation() {
@@ -88,17 +67,35 @@ public class transportUnit {
         this.vehicleCount = vehicleCount;
     }
 
-    public int getCapacity() {
+    public double getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(double capacity) {
         this.capacity = capacity;
     }
 
-    @Override
-    public String toString() {
-        return "transportUnit{" + "transportUnitId=" + transportUnitId + ", companyName=" + companyName + ", contactInfo=" + contactInfo + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", location=" + location + ", vehicleCount=" + vehicleCount + ", capacity=" + capacity + '}';
+    public int getLoader() {
+        return loader;
     }
-    
+
+    public void setLoader(int loader) {
+        this.loader = loader;
+    }
+
+    public String getBusinessCertificate() {
+        return businessCertificate;
+    }
+
+    public void setBusinessCertificate(String businessCertificate) {
+        this.businessCertificate = businessCertificate;
+    }
+
+    public String getRegistrationStatus() {
+        return registrationStatus;
+    }
+
+    public void setRegistrationStatus(String registrationStatus) {
+        this.registrationStatus = registrationStatus;
+    }
 }
