@@ -15,31 +15,42 @@
     </head>
     <body>
     <div class="parent">
-        <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp" /></div>
-        <div class="div2"><jsp:include page="/Layout/operator/Header.jsp" /></div>
+        <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include></div>
+        <div class="div2"><jsp:include page="/Layout/operator/Header.jsp"></jsp:include></div>
+
         <div class="div3">
-            <h2 class="propoli-title">Quy trình vận hành</h2>
-            <table class="propoli-table">
+            <h2>Quy trình vận hành</h2>
+
+            <div class="action-buttons">
+                <a href="add-procedure" class="add-btn">Thêm Quy trình</a>
+                <form action="export-procedures-to-excel" method="post">
+                    <button type="submit" class="excel-btn">Tải Excel</button>
+                </form>
+            </div>
+
+            <table class="center-table" border="1">
                 <tr>
                     <th>STT</th>
                     <th>Tiêu đề</th>
                     <th>Mô tả</th>
+                    <th>Hành động</th>
                 </tr>
                 <%
-                    List<model.OperationProcedure> procedureList = (List<model.OperationProcedure>) request.getAttribute("procedures");
+                    List<OperationProcedure> procedureList = (List<OperationProcedure>) request.getAttribute("procedures");
                     if (procedureList != null && !procedureList.isEmpty()) {
-                        for (model.OperationProcedure procedure : procedureList) {
+                        for (OperationProcedure procedure : procedureList) {
                 %>
                 <tr>
                     <td><%= procedure.getStepNumber() %></td>
                     <td><%= procedure.getStepTitle() %></td>
                     <td><pre><%= procedure.getStepDescription() %></pre></td>
+                    <td><a href="edit-procedure?id=<%= procedure.getId() %>" class="edit-link">Sửa</a></td>
                 </tr>
                 <%
                         }
                     } else {
                 %>
-                <tr><td colspan="3">Không có dữ liệu.</td></tr>
+                <tr><td colspan="4">Không có dữ liệu.</td></tr>
                 <%
                     }
                 %>
@@ -47,5 +58,7 @@
         </div>
     </div>
 </body>
+
+
 
 </html>

@@ -18,28 +18,36 @@
         <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp" /></div>
         <div class="div2"><jsp:include page="/Layout/operator/Header.jsp" /></div>
         <div class="div3">
-            <h2 class="propoli-title">Cấu hình phí</h2>
-            <table class="propoli-table">
+            <h2>Cấu hình phí</h2>
+            <div class="action-buttons">
+                <a href="#" class="add-btn">Thêm Cấu hình phí</a>
+                <form method="get" action="export-fees-to-excel" style="display:inline;">
+                    <button type="submit" class="excel-btn">Tải Excel</button>
+                </form>
+            </div>
+            <table border="1">
                 <tr>
                     <th>STT</th>
                     <th>Loại phí</th>
                     <th>Mô tả</th>
+                    <th>Hành động</th>
                 </tr>
                 <%
-                    List<model.FeeConfiguration> feeList = (List<model.FeeConfiguration>) request.getAttribute("feeConfigs");
+                    List<FeeConfiguration> feeList = (List<FeeConfiguration>) request.getAttribute("feeConfigs");
                     if (feeList != null && !feeList.isEmpty()) {
-                        for (model.FeeConfiguration fee : feeList) {
+                        for (FeeConfiguration fee : feeList) {
                 %>
                 <tr>
                     <td><%= fee.getFeeNumber() %></td>
                     <td><%= fee.getFeeType() %></td>
                     <td><pre><%= fee.getDescription() %></pre></td>
+                    <td><a href="#" class="edit-link">Sửa</a></td>
                 </tr>
                 <%
                         }
                     } else {
                 %>
-                <tr><td colspan="3">Không có dữ liệu.</td></tr>
+                <tr><td colspan="4">Không có dữ liệu.</td></tr>
                 <%
                     }
                 %>
@@ -47,5 +55,6 @@
         </div>
     </div>
 </body>
+
 
 </html>
