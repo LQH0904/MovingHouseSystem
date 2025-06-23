@@ -16,16 +16,15 @@ public class FeeConfigurationServlet extends HttpServlet {
             throws ServletException, IOException {
 
         FeeConfigurationDAO dao = new FeeConfigurationDAO();
-        List<FeeConfiguration> feeConfigs = dao.getAllFeeConfigurations();  // ✅ lấy danh sách
+        List<FeeConfiguration> feeConfigs = dao.getAllFeeConfigurations();  
 
-        request.setAttribute("feeConfigs", feeConfigs);  // ✅ gán đúng tên
+        request.setAttribute("feeConfigs", feeConfigs);  
         request.getRequestDispatcher("/page/operator/ConfigFees.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Hiện chưa xử lý cập nhật từng phí nên chỉ load lại
         response.sendRedirect("config-fee");
     }
 }

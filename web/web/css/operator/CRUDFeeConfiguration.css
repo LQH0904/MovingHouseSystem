@@ -1,0 +1,77 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : Jun 23, 2025, 6:42:47 PM
+    Author     : admin
+*/
+
+
+.add-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.add-form {
+    width: 80%;
+    margin: 0 auto;
+}
+.add-form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.add-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+.add-form .add-desc-btn {
+    background-color: #17a2b8;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-form .add-desc-btn:hover {
+    background-color: #138496;
+}
+
+/* Nút Lưu */
+.add-form .submit-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.add-form .submit-btn:hover {
+    background-color: #218838;
+}
+
+/* Container tổng */
+.form-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}

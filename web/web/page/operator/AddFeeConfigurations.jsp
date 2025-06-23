@@ -10,39 +10,41 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/UserList.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/CRUDFeeConfiguration.css">
+
     </head>
     <body>
         <div class="parent">
             <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include> </div>
             <div class="div2">  <jsp:include page="/Layout/operator/Header.jsp"></jsp:include> </div>
                 <div class="div3"> 
-                    <h2>Quy trình vận hành</h2>
-                    <table border="1">
-                        <tr>
-                            <th>STT</th>
-                            <th>Tiêu đề</th>
-                            <th>Mô tả</th>
-                        </tr>
-                    <%
-                        List<OperationProcedure> procedureList = (List<OperationProcedure>) request.getAttribute("procedures");
-                        if (procedureList != null && !procedureList.isEmpty()) {
-                            for (OperationProcedure procedure : procedureList) {
-                    %>
-                    <tr>
-                        <td><%= procedure.getStepNumber() %></td>
-                        <td><%= procedure.getStepTitle() %></td>
-                        <td><pre><%= procedure.getStepDescription() %></pre></td>
-                    </tr>
-                    <%
-                            }
-                        } else {
-                    %>
-                    <tr><td colspan="3">Không có dữ liệu.</td></tr>
-                    <%
-                        }
-                    %>
-                </table>
+                    <div class="form-container">
+    <form method="post" action="${pageContext.request.contextPath}/add-fee" class="add-form">
+        <h2 class="add-title">Thêm Cấu hình phí</h2>
+
+        <label for="feeType">Loại phí:</label>
+        <input type="text" id="feeType" name="feeType" required>
+
+        <label>Mô tả:</label>
+        <div id="description-container">
+            <textarea name="descriptions" required placeholder="Nội dung dòng 1..."></textarea>
+        </div>
+
+        <button type="button" class="add-desc-btn" onclick="addDescription()">+ Thêm nội dung</button><br>
+        <button type="submit" class="submit-btn">Lưu</button>
+    </form>
+</div>
+
             </div>
         </div>
+        <script>
+            function addDescription() {
+                const container = document.getElementById("description-container");
+                const textarea = document.createElement("textarea");
+                textarea.name = "descriptions";
+                textarea.placeholder = "Nội dung dòng...";
+                container.appendChild(textarea);
+            }
+        </script>
     </body>
 </html>

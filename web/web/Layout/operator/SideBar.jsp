@@ -17,10 +17,10 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     </head>
     <body>
-        
+
         <!-- Sidebar -->
         <div class="sidebar">
-            
+
             <div class="sidebar-content">
                 <ul class="lists">
                     <li class="list">
@@ -66,6 +66,19 @@
                         </a>
                     </li>
                     <li class="list">
+                        <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
+                            <i class="bx bx-folder-open icon"></i>
+                            <span class="link">Chính sách</span>
+                            <i class="bx bx-chevron-down" style="margin-left:auto;"></i>
+                        </a>
+                        <ul class="sub-menu" id="policy-submenu" style="display:none; padding-left: 25px;">
+                            <li><a href="${pageContext.request.contextPath}/operation-procedure">Quy trình hoạt động</a></li>
+                            <li><a href="${pageContext.request.contextPath}/operation-policy">Chính sách hoạt động</a></li>
+                            <li><a href="${pageContext.request.contextPath}/config-fee">Cấu hình phí</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="list">
                         <a href="#" class="nav-link">
                             <i class="bx bx-cog icon"></i>
                             <span class="link">Settings</span>
@@ -78,10 +91,21 @@
                         </a>
                     </li>
                 </ul>
-               
+
             </div>
         </div>
 
         <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
+<script>
+    function toggleSubMenu(id) {
+        const submenu = document.getElementById(id);
+        if (submenu.style.display === "none") {
+            submenu.style.display = "block";
+        } else {
+            submenu.style.display = "none";
+        }
+    }
+</script>
+
     </body>
 </html>

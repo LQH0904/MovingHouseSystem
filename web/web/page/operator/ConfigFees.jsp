@@ -20,7 +20,8 @@
                 <h2 class="section-title">Cấu hình phí</h2>
 
                 <div class="action-buttons">
-                    <a href="#" class="add-btn">Thêm Cấu hình phí</a>
+                    <a href="add-fee" class="add-btn">Thêm Cấu hình phí</a>
+
                     <form method="post" action="export-fees-to-excel" style="display:inline;">
                         <button type="submit" class="excel-btn">Tải Excel</button>
                     </form>
