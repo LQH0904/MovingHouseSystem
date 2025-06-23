@@ -29,6 +29,18 @@
         <servlet-name>AddFeeConfigurationsServlet</servlet-name>
         <servlet-class>controller.AddFeeConfigurationsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ExportProcedureServlet</servlet-name>
+        <servlet-class>controller.ExportProcedureServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportPolicyServlet</servlet-name>
+        <servlet-class>controller.ExportPolicyServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportFeeServlet</servlet-name>
+        <servlet-class>controller.ExportFeeServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/UserListServlet</url-pattern>
@@ -87,5 +99,17 @@
     <servlet-mapping>
         <servlet-name>AddFeeConfigurationsServlet</servlet-name>
         <url-pattern>/AddFeeConfigurationsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportProcedureServlet</servlet-name>
+        <url-pattern>/ExportProcedureServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportPolicyServlet</servlet-name>
+        <url-pattern>/ExportPolicyServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportFeeServlet</servlet-name>
+        <url-pattern>/ExportFeeServlet</url-pattern>
     </servlet-mapping>
 </web-app>
