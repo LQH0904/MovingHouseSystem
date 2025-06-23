@@ -348,5 +348,56 @@ public class UserDAO {
         }
         return false;
     }
+    
+    public List<User> getUsersByPage(int offset, int limit) {
+    List<User> userList = new ArrayList<>();
+    String query = "SELECT u.user_id, u.username, u.password_hash, u.email, u.role_id, u.created_at, u.updated_at, u.status, r.role_name "
+                 + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+                 + "WHERE u.role_id != 1 " // loại admin
+                 + "ORDER BY u.user_id "
+                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, offset);
+        stmt.setInt(2, limit);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            User user = new User();
+            user.setUserId(rs.getInt("user_id"));
+            user.setUsername(rs.getString("username"));
+            user.setPasswordHash(rs.getString("password_hash"));
+            user.setEmail(rs.getString("email"));
+
+            Role role = new Role();
+            role.setRoleId(rs.getInt("role_id"));
+            role.setRoleName(rs.getString("role_name"));
+            user.setRole(role);
+
+            user.setCreatedAt(rs.getDate("created_at"));
+            user.setUpdatedAt(rs.getDate("updated_at"));
+            user.setStatus(rs.getString("status"));
+            userList.add(user);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return userList;
+}
+
+public int countAllUsers() {
+    String query = "SELECT COUNT(*) FROM Users WHERE role_id != 1";
+    try (PreparedStatement stmt = conn.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0;
+}
+    
 
 }
