@@ -73,4 +73,33 @@ public class FeeConfigurationDAO {
         return 1;
     }
 
+    public FeeConfiguration getById(int id) {
+        String sql = "SELECT * FROM FeeConfigurations WHERE id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new FeeConfiguration(
+                        rs.getInt("id"),
+                        rs.getInt("fee_number"),
+                        rs.getString("fee_type"),
+                        rs.getString("description")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void deleteById(int id) {
+        String sql = "DELETE FROM FeeConfigurations WHERE id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -69,6 +69,18 @@
         <servlet-name>AddFeeServlet</servlet-name>
         <servlet-class>controller.AddFeeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditFeeServlet</servlet-name>
+        <servlet-class>controller.EditFeeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteFeeServlet</servlet-name>
+        <servlet-class>controller.DeleteFeeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckProPoliFeeServlet</servlet-name>
+        <servlet-class>controller.CheckProPoliFeeServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/UserListServlet</url-pattern>
@@ -167,5 +179,17 @@
     <servlet-mapping>
         <servlet-name>AddFeeServlet</servlet-name>
         <url-pattern>/AddFeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditFeeServlet</servlet-name>
+        <url-pattern>/EditFeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteFeeServlet</servlet-name>
+        <url-pattern>/DeleteFeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckProPoliFeeServlet</servlet-name>
+        <url-pattern>/CheckProPoliFeeServlet</url-pattern>
     </servlet-mapping>
 </web-app>

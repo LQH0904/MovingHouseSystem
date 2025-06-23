@@ -44,7 +44,7 @@
                         <td><%= fee.getFeeType() %></td>
                         <td><pre class="description-text"><%= fee.getDescription() %></pre></td>
                         <td class="action-cell">
-                            <a href="#" class="edit-btn">Sửa</a>
+                            <a href="edit-fee?id=<%= fee.getId() %>" class="edit-btn">Sửa</a>
                         </td>
                     </tr>
                     <%

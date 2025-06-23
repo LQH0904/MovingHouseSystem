@@ -1,25 +1,29 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
-*/
-/* 
-    Created on : Jun 23, 2025, 5:58:13 PM
-    Author     : admin
-*/
+/* Tiêu đề căn giữa */
 .add-title {
     text-align: center;
     margin-bottom: 20px;
 }
 
+/* Container của form */
+.form-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form */
 .add-form {
     width: 80%;
     margin: 0 auto;
 }
+
+/* Label và input */
 .add-form label {
     font-weight: bold;
     display: block;
     margin-top: 10px;
 }
+
 .add-form input[type="text"] {
     width: 100%;
     padding: 8px;
@@ -29,10 +33,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     border-radius: 4px;
 }
 
-.add-title {
-    text-align: center;
-    margin-bottom: 20px;
-}
+/* Textarea */
 .add-form textarea {
     width: 100%;
     padding: 8px;
@@ -43,6 +44,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     resize: vertical;
 }
 
+/* Nút thêm dòng mô tả */
 .add-form .add-desc-btn {
     background-color: #17a2b8;
     color: white;
@@ -56,6 +58,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 .add-form .add-desc-btn:hover {
     background-color: #138496;
 }
+
+/* Nút Lưu */
 .add-form .submit-btn {
     background-color: #28a745;
     color: white;
@@ -70,19 +74,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     background-color: #218838;
 }
 
-.form-container {
-    width: 60%;
-    margin: 0 auto;
-    padding: 20px;
-}
-
+/* Các dòng mô tả */
 .description-line {
-    flex: 1;
-    padding: 8px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .description-line input[type="text"] {
@@ -93,6 +89,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     border-radius: 5px;
 }
 
+/* Nút xóa dòng mô tả */
 .delete-line-btn {
     margin-left: 10px;
     padding: 7px 12px;
@@ -107,6 +104,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     background-color: #c82333;
 }
 
+/* Các nút Cập nhật + Xóa */
 .form-actions {
     margin-top: 20px;
     display: flex;
@@ -122,6 +120,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     cursor: pointer;
 }
 
+.submit-btn:hover {
+    background-color: #0069d9;
+}
+
 .delete-btn {
     background-color: #dc3545;
     color: white;
@@ -131,5 +133,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     cursor: pointer;
 }
 
-/*ket thúc css add*/
-
+.delete-btn:hover {
+    background-color: #c82333;
+}
