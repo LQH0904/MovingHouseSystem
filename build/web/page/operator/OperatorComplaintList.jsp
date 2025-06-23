@@ -1,281 +1,215 @@
-<%--
-    Document    : OperatorReplyComplaint.jsp
-    Created on : June 18, 2025, 10:30:00 AM
-    Author      : Your Name
---%>
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%
-    // Header for preventing caching
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    response.setHeader("Pragma", "no-cache");
-    response.setDateHeader("Expires", 0);
-%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết Khiếu nại Cấp Cao và Phản hồi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <%-- Các file CSS dùng chung --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-
+    <title>Danh sách Khiếu nại Chuyển cấp cao</title>
     <style>
-        /* Ẩn các thanh điều hướng và phân trang không mong muốn nếu chúng được include toàn cục */
-        body > nav.navbar-mainbg:first-of-type,
-        body > ul.pagination:first-of-type,
-        body > div.pagination:first-of-type {
-            display: none !important;
+        /* CSS cho modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
         }
-        .form-label.fw-bold {
-            margin-bottom: 0.5rem;
-            display: block;
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
         }
-        .card-header {
-            font-weight: 600;
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
         }
-        .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
+
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
         }
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+
+        /* The Close Button */
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
         }
     </style>
 </head>
-<body class="bg-light">
-<div class="parent">
-    <div class="div1">
-        <%-- Sử dụng đường dẫn tuyệt đối bắt đầu từ context path --%>
-        <jsp:include page="/Layout/operator/SideBar.jsp"/>
-    </div>
-    <div class="div2">
-        <jsp:include page="/Layout/operator/Header.jsp"/>
-    </div>
-    <div class="div3 px-4 pt-4">
-        <h3 class="mb-4 text-primary border-bottom pb-2">
-            Chi tiết Khiếu nại Cấp Cao #<c:out value="${currentComplaint.issueId != null ? currentComplaint.issueId : 'Không xác định'}"/>
-        </h3>
+<body>
+    <h1>Danh sách Khiếu nại Chuyển cấp cao</h1>
 
-        <%-- Hiển thị thông báo lỗi (nếu có) --%>
-        <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger" role="alert">
-                <c:out value="${errorMessage}"/>
-            </div>
+    <c:if test="${not empty successMessage}">
+        <p style="color: green;">${successMessage}</p>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p style="color: red;">${errorMessage}</p>
+    </c:if>
+
+    <form action="${pageContext.request.contextPath}/operatorComplaintList" method="get">
+        <label for="searchTerm">Tìm kiếm:</label>
+        <input type="text" id="searchTerm" name="searchTerm" value="${searchTerm != null ? searchTerm : ''}">
+
+        <label for="priorityFilter">Lọc theo Ưu tiên:</label>
+        <select id="priorityFilter" name="priorityFilter">
+            <option value="">Tất cả</option>
+            <option value="low" ${priorityFilter == 'low' ? 'selected' : ''}>Thấp</option>
+            <option value="medium" ${priorityFilter == 'medium' ? 'selected' : ''}>Trung bình</option>
+            <option value="high" ${priorityFilter == 'high' ? 'selected' : ''}>Cao</option>
+        </select>
+        <button type="submit">Tìm kiếm và Lọc</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID Khiếu nại</th>
+                <th>Người gửi</th>
+                <th>Mô tả</th>
+                <th>Trạng thái</th>
+                <th>Mức độ ưu tiên</th>
+                <th>Người phụ trách</th>
+                <th>Ngày tạo</th>
+                <th>Ngày giải quyết</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="complaint" items="${escalatedComplaints}">
+                <tr>
+                    <td>${complaint.issueId}</td>
+                    <td>${complaint.username}</td>
+                    <td>${complaint.description}</td>
+                    <td>${complaint.status}</td>
+                    <td>${complaint.priority}</td>
+                    <td>${complaint.assignedToUsername != null ? complaint.assignedToUsername : 'Chưa giao'}</td>
+                    <td>${complaint.createdAt}</td>
+                    <td>${complaint.resolvedAt}</td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/OperatorReplyComplaintServlet?issueId=${complaint.issueId}">Phản hồi</a>
+                        <c:if test="${complaint.assignedToUsername == null || complaint.assignedToUsername eq ''}">
+                            <button onclick="openAssignModal('${complaint.issueId}')">Gán</button>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
+            <c:if test="${empty escalatedComplaints}">
+                <tr>
+                    <td colspan="9">Không có khiếu nại chuyển cấp cao nào.</td>
+                </tr>
+            </c:if>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        Tổng số khiếu nại: ${totalComplaints}
+        <c:if test="${totalPages > 1}">
+            <c:forEach begin="1" end="${totalPages}" var="i">
+                <c:url var="pageUrl" value="/operatorComplaintList">
+                    <c:param name="page" value="${i}"/>
+                    <c:if test="${searchTerm != null && !searchTerm.isEmpty()}">
+                        <c:param name="searchTerm" value="${searchTerm}"/>
+                    </c:if>
+                    <c:if test="${priorityFilter != null && !priorityFilter.isEmpty()}">
+                        <c:param name="priorityFilter" value="${priorityFilter}"/>
+                    </c:if>
+                </c:url>
+                <a href="${pageUrl}" class="${currentPage == i ? 'active' : ''}">${i}</a>
+            </c:forEach>
         </c:if>
+    </div>
 
-        <%-- Hiển thị thông tin khiếu nại nếu tìm thấy --%>
-        <c:if test="${currentComplaint != null}">
-            <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white fs-5">Thông tin khiếu nại</div>
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>ID Khiếu nại:</strong></div>
-                        <div class="col-md-9"><c:out value="${currentComplaint.issueId}"/></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Người gửi:</strong></div>
-                        <div class="col-md-9"><c:out value="${currentComplaint.username}"/></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Mô tả:</strong></div>
-                        <div class="col-md-9"><c:out value="${currentComplaint.description}"/></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Trạng thái hiện tại:</strong></div>
-                        <div class="col-md-9">
-                            <span id="currentStatusBadge" class="badge rounded-pill p-2
-                                <c:choose>
-                                    <c:when test="${currentComplaint.status eq 'open'}">bg-secondary</c:when>
-                                    <c:when test="${currentComplaint.status eq 'in_progress'}">bg-info text-dark</c:when>
-                                    <c:when test="${currentComplaint.status eq 'resolved'}">bg-success</c:when>
-                                    <c:when test="${currentComplaint.status eq 'escalated'}">bg-danger</c:when>
-                                    <c:otherwise>bg-light text-dark</c:otherwise>
-                                </c:choose>">
-                                <c:choose>
-                                    <c:when test="${currentComplaint.status eq 'open'}">Mở</c:when>
-                                    <c:when test="${currentComplaint.status eq 'in_progress'}">Đang xử lý</c:when>
-                                    <c:when test="${currentComplaint.status eq 'resolved'}">Đã xử lý</c:when>
-                                    <c:when test="${currentComplaint.status eq 'escalated'}">Chuyển cấp cao</c:when>
-                                    <c:otherwise><c:out value="${currentComplaint.status}"/></c:otherwise>
-                                </c:choose>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Ưu tiên:</strong></div>
-                        <div class="col-md-9">
-                            <span class="badge rounded-pill p-2
-                                <c:choose>
-                                    <c:when test="${currentComplaint.priority eq 'high'}">bg-warning text-dark</c:when>
-                                    <c:when test="${currentComplaint.priority eq 'normal'}">bg-secondary</c:when>
-                                    <c:when test="${currentComplaint.priority eq 'low'}">bg-info text-dark</c:when>
-                                    <c:otherwise>bg-light text-dark</c:otherwise>
-                                </c:choose>">
-                                <c:choose>
-                                    <c:when test="${currentComplaint.priority eq 'high'}">Cao</c:when>
-                                    <c:when test="${currentComplaint.priority eq 'normal'}">Bình thường</c:when>
-                                    <c:when test="${currentComplaint.priority eq 'low'}">Thấp</c:when>
-                                    <c:otherwise><c:out value="${currentComplaint.priority}"/></c:otherwise>
-                                </c:choose>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Ngày tạo:</strong></div>
-                        <div class="col-md-9">
-                            <c:choose>
-                                <c:when test="${currentComplaint.createdAt != null}">
-                                    <fmt:formatDate value="${currentComplaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
-                                </c:when>
-                                <c:otherwise>Không có</c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Ngày xử lý:</strong></div>
-                        <div class="col-md-9">
-                            <c:choose>
-                                <c:when test="${currentComplaint.resolvedAt != null}">
-                                    <fmt:formatDate value="${currentComplaint.resolvedAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
-                                </c:when>
-                                <c:otherwise>Chưa xử lý</c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
-                     <div class="row mb-2">
-                        <div class="col-md-3"><strong>Lý do chuyển cấp cao:</strong></div>
-                        <div class="col-md-9">
-                            <c:choose>
-                                <c:when test="${currentComplaint.escalationReason != null && not empty currentComplaint.escalationReason}">
-                                    <c:out value="${currentComplaint.escalationReason}"/>
-                                </c:when>
-                                <c:otherwise>Không có</c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Người chuyển cấp cao (ID):</strong></div>
-                        <div class="col-md-9">
-                            <c:choose>
-                                <c:when test="${currentComplaint.escalatedByUserId != null}">
-                                    <c:out value="${currentComplaint.escalatedByUserId}"/>
-                                </c:when>
-                                <c:otherwise>Không có</c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h4 class="mb-3 text-primary border-bottom pb-2">Phản hồi Khiếu nại Cấp Cao</h4>
-            <%-- IMPORTANT: The form action points to the shared ReplyComplaintServlet --%>
-            <form action="${pageContext.request.contextPath}/replyComplaint" method="post" class="needs-validation" novalidate>
-                <input type="hidden" name="issueId" value="${currentComplaint.issueId}">
-
-                <div class="mb-3">
-                    <label for="status" class="form-label fw-bold">Trạng thái mới:</label>
-                    <select name="status" id="status" class="form-select" required>
-                        <option value="open" <c:if test="${currentComplaint.status eq 'open'}">selected</c:if>>Mở</option>
-                        <option value="in_progress" <c:if test="${currentComplaint.status eq 'in_progress'}">selected</c:if>>Đang xử lý</option>
-                        <option value="resolved" <c:if test="${currentComplaint.status eq 'resolved'}">selected</c:if>>Đã xử lý</option>
-                        <option value="escalated" <c:if test="${currentComplaint.status eq 'escalated'}">selected</c:if>>Chuyển cấp cao</option>
+    <div id="assignModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAssignModal()">&times;</span>
+            <h3>Gán khiếu nại cho Operator</h3>
+            <form action="${pageContext.request.contextPath}/assignComplaint" method="post">
+                <input type="hidden" id="modalIssueId" name="issueId">
+                <p>
+                    <label for="operatorSelect">Chọn Operator:</label>
+                    <select id="operatorSelect" name="operatorUserId" required>
+                        <c:if test="${empty operators}">
+                            <option value="">Không có Operator nào</option>
+                        </c:if>
+                        <c:forEach var="operator" items="${operators}"> <%-- Đã đổi tên biến và thuộc tính --%>
+                            <option value="${operator.userId}">${operator.username}</option>
+                        </c:forEach>
                     </select>
-                    <div class="invalid-feedback">Vui lòng chọn một trạng thái.</div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="priority" class="form-label fw-bold">Mức độ ưu tiên:</label>
-                    <select name="priority" id="priority" class="form-select" required>
-                        <option value="low" <c:if test="${currentComplaint.priority eq 'low'}">selected</c:if>>Thấp</option>
-                        <option value="normal" <c:if test="${currentComplaint.priority eq 'normal'}">selected</c:if>>Bình thường</option>
-                        <option value="high" <c:if test="${currentComplaint.priority eq 'high'}">selected</c:if>>Cao</option>
-                    </select>
-                    <div class="invalid-feedback">Vui lòng chọn mức độ ưu tiên.</div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="replyContent" class="form-label fw-bold">Nội dung phản hồi (Bắt buộc nếu trạng thái là 'Chuyển cấp cao'):</label>
-                    <textarea class="form-control" id="replyContent" name="replyContent" rows="4" placeholder="Nhập nội dung phản hồi của bạn...">${currentComplaint.escalationReason}</textarea>
-                    <div class="invalid-feedback">Vui lòng nhập lý do chuyển cấp cao.</div>
-                </div>
-
-                <button type="submit" class="btn btn-success me-2">
-                    <i class="bi bi-send-fill me-1"></i> Cập nhật và Phản hồi
-                </button>
-                <a href="${pageContext.request.contextPath}/operatorComplaintList" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left-circle me-1"></i> Quay lại danh sách
-                </a>
+                </p>
+                <button type="submit">Gán</button>
+                <button type="button" onclick="closeAssignModal()">Hủy</button>
             </form>
-        </c:if>
-
-        <%-- Thông báo nếu không tìm thấy khiếu nại --%>
-        <c:if test="${currentComplaint == null && empty errorMessage}">
-            <div class="alert alert-warning text-center" role="alert">
-                Không tìm thấy thông tin khiếu nại. Vui lòng kiểm tra lại ID khiếu nại hoặc quay lại
-                <a href="${pageContext.request.contextPath}/operatorComplaintList">danh sách khiếu nại cấp cao</a>.
-            </div>
-        </c:if>
+        </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Bootstrap validation for the form
-    (function () {
-        'use strict';
-        var forms = document.querySelectorAll('.needs-validation');
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    let status = document.getElementById('status').value;
-                    let replyContent = document.getElementById('replyContent').value.trim();
+    <script>
+        var modal = document.getElementById("assignModal");
+        var span = document.getElementsByClassName("close-button")[0];
 
-                    // Custom validation for 'escalated' status requiring replyContent
-                    if (status === 'escalated' && replyContent === '') {
-                        document.getElementById('replyContent').setCustomValidity('Vui lòng nhập lý do chuyển cấp cao.');
-                    } else {
-                        document.getElementById('replyContent').setCustomValidity(''); // Clear custom validity if not escalated or content provided
-                    }
+        function openAssignModal(issueId) {
+            document.getElementById('modalIssueId').value = issueId;
+            modal.style.display = "block";
+        }
 
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
+        function closeAssignModal() {
+            modal.style.display = "none";
+        }
 
-                // Re-validate when status changes
-                document.getElementById('status').addEventListener('change', function() {
-                    let status = this.value;
-                    let replyContent = document.getElementById('replyContent').value.trim();
-                    if (status === 'escalated' && replyContent === '') {
-                           document.getElementById('replyContent').setCustomValidity('Vui lòng nhập lý do chuyển cấp cao.');
-                    } else {
-                           document.getElementById('replyContent').setCustomValidity('');
-                    }
-                });
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 
-                // Re-validate when replyContent changes
-                   document.getElementById('replyContent').addEventListener('input', function() {
-                    let status = document.getElementById('status').value;
-                    let replyContent = this.value.trim();
-                    if (status === 'escalated' && replyContent === '') {
-                           this.setCustomValidity('Vui lòng nhập lý do chuyển cấp cao.');
-                    } else {
-                           this.setCustomValidity('');
-                    }
-                });
-
-            });
-    })();
-</script>
 </body>
 </html>

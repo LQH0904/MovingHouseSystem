@@ -1,8 +1,8 @@
-// File: src/main/java/controller/OperatorComplaintServlet.java
 package controller;
 
-import dao.ComplaintDAO;
-import model.Complaint;
+import dao.OperatorComplaintDAO;
+import model.OperatorComplaint;
+import model.UserComplaint; // Đã đổi từ model.User sang model.UserComplaint
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -10,20 +10,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession; // Đảm bảo bạn cần HttpSession, nếu không có thể bỏ qua
 
 @WebServlet(name = "OperatorComplaintListServlet", urlPatterns = {"/operatorComplaintList"})
 public class OperatorComplaintServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private ComplaintDAO complaintDAO;
+    private OperatorComplaintDAO complaintDAO;
 
     private static final int RECORDS_PER_PAGE = 5;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        complaintDAO = new ComplaintDAO();
+        complaintDAO = new OperatorComplaintDAO();
     }
 
     @Override
@@ -45,12 +44,11 @@ public class OperatorComplaintServlet extends HttpServlet {
         }
         int offset = (page - 1) * RECORDS_PER_PAGE;
 
-        // Gọi phương thức từ ComplaintDAO mới
         int totalComplaints = complaintDAO.getTotalEscalatedComplaintCount(searchTerm, priorityFilter);
         int totalPages = (int) Math.ceil((double) totalComplaints / RECORDS_PER_PAGE);
 
-        // Đã sửa tên phương thức từ getAllEscalatedComplaints thành getEscalatedComplaints
-        List<Complaint> escalatedComplaints = complaintDAO.getEscalatedComplaints(searchTerm, priorityFilter, offset, RECORDS_PER_PAGE);
+        List<OperatorComplaint> escalatedComplaints = complaintDAO.getEscalatedComplaints(searchTerm, priorityFilter, offset, RECORDS_PER_PAGE);
+        List<UserComplaint> operators = complaintDAO.getOperators(); // Đã đổi kiểu List
 
         request.setAttribute("escalatedComplaints", escalatedComplaints);
         request.setAttribute("currentPage", page);
@@ -58,6 +56,7 @@ public class OperatorComplaintServlet extends HttpServlet {
         request.setAttribute("totalComplaints", totalComplaints);
         request.setAttribute("searchTerm", searchTerm);
         request.setAttribute("priorityFilter", priorityFilter);
+        request.setAttribute("operators", operators);
 
         String updateStatus = request.getParameter("updateStatus");
         if ("success_escalated".equals(updateStatus)) {
