@@ -66,5 +66,71 @@
 .add-form .submit-btn:hover {
     background-color: #218838;
 }
+.form-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.edit{}
+
+.description-line {
+   flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.description-line input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.delete-line-btn {
+     margin-left: 10px;
+    padding: 7px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-line-btn:hover {
+    background-color: #c82333;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
 

@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/UserList.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/ProPoliFee.css">
 
     </head>
@@ -47,7 +46,8 @@
                         <td><%= procedure.getStepTitle() %></td>
                         <td><pre class="description-text"><%= procedure.getStepDescription() %></pre></td>
                         <td class="action-cell">
-                            <a href="#" class="edit-btn">Sửa</a>
+                            <a href="edit-procedure?id=<%= procedure.getId() %>" class="edit-btn">Sửa</a>
+
                         </td>
 
                         </td>

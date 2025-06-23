@@ -45,6 +45,14 @@
         <servlet-name>AddProcedureServlet</servlet-name>
         <servlet-class>controller.AddProcedureServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditProcedureServlet</servlet-name>
+        <servlet-class>controller.EditProcedureServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteProcedureServlet</servlet-name>
+        <servlet-class>controller.DeleteProcedureServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/UserListServlet</url-pattern>
@@ -119,5 +127,13 @@
     <servlet-mapping>
         <servlet-name>AddProcedureServlet</servlet-name>
         <url-pattern>/AddProcedureServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditProcedureServlet</servlet-name>
+        <url-pattern>/EditProcedureServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteProcedureServlet</servlet-name>
+        <url-pattern>/DeleteProcedureServlet</url-pattern>
     </servlet-mapping>
 </web-app>

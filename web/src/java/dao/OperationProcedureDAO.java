@@ -97,5 +97,37 @@ public int getNextStepNumber() {
     }
     return 1;
 }
+public OperationProcedure getById(int id) {
+    String sql = "SELECT * FROM OperationProcedures WHERE id = ?";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new OperationProcedure(
+                    rs.getInt("id"),
+                    rs.getInt("step_number"),
+                    rs.getString("step_title"),
+                    rs.getString("step_description")
+            );
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+   public void deleteById(int id) {
+    String sql = "DELETE FROM OperationProcedures WHERE id = ?";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+
 
 }
