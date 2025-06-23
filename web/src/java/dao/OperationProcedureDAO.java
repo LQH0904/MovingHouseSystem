@@ -69,4 +69,33 @@ public class OperationProcedureDAO {
         return list;
     }
 
+    public void insertProcedure(OperationProcedure p) {
+    String sql = "INSERT INTO OperationProcedures (step_number, step_title, step_description) VALUES (?, ?, ?)";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, p.getStepNumber());
+        ps.setString(2, p.getStepTitle());
+        ps.setString(3, p.getStepDescription());
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+public int getNextStepNumber() {
+    String sql = "SELECT MAX(step_number) AS max_num FROM OperationProcedures";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        if (rs.next()) {
+            return rs.getInt("max_num") + 1;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return 1;
+}
+
 }

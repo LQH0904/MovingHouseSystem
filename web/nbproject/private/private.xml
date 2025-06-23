@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/web/page/operator/OperationalProcedures.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/web/css/operator/ProPoliFee.css</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/src/java/controller/ExportProcedureServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/src/java/controller/ExportPolicyServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/src/java/dao/FeeConfigurationDAO.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/src/java/controller/ExportFeeServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/web/page/operator/OperationalPolicies.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/web/page/operator/ConfigFees.jsp</file>
+        </group>
     </open-files>
 </project-private>

@@ -23,9 +23,10 @@
 
                 <div class="action-buttons">
                     <a href="add-procedure" class="add-btn">Thêm Quy trình</a>
+
                     <form action="export-procedures-to-excel" method="post" style="display:inline;">
-    <button type="submit" class="excel-btn">Tải Excel</button>
-</form>
+                        <button type="submit" class="excel-btn">Tải Excel</button>
+                    </form>
 
                 </div>
 

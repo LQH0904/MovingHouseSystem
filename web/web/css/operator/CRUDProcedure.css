@@ -1,0 +1,70 @@
+/* Tiêu đề căn giữa */
+.add-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Căn giữa form */
+.add-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Label + input title */
+.add-form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.add-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Textarea cho mô tả */
+.add-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+/* Nút Thêm nội dung */
+.add-form .add-desc-btn {
+    background-color: #17a2b8;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-form .add-desc-btn:hover {
+    background-color: #138496;
+}
+
+/* Nút Lưu */
+.add-form .submit-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.add-form .submit-btn:hover {
+    background-color: #218838;
+}
+
+

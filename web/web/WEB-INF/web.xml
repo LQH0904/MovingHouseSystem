@@ -41,6 +41,10 @@
         <servlet-name>ExportFeeServlet</servlet-name>
         <servlet-class>controller.ExportFeeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddProcedureServlet</servlet-name>
+        <servlet-class>controller.AddProcedureServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/UserListServlet</url-pattern>
@@ -111,5 +115,9 @@
     <servlet-mapping>
         <servlet-name>ExportFeeServlet</servlet-name>
         <url-pattern>/ExportFeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddProcedureServlet</servlet-name>
+        <url-pattern>/AddProcedureServlet</url-pattern>
     </servlet-mapping>
 </web-app>

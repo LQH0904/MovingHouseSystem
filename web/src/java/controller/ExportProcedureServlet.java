@@ -40,9 +40,9 @@ public class ExportProcedureServlet extends HttpServlet {
 
             // Xử lý mô tả: bỏ khoảng trắng đầu, chuẩn hóa xuống dòng Windows
             String desc = p.getStepDescription()
-                    .replaceAll("^[\\s\\r\\n]+", "")         // bỏ trống đầu
-                    .replace("\"", "\"\"")                   // escape "
-                    .replace("\r", "")                       // bỏ CR nếu có
+                    .replaceAll("^[\\s\\r\\n]+", "") // bỏ trống đầu
+                    .replace("\"", "\"\"") // escape "
+                    .replace("\r", "") // bỏ CR nếu có
                     .replace("\n", "\r\n");                  // chuẩn hóa xuống dòng cho Excel
 
             // Ghi cùng hàng
