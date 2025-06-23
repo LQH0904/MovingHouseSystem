@@ -26,7 +26,6 @@ public class ExportProcedureServlet extends HttpServlet {
 
         ServletOutputStream out = response.getOutputStream();
 
-        // Ghi BOM UTF-8
         out.write(0xEF);
         out.write(0xBB);
         out.write(0xBF);
@@ -38,14 +37,12 @@ public class ExportProcedureServlet extends HttpServlet {
             String stt = String.valueOf(p.getStepNumber());
             String title = p.getStepTitle().replace("\"", "\"\"");
 
-            // Xử lý mô tả: bỏ khoảng trắng đầu, chuẩn hóa xuống dòng Windows
             String desc = p.getStepDescription()
-                    .replaceAll("^[\\s\\r\\n]+", "") // bỏ trống đầu
-                    .replace("\"", "\"\"") // escape "
-                    .replace("\r", "") // bỏ CR nếu có
-                    .replace("\n", "\r\n");                  // chuẩn hóa xuống dòng cho Excel
+                    .replaceAll("^[\\s\\r\\n]+", "") 
+                    .replace("\"", "\"\"") 
+                    .replace("\r", "") 
+                    .replace("\n", "\r\n");                  
 
-            // Ghi cùng hàng
             sb.append(String.format("%s,\"%s\",\"%s\"\n", stt, title, desc));
         }
 

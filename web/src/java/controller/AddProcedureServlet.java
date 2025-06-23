@@ -14,7 +14,6 @@ public class AddProcedureServlet extends HttpServlet {
      @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Hiển thị form nhập dữ liệu
         request.getRequestDispatcher("/page/operator/AddOperationProcedures.jsp").forward(request, response);
     }
     @Override
@@ -24,7 +23,6 @@ public class AddProcedureServlet extends HttpServlet {
         String stepTitle = request.getParameter("stepTitle");
         String[] descriptions = request.getParameterValues("descriptions");
 
-        // Ghép các mô tả thành 1 đoạn xuống dòng với dấu chấm đầu dòng
         StringBuilder fullDesc = new StringBuilder();
         for (String desc : descriptions) {
             if (!desc.trim().isEmpty()) {
@@ -32,7 +30,6 @@ public class AddProcedureServlet extends HttpServlet {
             }
         }
 
-        // Tính số thứ tự tiếp theo (ví dụ gọi hàm từ DAO)
         OperationProcedureDAO dao = new OperationProcedureDAO();
         int nextStepNumber = dao.getNextStepNumber();
 

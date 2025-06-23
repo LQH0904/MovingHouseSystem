@@ -36,7 +36,6 @@ public class EditProcedureServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String stepTitle = request.getParameter("stepTitle");
 
-        // Lấy tất cả mô tả có name bắt đầu là desc
         List<String> descriptions = new ArrayList<>();
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
@@ -49,7 +48,6 @@ public class EditProcedureServlet extends HttpServlet {
             }
         }
 
-        // Ghép các mô tả thành 1 đoạn xuống dòng với dấu chấm
         StringBuilder fullDesc = new StringBuilder();
         for (String desc : descriptions) {
             fullDesc.append(". ").append(desc).append("\n");

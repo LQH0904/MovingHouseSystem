@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Thêm Quy trình</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/CRUDDProcedure.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/CRUDProcedure.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
@@ -18,7 +18,7 @@
             <div class="div3">
                 <div class="form-container">
                     <h2>Thêm Quy trình</h2>
-                    <form method="post" action="${pageContext.request.contextPath}/add-procedure">
+<form method="post" action="${pageContext.request.contextPath}/add-procedure" class="add-form">
                         <label for="stepTitle">Tiêu đề:</label>
                         <input type="text" id="stepTitle" name="stepTitle" required>
 

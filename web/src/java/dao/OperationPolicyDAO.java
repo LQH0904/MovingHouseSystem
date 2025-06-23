@@ -21,7 +21,7 @@ public class OperationPolicyDAO {
                     rs.getInt("id"),
                     rs.getInt("policy_number"),
                     rs.getString("policy_title"),
-                    rs.getString("policy_content")  // ✅ sửa ở đây
+                    rs.getString("policy_content")  
                 );
             }
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class OperationPolicyDAO {
                     rs.getInt("id"),
                     rs.getInt("policy_number"),
                     rs.getString("policy_title"),
-                    rs.getString("policy_content")  // ✅ sửa ở đây
+                    rs.getString("policy_content")  
                 );
                 list.add(policy);
             }
@@ -65,4 +65,36 @@ public class OperationPolicyDAO {
         }
         return list;
     }
+    
+    
+    
+    
+    
+    public void insertPolicy(OperationPolicy p) {
+    String sql = "INSERT INTO OperationPolicies (policy_number, policy_title, policy_content) VALUES (?, ?, ?)";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, p.getPolicyNumber());
+        ps.setString(2, p.getPolicyTitle());
+        ps.setString(3, p.getPolicyContent());
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+    
+    public int getNextPolicyNumber() {
+    String sql = "SELECT MAX(policy_number) AS max_num FROM OperationPolicies";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+            return rs.getInt("max_num") + 1;
+ }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return 1;
+}
+    
 }

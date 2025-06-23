@@ -1,3 +1,11 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : Jun 23, 2025, 5:58:13 PM
+    Author     : admin
+*/
 .add-title {
     text-align: center;
     margin-bottom: 20px;
@@ -7,13 +15,11 @@
     width: 80%;
     margin: 0 auto;
 }
-
 .add-form label {
     font-weight: bold;
     display: block;
     margin-top: 10px;
 }
-
 .add-form input[type="text"] {
     width: 100%;
     padding: 8px;
@@ -23,6 +29,10 @@
     border-radius: 4px;
 }
 
+.add-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
 .add-form textarea {
     width: 100%;
     padding: 8px;
@@ -46,7 +56,6 @@
 .add-form .add-desc-btn:hover {
     background-color: #138496;
 }
-
 .add-form .submit-btn {
     background-color: #28a745;
     color: white;
@@ -60,25 +69,20 @@
 .add-form .submit-btn:hover {
     background-color: #218838;
 }
+
 .form-container {
     width: 60%;
     margin: 0 auto;
     padding: 20px;
 }
 
-.form-title {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.edit{}
-
 .description-line {
-   flex: 1;
+    flex: 1;
     padding: 8px;
     font-size: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin-bottom: 8px;
 }
 
 .description-line input[type="text"] {
@@ -90,7 +94,7 @@
 }
 
 .delete-line-btn {
-     margin-left: 10px;
+    margin-left: 10px;
     padding: 7px 12px;
     background-color: #dc3545;
     color: white;
@@ -127,4 +131,5 @@
     cursor: pointer;
 }
 
+/*ket thúc css add*/
 
