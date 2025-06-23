@@ -1,15 +1,13 @@
 package controller;
 
-import dao.ComplaintDAO;
-import model.Complaint;
-// import model.User; // Bỏ import nếu bạn không cần sử dụng User model trực tiếp trong phần này nữa
+import dao.ComplaintDAO; // Đảm bảo đúng import
+import model.Complaint; // Đảm bảo đúng import
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-// import jakarta.servlet.http.HttpSession; // Bỏ import nếu bạn không cần sử dụng HttpSession trực tiếp trong phần này nữa
 
 @WebServlet(name = "ReplyComplaintServlet", urlPatterns = {"/replyComplaint"})
 public class ReplyComplaintServlet extends HttpServlet {
@@ -67,17 +65,12 @@ public class ReplyComplaintServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // --- PHẦN ĐƯỢC THAY ĐỔI THEO YÊU CẦU CỦA BẠN ---
-        // Loại bỏ phần lấy staffId từ session.
-        // staffId sẽ được đặt là null để các trường operator_id/escalated_by_user_id trong DB có thể là NULL.
-        // Cần lưu ý rằng việc này sẽ bỏ qua việc xác định người thực hiện hành động.
-        Integer staffId = null; // Đặt staffId là null
-        // --- KẾT THÚC PHẦN THAY ĐỔI ---
+        Integer staffId = null; // Đặt staffId là null (hoặc lấy từ session nếu có)
 
         String issueIdParam = request.getParameter("issueId");
         String status = request.getParameter("status");
         String priority = request.getParameter("priority");
-        String replyContent = request.getParameter("replyContent");
+        String replyContent = request.getParameter("replyContent"); // Lấy giá trị nếu có, nhưng sẽ không lưu vào DB
 
         int issueId;
         try {
@@ -90,30 +83,19 @@ public class ReplyComplaintServlet extends HttpServlet {
 
         boolean success = false;
 
-        if ("escalated".equalsIgnoreCase(status)) {
-            if (replyContent == null || replyContent.trim().isEmpty()) {
-                request.setAttribute("errorMessage", "Vui lòng nhập lý do chuyển cấp cao.");
-                try {
-                    request.setAttribute("currentComplaint", complaintDAO.getComplaintById(issueId));
-                } catch (Exception ex) {
-                    System.err.println("Error re-fetching complaint in doPost: " + ex.getMessage());
-                }
-                // Chuyển tiếp lại về JSP phù hợp để hiển thị lỗi và form
-                request.getRequestDispatcher("/page/staff/replyComplaint.jsp").forward(request, response);
-                return;
-            }
-            // Gọi DAO để cập nhật trạng thái khiếu nại (staffId là null)
-            success = complaintDAO.updateComplaintStatusAndPriority(issueId, status, priority, replyContent, staffId);
-        } else {
-            // Gọi DAO để cập nhật trạng thái khiếu nại (staffId là null)
-            success = complaintDAO.updateComplaintStatusAndPriority(issueId, status, priority, null, staffId);
-        }
+        // Trong ComplaintDAO.java hiện tại, updateComplaintStatusAndPriority KHÔNG nhận replyContent
+        // Nếu bạn muốn lưu replyContent, bạn CẦN THÊM cột reply_content vào bảng Issues TRONG DATABASE
+        // và chỉnh sửa phương thức updateComplaintStatusAndPriority trong ComplaintDAO cho phù hợp.
+        // Hiện tại, chúng ta chỉ cập nhật status và priority.
+        success = complaintDAO.updateComplaintStatusAndPriority(issueId, status, priority, null, staffId); // replyContent và staffId hiện tại sẽ là null
 
         if (success) {
-            // --- PHẦN ĐƯỢC THAY ĐỔI THEO YÊU CẦU CỦA BẠN ---
             // Chuyển hướng đến trang ComplaintServlet cho tất cả các cập nhật thành công.
-            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=success");
-            // --- KẾT THÚC PHẦN THAY ĐỔI ---
+            String redirectUrl = request.getContextPath() + "/ComplaintServlet?updateStatus=success";
+            if ("escalated".equalsIgnoreCase(status)) {
+                 redirectUrl = request.getContextPath() + "/ComplaintServlet?updateStatus=success_escalated";
+            }
+            response.sendRedirect(redirectUrl);
         } else {
             // Chuyển hướng đến ComplaintServlet cho tất cả các lỗi cập nhật
             response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=cap_nhat_that_bai");

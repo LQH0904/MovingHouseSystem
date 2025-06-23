@@ -1,8 +1,7 @@
-// File: src/main/java/controller/ComplaintServlet.java
 package controller;
 
-import dao.ComplaintDAO;
-import model.Complaint;
+import dao.ComplaintDAO; // Đảm bảo đúng import
+import model.Complaint; // Đảm bảo đúng import
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,6 +43,7 @@ public class ComplaintServlet extends HttpServlet {
             }
 
             // Chuyển hướng tới ReplyComplaintServlet để xử lý việc xem và phản hồi
+            // Đường dẫn URL Pattern của ReplyComplaintServlet là "/replyComplaint"
             response.sendRedirect(request.getContextPath() + "/replyComplaint?issueId=" + issueId);
             return; // Quan trọng: dừng xử lý ở đây sau khi chuyển hướng
         }

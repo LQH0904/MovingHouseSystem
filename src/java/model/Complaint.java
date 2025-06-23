@@ -1,65 +1,43 @@
-// File: src/main/java/model/Complaint.java
 package model;
 
 import java.sql.Timestamp;
 
 public class Complaint {
     private int issueId;
-    private int userId; // THÊM TRƯỜNG NÀY
-    private String username;
+    private int userId;
+    private String username; // Tên người tạo khiếu nại
     private String description;
     private String status;
     private String priority;
     private Timestamp createdAt;
     private Timestamp resolvedAt;
-    private String escalationReason;
-    private Integer escalatedByUserId;
+    private Integer assignedTo; // ID của operator được gán
+    private String assignedToUsername; // Tên của operator được gán
+    // Các cột sau KHÔNG CÓ TRONG SCHEMA DB bạn đã cung cấp, nên sẽ không được đưa vào đây.
+    // private String escalationReason;
+    // private Integer escalatedByUserId;
+    // private String replyContent;
 
+    // Constructor đầy đủ khớp với các cột CÓ TRONG DB của bạn
+    public Complaint(int issueId, int userId, String username, String description, String status, String priority,
+                     Timestamp createdAt, Timestamp resolvedAt, Integer assignedTo, String assignedToUsername) {
+        this.issueId = issueId;
+        this.userId = userId;
+        this.username = username;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.createdAt = createdAt;
+        this.resolvedAt = resolvedAt;
+        this.assignedTo = assignedTo;
+        this.assignedToUsername = assignedToUsername;
+    }
+
+    // Constructor mặc định (cần cho một số trường hợp khởi tạo)
     public Complaint() {
     }
 
-    // CẬP NHẬT CONSTRUCTOR NÀY
-    public Complaint(int issueId, int userId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt) {
-        this.issueId = issueId;
-        this.userId = userId; // Gán userId
-        this.username = username;
-        this.description = description;
-        this.status = status;
-        this.priority = priority;
-        this.createdAt = createdAt;
-        this.resolvedAt = resolvedAt;
-        this.escalationReason = null;
-        this.escalatedByUserId = null;
-    }
-
-    // CẬP NHẬT CONSTRUCTOR NÀY
-    public Complaint(int issueId, int userId, String username, String description, String status, String priority, Timestamp createdAt) {
-        this.issueId = issueId;
-        this.userId = userId; // Gán userId
-        this.username = username;
-        this.description = description;
-        this.status = status;
-        this.priority = priority;
-        this.createdAt = createdAt;
-        this.resolvedAt = null;
-        this.escalationReason = null;
-        this.escalatedByUserId = null;
-    }
-
-    // CẬP NHẬT CONSTRUCTOR NÀY
-    public Complaint(int issueId, int userId, String username, String description, String status, String priority, Timestamp createdAt, Timestamp resolvedAt, String escalationReason, Integer escalatedByUserId) {
-        this.issueId = issueId;
-        this.userId = userId; // Gán userId
-        this.username = username;
-        this.description = description;
-        this.status = status;
-        this.priority = priority;
-        this.createdAt = createdAt;
-        this.resolvedAt = resolvedAt;
-        this.escalationReason = escalationReason;
-        this.escalatedByUserId = escalatedByUserId;
-    }
-
+    // --- Getters and Setters ---
     public int getIssueId() {
         return issueId;
     }
@@ -68,7 +46,6 @@ public class Complaint {
         this.issueId = issueId;
     }
 
-    // THÊM GETTER VÀ SETTER CHO userId
     public int getUserId() {
         return userId;
     }
@@ -125,35 +102,19 @@ public class Complaint {
         this.resolvedAt = resolvedAt;
     }
 
-    public String getEscalationReason() {
-        return escalationReason;
+    public Integer getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setEscalationReason(String escalationReason) {
-        this.escalationReason = escalationReason;
+    public void setAssignedTo(Integer assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
-    public Integer getEscalatedByUserId() {
-        return escalatedByUserId;
+    public String getAssignedToUsername() {
+        return assignedToUsername;
     }
 
-    public void setEscalatedByUserId(Integer escalatedByUserId) {
-        this.escalatedByUserId = escalatedByUserId;
-    }
-
-    @Override
-    public String toString() {
-        return "Complaint{" +
-                "issueId=" + issueId +
-                ", userId=" + userId + // THÊM VÀO toString()
-                ", username='" + username + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", priority='" + priority + '\'' +
-                ", createdAt=" + createdAt +
-                ", resolvedAt=" + resolvedAt +
-                ", escalationReason='" + escalationReason + '\'' +
-                ", escalatedByUserId=" + escalatedByUserId +
-                '}';
+    public void setAssignedToUsername(String assignedToUsername) {
+        this.assignedToUsername = assignedToUsername;
     }
 }
