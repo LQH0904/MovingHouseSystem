@@ -4,15 +4,16 @@
  */
 package controller;
 
-import dao.HomePageDAO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.RequestDispatcher;
+import java.util.Vector;
 
 /**
  *
@@ -21,40 +22,20 @@ import java.util.Map;
 @WebServlet(name = "homeOperator", urlPatterns = {"/homeOperator"})
 public class homeOperator extends HttpServlet {
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        try {
-            HomePageDAO userDAO = new HomePageDAO();
-
-            // Lấy tổng số user
-            int totalUsers = userDAO.getTotalUserCount();
-
-            // Lấy số user theo từng role
-            Map<String, Integer> usersByRole = userDAO.getUserCountByRole();
-
-            // Lấy số lượng issue theo trạng thái
-            Map<String, Integer> issueStats = userDAO.getIssueCountByStatus();
-            request.setAttribute("issueStats", issueStats);
-
-            // Lấy 5 user đầu tiên
-            Map<String, String> topUsers = userDAO.getTop5UsersWithStatus();
-            request.setAttribute("topUsers", topUsers);
-
-            request.setAttribute("totalUsers", totalUsers);
-            request.setAttribute("usersByRole", usersByRole);
-
-            request.getRequestDispatcher("page/operator/homeOperator.jsp").forward(request, response);
-
-        } catch (Exception e) {
-            e.printStackTrace(); // In lỗi ra console để debug
-            request.setAttribute("totalUsers", 0);
-            request.setAttribute("usersByRole", new HashMap<>()); // Thêm dòng này
-            request.setAttribute("topUsers", new HashMap<>());
-            request.setAttribute("issueStats", new HashMap<>());
-            request.getRequestDispatcher("page/operator/homeOperator.jsp").forward(request, response);
-        }
+        
+        request.getRequestDispatcher("page/operator/homeOperator.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -93,7 +74,7 @@ public class homeOperator extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Home Operator Controller with User Statistics";
+        return "Short description";
     }// </editor-fold>
 
 }

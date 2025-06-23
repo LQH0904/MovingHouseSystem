@@ -1,0 +1,31 @@
+/* Tiêu đề căn giữa */
+.propoli-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Định dạng bảng */
+.propoli-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.propoli-table th,
+.propoli-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.propoli-table th {
+    background-color: #f2f2f2;
+}
+
+/* Hiển thị mô tả xuống dòng đẹp */
+.propoli-table pre {
+    white-space: pre-wrap;
+    margin: 0;
+    text-align: left;
+}

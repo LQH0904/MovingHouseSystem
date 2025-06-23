@@ -1,28 +1,51 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
 <%@page import="model.FeeConfiguration"%>
-<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
 <html>
-<head><title>Cấu hình phí</title></head>
-<body>
-    <h2>Cấu hình phí</h2>
-    <%
-        FeeConfiguration config = (FeeConfiguration) request.getAttribute("feeConfig");
-        if (config != null) {
-    %>
-    <form method="post" action="config-fee-update">
-        <textarea name="content" rows="20" cols="100" readonly><%= config.getContent() %></textarea><br><br>
-        <button type="button" onclick="enableEdit()">Sửa</button>
-        <button type="submit" id="saveBtn" style="display:none;">Lưu</button>
-    </form>
-    <script>
-        function enableEdit() {
-            document.querySelector('textarea').removeAttribute('readonly');
-            document.getElementById('saveBtn').style.display = 'inline';
-        }
-    </script>
-    <%
-        } else {
-            out.print("Không có dữ liệu cấu hình phí.");
-        }
-    %>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/ProPoliFee.css">
+
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/UserList.css">
+    </head>
+    <body>
+    <div class="parent">
+        <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp" /></div>
+        <div class="div2"><jsp:include page="/Layout/operator/Header.jsp" /></div>
+        <div class="div3">
+            <h2 class="propoli-title">Cấu hình phí</h2>
+            <table class="propoli-table">
+                <tr>
+                    <th>STT</th>
+                    <th>Loại phí</th>
+                    <th>Mô tả</th>
+                </tr>
+                <%
+                    List<model.FeeConfiguration> feeList = (List<model.FeeConfiguration>) request.getAttribute("feeConfigs");
+                    if (feeList != null && !feeList.isEmpty()) {
+                        for (model.FeeConfiguration fee : feeList) {
+                %>
+                <tr>
+                    <td><%= fee.getFeeNumber() %></td>
+                    <td><%= fee.getFeeType() %></td>
+                    <td><pre><%= fee.getDescription() %></pre></td>
+                </tr>
+                <%
+                        }
+                    } else {
+                %>
+                <tr><td colspan="3">Không có dữ liệu.</td></tr>
+                <%
+                    }
+                %>
+            </table>
+        </div>
+    </div>
 </body>
+
 </html>

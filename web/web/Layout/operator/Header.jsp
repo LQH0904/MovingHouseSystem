@@ -15,17 +15,13 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-custom navbar-mainbg">
-            <a class="navbar-brand navbar-logo" href="http://localhost:9999/HouseMovingSystem/homeOperator" style="display: flex;"><img id="imgId" src="${pageContext.request.contextPath}/img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
+            <a class="navbar-brand navbar-logo" href="http://localhost:9999/HouseMovingSystem/homeOperator" style="display: flex;"><img id="imgId" src="img/logo.jpg" style="width: 254px;height: 64px !important;border-radius: 15px;"/></a>
             <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars text-white"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    <li class="hori-selector">
-                        <div class="left"></div>
-                        <div class="right"></div>
-                            
-                    </li>
+                    <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
                     <li class="nav-item active">
                         <a class="nav-link" href="javascript:void(0);"><i class="far fa-address-book"></i>Tài Khoản</a>
                     </li>

@@ -12,16 +12,17 @@ public class OperationPolicyDAO {
 
     public OperationPolicy getPolicy() {
         String sql = "SELECT * FROM OperationPolicies WHERE id = 1";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
+            
             if (rs.next()) {
-                return // Trong getPolicy() hoặc getAllPolicies()
-                        new OperationPolicy(
-                                rs.getInt("id"),
-                                rs.getInt("policy_number"),
-                                rs.getString("policy_title"),
-                                rs.getString("policy_description")
-                        );
-
+                return new OperationPolicy(
+                    rs.getInt("id"),
+                    rs.getInt("policy_number"),
+                    rs.getString("policy_title"),
+                    rs.getString("policy_content")  // ✅ sửa ở đây
+                );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -31,7 +32,9 @@ public class OperationPolicyDAO {
 
     public void updatePolicy(OperationPolicy p) {
         String sql = "UPDATE OperationPolicies SET policy_title = ?, policy_content = ? WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
             ps.setString(1, p.getPolicyTitle());
             ps.setString(2, p.getPolicyContent());
             ps.setInt(3, p.getId());
@@ -44,18 +47,19 @@ public class OperationPolicyDAO {
     public List<OperationPolicy> getAllPolicies() {
         List<OperationPolicy> list = new ArrayList<>();
         String sql = "SELECT * FROM OperationPolicies ORDER BY policy_number";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 OperationPolicy policy = new OperationPolicy(
-                        rs.getInt("id"),
-                        rs.getInt("policy_number"),
-                        rs.getString("policy_title"),
-                        rs.getString("policy_description")
+                    rs.getInt("id"),
+                    rs.getInt("policy_number"),
+                    rs.getString("policy_title"),
+                    rs.getString("policy_content")  // ✅ sửa ở đây
                 );
                 list.add(policy);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

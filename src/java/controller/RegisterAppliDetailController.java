@@ -8,6 +8,7 @@ import dao.RegisterApplicationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import model.RegisterApplicationDetail;
  *
  * @author Admin
  */
+@WebServlet(name = "RegisterAppliDetailController", urlPatterns = {"/appli-detail"})
 public class RegisterAppliDetailController extends HttpServlet {
 
     private RegisterApplicationDAO dao;
