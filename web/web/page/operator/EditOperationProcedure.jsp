@@ -4,7 +4,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Chỉnh sửa Quy trình</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">

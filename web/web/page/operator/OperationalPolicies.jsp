@@ -42,7 +42,8 @@
                         <td class="center-text"><%= policy.getPolicyNumber() %></td>
                         <td><%= policy.getPolicyTitle() %></td>
                         <td><pre class="description-text"><%= policy.getPolicyContent() %></pre></td>
-                        <td class="action-cell"><a href="#" class="edit-btn">Sửa</a></td>
+                        <td class="action-cell"><a href="edit-policy?id=<%= policy.getId() %>" class="edit-btn">Sửa</a>
+</td>
                     </tr>
                     <%
                             }
