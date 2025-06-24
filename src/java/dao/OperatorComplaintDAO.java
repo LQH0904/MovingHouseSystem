@@ -1,7 +1,7 @@
 package dao;
 
 import model.OperatorComplaint;
-import model.UserComplaint; // Đã đổi từ model.User sang model.UserComplaint
+import model.UserComplaint;
 import utils.DBConnection;
 
 import java.sql.*;
@@ -34,6 +34,7 @@ public class OperatorComplaintDAO {
                     c.setPriority(rs.getString("priority"));
                     c.setCreatedAt(rs.getTimestamp("created_at"));
                     c.setResolvedAt(rs.getTimestamp("resolved_at"));
+                    c.setAssignedTo(rs.getObject("assigned_to", Integer.class)); // Sử dụng getObject cho Integer
                     c.setAssignedToUsername(rs.getString("assigned_to_username"));
                 }
             }
@@ -54,9 +55,9 @@ public class OperatorComplaintDAO {
                 "WHERE LOWER(i.status) = 'escalated' ");
 
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-            sql.append("AND (LOWER(u.username) LIKE ? OR LOWER(i.description) LIKE ? OR LOWER(u2.username) LIKE ?) ");
+            sql.append("AND (LOWER(u.username) LIKE ? OR LOWER(i.description) LIKE ? OR LOWER(u2.username) LIKE ? OR CAST(i.issue_id AS NVARCHAR(MAX)) LIKE ?) "); // Thêm tìm kiếm theo issue_id
         }
-        if (priorityFilter != null && !priorityFilter.trim().isEmpty()) {
+        if (priorityFilter != null && !priorityFilter.trim().isEmpty() && !priorityFilter.equals("all")) { // Thêm điều kiện 'all'
             sql.append("AND LOWER(i.priority) = ? ");
         }
         sql.append("ORDER BY i.created_at DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
@@ -66,11 +67,13 @@ public class OperatorComplaintDAO {
 
             int index = 1;
             if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-                ps.setString(index++, "%" + searchTerm.toLowerCase() + "%");
-                ps.setString(index++, "%" + searchTerm.toLowerCase() + "%");
-                ps.setString(index++, "%" + searchTerm.toLowerCase() + "%");
+                String likeTerm = "%" + searchTerm.toLowerCase() + "%";
+                ps.setString(index++, likeTerm);
+                ps.setString(index++, likeTerm);
+                ps.setString(index++, likeTerm);
+                ps.setString(index++, likeTerm); // Cho issue_id
             }
-            if (priorityFilter != null && !priorityFilter.trim().isEmpty()) {
+            if (priorityFilter != null && !priorityFilter.trim().isEmpty() && !priorityFilter.equals("all")) {
                 ps.setString(index++, priorityFilter.toLowerCase());
             }
             ps.setInt(index++, offset);
@@ -87,6 +90,7 @@ public class OperatorComplaintDAO {
                     c.setPriority(rs.getString("priority"));
                     c.setCreatedAt(rs.getTimestamp("created_at"));
                     c.setResolvedAt(rs.getTimestamp("resolved_at"));
+                    c.setAssignedTo(rs.getObject("assigned_to", Integer.class));
                     c.setAssignedToUsername(rs.getString("assigned_to_username"));
                     list.add(c);
                 }
@@ -106,9 +110,9 @@ public class OperatorComplaintDAO {
                 "WHERE LOWER(i.status) = 'escalated' ");
 
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-            sql.append("AND (LOWER(u.username) LIKE ? OR LOWER(i.description) LIKE ? OR LOWER(u2.username) LIKE ?) ");
+            sql.append("AND (LOWER(u.username) LIKE ? OR LOWER(i.description) LIKE ? OR LOWER(u2.username) LIKE ? OR CAST(i.issue_id AS NVARCHAR(MAX)) LIKE ?) ");
         }
-        if (priorityFilter != null && !priorityFilter.trim().isEmpty()) {
+        if (priorityFilter != null && !priorityFilter.trim().isEmpty() && !priorityFilter.equals("all")) {
             sql.append("AND LOWER(i.priority) = ? ");
         }
 
@@ -117,11 +121,13 @@ public class OperatorComplaintDAO {
 
             int index = 1;
             if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-                ps.setString(index++, "%" + searchTerm.toLowerCase() + "%");
-                ps.setString(index++, "%" + searchTerm.toLowerCase() + "%");
-                ps.setString(index++, "%" + searchTerm.toLowerCase() + "%");
+                String likeTerm = "%" + searchTerm.toLowerCase() + "%";
+                ps.setString(index++, likeTerm);
+                ps.setString(index++, likeTerm);
+                ps.setString(index++, likeTerm);
+                ps.setString(index++, likeTerm);
             }
-            if (priorityFilter != null && !priorityFilter.trim().isEmpty()) {
+            if (priorityFilter != null && !priorityFilter.trim().isEmpty() && !priorityFilter.equals("all")) {
                 ps.setString(index++, priorityFilter.toLowerCase());
             }
 
@@ -136,7 +142,7 @@ public class OperatorComplaintDAO {
     }
 
     public boolean assignComplaintToOperator(int issueId, int operatorUserId) {
-        String sql = "UPDATE Issues SET assigned_to = ?, status = 'in_progress' WHERE issue_id = ?";
+        String sql = "UPDATE Issues SET assigned_to = ?, status = 'in_progress', resolved_at = NULL WHERE issue_id = ?"; // Đặt resolved_at về NULL khi được giao
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -151,15 +157,61 @@ public class OperatorComplaintDAO {
         }
     }
 
-    public List<UserComplaint> getOperators() { // Đã đổi kiểu trả về
+    /**
+     * Cập nhật trạng thái, mức độ ưu tiên và operator được gán cho một khiếu nại.
+     * Lưu ý: Phương thức này KHÔNG lưu replyContent vào DB.
+     * Nếu muốn lưu, cần thêm cột reply_content vào bảng Issues.
+     */
+    public boolean updateOperatorComplaint(int issueId, String status, String priority, Integer assignedTo) {
+        StringBuilder sql = new StringBuilder("UPDATE Issues SET status = ?, priority = ?");
+
+        // Cập nhật assigned_to chỉ khi nó được cung cấp (không null)
+        if (assignedTo != null) {
+            sql.append(", assigned_to = ?");
+        } else {
+            sql.append(", assigned_to = NULL"); // Đặt assigned_to là NULL nếu không được gán
+        }
+
+        // Cập nhật resolved_at nếu trạng thái là 'resolved' hoặc 'closed'
+        if ("resolved".equalsIgnoreCase(status) || "closed".equalsIgnoreCase(status)) {
+            sql.append(", resolved_at = GETDATE()");
+        } else {
+            sql.append(", resolved_at = NULL"); // Đảm bảo resolved_at là NULL nếu trạng thái thay đổi
+        }
+
+        sql.append(" WHERE issue_id = ?");
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int index = 1;
+            ps.setString(index++, status);
+            ps.setString(index++, priority);
+
+            if (assignedTo != null) {
+                ps.setInt(index++, assignedTo);
+            }
+            ps.setInt(index, issueId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error updating complaint for operator: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<UserComplaint> getOperators() {
         List<UserComplaint> operators = new ArrayList<>();
         // !!! QUAN TRỌNG: Thay thế '2' bằng role_id thực tế của Operator trong database của bạn !!!
+        // (Nếu vai trò Operator có role_id khác 2, hãy thay đổi số này)
         String sql = "SELECT user_id, username FROM Users WHERE role_id = 2 AND status = 'active'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    UserComplaint operator = new UserComplaint(); // Đã đổi đối tượng được tạo
+                    UserComplaint operator = new UserComplaint();
                     operator.setUserId(rs.getInt("user_id"));
                     operator.setUsername(rs.getString("username"));
                     operators.add(operator);

@@ -48,7 +48,7 @@ public class OperatorComplaintServlet extends HttpServlet {
         int totalPages = (int) Math.ceil((double) totalComplaints / RECORDS_PER_PAGE);
 
         List<OperatorComplaint> escalatedComplaints = complaintDAO.getEscalatedComplaints(searchTerm, priorityFilter, offset, RECORDS_PER_PAGE);
-        List<UserComplaint> operators = complaintDAO.getOperators(); // Đã đổi kiểu List
+        List<UserComplaint> operators = complaintDAO.getOperators(); 
 
         request.setAttribute("escalatedComplaints", escalatedComplaints);
         request.setAttribute("currentPage", page);

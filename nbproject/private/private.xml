@@ -3,13 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/IssueDAO.java</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/web/page/operator/OperatorComplaintList.jsp</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/ComplaintServlet.java</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/web/page/staff/replyComplaint.jsp</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/UserComplaint.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/OperatorComplaint.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/OperatorComplaintDAO.java</file>
             <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/OperatorComplaintServlet.java</file>
             <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/ReplyComplaintServlet.java</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/Issue.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/OperatorReplyComplaintServlet.java</file>
         </group>
     </open-files>
 </project-private>

@@ -49,4 +49,75 @@ public class OperatorReplyComplaintServlet extends HttpServlet {
             request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        String issueIdParam = request.getParameter("issueId");
+        String status = request.getParameter("status");
+        String priority = request.getParameter("priority");
+        String assignedToParam = request.getParameter("assignedTo"); // Có thể là ID operator hoặc "unassigned"
+
+        int issueId;
+        try {
+            issueId = Integer.parseInt(issueIdParam);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=error&message=ID_khong_hop_le");
+            return;
+        }
+
+        Integer assignedTo = null;
+        if (assignedToParam != null && !assignedToParam.isEmpty() && !assignedToParam.equals("unassigned")) {
+            try {
+                assignedTo = Integer.parseInt(assignedToParam);
+            } catch (NumberFormatException e) {
+                // Xử lý lỗi nếu assignedTo không phải là số hợp lệ
+                System.err.println("OperatorReplyComplaintServlet: Định dạng ID operator được gán không hợp lệ: " + assignedToParam);
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=error&message=ID_operator_khong_hop_le");
+                return;
+            }
+        }
+
+        boolean success = false;
+        String updateStatusMessage = "";
+
+        // Kiểm tra logic tương tự như bạn có trong ComplaintServlet
+        // Ví dụ: Nếu chuyển trạng thái thành "resolved" hoặc "closed", có thể yêu cầu replyContent không trống
+        String replyContent = request.getParameter("replyContent"); // Lấy giá trị, nhưng hiện tại không lưu vào DB
+
+        if ("resolved".equalsIgnoreCase(status) || "closed".equalsIgnoreCase(status)) {
+            if (replyContent == null || replyContent.trim().isEmpty()) {
+                request.setAttribute("errorMessage", "Vui lòng nhập nội dung phản hồi khi giải quyết/đóng khiếu nại.");
+                try {
+                    request.setAttribute("currentComplaint", operatorComplaintDAO.getComplaintById(issueId));
+                } catch (Exception ex) {
+                    System.err.println("Error re-fetching complaint in doPost: " + ex.getMessage());
+                }
+                request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
+                return;
+            }
+        }
+
+        // Gọi phương thức DAO mới để cập nhật
+        success = operatorComplaintDAO.updateOperatorComplaint(issueId, status, priority, assignedTo);
+
+        if (success) {
+            if ("resolved".equalsIgnoreCase(status)) {
+                updateStatusMessage = "success";
+            } else if ("closed".equalsIgnoreCase(status)) {
+                updateStatusMessage = "success";
+            } else if (assignedTo != null) {
+                updateStatusMessage = "success_assigned"; // Tùy chỉnh thông báo nếu chỉ gán
+            } else {
+                updateStatusMessage = "success"; // Thông báo chung cho các cập nhật khác
+            }
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=" + updateStatusMessage);
+        } else {
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=error&message=cap_nhat_that_bai");
+        }
+    }
 }
