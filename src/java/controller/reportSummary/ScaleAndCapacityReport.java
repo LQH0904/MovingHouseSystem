@@ -5,7 +5,7 @@
 package controller.reportSummary;
 
 import dao.DAOTransportUnit;
-import model.transportUnit;
+import model.TransportUnit;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -73,14 +73,14 @@ public class ScaleAndCapacityReport extends HttpServlet {
             String sql = "SELECT * FROM TransportUnits WHERE registration_status = 'approved' " +
                         "ORDER BY capacity DESC, vehicle_count DESC";
             
-            Vector<transportUnit> transportUnitData = daoTransportUnit.getReports(sql);
+            Vector<TransportUnit> transportUnitData = daoTransportUnit.getReports(sql);
             
             // Debug log
             System.out.println("ScaleAndCapacityReport - transportUnitData size: " + 
                              (transportUnitData != null ? transportUnitData.size() : "null"));
             
             if (transportUnitData != null && !transportUnitData.isEmpty()) {
-                for (transportUnit unit : transportUnitData) {
+                for (TransportUnit unit : transportUnitData) {
                     System.out.println("Unit: " + unit.getCompanyName() + 
                                      ", Vehicles: " + unit.getVehicleCount() + 
                                      ", Capacity: " + unit.getCapacity());
@@ -118,7 +118,7 @@ public class ScaleAndCapacityReport extends HttpServlet {
             }
             sql += " ORDER BY capacity DESC, vehicle_count DESC";
             
-            Vector<transportUnit> transportUnitData = daoTransportUnit.getReports(sql);
+            Vector<TransportUnit> transportUnitData = daoTransportUnit.getReports(sql);
             
             System.out.println("Filter by location SQL: " + sql);
             System.out.println("Results: " + (transportUnitData != null ? transportUnitData.size() : 0));
@@ -165,7 +165,7 @@ public class ScaleAndCapacityReport extends HttpServlet {
             }
             sql += " ORDER BY capacity DESC, vehicle_count DESC";
             
-            Vector<transportUnit> transportUnitData = daoTransportUnit.getReports(sql);
+            Vector<TransportUnit> transportUnitData = daoTransportUnit.getReports(sql);
             
             System.out.println("Filter by scale SQL: " + sql);
             System.out.println("Results: " + (transportUnitData != null ? transportUnitData.size() : 0));

@@ -187,9 +187,9 @@ public class StorageReportDataDAO extends DBContext {
                         rs.getString("registration_status"),
                         rs.getString("created_at"),
                         rs.getString("business_certificate"),
-                        rs.getInt("area"),
+                        rs.getDouble("area"),
                         rs.getInt("employee"),
-                        rs.getInt("phone_number")
+                        rs.getString("phone_number")
                 );
 
                 result.add(unit);

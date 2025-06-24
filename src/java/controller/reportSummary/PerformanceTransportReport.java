@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import dao.TransportReportDataDAO;
 import model.transportReport;
-import model.transportUnit;
+import model.TransportUnit;
 import jakarta.servlet.RequestDispatcher;
 import java.util.Vector;
 
@@ -83,7 +83,7 @@ public class PerformanceTransportReport extends HttpServlet {
                 System.out.println("Result count: " + (reportData != null ? reportData.size() : 0));
                 
                 // Lấy danh sách transport units cho dropdown
-                Vector<transportUnit> transportUnits = dao.getAllActiveTransportUnits();
+                Vector<TransportUnit> transportUnits = dao.getAllActiveTransportUnits();
                 
                 // Tính thống kê dựa trên dữ liệu hiện tại
                 double[] statistics;
@@ -139,7 +139,7 @@ public class PerformanceTransportReport extends HttpServlet {
                 if (transportUnits != null && transportUnits.size() > 0) {
                     System.out.println("=== SAMPLE TRANSPORT UNITS ===");
                     for (int i = 0; i < Math.min(3, transportUnits.size()); i++) {
-                        transportUnit unit = transportUnits.get(i);
+                        TransportUnit unit = transportUnits.get(i);
                         System.out.println("Unit " + (i+1) + ": " + 
                                          "ID=" + unit.getTransportUnitId() + 
                                          ", Name='" + unit.getCompanyName() + "'");

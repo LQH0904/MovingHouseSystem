@@ -6,7 +6,7 @@ package dao;
 
 import utils.DBContext;
 import model.transportReport;
-import model.transportUnit;
+import model.TransportUnit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -119,8 +119,8 @@ public class TransportReportDataDAO extends DBContext {
     /**
      * Lấy danh sách tất cả Transport Units đang active
      */
-    public Vector<transportUnit> getAllActiveTransportUnits() {
-        Vector<transportUnit> result = new Vector<>();
+    public Vector<TransportUnit> getAllActiveTransportUnits() {
+        Vector<TransportUnit> result = new Vector<>();
         String sql = "SELECT * FROM TransportUnits WHERE registration_status = 'approved' ORDER BY company_name";
         
         try {
@@ -128,7 +128,7 @@ public class TransportReportDataDAO extends DBContext {
             ResultSet rs = state.executeQuery(sql);
             
             while (rs.next()) {
-                transportUnit unit = new transportUnit(
+                TransportUnit unit = new TransportUnit(
                     rs.getInt("transport_unit_id"),
                     rs.getString("company_name"),
                     rs.getString("contact_info"),
@@ -136,7 +136,9 @@ public class TransportReportDataDAO extends DBContext {
                     rs.getString("created_at"),
                     rs.getString("location"),
                     rs.getInt("vehicle_count"),
-                    rs.getInt("capacity")
+                    rs.getDouble("capacity"),
+                    rs.getInt("loader"),
+                    rs.getString("business_certificate")
                 );
                 result.add(unit);
             }

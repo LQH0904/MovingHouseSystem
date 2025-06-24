@@ -5,6 +5,15 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+// Kiểm tra session
+String redirectURL = null;
+if (session.getAttribute("acc") == null) {
+    redirectURL = "/login";
+    response.sendRedirect(request.getContextPath() + redirectURL);
+    return;
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>

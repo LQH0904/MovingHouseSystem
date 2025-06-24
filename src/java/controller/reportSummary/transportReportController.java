@@ -4,7 +4,7 @@ package controller.reportSummary;
 import dao.DAOTransportReport;
 import dao.DAOTransportUnit;
 import model.transportReport;
-import model.transportUnit;
+import model.TransportUnit;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpSession;
 import java.util.Vector;
@@ -35,7 +35,7 @@ public class transportReportController extends HttpServlet {
 
             if (service.equals("listTransportReports")) {
                 Vector<transportReport> vector;
-                Vector<transportUnit> transportUnits;
+                Vector<TransportUnit> transportUnits;
 
                 // Get filter parameters
                 String transportUnitId = request.getParameter("transportUnitId");
@@ -114,7 +114,7 @@ public class transportReportController extends HttpServlet {
                     
                     // Set empty vectors to prevent null pointer exceptions
                     request.setAttribute("transportReportsData", new Vector<transportReport>());
-                    request.setAttribute("transportUnitData", new Vector<transportUnit>());
+                    request.setAttribute("transportUnitData", new Vector<TransportUnit>());
                     request.setAttribute("errorMessage", "Lỗi khi tải dữ liệu: " + e.getMessage());
                 }
 
@@ -133,7 +133,7 @@ public class transportReportController extends HttpServlet {
                         "ORDER BY tp.report_year DESC, tp.report_month DESC"
                     );
                     
-                    Vector<transportUnit> units = daoTransportUnit.getReports(
+                    Vector<TransportUnit> units = daoTransportUnit.getReports(
                         "SELECT * FROM TransportUnits WHERE registration_status = 'approved'"
                     );
                     
