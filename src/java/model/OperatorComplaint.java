@@ -2,42 +2,19 @@ package model;
 
 import java.sql.Timestamp;
 
-public class Complaint {
+public class OperatorComplaint {
+
     private int issueId;
     private int userId;
-    private String username; // Tên người tạo khiếu nại
+    private String username;
     private String description;
     private String status;
     private String priority;
     private Timestamp createdAt;
     private Timestamp resolvedAt;
-    private Integer assignedTo; // ID của operator được gán
-    private String assignedToUsername; // Tên của operator được gán
-    // Các cột sau KHÔNG CÓ TRONG SCHEMA DB bạn đã cung cấp, nên sẽ không được đưa vào đây.
-    // private String escalationReason;
-    // private Integer escalatedByUserId;
-    // private String replyContent;
+    private Integer assignedTo; // Đã thêm trường này
+    private String assignedToUsername;
 
-    // Constructor đầy đủ khớp với các cột CÓ TRONG DB của bạn
-    public Complaint(int issueId, int userId, String username, String description, String status, String priority,
-                     Timestamp createdAt, Timestamp resolvedAt, Integer assignedTo, String assignedToUsername) {
-        this.issueId = issueId;
-        this.userId = userId;
-        this.username = username;
-        this.description = description;
-        this.status = status;
-        this.priority = priority;
-        this.createdAt = createdAt;
-        this.resolvedAt = resolvedAt;
-        this.assignedTo = assignedTo;
-        this.assignedToUsername = assignedToUsername;
-    }
-
-    // Constructor mặc định (cần cho một số trường hợp khởi tạo)
-    public Complaint() {
-    }
-
-    // --- Getters and Setters ---
     public int getIssueId() {
         return issueId;
     }
@@ -102,11 +79,11 @@ public class Complaint {
         this.resolvedAt = resolvedAt;
     }
 
-    public Integer getAssignedTo() {
+    public Integer getAssignedTo() { // Getter cho assignedTo
         return assignedTo;
     }
 
-    public void setAssignedTo(Integer assignedTo) {
+    public void setAssignedTo(Integer assignedTo) { // Setter cho assignedTo
         this.assignedTo = assignedTo;
     }
 
@@ -116,5 +93,21 @@ public class Complaint {
 
     public void setAssignedToUsername(String assignedToUsername) {
         this.assignedToUsername = assignedToUsername;
+    }
+
+    @Override
+    public String toString() {
+        return "OperatorComplaint{"
+                + "issueId=" + issueId
+                + ", userId=" + userId
+                + ", username='" + username + '\''
+                + ", description='" + description + '\''
+                + ", status='" + status + '\''
+                + ", priority='" + priority + '\''
+                + ", createdAt=" + createdAt
+                + ", resolvedAt=" + resolvedAt
+                + ", assignedTo=" + assignedTo // Đã thêm vào toString
+                + ", assignedToUsername='" + assignedToUsername + '\''
+                + '}';
     }
 }
