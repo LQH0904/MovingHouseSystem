@@ -16,7 +16,9 @@ if (session.getAttribute("acc") == null) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Báo cáo Hiệu suất Vận tải</title>
-
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <%-- Đường dẫn CSS cụ thể cho trang danh sách khiếu nại --%>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/complaintList.css">
     </head>
     <body>
         <div class="parent">
