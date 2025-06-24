@@ -1,0 +1,96 @@
+/* Căn giữa tiêu đề */
+.section-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Bảng căn giữa */
+.center-table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+/* Tiêu đề bảng */
+.center-table th,
+.center-table td {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+}
+
+/* Căn giữa STT và Hành động */
+.center-text {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.description-text {
+    white-space: pre-wrap;
+    text-align: left;
+    padding-left: 10px;
+    margin: 0;
+}
+
+.action-buttons {
+    width: 90%;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-btn,
+.excel-btn {
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+}
+
+.add-btn:hover {
+    background-color: #218838;
+}
+
+.excel-btn {
+    background-color: #ffc107;
+    color: black;
+}
+
+.excel-btn:hover {
+    background-color: #e0a800;
+}
+
+td.action-cell {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0; 
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 4px 10px;         
+    line-height: 1.2;          
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 auto;            
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+    text-decoration: none;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}

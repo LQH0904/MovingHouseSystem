@@ -12,10 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBContext {
-
-//    public static Connection getConnection() {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
 //    conn: quan ly ket noi sql va database, cac cau lenh sql thuc hien thong qua conn.
     public Connection conn=null;
     
@@ -36,10 +32,7 @@ public class DBContext {
     }
     
     public DBContext(){
-        this("jdbc:sqlserver://localhost:1433;databaseName=systemhouse1", "sa", "123");
-    }
-    public Connection getConnection() {
-        return conn;
+        this("jdbc:sqlserver://localhost:1433;databaseName=systemhouse1", "sa", "123456");
     }
     public ResultSet getData(String sql){
         ResultSet rs = null;
