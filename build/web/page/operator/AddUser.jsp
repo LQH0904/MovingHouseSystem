@@ -1,53 +1,38 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
-    <head>
-        <title>Thêm Người Dùng Mới</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/AddUser.css">
-    </head>
-    <body>
-        <div class="parent">
-            <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include> </div>
-            <div class="div2">  <jsp:include page="/Layout/operator/Header.jsp"></jsp:include> </div>
-            <div class="div3"> 
-                <!-- Form thêm người dùng mới -->
-                <form action="<%= request.getContextPath() %>/Operator/AddUserServlet" method="post" class="add-user-form">
-                    <table class="user-form-table">
-                        <tr>
-                            <td>Tên Người Dùng:</td>
-                            <td><input type="text" name="username" class="form-input" required></td>
-                        </tr>
-                        <tr>
-                            <td>Mật khẩu:</td>
-                            <td><input type="password" name="password" class="form-input" required></td>
-                        </tr>
-                        <tr>
-                            <td>Email:</td>
-                            <td><input type="email" name="email" class="form-input" required></td>
-                        </tr>
-                        <tr>
-                            <td>Vai Trò:</td>
-                            <td>
-                                <select name="roleId" class="form-select">
-<!--                                    //<option value="1">Admin</option>dành cho phần admin-->
-                                    <option value="6">Customer</option>
-                                    <option value="3">Staff</option>
-                                    <option value="2">Operator</option>
-                                    <option value="4">Transport Unit</option>
-                                    <option value="5">Storage Unit</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <button type="submit" class="submit-btn">Thêm Người Dùng</button>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-        </div>
-    </body>
+<head>
+    <title>Thêm Khách Hàng</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/AddCustomer.css">
+</head>
+<body>
+    <h2 style="text-align:center;">Thêm Khách Hàng</h2>
+
+    <div class="add-user-form">
+        <form action="<%= request.getContextPath() %>/Staff/AddUserServlet" method="post">
+            <label for="username">Tên Người Dùng:</label>
+            <input type="text" id="username" name="username" class="form-input" value="" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-input" required
+                   pattern="[a-zA-Z0-9._%+-]+@gmail\.com"
+                   title="Vui lòng nhập địa chỉ Gmail hợp lệ (kết thúc bằng @gmail.com)">
+
+            <label for="password">Mật Khẩu:</label>
+            <input type="password" id="password" name="password" class="form-input" value="" required>
+
+            <label for="status">Trạng Thái:</label>
+            <select name="status" id="status" class="form-select">
+                <option value="Đang hoạt động">Đang hoạt động</option>
+                <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+            </select>
+
+            <!-- RoleId luôn là customer -->
+            <input type="hidden" name="roleId" value="6">
+
+            <button type="submit" class="submit-btn">Thêm</button>
+            <button type="button" class="submit-btn" style="background-color: #6c757d;"
+                    onclick="window.location.href='<%= request.getContextPath() %>/CustomerListServlet'">Hủy</button>
+        </form>
+    </div>
+</body>
 </html>

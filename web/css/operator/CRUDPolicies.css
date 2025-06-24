@@ -1,0 +1,138 @@
+/* Tiêu đề căn giữa */
+.add-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Container của form */
+.form-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form */
+.add-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Label và input */
+.add-form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.add-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Textarea */
+.add-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+/* Nút thêm dòng mô tả */
+.add-form .add-desc-btn {
+    background-color: #17a2b8;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-form .add-desc-btn:hover {
+    background-color: #138496;
+}
+
+/* Nút Lưu */
+.add-form .submit-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.add-form .submit-btn:hover {
+    background-color: #218838;
+}
+
+/* Các dòng mô tả */
+.description-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.description-line input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Nút xóa dòng mô tả */
+.delete-line-btn {
+    margin-left: 10px;
+    padding: 7px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-line-btn:hover {
+    background-color: #c82333;
+}
+
+/* Các nút Cập nhật + Xóa */
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #0069d9;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
