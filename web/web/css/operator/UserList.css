@@ -1,0 +1,138 @@
+/* Giữa màn hình cho dòng "Danh Sách Người Dùng" */
+.user-list-title {
+    text-align: center;
+}
+
+/* Định dạng bảng */
+.user-list-table {
+    width: 80%; /* Để bảng nằm giữa màn hình */
+    margin: 0 auto; /* Căn giữa bảng */
+    border-collapse: collapse;
+}
+
+/* Không có màu nền cho cột tiêu đề */
+.user-list-table th,
+.user-list-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd; /* Để thêm đường viền cho các ô */
+}
+
+/* Form chứa các nút "Hiển thị tất cả" và "Thêm Người Dùng" */
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;  /* Căn giữa cả form */
+    margin: 0 auto;  /* Căn giữa form */
+    margin-bottom: 20px;
+}
+
+/* Lựa chọn vai trò người dùng */
+.role-select {
+    width: 70%;  /* Tăng chiều rộng của "Hiển thị tất cả" lên 1.5 lần */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Nút Thêm Người Dùng */
+.add-user-btn {
+    background-color: #007bff; /* Màu xanh dương */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 28%; /* Đảm bảo nút có chiều rộng phù hợp */
+}
+
+.add-user-btn:hover {
+    background-color: #0056b3; /* Màu xanh đậm khi hover */
+}
+
+/* Nút "Sửa" và "Xóa" */
+.edit-btn,
+.delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+    width: 45%;  /* Tăng chiều dài của nút thao tác lên 1,5 lần */
+}
+
+.edit-btn {
+    background-color: #007bff; /* Màu xanh dương cho sửa */
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3; /* Màu xanh đậm khi hover */
+}
+
+.delete-btn {
+    background-color: #dc3545; /* Màu đỏ cho xóa */
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333; /* Màu đỏ đậm khi hover */
+}
+
+/* Modal */
+.modal-content {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.modal .close {
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pagination-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.current-page-label {
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.pagination {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.page-link {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 14px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.page-link.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    pointer-events: none;
+}
