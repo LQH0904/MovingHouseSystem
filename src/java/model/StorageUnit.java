@@ -15,14 +15,14 @@ public class StorageUnit {
     private String registrationStatus;
     private String createdAt;
     private String businessCertificate;
-    private int area;
+    private Double area;
     private int employee;
-    private int phoneNumber;
+    private String phoneNumber;
 
     public StorageUnit() {
     }
 
-    public StorageUnit(int storageUnitId, String warehouseName, String location, String registrationStatus, String createdAt, String businessCertificate, int area, int employee, int phoneNumber) {
+    public StorageUnit(int storageUnitId, String warehouseName, String location, String registrationStatus, String createdAt, String businessCertificate, Double area, int employee, String phoneNumber) {
         this.storageUnitId = storageUnitId;
         this.warehouseName = warehouseName;
         this.location = location;
@@ -82,11 +82,11 @@ public class StorageUnit {
         this.businessCertificate = businessCertificate;
     }
 
-    public int getArea() {
+    public Double getArea() {
         return area;
     }
 
-    public void setArea(int area) {
+    public void setArea(Double area) {
         this.area = area;
     }
 
@@ -98,11 +98,11 @@ public class StorageUnit {
         this.employee = employee;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -110,4 +110,6 @@ public class StorageUnit {
     public String toString() {
         return "StorageUnit{" + "storageUnitId=" + storageUnitId + ", warehouseName=" + warehouseName + ", location=" + location + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", businessCertificate=" + businessCertificate + ", area=" + area + ", employee=" + employee + ", phoneNumber=" + phoneNumber + '}';
     }
+
+    
 }

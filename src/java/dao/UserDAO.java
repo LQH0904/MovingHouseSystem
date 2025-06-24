@@ -532,7 +532,7 @@ public class UserDAO {
             ps.setString(2, truncate(unit.getWarehouseName(), 150));
             ps.setString(3, truncate(unit.getLocation(), 255));
             ps.setString(4, truncate(unit.getBusinessCertificate(), 2000));
-            ps.setString(5, truncate(unit.getArea(), 200));
+            ps.setDouble(5, unit.getArea());
             ps.setInt(6, unit.getEmployee());
             ps.setString(7, truncate(unit.getPhoneNumber(), 15));
             int rows = ps.executeUpdate();

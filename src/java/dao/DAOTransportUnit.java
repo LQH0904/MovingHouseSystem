@@ -4,7 +4,7 @@
  */
 package dao;
 import utils.DBContext;
-import model.transportUnit;
+import model.TransportUnit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +18,8 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class DAOTransportUnit extends DBContext{
-    public Vector<transportUnit> getReports(String sql) {
-        Vector<transportUnit> vector = new Vector<transportUnit>();
+    public Vector<TransportUnit> getReports(String sql) {
+        Vector<TransportUnit> vector = new Vector<TransportUnit>();
 
         try {
             Statement state = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -34,7 +34,7 @@ public class DAOTransportUnit extends DBContext{
                 int vehicleCount = rs.getInt("vehicle_count");
                 int capacity = rs.getInt("capacity");
                 
-                transportUnit transportUnit = new transportUnit(transportUnitId, companyName, contactInfo, registrationStatus, createdAt, location, vehicleCount, capacity);
+                TransportUnit transportUnit = new TransportUnit(transportUnitId, companyName, contactInfo, registrationStatus, createdAt, location, vehicleCount, capacity, capacity, createdAt);
                 vector.add(transportUnit);
             }
         } catch (SQLException ex) {

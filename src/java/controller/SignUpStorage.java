@@ -46,7 +46,8 @@ public class SignUpStorage extends HttpServlet {
         String warehouseName = request.getParameter("warehouse_name");
         String phoneNumber = request.getParameter("phone_number");
         String location = request.getParameter("location");
-        String area = request.getParameter("area");
+        String areaStr = request.getParameter("area");
+        double area = Double.parseDouble(areaStr);
         String employeeStr = request.getParameter("employee");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -75,11 +76,11 @@ public class SignUpStorage extends HttpServlet {
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
-        if (area != null && (area.length() > 200 || !area.matches("^\\d+(\\.\\d{1,2})?$"))) {
+        /*if (area != null && (area.length() > 200 || !area.matches("^\\d+(\\.\\d{1,2})?$"))) {
             request.setAttribute("error", "Diện tích không hợp lệ (tối đa 200 ký tự, định dạng số với tối đa 2 chữ số thập phân)");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
-        }
+        }*/
         int employee;
         try {
             employee = Integer.parseInt(employeeStr);

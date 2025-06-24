@@ -6,35 +6,44 @@ package model;
 
 /**
  *
- * @author admin
+ * @author Admin
  */
 public class TransportUnit {
-
+    private int transportUnitId;
     private String companyName;
     private String contactInfo;
+    private String registrationStatus;
+    private String createdAt;
     private String location;
     private int vehicleCount;
     private double capacity;
     private int loader;
     private String businessCertificate;
-    private String registrationStatus;
 
-    public TransportUnit(String companyName, String contactInfo, String location, int vehicleCount, double capacity, int loader, String businessCertificate, String registrationStatus) {
+    public TransportUnit() {
+    }
+
+    public TransportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, double capacity, int loader, String businessCertificate) {
+        this.transportUnitId = transportUnitId;
         this.companyName = companyName;
         this.contactInfo = contactInfo;
+        this.registrationStatus = registrationStatus;
+        this.createdAt = createdAt;
         this.location = location;
         this.vehicleCount = vehicleCount;
         this.capacity = capacity;
         this.loader = loader;
         this.businessCertificate = businessCertificate;
-        this.registrationStatus = registrationStatus;
     }
 
-    public TransportUnit() {
+    public int getTransportUnitId() {
+        return transportUnitId;
     }
 
-    
-    // Getters and Setters
+    public void setTransportUnitId(int transportUnitId) {
+        this.transportUnitId = transportUnitId;
+    }
+
     public String getCompanyName() {
         return companyName;
     }
@@ -49,6 +58,22 @@ public class TransportUnit {
 
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
+    }
+
+    public String getRegistrationStatus() {
+        return registrationStatus;
+    }
+
+    public void setRegistrationStatus(String registrationStatus) {
+        this.registrationStatus = registrationStatus;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getLocation() {
@@ -91,11 +116,10 @@ public class TransportUnit {
         this.businessCertificate = businessCertificate;
     }
 
-    public String getRegistrationStatus() {
-        return registrationStatus;
+    @Override
+    public String toString() {
+        return "TransportUnit{" + "transportUnitId=" + transportUnitId + ", companyName=" + companyName + ", contactInfo=" + contactInfo + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", location=" + location + ", vehicleCount=" + vehicleCount + ", capacity=" + capacity + ", loader=" + loader + ", businessCertificate=" + businessCertificate + '}';
     }
-
-    public void setRegistrationStatus(String registrationStatus) {
-        this.registrationStatus = registrationStatus;
-    }
+    
+    
 }

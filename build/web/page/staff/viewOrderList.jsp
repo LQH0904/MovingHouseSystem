@@ -275,16 +275,11 @@ if (session.getAttribute("acc") == null) {
                     <table class="table table-bordered mt-4">
                         <thead>
                             <tr>
-                                <th style="width:3%;">ID</th>
-                                <th style="width:12%;">Khách hàng</th>
-                                <th style="width:14%;">Đơn vị vận chuyển</th>
-                                <th style="width:14%;">Đơn vị kho bãi</th>
-                                <th style="width:8%;">Trạng thái</th>
-                                <th style="width:10%;">Ngày tạo</th>
-                                <th style="width:11%;">Ngày cập nhật</th>
-                                <th style="width:10%;">Lịch giao</th>
-                                <th style="width:8%;">Tổng phí</th>
-                                <th style="width:13%;">Ngày chấp nhận</th>
+                                <th style="width:11%;">ID</th>
+                                <th style="width:21%;">Khách hàng</th>
+                                <th style="width:16%;">Trạng thái</th>
+                                <th style="width:15%;">Ngày tạo</th>
+                                <th style="width:11%;">Tổng phí</th>
                                 <th style="width:10%;">Ngày giao</th>
                             </tr>
                         </thead>
@@ -293,8 +288,7 @@ if (session.getAttribute("acc") == null) {
                                 <tr>
                                     <td>${order.orderId}</td>
                                     <td>${order.customerName != null ? order.customerName : 'N/A'}</td>
-                                    <td>${order.transportUnitName != null && !order.transportUnitName.equals('Chưa chỉ định') ? order.transportUnitName : 'Chưa chỉ định'}</td>
-                                    <td>${order.storageUnitName != null ? order.storageUnitName : 'N/A'}</td>
+                                    
                                     <td>
                                         <c:choose>
                                             <c:when test="${order.orderStatus == 'pending'}">
@@ -315,11 +309,9 @@ if (session.getAttribute("acc") == null) {
                                         </c:choose>
                                     </td>
                                     <td>${order.createdAt}</td>
-                                    <td>${order.updatedAt != null ? order.updatedAt : 'N/A'}</td>
-                                    <td>${order.deliverySchedule != null ? order.deliverySchedule : 'N/A'}</td>
                                     <td>${order.totalFee}</td>
-                                    <td>${order.acceptedAt != null ? order.acceptedAt : 'N/A'}</td>
                                     <td>${order.deliveredAt != null ? order.deliveredAt : 'N/A'}</td>
+                                    <td> <a href="${pageContext.request.contextPath}/order/detailid/${order.orderId}">chi tiết</a> </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
