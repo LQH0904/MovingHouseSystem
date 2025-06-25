@@ -28,38 +28,68 @@
     <h3>Thông tin Chính sách</h3>
 
     <h4>1. Quy trình hoạt động</h4>
-    <%
-        List<OperationProcedure> procedures = (List<OperationProcedure>) request.getAttribute("procedureList");
+<%
+    List<OperationProcedure> procedures = (List<OperationProcedure>) request.getAttribute("procedureList");
+    if (procedures != null) {
         for (OperationProcedure p : procedures) {
-    %>
-    <div class="policy-item">
-        <div class="title"><%= p.getStepNumber() %>. <%= p.getStepTitle() %></div>
-        <div class="content"><%= p.getStepDescription().replaceFirst("^[\\n\\r]+", "") %></div>
-    </div>
-    <% } %>
-
-    <h4>2. Chính sách hoạt động</h4>
-    <%
-        List<OperationPolicy> policies = (List<OperationPolicy>) request.getAttribute("policyList");
-        for (OperationPolicy p : policies) {
-    %>
-    <div class="policy-item">
-        <div class="title"><%= p.getPolicyNumber() %>. <%= p.getPolicyTitle() %></div>
-        <div class="content"><%= p.getPolicyContent() %></div>
-    </div>
-    <% } %>
-
-    <h4>3. Cấu hình phí</h4>
-    <%
-        List<FeeConfiguration> fees = (List<FeeConfiguration>) request.getAttribute("feeList");
-        for (FeeConfiguration f : fees) {
-    %>
-    <div class="policy-item">
-        <div class="title"><%= f.getFeeNumber() %>. <%= f.getFeeType() %></div>
-        <div class="content"><%= f.getDescription() %></div>
-    </div>
-    <% } %>
+%>
+<div class="policy-item">
+    <div class="title"><%= p.getStepNumber() %>. <%= p.getStepTitle() %></div>
+    <div class="content"><%= p.getStepDescription().replaceFirst("^[\\n\\r]+", "") %></div>
 </div>
+<%
+        }
+    } else {
+%>
+<div class="policy-item">
+    <div class="content">Không có dữ liệu Quy trình hoạt động.</div>
+</div>
+<%
+    }
+%>
+
+<h4>2. Chính sách hoạt động</h4>
+<%
+    List<OperationPolicy> policies = (List<OperationPolicy>) request.getAttribute("policyList");
+    if (policies != null) {
+        for (OperationPolicy p : policies) {
+%>
+<div class="policy-item">
+    <div class="title"><%= p.getPolicyNumber() %>. <%= p.getPolicyTitle() %></div>
+    <div class="content"><%= p.getPolicyContent() %></div>
+</div>
+<%
+        }
+    } else {
+%>
+<div class="policy-item">
+    <div class="content">Không có dữ liệu Chính sách hoạt động.</div>
+</div>
+<%
+    }
+%>
+
+<h4>3. Cấu hình phí</h4>
+<%
+    List<FeeConfiguration> fees = (List<FeeConfiguration>) request.getAttribute("feeList");
+    if (fees != null) {
+        for (FeeConfiguration f : fees) {
+%>
+<div class="policy-item">
+    <div class="title"><%= f.getFeeNumber() %>. <%= f.getFeeType() %></div>
+    <div class="content"><%= f.getDescription() %></div>
+</div>
+<%
+        }
+    } else {
+%>
+<div class="policy-item">
+    <div class="content">Không có dữ liệu Cấu hình phí.</div>
+</div>
+<%
+    }
+%>
+
 
 <script>
     function toggleButton() {
