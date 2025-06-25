@@ -1,0 +1,130 @@
+.add-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.add-form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.add-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.add-form .add-desc-btn {
+    background-color: #17a2b8;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-form .add-desc-btn:hover {
+    background-color: #138496;
+}
+
+.add-form .submit-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.add-form .submit-btn:hover {
+    background-color: #218838;
+}
+.form-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.edit{}
+
+.description-line {
+   flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.description-line input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.delete-line-btn {
+     margin-left: 10px;
+    padding: 7px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-line-btn:hover {
+    background-color: #c82333;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
