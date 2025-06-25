@@ -1,0 +1,483 @@
+/* ========================================================= */
+/* CSS CHUNG VÀ CHO TRANG DANH SÁCH KHIẾU NẠI */
+/* ========================================================= */
+
+.div3 {
+    grid-area: main;
+    padding: 35px;
+    overflow-y: auto;
+    background-color: #f0f7ff;
+    margin: 25px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #cceeff;
+}
+
+.div3 h1 {
+    color: #2196f3;
+    border-bottom: 3px solid #90caf9;
+    padding-bottom: 18px;
+    margin-top: 0;
+    margin-bottom: 40px;
+    font-size: 2.4em;
+    text-align: center;
+    letter-spacing: 0.8px;
+    font-weight: 800;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    background-color: #e3f2fd;
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #bbdefb;
+}
+.form-container label {
+    font-weight: 700;
+    color: #424242;
+    font-size: 1.2em;
+    min-width: 100px;
+}
+.form-container input[type="text"],
+.form-container select {
+    padding: 16px;
+    border: 2px solid #90caf9;
+    border-radius: 12px;
+    font-size: 1.1em;
+    min-width: 280px;
+    transition: border-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out, transform 0.2s ease;
+    background-color: #ffffff;
+    color: #333;
+}
+.form-container input[type="text"]:focus,
+.form-container select:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.6);
+    transform: translateY(-3px);
+}
+.form-container button {
+    padding: 16px 35px;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-size: 1.2em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+.form-container button:hover {
+    background-color: #1976d2;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* TABLE STYLES - HỢP NHẤT */
+table {
+    width: 100%;
+    border-collapse: separate; /* Giữ style hiện đại hơn */
+    border-spacing: 0;
+    margin-top: 35px; /* Giữ margin lớn hơn */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border-radius: 18px;
+    overflow: hidden;
+}
+th, td {
+    border: 1px solid #ddd; /* Dùng border chung để tránh xung đột */
+    padding: 20px; /* Giữ padding lớn hơn cho trải nghiệm tốt hơn */
+    text-align: left;
+    vertical-align: middle; /* Giữ căn giữa theo chiều dọc */
+}
+thead tr {
+    background-color: #2196f3; /* Giữ màu xanh cho thead */
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1.15em;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+thead th:first-child {
+    border-top-left-radius: 18px;
+}
+thead th:last-child {
+    border-top-right-radius: 18px;
+}
+tbody tr:nth-child(even) {
+    background-color: #f7fcff;
+}
+tbody tr:hover {
+    background-color: #e8f4fa;
+    transform: scale(1.005);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+td .action-link, td .action-button-list { /* Đổi tên .action-button thành .action-button-list để phân biệt */
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+td .action-link {
+    color: #2196f3;
+    background-color: #e3f2fd;
+}
+td .action-link:hover {
+    color: #1976d2;
+    text-decoration: none;
+    background-color: #bbdefb;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+td .action-button-list { /* Áp dụng style cho nút hành động trong bảng */
+    padding: 12px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+td .action-button-list:hover {
+    background-color: #388e3c;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.alert {
+    padding: 22px;
+    margin-bottom: 35px;
+    border-radius: 15px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    font-size: 1.15em;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.alert-success {
+    color: #2e7d32;
+    background-color: #e8f5e9;
+    border-color: #a5d6a7;
+}
+.alert-danger {
+    color: #c62828;
+    background-color: #ffebee;
+    border-color: #ef9a9a;
+}
+
+.pagination {
+    margin-top: 40px;
+    text-align: center;
+    padding: 20px;
+    background-color: #e3f2fd;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+.pagination .total {
+    margin-right: 25px;
+    font-size: 1.1em;
+    color: #555;
+    font-weight: 600;
+}
+.pagination a {
+    color: #2196f3;
+    padding: 14px 20px;
+    text-decoration: none;
+    border: 2px solid #90caf9;
+    margin: 0 10px;
+    border-radius: 12px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.pagination a:hover {
+    background-color: #bbdefb;
+    color: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+.pagination a.active {
+    background-color: #2196f3;
+    color: white;
+    border-color: #2196f3;
+    cursor: default;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+    transform: translateY(-1px);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    padding-top: 100px;
+}
+.modal-content {
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 45px;
+    border: none;
+    width: 90%;
+    max-width: 650px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    position: relative;
+    animation-name: animatetop;
+    animation-duration: 0.7s;
+}
+@keyframes animatetop {
+    from {top: -600px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+.close-button {
+    color: #757575;
+    float: right;
+    font-size: 40px;
+    font-weight: bold;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+.close-button:hover,
+.close-button:focus {
+    color: #424242;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal h3 {
+    margin-top: 0;
+    color: #2196f3;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 25px;
+    margin-bottom: 35px;
+    font-size: 2.2em;
+    text-align: center;
+    font-weight: 800;
+}
+.modal form p {
+    margin-top: 30px;
+}
+.modal form label {
+    font-weight: 700;
+    color: #424242;
+    font-size: 1.15em;
+    display: block;
+    margin-bottom: 12px;
+}
+.modal form select {
+    width: 100%;
+    padding: 16px;
+    margin-top: 8px;
+    border: 2px solid #90caf9;
+    border-radius: 12px;
+    font-size: 1.15em;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #f7fcff;
+    color: #333;
+}
+.modal form select:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.6);
+}
+.modal-footer {
+    margin-top: 40px;
+    text-align: right;
+    padding-top: 25px;
+    border-top: 1px solid #e0e0e0;
+}
+.modal-footer button {
+    padding: 16px 35px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+    font-weight: 700;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.modal-footer button[type="submit"] {
+    background-color: #2196f3;
+    color: white;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.modal-footer button[type="submit"]:hover {
+    background-color: #1976d2;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+.modal-footer button[type="button"] {
+    background-color: #757575;
+    color: white;
+    margin-left: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.modal-footer button[type="button"]:hover {
+    background-color: #616161;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+
+/* ========================================================= */
+/* CSS RIÊNG CHO TRANG PHẢN HỒI KHIẾU NẠI (OperatorReplyComplaint.jsp) */
+/* ========================================================= */
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.btn-submit { /* Đây là nút submit cho trang phản hồi */
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+.btn-cancel { /* Nút hủy cho trang phản hồi */
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #da190b;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.complaint-details {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.complaint-details h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.complaint-details p {
+    margin: 5px 0;
+    line-height: 1.6;
+}
+
+.reply-history {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.reply-history h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.reply-item {
+    background-color: #e9e9e9;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    border-left: 4px solid #007bff;
+}
+.reply-item p {
+    margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Đây là style cho các nút hành động trong bảng của trang DANH SÁCH KHIẾU NẠI (không phải nút submit/cancel của form phản hồi) */
+.action-button { /* Giữ lại nếu có các nút action-button khác không trong bảng */
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+td.description-column {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 300px;
+}

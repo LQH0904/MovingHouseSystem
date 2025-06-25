@@ -5,105 +5,28 @@
     <head>
         <meta charset="UTF-8">
         <title>Danh sách Khiếu nại Chuyển cấp cao</title>
-        <style>
-            .div3{
-                border: 1;
-                padding: 20px;
-            }
-            /* CSS cho modal */
-            
-
-            .modal-content {
-                background-color: #fefefe;
-                margin: 5% auto; /* 15% from the top and centered */
-                padding: 20px;
-                border: 1px solid #888;
-                width: 80%; /* Could be more or less, depending on screen size */
-                max-width: 500px;
-                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-                -webkit-animation-name: animatetop;
-                -webkit-animation-duration: 0.4s;
-                animation-name: animatetop;
-                animation-duration: 0.4s;
-            }
-
-            /* Add Animation */
-            @-webkit-keyframes animatetop {
-                from {
-                    top: -300px;
-                    opacity: 0
-                }
-                to {
-                    top: 0;
-                    opacity: 1
-                }
-            }
-
-            @keyframes animatetop {
-                from {
-                    top: -300px;
-                    opacity: 0
-                }
-                to {
-                    top: 0;
-                    opacity: 1
-                }
-            }
-
-            /* The Close Button */
-            .close-button {
-                color: #aaa;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-            }
-
-            .close-button:hover,
-            .close-button:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-            .pagination a {
-                padding: 5px 10px;
-                border: 1px solid #ddd;
-                text-decoration: none;
-                margin-right: 5px;
-            }
-            .pagination a.active {
-                background-color: #007bff;
-                color: white;
-            }
-        </style>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/Complaint.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
     </head>
     <body>
         <div class="parent">
             <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include> </div>
-            <div class="div2">  <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include> </div>
+            <div class="div2"> <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include> </div>
                 <div class="div3">
-                    <h1>Danh sách Khiếu nại Chuyển cấp cao</h1>
+                    <h1>Danh sách Khiếu nại</h1>
 
+                <%-- Hiển thị thông báo thành công từ request attribute (được set từ session trong servlet) --%>
                 <c:if test="${not empty successMessage}">
-                    <p style="color: green;">${successMessage}</p>
+                    <p class="alert alert-success">${successMessage}</p>
                 </c:if>
+                <%-- Hiển thị thông báo lỗi từ request attribute (được set từ session trong servlet) --%>
                 <c:if test="${not empty errorMessage}">
-                    <p style="color: red;">${errorMessage}</p>
+                    <p class="alert alert-danger">${errorMessage}</p>
                 </c:if>
 
-                <form action="${pageContext.request.contextPath}/operatorComplaintList" method="get">
+                <form class="form-container" action="${pageContext.request.contextPath}/operatorComplaintList" method="get">
                     <label for="searchTerm">Tìm kiếm:</label>
                     <input type="text" id="searchTerm" name="searchTerm" value="${searchTerm != null ? searchTerm : ''}">
 
@@ -137,15 +60,35 @@
                                 <td>${complaint.issueId}</td>
                                 <td>${complaint.username}</td>
                                 <td>${complaint.description}</td>
-                                <td>${complaint.status}</td>
-                                <td>${complaint.priority}</td>
+                                <td>
+                                    <%-- Chuyển đổi trạng thái sang tiếng Việt --%>
+                                    <c:choose>
+                                        <c:when test="${complaint.status == 'new'}">Mới</c:when>
+                                        <c:when test="${complaint.status == 'in_progress'}">Đang xử lý</c:when>
+                                        <c:when test="${complaint.status == 'resolved'}">Đã giải quyết</c:when>
+                                        <c:when test="${complaint.status == 'escalated'}">Đã chuyển cấp</c:when>
+                                        <c:when test="${complaint.status == 'closed'}">Đã đóng</c:when>
+                                        <c:otherwise>${complaint.status}</c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <%-- Chuyển đổi mức độ ưu tiên sang tiếng Việt --%>
+                                    <c:choose>
+                                        <c:when test="${complaint.priority == 'low'}">Thấp</c:when>
+                                        <c:when test="${complaint.priority == 'medium'}">Trung bình</c:when>
+                                        <c:when test="${complaint.priority == 'high'}">Cao</c:when>
+                                        <c:when test="${complaint.priority == 'urgent'}">Khẩn cấp</c:when>
+                                        <c:otherwise>${complaint.priority}</c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td>${complaint.assignedToUsername != null ? complaint.assignedToUsername : 'Chưa giao'}</td>
                                 <td>${complaint.createdAt}</td>
                                 <td>${complaint.resolvedAt}</td>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/OperatorReplyComplaintServlet?issueId=${complaint.issueId}">Phản hồi</a>
+                                    <a class="action-link" href="${pageContext.request.contextPath}/OperatorReplyComplaintServlet?issueId=${complaint.issueId}">Phản hồi</a>
                                     <c:if test="${complaint.assignedToUsername == null || complaint.assignedToUsername eq ''}">
-                                        <button onclick="openAssignModal('${complaint.issueId}')">Gán</button>
+                                        <%-- Bạn có thể bỏ nút "Gán" ở đây nếu việc gán đã được tích hợp vào form phản hồi --%>
+                                        <%-- <button class="action-button-list" onclick="openAssignModal('${complaint.issueId}')">Gán</button> --%>
                                     </c:if>
                                 </td>
                             </tr>
@@ -159,7 +102,7 @@
                 </table>
 
                 <div class="pagination">
-                    Tổng số khiếu nại: ${totalComplaints}
+                    <span class="total">Tổng số khiếu nại: ${totalComplaints}</span>
                     <c:if test="${totalPages > 1}">
                         <c:forEach begin="1" end="${totalPages}" var="i">
                             <c:url var="pageUrl" value="/operatorComplaintList">
@@ -188,20 +131,22 @@
                                     <c:if test="${empty operators}">
                                         <option value="">Không có Operator nào</option>
                                     </c:if>
-                                    <c:forEach var="operator" items="${operators}"> <%-- Đã đổi tên biến và thuộc tính --%>
+                                    <c:forEach var="operator" items="${operators}">
                                         <option value="${operator.userId}">${operator.username}</option>
                                     </c:forEach>
                                 </select>
                             </p>
-                            <button type="submit">Gán</button>
-                            <button type="button" onclick="closeAssignModal()">Hủy</button>
+                            <div class="modal-footer">
+                                <button type="submit">Gán</button>
+                                <button type="button" onclick="closeAssignModal()">Hủy</button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-                            <script src="${pageContext.request.contextPath}/js/Header.js"></script>
+        <script src="${pageContext.request.contextPath}/js/Header.js"></script>
         <script>
             var modal = document.getElementById("assignModal");
             var span = document.getElementsByClassName("close-button")[0];
