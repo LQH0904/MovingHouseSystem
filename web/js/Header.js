@@ -1,8 +1,3 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
- */
-
 
 // ---------Responsive-navbar-active-animation-----------
 function test(){
@@ -38,7 +33,7 @@ $(document).ready(function(){
 	setTimeout(function(){ test(); });
 });
 $(window).on('resize', function(){
-	setTimeout(function(){ test(); }, 500);
+	setTimeout(function(){ test(); }, 400);
 });
 $(".navbar-toggler").click(function(){
 	$(".navbar-collapse").slideToggle(300);
@@ -61,24 +56,3 @@ jQuery(document).ready(function($){
 	// Add active class to target link
 	target.parent().addClass('active');
 });
-
-
-
-
-// Add active class on another page linked
-// ==========================================
-// $(window).on('load',function () {
-//     var current = location.pathname;
-//     console.log(current);
-//     $('#navbarSupportedContent ul li a').each(function(){
-//         var $this = $(this);
-//         // if the current path is like this link, make it active
-//         if($this.attr('href').indexOf(current) !== -1){
-//             $this.parent().addClass('active');
-//             $this.parents('.menu-submenu').addClass('show-dropdown');
-//             $this.parents('.menu-submenu').parent().addClass('active');
-//         }else{
-//             $this.parent().removeClass('active');
-//         }
-//     })
-// });
