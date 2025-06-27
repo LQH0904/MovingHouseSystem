@@ -17,6 +17,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.sql.Date;
+import java.time.LocalDate;
 import model.PasswordUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
@@ -96,14 +99,15 @@ public class LoginGoogleServlet extends HttpServlet {
 
             if (user == null) {
                 // Nếu email chưa tồn tại, tạo tài khoản mới với role_id = 6 (Customer)
-                String hashedPassword = PasswordUtils.hashPassword("123");
+                String hashedPassword = PasswordUtils.hashPassword("123456");
+                Date today = Date.valueOf(LocalDate.now());
                 user = new Users(
                         -1,
                         googleUser.getName(),
                         email,
                         hashedPassword,
                         6, 
-                        null,
+                        today,
                         null,
                         "active"
                 );

@@ -9,7 +9,15 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
         <style>
-
+            body {
+                background: linear-gradient(135deg, #007bff, #80d0ff);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                font-family: 'Segoe UI', sans-serif;
+            }
             .container {
                 display: flex;
                 max-width: 900px;
@@ -102,11 +110,13 @@
                     <p class="logo">Welcome to Website</p>
 
                     <c:if test="${not empty mess}">
-                <p style="color: red; font-weight: bold;">${mess}</p>
-            </c:if>
-            <c:if test="${not empty error}">
-                <p style="color: red; font-weight: bold;">${error}</p>
-            </c:if>
+                        <p style="color: red;
+                        font-weight: bold;">${mess}</p>
+                    </c:if>
+                    <c:if test="${not empty error}">
+                        <p style="color: red;
+                        font-weight: bold;">${error}</p>
+                    </c:if>
 
 
                     <form id="loginForm" action="login" method="post">
