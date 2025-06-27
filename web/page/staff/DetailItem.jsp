@@ -29,19 +29,8 @@
                                         <a href="${pageContext.request.contextPath}/order/detailid/${orderId}" class="btn-back">
                                             <i class="fas fa-arrow-left"></i>
                                             Quay lại
-                                        </a>
-                                        
-                                    </div>
-                                    <!--                                    <div class="header-actions">
-                                                                            <a href="${pageContext.request.contextPath}/order/list" class="btn-back">
-                                                                                <i class="fas fa-arrow-left"></i>
-                                                                                Quay lại danh sách
-                                                                            </a>
-                                                                            <a href="${pageContext.request.contextPath}/order/detail?orderId=${orderId}" class="btn-detail">
-                                                                                <i class="fas fa-receipt"></i>
-                                                                                Xem đơn hàng
-                                                                            </a>
-                                                                        </div>-->
+                                        </a>                                      
+                                    </div>                                    
                                 </div>
                             </div>
                         </div>
@@ -272,8 +261,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </tbody>
-                                </table>
-                                
+                                </table>                      
                         </div>
                     </div>
 
