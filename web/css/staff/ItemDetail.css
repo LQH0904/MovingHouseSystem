@@ -594,7 +594,7 @@
 }
 
 @media (max-width: 480px) {
-    .btn-back, .btn-detail, .btn-search, .btn-clear {
+    .btn-back, .btn-search, .btn-clear {
         padding: 8px 15px;
         font-size: 13px;
     }
