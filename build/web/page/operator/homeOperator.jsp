@@ -40,7 +40,7 @@ if (session.getAttribute("acc") == null) {
                             <div>
                                 <div class="title_form_1">Về người dùng</div>
                             </div>
-                            
+
                             <div class="user-char">
                                 <div class="title-user">
                                     <div class="title1">Tổng quan người dung</div>
@@ -106,7 +106,7 @@ if (session.getAttribute("acc") == null) {
                     </div>
                     <div id="chartTreeMap"></div>
                 </div>
-                 
+
                 <dix class="content-table">
                     <!-- Lịch bên phải trong div3 -->
                     <div class="calendar-widget">
@@ -134,9 +134,9 @@ if (session.getAttribute("acc") == null) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <img src="img/Lukasz Buda.gif" alt="test ảnh" style="width: 375px; padding: 10px; margin: 15px 0; border-radius: 22px;">
-                    
+
                     <div class="table-issue" style="width: 100%">
                         <table border="1">
                             <thead>
@@ -147,10 +147,10 @@ if (session.getAttribute("acc") == null) {
                             </thead>
                             <tbody>
                                 <c:forEach var="user" items="${topUsers}" varStatus="status">
-                                <tr>
-                                    <td>${user.key}</td>
-                                    <td>${user.value}</td>
-                                </tr>
+                                    <tr>
+                                        <td>${user.key}</td>
+                                        <td>${user.value}</td>
+                                    </tr>
                                 </c:forEach>
                                 <tr>
                                     <td>...</td>
@@ -164,7 +164,7 @@ if (session.getAttribute("acc") == null) {
 
 
 
-                
+
             </div>
         </div>
 
@@ -184,6 +184,11 @@ if (session.getAttribute("acc") == null) {
             const userCounts = [
             <c:forEach var="role" items="${usersByRole}" varStatus="status">
                 ${role.value}<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+            ];
+            const roleIds = [
+            <c:forEach var="role" items="${usersByRole}" varStatus="status">
+                ${roleIds[role.key]}<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
             // Dữ liệu cho biểu đồ
@@ -281,6 +286,17 @@ if (session.getAttribute("acc") == null) {
                         doughnutChart.setActiveElements([]);
                         doughnutChart.update('none');
                     });
+
+                    // SỬA ĐOẠN NÀY - Click event với roleId từ array
+                    legendItem.addEventListener('click', () => {
+                        const baseUrl = 'http://localhost:9999/HouseMovingSystem/UserListServlet';
+                        const roleId = roleIds[index]; // Lấy roleId từ array bằng index
+                        const url = `\${baseUrl}?roleId=\${roleId}`;
+
+                        console.log('Role:', label, 'RoleId:', roleId, 'Redirecting to:', url);
+                        window.location.href = url;
+                    });
+
                     legendContainer.appendChild(legendItem);
                 });
             }
@@ -442,7 +458,7 @@ if (session.getAttribute("acc") == null) {
                             left: 'center',
                             top: 80,
                             roam: false, // Tắt zoom và pan
-                            nodeClick: false, // Tắt click vào node
+                            nodeClick: true, // Tắt click vào node
                             sort: 'desc', // Sắp xếp theo giá trị giảm dần
                             squareRatio: 0.6, // Điều chỉnh tỷ lệ để tạo layout 2 cột
                             breadcrumb: {
@@ -496,6 +512,35 @@ if (session.getAttribute("acc") == null) {
                 };
                 // Thiết lập option và render biểu đồ
                 myChart.setOption(option);
+                // THÊM ĐOẠN CODE XỬ LÝ CLICK
+                myChart.on('click', function (params) {
+                    if (params.componentType === 'series' && params.data) {
+                        // Lấy tên trạng thái từ data được click
+                        const statusName = params.data.name;
+
+                        // Tạo URL với tham số statusFilter
+                        const baseUrl = 'http://localhost:9999/HouseMovingSystem/ComplaintServlet';
+                        const url = `\${baseUrl}?search=&statusFilter=\${encodeURIComponent(statusName)}&priorityFilter=`;
+
+                        console.log('Redirecting to:', url); // Debug log
+
+                        // Chuyển hướng đến trang ComplaintServlet
+                        window.location.href = url;
+                    }
+                });
+
+// 3. Có thể thêm cursor pointer để người dùng biết có thể click
+// Thêm CSS này vào phần style:
+                const additionalStyle = document.createElement('style');
+                additionalStyle.textContent += `
+#chartTreeMap {
+    cursor: pointer;
+}
+#chartTreeMap canvas {
+    cursor: pointer !important;
+}
+`;
+                document.head.appendChild(additionalStyle);
                 // Responsive - tự động resize khi window thay đổi kích thước
                 window.addEventListener('resize', function () {
                     myChart.resize();

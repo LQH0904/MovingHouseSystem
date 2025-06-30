@@ -1,92 +1,109 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller;
 
-import dao.ComplaintDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
+import dao.ComplaintDAO; // Đảm bảo đúng import
+import model.Complaint; // Đảm bảo đúng import
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
-import model.Complaint;
 
-/**
- *
- * @author Admin
- */
-@WebServlet(name="ComplaintServlet", urlPatterns={"/ComplaintServlet"})
+@WebServlet("/ComplaintServlet")
 public class ComplaintServlet extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ComplaintServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ComplaintServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+    private ComplaintDAO complaintDAO;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        complaintDAO = new ComplaintDAO();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Đảm bảo mã hóa UTF-8 cho yêu cầu và phản hồi
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        String action = request.getParameter("action");
+
+        // Xử lý hành động "view" để xem chi tiết một khiếu nại
+        if (action != null && action.equals("view")) {
+            int issueId = 0;
+            try {
+                issueId = Integer.parseInt(request.getParameter("issueId"));
+            } catch (NumberFormatException e) {
+                System.err.println("ComplaintServlet: Định dạng ID khiếu nại không hợp lệ cho hành động xem: " + request.getParameter("issueId"));
+                // Chuyển hướng về trang danh sách nếu ID không hợp lệ
+                response.sendRedirect(request.getContextPath() + "/ComplaintServlet");
+                return;
+            }
+
+            // Chuyển hướng tới ReplyComplaintServlet để xử lý việc xem và phản hồi
+            // Đường dẫn URL Pattern của ReplyComplaintServlet là "/replyComplaint"
+            response.sendRedirect(request.getContextPath() + "/replyComplaint?issueId=" + issueId);
+            return; // Quan trọng: dừng xử lý ở đây sau khi chuyển hướng
         }
-    } 
+        else {
+            // Xử lý hiển thị danh sách khiếu nại với tìm kiếm, lọc và phân trang
+            String searchTerm = request.getParameter("search");
+            String statusFilter = request.getParameter("statusFilter");
+            String priorityFilter = request.getParameter("priorityFilter");
 
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        ComplaintDAO complaintDAO = new ComplaintDAO();
-        
-        List<Complaint> complaintList = complaintDAO.getAllComplaints();
-        
-        request.setAttribute("complaintList", complaintList);
-        
-        request.getRequestDispatcher("/page/operator/complaintList.jsp").forward(request, response);
+            int currentPage = 1;
+            if (request.getParameter("page") != null) {
+                try {
+                    currentPage = Integer.parseInt(request.getParameter("page"));
+                } catch (NumberFormatException e) {
+                    // Đặt lại về trang 1 nếu tham số page không hợp lệ
+                    currentPage = 1;
+                }
+            }
+            int recordsPerPage = 10; // Số lượng bản ghi mỗi trang
+            int offset = (currentPage - 1) * recordsPerPage;
 
-    } 
+            // Lấy tổng số khiếu nại để tính toán phân trang
+            int totalComplaints = complaintDAO.getTotalComplaintCount(searchTerm, statusFilter, priorityFilter);
+            int totalPages = (int) Math.ceil((double) totalComplaints / recordsPerPage);
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+            // Lấy danh sách khiếu nại đã được lọc và phân trang
+            List<Complaint> complaints = complaintDAO.getAllComplaints(searchTerm, statusFilter, priorityFilter, offset, recordsPerPage);
+
+            // Đặt các thuộc tính vào request để JSP có thể truy cập
+            request.setAttribute("complaints", complaints);
+            request.setAttribute("totalComplaints", totalComplaints);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("searchTerm", searchTerm);
+            request.setAttribute("statusFilter", statusFilter);
+            request.setAttribute("priorityFilter", priorityFilter);
+
+            // Xử lý thông báo cập nhật (ví dụ: từ ReplyComplaintServlet chuyển hướng đến)
+            String updateStatus = request.getParameter("updateStatus");
+            if ("success".equals(updateStatus)) {
+                request.setAttribute("updateMessage", "Cập nhật khiếu nại thành công!");
+                request.setAttribute("updateMessageType", "success");
+            } else if ("success_escalated".equals(updateStatus)) {
+                request.setAttribute("updateMessage", "Khiếu nại đã được chuyển cấp thành công!");
+                request.setAttribute("updateMessageType", "success");
+            }
+            else if ("error".equals(updateStatus)) {
+                String errorMessage = request.getParameter("message");
+                if (errorMessage == null) errorMessage = "Có lỗi xảy ra khi cập nhật khiếu nại.";
+                request.setAttribute("updateMessage", "Lỗi: " + errorMessage);
+                request.setAttribute("updateMessageType", "danger");
+            }
+
+            // Chuyển tiếp tới trang JSP để hiển thị danh sách
+            request.getRequestDispatcher("/page/staff/ComplaintList.jsp").forward(request, response);
+        }
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
     @Override
-    public String getServletInfo() {
-        return "Short description";
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
-
 }
