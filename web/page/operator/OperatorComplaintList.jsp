@@ -9,19 +9,59 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/Complaint.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <style>
+            .updated-ids {
+                font-weight: bold;
+                color: #28a745; 
+                margin-left: 5px;
+            }
+            .alert {
+                padding: 10px;
+                margin-bottom: 15px;
+                border-radius: 5px;
+            }
+            .alert-success {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            .alert-danger {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            /* CSS cho hàng được làm nổi bật */
+            .highlighted-row {
+                background-color: #fff3cd !important; /* Màu vàng nhạt, dùng !important để đảm bảo */
+                animation: fadeOut 5s forwards; /* Hiệu ứng mờ dần trong 5 giây */
+            }
+
+            @keyframes fadeOut {
+                0% { background-color: #fff3cd; } /* Bắt đầu với màu highlight */
+                100% { background-color: transparent; } /* Kết thúc với màu nền trong suốt */
+            }
+        </style>
     </head>
     <body>
         <div class="parent">
-            <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include> </div>
-            <div class="div2"> <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include> </div>
-                <div class="div3">
-                    <h1>Danh sách Khiếu nại</h1>
+            <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include></div>
+            <div class="div2"><jsp:include page="../../Layout/operator/Header.jsp"></jsp:include></div>
+            <div class="div3">
+                <h1>Danh sách Khiếu nại</h1>
 
-                <%-- Hiển thị thông báo thành công từ request attribute (được set từ session trong servlet) --%>
                 <c:if test="${not empty successMessage}">
-                    <p class="alert alert-success">${successMessage}</p>
+                    <p class="alert alert-success">
+                        ${successMessage}
+                        <c:if test="${not empty updatedIssueIds}">
+                            <br>ID(s) đã cập nhật: 
+                            <span class="updated-ids">
+                                <c:forEach var="id" items="${updatedIssueIds}" varStatus="loop">
+                                    ${id}<c:if test="${!loop.last}">, </c:if>
+                                </c:forEach>
+                            </span>
+                        </c:if>
+                    </p>
                 </c:if>
-                <%-- Hiển thị thông báo lỗi từ request attribute (được set từ session trong servlet) --%>
                 <c:if test="${not empty errorMessage}">
                     <p class="alert alert-danger">${errorMessage}</p>
                 </c:if>
@@ -49,19 +89,19 @@
                             <th>Trạng thái</th>
                             <th>Mức độ ưu tiên</th>
                             <th>Người phụ trách</th>
-                            <th>Ngày tạo</th>
+                            <th>Ngày tạo</th> 
                             <th>Ngày giải quyết</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach var="complaint" items="${escalatedComplaints}">
-                            <tr>
+                            <tr id="complaint-${complaint.issueId}" 
+                                <c:if test="${complaint.issueId == highlightedComplaintId}">class="highlighted-row"</c:if>>
                                 <td>${complaint.issueId}</td>
                                 <td>${complaint.username}</td>
                                 <td>${complaint.description}</td>
                                 <td>
-                                    <%-- Chuyển đổi trạng thái sang tiếng Việt --%>
                                     <c:choose>
                                         <c:when test="${complaint.status == 'new'}">Mới</c:when>
                                         <c:when test="${complaint.status == 'in_progress'}">Đang xử lý</c:when>
@@ -72,7 +112,6 @@
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <%-- Chuyển đổi mức độ ưu tiên sang tiếng Việt --%>
                                     <c:choose>
                                         <c:when test="${complaint.priority == 'low'}">Thấp</c:when>
                                         <c:when test="${complaint.priority == 'medium'}">Trung bình</c:when>
@@ -86,10 +125,6 @@
                                 <td>${complaint.resolvedAt}</td>
                                 <td>
                                     <a class="action-link" href="${pageContext.request.contextPath}/OperatorReplyComplaintServlet?issueId=${complaint.issueId}">Phản hồi</a>
-                                    <c:if test="${complaint.assignedToUsername == null || complaint.assignedToUsername eq ''}">
-                                        <%-- Bạn có thể bỏ nút "Gán" ở đây nếu việc gán đã được tích hợp vào form phản hồi --%>
-                                        <%-- <button class="action-button-list" onclick="openAssignModal('${complaint.issueId}')">Gán</button> --%>
-                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -103,19 +138,37 @@
 
                 <div class="pagination">
                     <span class="total">Tổng số khiếu nại: ${totalComplaints}</span>
+
                     <c:if test="${totalPages > 1}">
-                        <c:forEach begin="1" end="${totalPages}" var="i">
-                            <c:url var="pageUrl" value="/operatorComplaintList">
-                                <c:param name="page" value="${i}"/>
-                                <c:if test="${searchTerm != null && !searchTerm.isEmpty()}">
-                                    <c:param name="searchTerm" value="${searchTerm}"/>
-                                </c:if>
-                                <c:if test="${priorityFilter != null && !priorityFilter.isEmpty()}">
-                                    <c:param name="priorityFilter" value="${priorityFilter}"/>
-                                </c:if>
-                            </c:url>
-                            <a href="${pageUrl}" class="${currentPage == i ? 'active' : ''}">${i}</a>
-                        </c:forEach>
+                        <c:url var="baseUrl" value="/operatorComplaintList">
+                            <c:if test="${searchTerm != null && !searchTerm.isEmpty()}">
+                                <c:param name="searchTerm" value="${searchTerm}"/>
+                            </c:if>
+                            <c:if test="${priorityFilter != null && !priorityFilter.isEmpty()}">
+                                <c:param name="priorityFilter" value="${priorityFilter}"/>
+                            </c:if>
+                        </c:url>
+
+                        <div class="page-links">
+                            <c:if test="${currentPage > 1}">
+                                <a href="${baseUrl}&page=${currentPage - 1}">&laquo; Trước</a>
+                            </c:if>
+
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <c:choose>
+                                    <c:when test="${i == currentPage}">
+                                        <span class="active-page">${i}</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="${baseUrl}&page=${i}">${i}</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+
+                            <c:if test="${currentPage < totalPages}">
+                                <a href="${baseUrl}&page=${currentPage + 1}">Sau &raquo;</a>
+                            </c:if>
+                        </div>
                     </c:if>
                 </div>
 
@@ -165,7 +218,19 @@
                     modal.style.display = "none";
                 }
             }
-        </script>
 
+            // JavaScript để tự động cuộn và xóa highlight
+            document.addEventListener('DOMContentLoaded', function() {
+                var highlightedId = '${highlightedComplaintId}';
+                if (highlightedId && highlightedId !== '') {
+                    var row = document.getElementById('complaint-' + highlightedId);
+                    if (row) {
+                        // Cuộn đến hàng được highlight
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // CSS animation sẽ tự động xử lý việc fadeOut
+                    }
+                }
+            });
+        </script>
     </body>
 </html>

@@ -6,17 +6,31 @@
         <meta charset="UTF-8">
         <title>Phản Hồi Khiếu Nại</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/Complaint.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/ComplaintReply.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <script>
+            function validateReplyForm() {
+                const replyContent = document.getElementById("replyContent").value.trim();
+                if (replyContent.length === 0) {
+                    alert("Vui lòng nhập phản hồi.");
+                    return false;
+                }
+                if (replyContent.length > 200) {
+                    alert("Phản hồi không được vượt quá 200 ký tự.");
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </head>
     <body>
         <div class="parent">
             <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include> </div>
             <div class="div2"> <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include> </div>
-                <div class="div3">
-                    <div class="container">
-                        <h2>Phản Hồi Khiếu Nại</h2>
+            <div class="div3">
+                <div class="container">
+                    <h2>Phản Hồi Khiếu Nại</h2>
 
                     <c:if test="${not empty errorMessage}">
                         <p class="error-message">${errorMessage}</p>
@@ -57,7 +71,7 @@
                             <p><strong>Ngày giải quyết:</strong> ${currentComplaint.resolvedAt != null ? currentComplaint.resolvedAt : 'Chưa giải quyết'}</p>
                         </div>
 
-                        <form action="${pageContext.request.contextPath}/OperatorReplyComplaintServlet" method="post">
+                        <form action="${pageContext.request.contextPath}/OperatorReplyComplaintServlet" method="post" onsubmit="return validateReplyForm()">
                             <input type="hidden" name="issueId" value="${currentComplaint.issueId}">
 
                             <div class="form-group">
@@ -95,11 +109,11 @@
 
                             <div class="form-group">
                                 <label for="replyContent">Nội dung phản hồi:</label>
-                                <textarea id="replyContent" name="replyContent" rows="5" placeholder="Nhập nội dung phản hồi..."></textarea>
+                                <textarea id="replyContent" name="replyContent" rows="5" maxlength="200" placeholder="Nhập nội dung phản hồi..."></textarea>
                             </div>
 
                             <div class="form-group">
-                                <button type="button" class="btn-submit" onclick="window.location.href = '${pageContext.request.contextPath}/operatorComplaintList'">Cập nhật và Phản hồi</button>
+                                <button type="submit" class="btn-submit">Cập nhật phản hồi</button>
                                 <a href="${pageContext.request.contextPath}/operatorComplaintList" class="btn-cancel">Hủy</a>
                             </div>
                         </form>
