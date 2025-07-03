@@ -864,7 +864,7 @@ if (session.getAttribute("acc") == null) {
                                            value="${selectedWarehouseName}">
                                 </div>
 
-                                <div class="filter-group">
+                                <div class="filter-group" style="display: flex; flex-direction: row">
                                     <button type="submit" class="filter-btn" id="filterBtn">
                                         🔍 Lọc dữ liệu
                                     </button>
