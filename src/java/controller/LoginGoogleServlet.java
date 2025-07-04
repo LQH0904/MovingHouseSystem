@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller;
 
 import dao.UserDAO;
@@ -17,9 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.sql.Date;
 import model.PasswordUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
@@ -35,29 +29,7 @@ public class LoginGoogleServlet extends HttpServlet {
             HttpSession session = request.getSession(false);
             if (session != null && session.getAttribute("acc") != null) {
                 Users user = (Users) session.getAttribute("acc");
-                switch (user.getRoleId()) {
-                    case 1:
-                        response.sendRedirect(request.getContextPath() + "/admin/registrations");
-                        break;
-                    case 2:
-                        response.sendRedirect(request.getContextPath() + "/homeOperator");
-                        break;
-                    case 3:
-                        response.sendRedirect(request.getContextPath() + "/homeStaff");
-                        break;
-                    case 4:
-                        response.sendRedirect(request.getContextPath() + "/transport/dashboard");
-                        break;
-                    case 5:
-                        response.sendRedirect(request.getContextPath() + "/storage/dashboard");
-                        break;
-                    case 6:
-                        response.sendRedirect(request.getContextPath() + "/customer/dashboard");
-                        break;
-                    default:
-                        response.sendRedirect(request.getContextPath() + "/orderList");
-                        break;
-                }
+                redirectToDashboard(response, request.getContextPath(), user.getRoleId());
                 return;
             }
 
@@ -95,74 +67,103 @@ public class LoginGoogleServlet extends HttpServlet {
             String email = googleUser.getEmail();
 
             UserDAO dao = UserDAO.INSTANCE;
-            Users user = dao.checkUserByEmail(email, roleId);
+            // Kiểm tra xem email đã tồn tại trong CSDL hay chưa
+            Users existingUser = dao.checkUserByEmailOnly(email);
 
-            if (user == null) {
-                // Nếu email chưa tồn tại, tạo tài khoản mới với role_id = 6 (Customer)
-                String hashedPassword = PasswordUtils.hashPassword("123456");
-                Date today = Date.valueOf(LocalDate.now());
-                user = new Users(
-                        -1,
-                        googleUser.getName(),
-                        email,
-                        hashedPassword,
-                        6, 
-                        today,
-                        null,
-                        "active"
-                );
-
-                boolean success = dao.signupAccount(user);
-                if (!success) {
+            if (existingUser != null) {
+                // Email đã tồn tại, kiểm tra role_id
+                if (existingUser.getRoleId() != roleId) {
                     session = request.getSession(true);
-                    session.setAttribute("error", "Không thể tạo tài khoản mới");
+                    session.setAttribute("error", "Email đã được đăng ký với vai trò khác. Vui lòng chọn đúng vai trò.");
                     response.sendRedirect(request.getContextPath() + "/login");
                     return;
                 }
 
-                user = dao.checkUserByEmail(email, 6);
-            }
+                // Kiểm tra trạng thái tài khoản
+                if (!"active".equalsIgnoreCase(existingUser.getStatus())) {
+                    session = request.getSession(true);
+                    session.setAttribute("error", "Tài khoản chưa được kích hoạt hoặc bị khóa");
+                    response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                    return;
+                }
 
-            if (!"active".equalsIgnoreCase(user.getStatus())) {
+                // Tài khoản hợp lệ, đăng nhập
+                session.invalidate();
                 session = request.getSession(true);
-                session.setAttribute("error", "Tài khoản chưa được kích hoạt hoặc bị khóa");
-                response.sendRedirect(request.getContextPath() + "/not_activite.jsp");
+                session.setAttribute("acc", existingUser);
+                session.setAttribute("username", existingUser.getUsername());
+                session.setAttribute("email", existingUser.getEmail());
+                redirectToDashboard(response, request.getContextPath(), existingUser.getRoleId());
                 return;
             }
 
+            // Email chưa tồn tại, tạo tài khoản mới với role_id = 6 (Customer)
+            if (roleId != 6) {
+                session = request.getSession(true);
+                session.setAttribute("error", "Chỉ có thể đăng ký tài khoản mới với vai trò Khách hàng.");
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+
+            String hashedPassword = PasswordUtils.hashPassword("123");
+            Date today = Date.valueOf(LocalDate.now());
+            Users newUser = new Users(
+                    -1,
+                    googleUser.getName(),
+                    email,
+                    hashedPassword,
+                    6,
+                    today,
+                    null,
+                    "active"
+            );
+
+            boolean success = dao.signupAccount(newUser);
+            if (!success) {
+                session = request.getSession(true);
+                session.setAttribute("error", "Không thể tạo tài khoản mới");
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+
+            Users user = dao.checkUserByEmail(email, 6);
             session.invalidate();
             session = request.getSession(true);
             session.setAttribute("acc", user);
             session.setAttribute("username", user.getUsername());
             session.setAttribute("email", user.getEmail());
+            redirectToDashboard(response, request.getContextPath(), user.getRoleId());
 
-            switch (user.getRoleId()) {
-                case 1:
-                    response.sendRedirect(request.getContextPath() + "/admin/registrations");
-                    break;
-                case 2:
-                    response.sendRedirect(request.getContextPath() + "/homeOperator");
-                    break;
-                case 3:
-                    response.sendRedirect(request.getContextPath() + "/homeStaff");
-                    break;
-                case 4:
-                    response.sendRedirect(request.getContextPath() + "/transport/dashboard");
-                    break;
-                case 5:
-                    response.sendRedirect(request.getContextPath() + "/storage/dashboard");
-                    break;
-                case 6:
-                    response.sendRedirect(request.getContextPath() + "/customer/dashboard");
-                    break;
-                default:
-                    response.sendRedirect(request.getContextPath() + "/orderList");
-                    break;
-            }
         } catch (Exception ex) {
             HttpSession session = request.getSession(true);
             session.setAttribute("error", "Đăng nhập bằng Google gặp lỗi, vui lòng thử lại");
             response.sendRedirect(request.getContextPath() + "/login");
+        }
+    }
+
+    private void redirectToDashboard(HttpServletResponse response, String contextPath, int roleId) throws IOException {
+        switch (roleId) {
+            case 1:
+                response.sendRedirect(contextPath + "/admin/registrations");
+                break;
+            case 2:
+                response.sendRedirect(contextPath + "/homeOperator");
+                break;
+            case 3:
+                response.sendRedirect(contextPath + "/homeStaff");
+                break;
+            case 4:
+                response.sendRedirect(contextPath + "/transport/dashboard");
+                break;
+            case 5:
+                response.sendRedirect(contextPath + "/storage/dashboard");
+                break;
+            case 6:
+                response.sendRedirect(contextPath + "/customer/dashboard");
+                break;
+            default:
+                response.sendRedirect(contextPath + "/orderList");
+                break;
         }
     }
 

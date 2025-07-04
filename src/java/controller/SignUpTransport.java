@@ -51,7 +51,8 @@ public class SignUpTransport extends HttpServlet {
         String loaderStr = request.getParameter("loader");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        Part filePart = request.getPart("business_certificate");
+        Part businessCertificatePart = request.getPart("business_certificate");
+        Part insurancePart = request.getPart("insurance");
 
         Email emailUtil = new Email();
 
@@ -97,14 +98,25 @@ public class SignUpTransport extends HttpServlet {
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
-        if (filePart == null || filePart.getSize() == 0) {
+        if (businessCertificatePart == null || businessCertificatePart.getSize() == 0) {
             request.setAttribute("error", "Vui lòng chọn file giấy phép kinh doanh");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
-        String fileName = filePart.getSubmittedFileName();
-        if (!fileName.matches(".*\\.(jpg|jpeg|png)$")) {
+        String businessFileName = businessCertificatePart.getSubmittedFileName();
+        if (!businessFileName.matches(".*\\.(jpg|jpeg|png)$")) {
             request.setAttribute("error", "File giấy phép phải có định dạng .jpg, .jpeg hoặc .png");
+            request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
+            return;
+        }
+        if (insurancePart == null || insurancePart.getSize() == 0) {
+            request.setAttribute("error", "Vui lòng chọn file giấy tờ bảo hiểm");
+            request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
+            return;
+        }
+        String insuranceFileName = insurancePart.getSubmittedFileName();
+        if (!insuranceFileName.matches(".*\\.(jpg|jpeg|png)$")) {
+            request.setAttribute("error", "File giấy tờ bảo hiểm phải có định dạng .jpg, .jpeg hoặc .png");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
@@ -148,14 +160,17 @@ public class SignUpTransport extends HttpServlet {
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
         }
-        String tempFileName = "temp_business_certificate_" + System.currentTimeMillis() + "_" + fileName;
-        String tempFilePath = tempPath + File.separator + tempFileName;
+        String tempBusinessFileName = "temp_business_certificate_" + System.currentTimeMillis() + "_" + businessFileName;
+        String tempBusinessFilePath = tempPath + File.separator + tempBusinessFileName;
+        String tempInsuranceFileName = "temp_insurance_" + System.currentTimeMillis() + "_" + insuranceFileName;
+        String tempInsuranceFilePath = tempPath + File.separator + tempInsuranceFileName;
 
         try {
-            filePart.write(tempFilePath);
-            LOGGER.info("Temporary file saved at: " + tempFilePath);
+            businessCertificatePart.write(tempBusinessFilePath);
+            insurancePart.write(tempInsuranceFilePath);
+            LOGGER.info("Temporary files saved at: " + tempBusinessFilePath + ", " + tempInsuranceFilePath);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "IOException saving temporary file: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "IOException saving temporary files: " + e.getMessage(), e);
             request.setAttribute("error", "Lỗi lưu file tạm: " + e.getMessage());
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
             return;
@@ -175,7 +190,8 @@ public class SignUpTransport extends HttpServlet {
         TransportUnit transportUnit = new TransportUnit();
         transportUnit.setCompanyName(companyName);
         transportUnit.setContactInfo(contactInfo);
-        transportUnit.setBusinessCertificate("/img/" + tempFileName.replace("temp_", ""));
+        transportUnit.setBusinessCertificate("/img/" + tempBusinessFileName.replace("temp_", ""));
+        transportUnit.setInsurance("/img/" + tempInsuranceFileName.replace("temp_", ""));
         transportUnit.setLocation(location);
         transportUnit.setVehicleCount(vehicleCount);
         transportUnit.setCapacity(capacity);
@@ -185,7 +201,8 @@ public class SignUpTransport extends HttpServlet {
         // Lưu thông tin tạm vào session
         session.setAttribute("pendingUser", user);
         session.setAttribute("pendingTransportUnit", transportUnit);
-        session.setAttribute("tempFilePath", tempFilePath);
+        session.setAttribute("tempBusinessFilePath", tempBusinessFilePath);
+        session.setAttribute("tempInsuranceFilePath", tempInsuranceFilePath);
         session.setAttribute("verificationCode", code);
         session.setAttribute("codeExpiry", expiryTime);
 
@@ -197,7 +214,8 @@ public class SignUpTransport extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/signup_transport?action=confirm");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error sending email: " + e.getMessage(), e);
-            new File(tempFilePath).delete();
+            new File(tempBusinessFilePath).delete();
+            new File(tempInsuranceFilePath).delete();
             request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
         }
@@ -211,12 +229,13 @@ public class SignUpTransport extends HttpServlet {
         Long expiryTime = (Long) session.getAttribute("codeExpiry");
         Users user = (Users) session.getAttribute("pendingUser");
         TransportUnit transportUnit = (TransportUnit) session.getAttribute("pendingTransportUnit");
-        String tempFilePath = (String) session.getAttribute("tempFilePath");
+        String tempBusinessFilePath = (String) session.getAttribute("tempBusinessFilePath");
+        String tempInsuranceFilePath = (String) session.getAttribute("tempInsuranceFilePath");
 
-        if (storedCode == null || expiryTime == null || user == null || transportUnit == null || tempFilePath == null) {
-            if (tempFilePath != null) {
-                new File(tempFilePath).delete();
-            }
+        if (storedCode == null || expiryTime == null || user == null || transportUnit == null || 
+            tempBusinessFilePath == null || tempInsuranceFilePath == null) {
+            if (tempBusinessFilePath != null) new File(tempBusinessFilePath).delete();
+            if (tempInsuranceFilePath != null) new File(tempInsuranceFilePath).delete();
             session.invalidate();
             request.setAttribute("error", "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
@@ -224,7 +243,8 @@ public class SignUpTransport extends HttpServlet {
         }
 
         if (System.currentTimeMillis() > expiryTime) {
-            new File(tempFilePath).delete();
+            new File(tempBusinessFilePath).delete();
+            new File(tempInsuranceFilePath).delete();
             session.invalidate();
             request.setAttribute("error", "Mã xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
@@ -243,19 +263,27 @@ public class SignUpTransport extends HttpServlet {
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
-        String finalFileName = transportUnit.getBusinessCertificate().substring("/img/".length());
-        String finalFilePath = uploadPath + File.separator + finalFileName;
-        File tempFile = new File(tempFilePath);
-        File finalFile = new File(finalFilePath);
+        String finalBusinessFileName = transportUnit.getBusinessCertificate().substring("/img/".length());
+        String finalBusinessFilePath = uploadPath + File.separator + finalBusinessFileName;
+        String finalInsuranceFileName = transportUnit.getInsurance().substring("/img/".length());
+        String finalInsuranceFilePath = uploadPath + File.separator + finalInsuranceFileName;
+        File tempBusinessFile = new File(tempBusinessFilePath);
+        File tempInsuranceFile = new File(tempInsuranceFilePath);
+        File finalBusinessFile = new File(finalBusinessFilePath);
+        File finalInsuranceFile = new File(finalInsuranceFilePath);
 
         try {
-            if (!tempFile.renameTo(finalFile)) {
-                throw new IOException("Không thể di chuyển file từ " + tempFilePath + " sang " + finalFilePath);
+            if (!tempBusinessFile.renameTo(finalBusinessFile)) {
+                throw new IOException("Không thể di chuyển file giấy phép kinh doanh từ " + tempBusinessFilePath + " sang " + finalBusinessFilePath);
             }
-            LOGGER.info("File moved to: " + finalFilePath);
+            if (!tempInsuranceFile.renameTo(finalInsuranceFile)) {
+                throw new IOException("Không thể di chuyển file giấy tờ bảo hiểm từ " + tempInsuranceFilePath + " sang " + finalInsuranceFilePath);
+            }
+            LOGGER.info("Files moved to: " + finalBusinessFilePath + ", " + finalInsuranceFilePath);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error moving file: " + e.getMessage(), e);
-            tempFile.delete();
+            LOGGER.log(Level.SEVERE, "Error moving files: " + e.getMessage(), e);
+            tempBusinessFile.delete();
+            tempInsuranceFile.delete();
             session.invalidate();
             request.setAttribute("error", "Lỗi di chuyển file: " + e.getMessage());
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
@@ -298,7 +326,8 @@ public class SignUpTransport extends HttpServlet {
                     LOGGER.log(Level.SEVERE, "Error rolling back transaction: " + ex.getMessage(), ex);
                 }
             }
-            finalFile.delete();
+            finalBusinessFile.delete();
+            finalInsuranceFile.delete();
             session.invalidate();
             request.setAttribute("error", "Đăng ký thất bại: " + (e.getSQLState().equals("23000") ? "Tên công ty đã được sử dụng" : e.getMessage()));
             request.getRequestDispatcher("/page/login/confirm_transport.jsp").forward(request, response);
@@ -319,10 +348,12 @@ public class SignUpTransport extends HttpServlet {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("pendingUser");
         TransportUnit transportUnit = (TransportUnit) session.getAttribute("pendingTransportUnit");
-        String tempFilePath = (String) session.getAttribute("tempFilePath");
+        String tempBusinessFilePath = (String) session.getAttribute("tempBusinessFilePath");
+        String tempInsuranceFilePath = (String) session.getAttribute("tempInsuranceFilePath");
 
-        if (user == null || transportUnit == null || tempFilePath == null) {
-            new File(tempFilePath).delete();
+        if (user == null || transportUnit == null || tempBusinessFilePath == null || tempInsuranceFilePath == null) {
+            if (tempBusinessFilePath != null) new File(tempBusinessFilePath).delete();
+            if (tempInsuranceFilePath != null) new File(tempInsuranceFilePath).delete();
             session.invalidate();
             request.setAttribute("error", "Phiên đăng ký đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/signup_transport.jsp").forward(request, response);
