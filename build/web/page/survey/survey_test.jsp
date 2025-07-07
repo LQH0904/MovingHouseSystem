@@ -1,3 +1,5 @@
+
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
 String redirectURL = null;
@@ -6,6 +8,11 @@ if (session.getAttribute("acc") == null) {
     response.sendRedirect(request.getContextPath() + redirectURL);
     return;
 }
+
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -21,10 +28,11 @@ if (session.getAttribute("acc") == null) {
             <div class="survey-header">
                 <h1>🏠 Khảo Sát Khách Hàng</h1>
                 <p>Chia sẻ trải nghiệm của bạn về dịch vụ vận chuyển nhà và nội thất</p>
+                <p style="color: black; ">Test phiếu khảo sát khách hàng</p>
             </div>
 
             <div class="survey-form">
-                <form id="surveyForm">
+                <form id="surveyForm" action="SurveyTestController" method="post">
                     <!-- Thông tin khách hàng -->
                     <div class="form-section">
                         <h3>👤 Thông Tin Khách Hàng</h3>
@@ -55,7 +63,7 @@ if (session.getAttribute("acc") == null) {
                                 </div>
                                 <div>
                                     <h4 style="margin: 0; font-size: 18px; font-weight: 600;">
-                                        Tên người đăng nhập
+                                        <%= currentUsername %>
                                     </h4>
                                     <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;">
                                         Khách hàng đã đăng nhập
@@ -78,13 +86,14 @@ if (session.getAttribute("acc") == null) {
                                           font-weight: 600;
                                           font-size: 16px;
                                           ">
-                                        Mã khách hàng
+                                        <%= currentUserId %>
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        
+                        <!-- Hidden Input (for form submission) -->
+                        <input type="hidden" name="user_id" value="<%= currentUserId %>">
 
                         <!-- Info Note -->
                         <div style="
@@ -251,7 +260,6 @@ if (session.getAttribute("acc") == null) {
                                 <select id="expectation-list" name="expectation" class="form-control" required style="flex: 1;">
                                     <!-- Options sẽ được load từ JavaScript -->
                                 </select>
-                                <button type="button" onclick="handleUpdateClick('expectation.txt')">Update</button>
                             </div>
                         </div>
 
@@ -262,7 +270,6 @@ if (session.getAttribute("acc") == null) {
                                 <select id="packing_quality-list" name="packing_quality" class="form-control" required style="flex: 1;">
                                     <!-- Options sẽ được load từ JavaScript -->
                                 </select>
-                                <button type="button" onclick="handleUpdateClick('packing_quality.txt')">Update</button>
                             </div>
                         </div>
 
@@ -341,7 +348,6 @@ if (session.getAttribute("acc") == null) {
                                 <select id="age_group" name="age_group" class="form-control" required style="flex: 1;">
                                     <!-- Options sẽ được load từ JavaScript -->
                                 </select>
-                                <button type="button" onclick="handleUpdateClick('age_group.txt')">Update</button>
                             </div>
                         </div>
 
@@ -352,7 +358,6 @@ if (session.getAttribute("acc") == null) {
                                 <select id="area" name="area" class="form-control" required style="flex: 1;">
                                     <!-- Options sẽ được load từ JavaScript -->
                                 </select>
-                                <button type="button" onclick="handleUpdateClick('area.txt')">Update</button>
                             </div>
                         </div>
 
@@ -363,7 +368,6 @@ if (session.getAttribute("acc") == null) {
                                 <select id="housing_type" name="housing_type" class="form-control" required style="flex: 1;">
                                     <!-- Options sẽ được load từ JavaScript -->
                                 </select>
-                                <button type="button" onclick="handleUpdateClick('housing_type.txt')">Update</button>
                             </div>
                         </div>
 
@@ -385,7 +389,6 @@ if (session.getAttribute("acc") == null) {
                                 <select id="important_factor" name="important_factor" class="form-control" required style="flex: 1;">
                                     <!-- Options sẽ được load từ JavaScript -->
                                 </select>
-                                <button type="button" onclick="handleUpdateClick('important_factor.txt')">Update</button>
                             </div>
                         </div>
                     </div>
@@ -405,26 +408,34 @@ if (session.getAttribute("acc") == null) {
                         </div>
                     </div>
 
-                    <button type="submit" class="submit-btn">
+                    <!-- Hiển thị thông báo lỗi -->
+                    <% String error = (String) request.getAttribute("error"); %>
+                    <% if (error != null) { %>
+                    <div class="error-message" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 5px;">
+                        ❌ <%= error %>
+                    </div>
+                    <% } %>
+
+                    <!-- Hiển thị thông báo thành công -->
+                    <% String success = (String) request.getAttribute("success"); %>
+                    <% if (success != null) { %>
+                    <div class="success-message" style="background-color: #d4edda; color: #155724; padding: 15px; margin: 10px 0; border: 1px solid #c3e6cb; border-radius: 5px;">
+                        <h3>✅ <%= success %></h3>
+                        <p>Ý kiến của bạn rất quan trọng và sẽ giúp chúng tôi cải thiện dịch vụ tốt hơn.</p>
+                    </div>
+                    <% } %>
+
+                    <!-- 2. Thay đổi nút submit - THÊM name="submit" -->
+                    <button type="submit" name="submit" value="submitSurvey" class="submit-btn">
                         🚀 Gửi Khảo Sát
                     </button>
                 </form>
-
-                <div id="successMessage" class="success-message">
-                    <h3>✅ Cảm ơn bạn đã tham gia khảo sát!</h3>
-                    <p>Ý kiến của bạn rất quan trọng và sẽ giúp chúng tôi cải thiện dịch vụ tốt hơn.</p>
-                </div>
             </div>
         </div>
         <div style="margin-top: 40px; display: flex; justify-content: space-around;">
-            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeOperator">
+            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/customer-survey">
                 <button>
                     <b>Quay lại trang trước</b>
-                </button>
-            </a>
-            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/SurveyTestController">
-                <button>
-                    <b>Thử phiếu khảo sát khách hàng</b>
                 </button>
             </a>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/HistorySurveyTestController">
@@ -433,194 +444,39 @@ if (session.getAttribute("acc") == null) {
                 </button>
             </a>
         </div>
-        
-
         <script>
-// Hàm hiển thị modal để chỉnh sửa file
-            function showEditModal(fileName, currentOptions) {
-                // Tạo modal HTML
-                const modal = document.createElement('div');
-                modal.className = 'edit-modal';
-                modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Chỉnh sửa tùy chọn</h3>
-                <span class="close-btn">&times;</span>
-            </div>
-            <div class="modal-body">
-                <label for="options-textarea">Danh sách tùy chọn (mỗi dòng một tùy chọn):</label>
-                <textarea id="options-textarea" class="form-control">\${currentOptions.join('\n')}</textarea>
-            </div>
-            <div class="modal-footer">
-                <button id="save-btn" class="btn btn-primary">Lưu</button>
-                <button id="cancel-btn" class="btn btn-secondary">Hủy</button>
-            </div>
-        </div>
-    `;
-
-                document.body.appendChild(modal);
-
-                // Xử lý sự kiện
-                modal.querySelector('.close-btn').onclick = () => closeModal(modal);
-                modal.querySelector('#cancel-btn').onclick = () => closeModal(modal);
-                modal.querySelector('#save-btn').onclick = () => saveOptions(fileName, modal);
-
-                // Click outside modal để đóng
-                modal.onclick = (e) => {
-                    if (e.target === modal)
-                        closeModal(modal);
-                };
-            }
-
-// Đóng modal
-            function closeModal(modal) {
-                document.body.removeChild(modal);
-            }
-
-// Lưu tùy chọn mới
-            async function saveOptions(fileName, modal) {
-                const textarea = modal.querySelector('#options-textarea');
-                const options = textarea.value.split('\n')
-                        .map(line => line.trim())
-                        .filter(line => line.length > 0);
-
-                if (options.length === 0) {
-                    alert('Danh sách tùy chọn không được để trống!');
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`survey-config/file/\${fileName}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `options=\${encodeURIComponent(JSON.stringify(options))}`
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        alert('Cập nhật thành công!');
-                        reloadSelectOptions(fileName, options);
-                        closeModal(modal);
-                    } else {
-                        alert('Lỗi: ' + result.message);
-                    }
-                } catch (error) {
-                    console.error('Lỗi khi lưu file:', error);
-                    alert('Có lỗi xảy ra: ' + error.message);
-                }
-            }
-
-// Reload lại options cho select
-            function reloadSelectOptions(fileName, options) {
-                const selectMappings = {
-                    'expectation.txt': {
-                        id: 'expectation-list',
-                        defaultOption: '-- Chọn mức độ --'
-                    },
-                    'packing_quality.txt': {
-                        id: 'packing_quality-list',
-                        defaultOption: '-- Chọn chất lượng --'
-                    },
-                    'age_group.txt': {
-                        id: 'age_group',
-                        defaultOption: '-- Chọn độ tuổi --'
-                    },
-                    'area.txt': {
-                        id: 'area',
-                        defaultOption: '-- Chọn khu vực --'
-                    },
-                    'housing_type.txt': {
-                        id: 'housing_type',
-                        defaultOption: '-- Chọn loại nhà --'
-                    },
-                    'important_factor.txt': {
-                        id: 'important_factor',
-                        defaultOption: '-- Chọn yếu tố --'
-                    }
-                };
-
-                const mapping = selectMappings[fileName];
-                if (mapping) {
-                    const select = document.getElementById(mapping.id);
-                    if (select) {
-                        select.innerHTML = `<option value="">\${mapping.defaultOption}</option>` +
-                                options.map(option =>
-                                        `<option value="\${option}">\${option}</option>`
-                                ).join('');
-                    }
-                }
-            }
-
-// Xử lý sự kiện click cho button update
-            async function handleUpdateClick(fileName) {
-                try {
-                    const response = await fetch(`survey-config/file/\${fileName}`);
-                    const result = await response.json();
-
-                    if (result.success) {
-                        showEditModal(fileName, result.data);
-                    } else {
-                        alert('Lỗi khi đọc file: ' + result.message);
-                    }
-                } catch (error) {
-                    console.error('Lỗi khi đọc file:', error);
-                    alert('Có lỗi xảy ra: ' + error.message);
-                }
-            }
-
-// Load dữ liệu từ file khi trang được tải
+// Load dữ liệu từ file config
             async function loadSelectOptions(fileName, selectId, defaultOption) {
                 try {
-                    // Sử dụng controller để đọc file thay vì truy cập trực tiếp
                     const response = await fetch(`survey-config/file/\${fileName.replace('.txt', '')}`);
                     const result = await response.json();
 
+                    const select = document.getElementById(selectId);
                     if (result.success) {
-                        const select = document.getElementById(selectId);
                         select.innerHTML = `<option value="">\${defaultOption}</option>` +
-                                result.data.map(option =>
-                                        `<option value="\${option.trim()}">\${option.trim()}</option>`
-                                ).join('');
+                                result.data.map(option => `<option value="\${option}">\${option}</option>`).join('');
                     } else {
-                        console.error(`Lỗi load file \${fileName}:`, result.message);
-                        // Fallback: tạo options mặc định
-                        loadDefaultOptions(selectId, defaultOption, fileName);
+                        // Fallback data nếu không load được file
+                        const fallbackData = {
+                            'expectation': ['Vượt mong đợi', 'Đúng mong đợi', 'Dưới mong đợi'],
+                            'packing_quality': ['Rất tốt', 'Tốt', 'Trung bình', 'Kém', 'Rất kém'],
+                            'age_group': ['18-25', '26-35', '36-45', '46-55', 'Trên 55'],
+                            'area': ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ'],
+                            'housing_type': ['Chung cư', 'Nhà riêng', 'Văn phòng', 'Khác'],
+                            'important_factor': ['Giá cả', 'Chất lượng', 'Tốc độ', 'Uy tín', 'Bảo hiểm']
+                        };
+                        const options = fallbackData[fileName.replace('.txt', '')] || [];
+                        select.innerHTML = `<option value="">\${defaultOption}</option>` +
+                                options.map(option => `<option value="\${option}">\${option}</option>`).join('');
                     }
-
                 } catch (error) {
-                    console.error(`Lỗi load file \${fileName}:`, error);
-                    // Fallback: tạo options mặc định
-                    loadDefaultOptions(selectId, defaultOption, fileName);
+                    console.error(`Lỗi load \${fileName}:`, error);
                 }
             }
 
-// Tạo options mặc định khi không load được file
-            function loadDefaultOptions(selectId, defaultOption, fileName) {
-                const defaultData = {
-                    'expectation.txt': ['Vượt mong đợi', 'Đúng mong đợi', 'Dưới mong đợi'],
-                    'packing_quality.txt': ['Rất tốt', 'Tốt', 'Trung bình', 'Kém', 'Rất kém'],
-                    'age_group.txt': ['18-25', '26-35', '36-45', '46-55', 'Trên 55'],
-                    'area.txt': ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Khác'],
-                    'housing_type.txt': ['Chung cư', 'Nhà riêng', 'Văn phòng', 'Khác'],
-                    'important_factor.txt': ['Giá cả', 'Chất lượng', 'Tốc độ', 'Uy tín', 'Bảo hiểm']
-                };
-
-                const options = defaultData[fileName] || [];
-                const select = document.getElementById(selectId);
-                select.innerHTML = `<option value="">\${defaultOption}</option>` +
-                        options.map(option =>
-                                `<option value="\${option}">\${option}</option>`
-                        ).join('');
-
-                console.warn(`Sử dụng dữ liệu mặc định cho \${fileName}`);
-            }
-
-// Khởi tạo khi DOM đã sẵn sàng
+// Khởi tạo khi trang load
             document.addEventListener('DOMContentLoaded', function () {
-                // Load tất cả các select options
+                // Load các select options
                 loadSelectOptions('expectation.txt', 'expectation-list', '-- Chọn mức độ --');
                 loadSelectOptions('packing_quality.txt', 'packing_quality-list', '-- Chọn chất lượng --');
                 loadSelectOptions('age_group.txt', 'age_group', '-- Chọn độ tuổi --');
@@ -628,63 +484,25 @@ if (session.getAttribute("acc") == null) {
                 loadSelectOptions('housing_type.txt', 'housing_type', '-- Chọn loại nhà --');
                 loadSelectOptions('important_factor.txt', 'important_factor', '-- Chọn yếu tố --');
 
-                // Xử lý form submit
-                document.getElementById('surveyForm').addEventListener('submit', async function (e) {
-                    e.preventDefault();
 
-                    const formData = new FormData(this);
 
-                    try {
-                        const response = await fetch('customer-survey', {
-                            method: 'POST',
-                            body: formData
-                        });
-
-                        const result = await response.json();
-
-                        if (result.success) {
-                            document.getElementById('surveyForm').style.display = 'none';
-                            document.getElementById('successMessage').style.display = 'block';
-                        } else {
-                            alert('Lỗi: ' + result.message);
+                // Hiệu ứng cho rating và NPS
+                document.querySelectorAll('.rating-item, .nps-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        const input = this.querySelector('input[type="radio"]');
+                        if (input) {
+                            // Bỏ selected khỏi các item cùng nhóm
+                            document.querySelectorAll(`input[name="\${input.name}"]`).forEach(radio => {
+                                radio.closest('.rating-item, .nps-item').classList.remove('selected');
+                            });
+                            // Thêm selected cho item hiện tại
+                            this.classList.add('selected');
+                            input.checked = true;
                         }
-                    } catch (error) {
-                        console.error('Lỗi khi gửi survey:', error);
-                        alert('Có lỗi xảy ra khi gửi khảo sát');
-                    }
-                });
-
-                // Thêm hiệu ứng cho NPS scale
-                document.querySelectorAll('.nps-item').forEach(item => {
-                    item.addEventListener('click', function () {
-                        // Remove selected class from all items
-                        document.querySelectorAll('.nps-item').forEach(i => i.classList.remove('selected'));
-                        // Add selected class to clicked item
-                        this.classList.add('selected');
-                        // Check the radio button
-                        const radio = this.querySelector('input[type="radio"]');
-                        if (radio)
-                            radio.checked = true;
-                    });
-                });
-
-                // Thêm hiệu ứng cho rating items
-                document.querySelectorAll('.rating-item').forEach(item => {
-                    item.addEventListener('click', function () {
-                        const name = this.querySelector('input').name;
-                        // Remove selected class from all items with same name
-                        document.querySelectorAll(`input[name="\${name}"]`).forEach(input => {
-                            input.closest('.rating-item').classList.remove('selected');
-                        });
-                        // Add selected class to clicked item
-                        this.classList.add('selected');
-                        // Check the radio button
-                        const radio = this.querySelector('input[type="radio"]');
-                        if (radio)
-                            radio.checked = true;
                     });
                 });
             });
+
         </script>
     </body>
 </html>

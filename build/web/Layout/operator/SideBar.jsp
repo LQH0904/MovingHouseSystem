@@ -90,9 +90,9 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="#" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
-                            <span class="link">Files</span>
+                            <span class="link">mẫu survey</span>
                         </a>
                     </li>
                     <li class="list">

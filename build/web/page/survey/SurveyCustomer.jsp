@@ -1,3 +1,12 @@
+<%
+// Kiểm tra session
+String redirectURL = null;
+if (session.getAttribute("acc") == null) {
+    redirectURL = "/login";
+    response.sendRedirect(request.getContextPath() + redirectURL);
+    return;
+}
+%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -5,243 +14,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Khảo Sát Khách Hàng - Dịch Vụ Vận Chuyển</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                padding: 20px;
-            }
-
-            .survey-container {
-                max-width: 800px;
-                margin: 0 auto;
-                background: white;
-                border-radius: 20px;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-                overflow: hidden;
-            }
-
-            .survey-header {
-                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-                color: white;
-                padding: 40px 30px;
-                text-align: center;
-            }
-
-            .survey-header h1 {
-                font-size: 2.5rem;
-                margin-bottom: 10px;
-                font-weight: 700;
-            }
-
-            .survey-header p {
-                font-size: 1.1rem;
-                opacity: 0.9;
-            }
-
-            .survey-form {
-                padding: 40px 30px;
-            }
-
-            .form-section {
-                margin-bottom: 40px;
-                padding: 25px;
-                background: #f8fafc;
-                border-radius: 15px;
-                border-left: 5px solid #4facfe;
-            }
-
-            .form-section h3 {
-                color: #2d3748;
-                margin-bottom: 20px;
-                font-size: 1.3rem;
-                display: flex;
-                align-items: center;
-            }
-
-            .form-section h3::before {
-                content: "📋";
-                margin-right: 10px;
-                font-size: 1.5rem;
-            }
-
-            .form-group {
-                margin-bottom: 20px;
-            }
-
-            .form-group label {
-                display: block;
-                margin-bottom: 8px;
-                font-weight: 600;
-                color: #374151;
-            }
-
-            .required {
-                color: #ef4444;
-            }
-
-            .form-control {
-                width: 100%;
-                padding: 12px 15px;
-                border: 2px solid #e5e7eb;
-                border-radius: 10px;
-                font-size: 16px;
-                transition: all 0.3s ease;
-                background: white;
-            }
-
-            .form-control:focus {
-                outline: none;
-                border-color: #4facfe;
-                box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-            }
-
-            .rating-container {
-                display: flex;
-                gap: 15px;
-                flex-wrap: wrap;
-            }
-
-            .rating-item {
-                display: flex;
-                align-items: center;
-                background: white;
-                padding: 10px 15px;
-                border-radius: 8px;
-                border: 2px solid #e5e7eb;
-                transition: all 0.3s ease;
-                cursor: pointer;
-            }
-
-            .rating-item:hover {
-                border-color: #4facfe;
-                transform: translateY(-2px);
-            }
-
-            .rating-item input[type="radio"] {
-                margin-right: 8px;
-                accent-color: #4facfe;
-            }
-
-            .rating-item input[type="radio"]:checked + label {
-                color: #4facfe;
-                font-weight: 600;
-            }
-
-            .nps-scale {
-                display: grid;
-                grid-template-columns: repeat(11, 1fr);
-                gap: 8px;
-                margin-top: 10px;
-            }
-
-            .nps-item {
-                text-align: center;
-                padding: 12px 5px;
-                background: white;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-weight: 600;
-            }
-
-            .nps-item:hover {
-                border-color: #4facfe;
-                background: #f0f9ff;
-            }
-
-            .nps-item input[type="radio"] {
-                display: none;
-            }
-
-            .nps-item input[type="radio"]:checked + span {
-                color: white;
-                background: #4facfe;
-                border-radius: 4px;
-                padding: 2px 8px;
-            }
-
-            .nps-labels {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 10px;
-                font-size: 0.9rem;
-                color: #6b7280;
-            }
-
-            textarea.form-control {
-                min-height: 100px;
-                resize: vertical;
-            }
-
-            .submit-btn {
-                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-                color: white;
-                padding: 15px 40px;
-                border: none;
-                border-radius: 50px;
-                font-size: 1.1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                width: 100%;
-                margin-top: 30px;
-            }
-
-            .submit-btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
-            }
-
-            .success-message {
-                display: none;
-                background: #10b981;
-                color: white;
-                padding: 20px;
-                border-radius: 10px;
-                text-align: center;
-                margin-top: 20px;
-            }
-
-            @media (max-width: 768px) {
-                .survey-container {
-                    margin: 10px;
-                    border-radius: 15px;
-                }
-
-                .survey-header {
-                    padding: 30px 20px;
-                }
-
-                .survey-header h1 {
-                    font-size: 2rem;
-                }
-
-                .survey-form {
-                    padding: 30px 20px;
-                }
-
-                .form-section {
-                    padding: 20px;
-                }
-
-                .rating-container {
-                    gap: 10px;
-                }
-
-                .nps-scale {
-                    grid-template-columns: repeat(6, 1fr);
-                }
-            }
-        </style>
+        <link rel="stylesheet" href="page/survey/survey_config.css">
     </head>
     <body>
         <div class="survey-container">
@@ -254,10 +27,79 @@
                 <form id="surveyForm">
                     <!-- Thông tin khách hàng -->
                     <div class="form-section">
-                        <h3>Thông Tin Khách Hàng</h3>
-                        <div class="form-group">
-                            <label for="customer_id">Mã khách hàng <span class="required">*</span></label>
-                            <input type="number" id="customer_id" name="customer_id" class="form-control" required>
+                        <h3>👤 Thông Tin Khách Hàng</h3>
+
+                        <!-- Customer Info Card -->
+                        <div class="customer-info-card" style="
+                             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                             border-radius: 12px;
+                             padding: 20px;
+                             margin-bottom: 20px;
+                             color: white;
+                             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                             border: 1px solid rgba(255, 255, 255, 0.2);
+                             ">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div style="
+                                     background: rgba(255, 255, 255, 0.2);
+                                     border-radius: 50%;
+                                     width: 50px;
+                                     height: 50px;
+                                     display: flex;
+                                     align-items: center;
+                                     justify-content: center;
+                                     margin-right: 15px;
+                                     font-size: 24px;
+                                     ">
+                                    👨‍💼
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 18px; font-weight: 600;">
+                                        Tên người đăng nhập
+                                    </h4>
+                                    <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;">
+                                        Khách hàng đã đăng nhập
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div style="
+                                 background: rgba(255, 255, 255, 0.1);
+                                 border-radius: 8px;
+                                 padding: 12px;
+                                 backdrop-filter: blur(10px);
+                                 ">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: 500;">Mã khách hàng:</span>
+                                    <span style="
+                                          background: rgba(255, 255, 255, 0.2);
+                                          padding: 6px 12px;
+                                          border-radius: 20px;
+                                          font-weight: 600;
+                                          font-size: 16px;
+                                          ">
+                                        Mã khách hàng
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <!-- Info Note -->
+                        <div style="
+                             background: #f8f9fa;
+                             border-left: 4px solid #28a745;
+                             padding: 12px 16px;
+                             border-radius: 0 8px 8px 0;
+                             margin-top: 15px;
+                             ">
+                            <div style="display: flex; align-items: center;">
+                                <span style="color: #28a745; margin-right: 8px; font-size: 16px;">ℹ️</span>
+                                <small style="color: #6c757d; margin: 0;">
+                                    Thông tin khách hàng được lấy tự động từ tài khoản đăng nhập
+                                </small>
+                            </div>
                         </div>
                     </div>
 
@@ -402,18 +244,26 @@
                             </div>
                         </div>
 
+                        <!-- Expectation -->
                         <div class="form-group">
                             <label for="expectation">Dịch vụ so với mong đợi của bạn <span class="required">*</span></label>
-                            <select id="expectation-list" name="expectation" class="form-control" required>
-                                <!-- Options sẽ được load từ JavaScript -->
-                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <select id="expectation-list" name="expectation" class="form-control" required style="flex: 1;">
+                                    <!-- Options sẽ được load từ JavaScript -->
+                                </select>
+                                <button type="button" onclick="handleUpdateClick('expectation.txt')">Update</button>
+                            </div>
                         </div>
 
+                        <!-- Packing Quality -->
                         <div class="form-group">
                             <label for="packing_quality">Chất lượng đóng gói <span class="required">*</span></label>
-                            <select id="packing_quality-list" name="packing_quality" class="form-control" required>
-                                <!-- Options sẽ được load từ JavaScript -->
-                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <select id="packing_quality-list" name="packing_quality" class="form-control" required style="flex: 1;">
+                                    <!-- Options sẽ được load từ JavaScript -->
+                                </select>
+                                <button type="button" onclick="handleUpdateClick('packing_quality.txt')">Update</button>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -484,25 +334,37 @@
                     <div class="form-section">
                         <h3>Thông Tin Cá Nhân</h3>
 
+                        <!-- Age Group -->
                         <div class="form-group">
                             <label for="age_group">Độ tuổi <span class="required">*</span></label>
-                            <select id="age_group" name="age_group" class="form-control" required>
-                                <!-- Options sẽ được load từ JavaScript -->
-                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <select id="age_group" name="age_group" class="form-control" required style="flex: 1;">
+                                    <!-- Options sẽ được load từ JavaScript -->
+                                </select>
+                                <button type="button" onclick="handleUpdateClick('age_group.txt')">Update</button>
+                            </div>
                         </div>
 
+                        <!-- Area -->
                         <div class="form-group">
                             <label for="area">Khu vực <span class="required">*</span></label>
-                            <select id="area" name="area" class="form-control" required>
-                                <!-- Options sẽ được load từ JavaScript -->
-                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <select id="area" name="area" class="form-control" required style="flex: 1;">
+                                    <!-- Options sẽ được load từ JavaScript -->
+                                </select>
+                                <button type="button" onclick="handleUpdateClick('area.txt')">Update</button>
+                            </div>
                         </div>
 
+                        <!-- Housing Type -->
                         <div class="form-group">
                             <label for="housing_type">Loại nhà ở <span class="required">*</span></label>
-                            <select id="housing_type" name="housing_type" class="form-control" required>
-                                <!-- Options sẽ được load từ JavaScript -->
-                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <select id="housing_type" name="housing_type" class="form-control" required style="flex: 1;">
+                                    <!-- Options sẽ được load từ JavaScript -->
+                                </select>
+                                <button type="button" onclick="handleUpdateClick('housing_type.txt')">Update</button>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -516,11 +378,15 @@
                             </select>
                         </div>
 
+                        <!-- Important Factor -->
                         <div class="form-group">
                             <label for="important_factor">Yếu tố quan trọng nhất <span class="required">*</span></label>
-                            <select id="important_factor" name="important_factor" class="form-control" required>
-                                <!-- Options sẽ được load từ JavaScript -->
-                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <select id="important_factor" name="important_factor" class="form-control" required style="flex: 1;">
+                                    <!-- Options sẽ được load từ JavaScript -->
+                                </select>
+                                <button type="button" onclick="handleUpdateClick('important_factor.txt')">Update</button>
+                            </div>
                         </div>
                     </div>
 
@@ -550,155 +416,275 @@
                 </div>
             </div>
         </div>
-        <script>
-            // Dịch vụ so với mong đợi của bạn
-            document.addEventListener('DOMContentLoaded', async function () {
-                try {
-                    const response = await fetch('expectation.txt');
-                    const text = await response.text();
-                    const options = text.split('\n').filter(line => line.trim());
+        <div style="margin-top: 40px; display: flex; justify-content: space-around;">
+            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeOperator">
+                <button>
+                    <b>Quay lại trang trước</b>
+                </button>
+            </a>
+            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/SurveyTestController">
+                <button>
+                    <b>Thử phiếu khảo sát khách hàng</b>
+                </button>
+            </a>
+            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/HistorySurveyTestController">
+                <button>
+                    <b>Lịch sử thử khảo sát</b>
+                </button>
+            </a>
+        </div>
+        
 
-                    document.getElementById('expectation-list').innerHTML =
-                            `<option value="">-- Chọn mức độ --</option>` +
-                            options.map(option =>
-                                    `<option value="\${option.trim()}">\${option.trim()}</option>`
-                            ).join('');
+        <script>
+// Hàm hiển thị modal để chỉnh sửa file
+            function showEditModal(fileName, currentOptions) {
+                // Tạo modal HTML
+                const modal = document.createElement('div');
+                modal.className = 'edit-modal';
+                modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chỉnh sửa tùy chọn</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <label for="options-textarea">Danh sách tùy chọn (mỗi dòng một tùy chọn):</label>
+                <textarea id="options-textarea" class="form-control">\${currentOptions.join('\n')}</textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="save-btn" class="btn btn-primary">Lưu</button>
+                <button id="cancel-btn" class="btn btn-secondary">Hủy</button>
+            </div>
+        </div>
+    `;
+
+                document.body.appendChild(modal);
+
+                // Xử lý sự kiện
+                modal.querySelector('.close-btn').onclick = () => closeModal(modal);
+                modal.querySelector('#cancel-btn').onclick = () => closeModal(modal);
+                modal.querySelector('#save-btn').onclick = () => saveOptions(fileName, modal);
+
+                // Click outside modal để đóng
+                modal.onclick = (e) => {
+                    if (e.target === modal)
+                        closeModal(modal);
+                };
+            }
+
+// Đóng modal
+            function closeModal(modal) {
+                document.body.removeChild(modal);
+            }
+
+// Lưu tùy chọn mới
+            async function saveOptions(fileName, modal) {
+                const textarea = modal.querySelector('#options-textarea');
+                const options = textarea.value.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0);
+
+                if (options.length === 0) {
+                    alert('Danh sách tùy chọn không được để trống!');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`survey-config/file/\${fileName}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `options=\${encodeURIComponent(JSON.stringify(options))}`
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Cập nhật thành công!');
+                        reloadSelectOptions(fileName, options);
+                        closeModal(modal);
+                    } else {
+                        alert('Lỗi: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi lưu file:', error);
+                    alert('Có lỗi xảy ra: ' + error.message);
+                }
+            }
+
+// Reload lại options cho select
+            function reloadSelectOptions(fileName, options) {
+                const selectMappings = {
+                    'expectation.txt': {
+                        id: 'expectation-list',
+                        defaultOption: '-- Chọn mức độ --'
+                    },
+                    'packing_quality.txt': {
+                        id: 'packing_quality-list',
+                        defaultOption: '-- Chọn chất lượng --'
+                    },
+                    'age_group.txt': {
+                        id: 'age_group',
+                        defaultOption: '-- Chọn độ tuổi --'
+                    },
+                    'area.txt': {
+                        id: 'area',
+                        defaultOption: '-- Chọn khu vực --'
+                    },
+                    'housing_type.txt': {
+                        id: 'housing_type',
+                        defaultOption: '-- Chọn loại nhà --'
+                    },
+                    'important_factor.txt': {
+                        id: 'important_factor',
+                        defaultOption: '-- Chọn yếu tố --'
+                    }
+                };
+
+                const mapping = selectMappings[fileName];
+                if (mapping) {
+                    const select = document.getElementById(mapping.id);
+                    if (select) {
+                        select.innerHTML = `<option value="">\${mapping.defaultOption}</option>` +
+                                options.map(option =>
+                                        `<option value="\${option}">\${option}</option>`
+                                ).join('');
+                    }
+                }
+            }
+
+// Xử lý sự kiện click cho button update
+            async function handleUpdateClick(fileName) {
+                try {
+                    const response = await fetch(`survey-config/file/\${fileName}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showEditModal(fileName, result.data);
+                    } else {
+                        alert('Lỗi khi đọc file: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi đọc file:', error);
+                    alert('Có lỗi xảy ra: ' + error.message);
+                }
+            }
+
+// Load dữ liệu từ file khi trang được tải
+            async function loadSelectOptions(fileName, selectId, defaultOption) {
+                try {
+                    // Sử dụng controller để đọc file thay vì truy cập trực tiếp
+                    const response = await fetch(`survey-config/file/\${fileName.replace('.txt', '')}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        const select = document.getElementById(selectId);
+                        select.innerHTML = `<option value="">\${defaultOption}</option>` +
+                                result.data.map(option =>
+                                        `<option value="\${option.trim()}">\${option.trim()}</option>`
+                                ).join('');
+                    } else {
+                        console.error(`Lỗi load file \${fileName}:`, result.message);
+                        // Fallback: tạo options mặc định
+                        loadDefaultOptions(selectId, defaultOption, fileName);
+                    }
 
                 } catch (error) {
-                    console.error('Lỗi load file:', error);
+                    console.error(`Lỗi load file \${fileName}:`, error);
+                    // Fallback: tạo options mặc định
+                    loadDefaultOptions(selectId, defaultOption, fileName);
                 }
-            });
-
-// Lấy giá trị được chọn
-            function getSelectedExpectation() {
-                const select = document.getElementById('expectation-list');
-                return select.value;
             }
-        </script>
-        <script>
-            // Chất lượng đóng gói
-            document.addEventListener('DOMContentLoaded', async function () {
-                try {
-                    const response = await fetch('packing_quality.txt');
-                    const text = await response.text();
-                    const options = text.split('\n').filter(line => line.trim());
 
-                    document.getElementById('packing_quality-list').innerHTML =
-                            `<option value="">-- Chọn chất lượng --</option>` +
-                            options.map(option =>
-                                    `<option value="\${option.trim()}">\${option.trim()}</option>`
-                            ).join('');
+// Tạo options mặc định khi không load được file
+            function loadDefaultOptions(selectId, defaultOption, fileName) {
+                const defaultData = {
+                    'expectation.txt': ['Vượt mong đợi', 'Đúng mong đợi', 'Dưới mong đợi'],
+                    'packing_quality.txt': ['Rất tốt', 'Tốt', 'Trung bình', 'Kém', 'Rất kém'],
+                    'age_group.txt': ['18-25', '26-35', '36-45', '46-55', 'Trên 55'],
+                    'area.txt': ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Khác'],
+                    'housing_type.txt': ['Chung cư', 'Nhà riêng', 'Văn phòng', 'Khác'],
+                    'important_factor.txt': ['Giá cả', 'Chất lượng', 'Tốc độ', 'Uy tín', 'Bảo hiểm']
+                };
 
-                } catch (error) {
-                    console.error('Lỗi load file:', error);
-                }
-            });
+                const options = defaultData[fileName] || [];
+                const select = document.getElementById(selectId);
+                select.innerHTML = `<option value="">\${defaultOption}</option>` +
+                        options.map(option =>
+                                `<option value="\${option}">\${option}</option>`
+                        ).join('');
 
-// Lấy giá trị được chọn
-            function getSelectedExpectation() {
-                const select = document.getElementById('packing_quality-list');
-                return select.value;
+                console.warn(`Sử dụng dữ liệu mặc định cho \${fileName}`);
             }
-        </script>
-        <script>
-            // Độ tuổi
-            document.addEventListener('DOMContentLoaded', async function () {
-                try {
-                    const response = await fetch('age_group.txt');
-                    const text = await response.text();
-                    const options = text.split('\n').filter(line => line.trim());
 
-                    document.getElementById('age_group').innerHTML =
-                            `<option value="">-- Chọn độ tuổi --</option>` +
-                            options.map(option =>
-                                    `<option value="\${option.trim()}">\${option.trim()}</option>`
-                            ).join('');
+// Khởi tạo khi DOM đã sẵn sàng
+            document.addEventListener('DOMContentLoaded', function () {
+                // Load tất cả các select options
+                loadSelectOptions('expectation.txt', 'expectation-list', '-- Chọn mức độ --');
+                loadSelectOptions('packing_quality.txt', 'packing_quality-list', '-- Chọn chất lượng --');
+                loadSelectOptions('age_group.txt', 'age_group', '-- Chọn độ tuổi --');
+                loadSelectOptions('area.txt', 'area', '-- Chọn khu vực --');
+                loadSelectOptions('housing_type.txt', 'housing_type', '-- Chọn loại nhà --');
+                loadSelectOptions('important_factor.txt', 'important_factor', '-- Chọn yếu tố --');
 
-                } catch (error) {
-                    console.error('Lỗi load file:', error);
-                }
+                // Xử lý form submit
+                document.getElementById('surveyForm').addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    try {
+                        const response = await fetch('customer-survey', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            document.getElementById('surveyForm').style.display = 'none';
+                            document.getElementById('successMessage').style.display = 'block';
+                        } else {
+                            alert('Lỗi: ' + result.message);
+                        }
+                    } catch (error) {
+                        console.error('Lỗi khi gửi survey:', error);
+                        alert('Có lỗi xảy ra khi gửi khảo sát');
+                    }
+                });
+
+                // Thêm hiệu ứng cho NPS scale
+                document.querySelectorAll('.nps-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        // Remove selected class from all items
+                        document.querySelectorAll('.nps-item').forEach(i => i.classList.remove('selected'));
+                        // Add selected class to clicked item
+                        this.classList.add('selected');
+                        // Check the radio button
+                        const radio = this.querySelector('input[type="radio"]');
+                        if (radio)
+                            radio.checked = true;
+                    });
+                });
+
+                // Thêm hiệu ứng cho rating items
+                document.querySelectorAll('.rating-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        const name = this.querySelector('input').name;
+                        // Remove selected class from all items with same name
+                        document.querySelectorAll(`input[name="\${name}"]`).forEach(input => {
+                            input.closest('.rating-item').classList.remove('selected');
+                        });
+                        // Add selected class to clicked item
+                        this.classList.add('selected');
+                        // Check the radio button
+                        const radio = this.querySelector('input[type="radio"]');
+                        if (radio)
+                            radio.checked = true;
+                    });
+                });
             });
-
-// Lấy giá trị được chọn
-            function getSelectedExpectation() {
-                const select = document.getElementById('age_group');
-                return select.value;
-            }
-        </script>
-        <script>
-            // Khu vực
-            document.addEventListener('DOMContentLoaded', async function () {
-                try {
-                    const response = await fetch('area.txt');
-                    const text = await response.text();
-                    const options = text.split('\n').filter(line => line.trim());
-
-                    document.getElementById('area').innerHTML =
-                            `<option value="">-- Chọn khu vực --</option>` +
-                            options.map(option =>
-                                    `<option value="\${option.trim()}">\${option.trim()}</option>`
-                            ).join('');
-
-                } catch (error) {
-                    console.error('Lỗi load file:', error);
-                }
-            });
-
-// Lấy giá trị được chọn
-            function getSelectedExpectation() {
-                const select = document.getElementById('area');
-                return select.value;
-            }
-        </script>
-        <script>
-            // Loại nhà ở
-            document.addEventListener('DOMContentLoaded', async function () {
-                try {
-                    const response = await fetch('housing_type.txt');
-                    const text = await response.text();
-                    const options = text.split('\n').filter(line => line.trim());
-
-                    document.getElementById('housing_type').innerHTML =
-                            `<option value="">-- Chọn loại nhà --</option>` +
-                            options.map(option =>
-                                    `<option value="\${option.trim()}">\${option.trim()}</option>`
-                            ).join('');
-
-                } catch (error) {
-                    console.error('Lỗi load file:', error);
-                }
-            });
-
-// Lấy giá trị được chọn
-            function getSelectedExpectation() {
-                const select = document.getElementById('housing_type');
-                return select.value;
-            }
-        </script>
-        <script>
-            // Yếu tố quan trọng nhất
-            document.addEventListener('DOMContentLoaded', async function () {
-                try {
-                    const response = await fetch('important_factor.txt');
-                    const text = await response.text();
-                    const options = text.split('\n').filter(line => line.trim());
-
-                    document.getElementById('important_factor').innerHTML =
-                            `<option value="">-- Chọn yếu tố --</option>` +
-                            options.map(option =>
-                                    `<option value="\${option.trim()}">\${option.trim()}</option>`
-                            ).join('');
-
-                } catch (error) {
-                    console.error('Lỗi load file:', error);
-                }
-            });
-
-// Lấy giá trị được chọn
-            function getSelectedExpectation() {
-                const select = document.getElementById('important_factor');
-                return select.value;
-            }
         </script>
     </body>
 </html>

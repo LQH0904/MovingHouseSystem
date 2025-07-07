@@ -11,7 +11,7 @@ package model;
 public class CustomerSurvey {
     private  int surveyId;
     private String surveyDate;
-    private  int customer_id;
+    private  int userId;
     private  int overall_satisfaction;
     private  int recommend_score;
     private  int transport_care;
@@ -34,10 +34,10 @@ public class CustomerSurvey {
     public CustomerSurvey() {
     }
 
-    public CustomerSurvey(int surveyId, String surveyDate, int customer_id, int overall_satisfaction, int recommend_score, int transport_care, int consultant_professionalism, String expectation, String packing_quality, String item_condition, String delivery_timeliness, String booking_process, String response_time, String price_transparency, String age_group, String area, String housing_type, String usage_frequency, String important_factor, String additional_service, String feedback) {
+    public CustomerSurvey(int surveyId, String surveyDate, int userId, int overall_satisfaction, int recommend_score, int transport_care, int consultant_professionalism, String expectation, String packing_quality, String item_condition, String delivery_timeliness, String booking_process, String response_time, String price_transparency, String age_group, String area, String housing_type, String usage_frequency, String important_factor, String additional_service, String feedback) {
         this.surveyId = surveyId;
         this.surveyDate = surveyDate;
-        this.customer_id = customer_id;
+        this.userId = userId;
         this.overall_satisfaction = overall_satisfaction;
         this.recommend_score = recommend_score;
         this.transport_care = transport_care;
@@ -74,12 +74,12 @@ public class CustomerSurvey {
         this.surveyDate = surveyDate;
     }
 
-    public int getCustomer_id() {
-        return customer_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setCustomer_id(int customer_id) {
-        this.customer_id = customer_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getOverall_satisfaction() {
@@ -228,7 +228,7 @@ public class CustomerSurvey {
 
     @Override
     public String toString() {
-        return "CustomerSurvey{" + "surveyId=" + surveyId + ", surveyDate=" + surveyDate + ", customer_id=" + customer_id + ", overall_satisfaction=" + overall_satisfaction + ", recommend_score=" + recommend_score + ", transport_care=" + transport_care + ", consultant_professionalism=" + consultant_professionalism + ", expectation=" + expectation + ", packing_quality=" + packing_quality + ", item_condition=" + item_condition + ", delivery_timeliness=" + delivery_timeliness + ", booking_process=" + booking_process + ", response_time=" + response_time + ", price_transparency=" + price_transparency + ", age_group=" + age_group + ", area=" + area + ", housing_type=" + housing_type + ", usage_frequency=" + usage_frequency + ", important_factor=" + important_factor + ", additional_service=" + additional_service + ", feedback=" + feedback + '}';
+        return "CustomerSurvey{" + "surveyId=" + surveyId + ", surveyDate=" + surveyDate + ", userId=" + userId + ", overall_satisfaction=" + overall_satisfaction + ", recommend_score=" + recommend_score + ", transport_care=" + transport_care + ", consultant_professionalism=" + consultant_professionalism + ", expectation=" + expectation + ", packing_quality=" + packing_quality + ", item_condition=" + item_condition + ", delivery_timeliness=" + delivery_timeliness + ", booking_process=" + booking_process + ", response_time=" + response_time + ", price_transparency=" + price_transparency + ", age_group=" + age_group + ", area=" + area + ", housing_type=" + housing_type + ", usage_frequency=" + usage_frequency + ", important_factor=" + important_factor + ", additional_service=" + additional_service + ", feedback=" + feedback + '}';
     }
-    
+
 }

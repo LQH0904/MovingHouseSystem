@@ -30,7 +30,18 @@
     <welcome-file-list>
         <welcome-file>homePage.html</welcome-file>
     </welcome-file-list>
+    
+    <!-- Thêm servlet configuration -->
+    <servlet>
+        <servlet-name>SurveyConfigController</servlet-name>
+        <servlet-class>controller.reportSummary.SurveyConfigController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>SurveyConfigController</servlet-name>
+        <url-pattern>/survey-config/*</url-pattern>
+    </servlet-mapping>
     
 
 </web-app>

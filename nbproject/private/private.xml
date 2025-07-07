@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/java/dao/SurveyConfigDAO.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>113</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_test.jsp</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/model/CustomerSurvey.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/StorageReportDataDAO.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/staff/homeStaff.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/StorageReportController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/CustomerSurveyController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/homeStaff.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/CostAndProfitReport.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/HistorySurveyTest.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_config.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/HistorySurveyTestController.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/SurveyCustomer.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/HistorySurveyTestDAO.java</file>
         </group>
     </open-files>
 </project-private>
