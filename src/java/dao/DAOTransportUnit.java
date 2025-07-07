@@ -34,7 +34,7 @@ public class DAOTransportUnit extends DBContext{
                 int vehicleCount = rs.getInt("vehicle_count");
                 int capacity = rs.getInt("capacity");
                 
-                transportUnit transportUnit = new transportUnit(transportUnitId, companyName, contactInfo, registrationStatus, createdAt, location, vehicleCount, capacity);
+                transportUnit transportUnit = new transportUnit(transportUnitId, companyName, contactInfo, registrationStatus, createdAt, location, vehicleCount, capacity, capacity, createdAt);
                 vector.add(transportUnit);
             }
         } catch (SQLException ex) {

@@ -16,12 +16,14 @@ public class transportUnit {
     private String createdAt;
     private String location;
     private int vehicleCount;
-    private int capacity;
+    private double capacity;
+    private int loader;
+    private String businessCertificate;
 
     public transportUnit() {
     }
 
-    public transportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, int capacity) {
+    public transportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, double capacity, int loader, String businessCertificate) {
         this.transportUnitId = transportUnitId;
         this.companyName = companyName;
         this.contactInfo = contactInfo;
@@ -30,6 +32,8 @@ public class transportUnit {
         this.location = location;
         this.vehicleCount = vehicleCount;
         this.capacity = capacity;
+        this.loader = loader;
+        this.businessCertificate = businessCertificate;
     }
 
     public int getTransportUnitId() {
@@ -88,17 +92,34 @@ public class transportUnit {
         this.vehicleCount = vehicleCount;
     }
 
-    public int getCapacity() {
+    public double getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(double capacity) {
         this.capacity = capacity;
+    }
+
+    public int getLoader() {
+        return loader;
+    }
+
+    public void setLoader(int loader) {
+        this.loader = loader;
+    }
+
+    public String getBusinessCertificate() {
+        return businessCertificate;
+    }
+
+    public void setBusinessCertificate(String businessCertificate) {
+        this.businessCertificate = businessCertificate;
     }
 
     @Override
     public String toString() {
-        return "transportUnit{" + "transportUnitId=" + transportUnitId + ", companyName=" + companyName + ", contactInfo=" + contactInfo + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", location=" + location + ", vehicleCount=" + vehicleCount + ", capacity=" + capacity + '}';
+        return "TransportUnit{" + "transportUnitId=" + transportUnitId + ", companyName=" + companyName + ", contactInfo=" + contactInfo + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", location=" + location + ", vehicleCount=" + vehicleCount + ", capacity=" + capacity + ", loader=" + loader + ", businessCertificate=" + businessCertificate + '}';
     }
+    
     
 }

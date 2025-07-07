@@ -136,7 +136,9 @@ public class TransportReportDataDAO extends DBContext {
                     rs.getString("created_at"),
                     rs.getString("location"),
                     rs.getInt("vehicle_count"),
-                    rs.getInt("capacity")
+                    rs.getDouble("capacity"),
+                    rs.getInt("loader"),
+                    rs.getString("business_certificate")
                 );
                 result.add(unit);
             }
