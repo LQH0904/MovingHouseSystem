@@ -463,8 +463,6 @@ public class StorageReportDataDAO extends DBContext {
     }
 
     /**
-     * ========== THÊM MỚI: Phương thức lấy dữ liệu sử dụng không gian lưu trữ
-     * ========== Lấy dữ liệu sử dụng không gian lưu trữ theo kho
      *
      * @return Vector<Object[]> - [warehouseName, avgUsedArea, avgTotalArea,
      * avgUtilizationRate, maxUtilizationRate, minUtilizationRate, location]

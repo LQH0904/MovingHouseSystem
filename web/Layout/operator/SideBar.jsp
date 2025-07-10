@@ -57,7 +57,7 @@
                                 </a>
                             </li>
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/repURL?type=yearly" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/SurveyCustomerCharController?action=page" class="submenu-link">
                                     <i class="bx bx-calendar-alt icon"></i>
                                     <span class="link">Báo Cáo Khách Hàng </span>
                                 </a>

@@ -447,7 +447,7 @@
         <div style="margin-top: 40px; display: flex; justify-content: space-around;">
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/SurveyTestController">
                 <button>
-                    <b>Quay lại trang trước</b>
+                    <b>Trở về trang Test phiếu khảo sát</b>
                 </button>
             </a>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeOperator">
