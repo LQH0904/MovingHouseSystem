@@ -5,6 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
 String redirectURL = null;
@@ -13,6 +14,11 @@ if (session.getAttribute("acc") == null) {
     response.sendRedirect(request.getContextPath() + redirectURL);
     return;
 }
+
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
 %>
 <!DOCTYPE html>
 <html>
@@ -36,6 +42,7 @@ if (session.getAttribute("acc") == null) {
 
                 <div class="div3">
                     <div class="content-part">
+                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng <%= currentUsername %> đến trang dành cho quản trị viên</div>
                         <div class="user">
                             <div>
                                 <div class="title_form_1">Về người dùng</div>
