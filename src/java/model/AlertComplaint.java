@@ -9,13 +9,22 @@ package model;
  * @author Admin
  */
 public class AlertComplaint {
-    private int unitId;
+       private int unitId;
     private String unitName;
     private String email;
     private String address;
     private String unitType; // "TRANSPORT" or "WAREHOUSE"
     private int issueCount;
-    private String issueStatus; // "Đã có phản ánh" / "Chưa có phản ánh" / "Cảnh báo"
+    private String issueStatus; // "Bình thường", "Cảnh báo", "Nguy hiểm"
+    private boolean warningSent;
+
+    public boolean isWarningSent() {
+        return warningSent;
+    }
+
+    public void setWarningSent(boolean warningSent) {
+        this.warningSent = warningSent;
+    }
 
     public AlertComplaint() {
     }
