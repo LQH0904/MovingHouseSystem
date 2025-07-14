@@ -122,26 +122,89 @@ public class UserDAO {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean signupAccount(Users user) {
-        String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement psUser = null;
+        PreparedStatement psCustomer = null;
+        ResultSet rs = null;
+        boolean success = false;
+
+        String userQuery = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String customerQuery = "INSERT INTO Customers (customer_id, full_name, phone_number, address, created_at) VALUES (?, NULL, NULL, NULL, ?)";
+
         try {
-            try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getEmail());
-                ps.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
-                ps.setInt(4, user.getRoleId());
-                ps.setString(5, user.getStatus());
-
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                ps.setTimestamp(6, now);
-                ps.setTimestamp(7, null);
-
-                int rows = ps.executeUpdate();
-                return rows > 0;
+            conn = DBConnection.getConnection();
+            if (conn == null) {
+                LOGGER.log(Level.SEVERE, "Failed to get database connection");
+                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            conn.setAutoCommit(false);
+
+            psUser = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS);
+            psUser.setString(1, user.getUsername());
+            psUser.setString(2, user.getEmail());
+            psUser.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
+            psUser.setInt(4, user.getRoleId());
+            psUser.setString(5, user.getStatus());
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            psUser.setTimestamp(6, now);
+            psUser.setTimestamp(7, null);
+
+            int rows = psUser.executeUpdate();
+            if (rows == 0) {
+                throw new SQLException("Không thể chèn tài khoản người dùng");
+            }
+
+            rs = psUser.getGeneratedKeys();
+            int userId = -1;
+            if (rs.next()) {
+                userId = rs.getInt(1);
+            } else {
+                throw new SQLException("Không thể lấy user_id sau khi chèn tài khoản");
+            }
+
+            if (user.getRoleId() == 6) {
+                psCustomer = conn.prepareStatement(customerQuery);
+                psCustomer.setInt(1, userId);
+                psCustomer.setTimestamp(2, now);
+                int customerRows = psCustomer.executeUpdate();
+                if (customerRows == 0) {
+                    throw new SQLException("Không thể chèn bản ghi khách hàng");
+                }
+            }
+
+            conn.commit();
+            success = true;
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error signing up account for email: " + user.getEmail() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException rollbackEx) {
+                LOGGER.log(Level.SEVERE, "Error during rollback: " + rollbackEx.getMessage(), rollbackEx);
+            }
             return false;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (psUser != null) {
+                    psUser.close();
+                }
+                if (psCustomer != null) {
+                    psCustomer.close();
+                }
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error closing resources: " + e.getMessage(), e);
+            }
         }
+        return success;
     }
 
     /**
@@ -599,4 +662,103 @@ public class UserDAO {
         }
         return value.length() > maxLength ? value.substring(0, maxLength) : value;
     }
+
+    public Users getUser2(String email, int roleId) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setInt(2, roleId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting user: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public List<Users> getUsersByRole2(int roleId) {
+        List<Users> users = new ArrayList<>();
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE role_id = ? AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Users user = new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+                users.add(user);
+            }
+            LOGGER.info("Fetched " + users.size() + " users for role_id: " + roleId);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching users by role: " + e.getMessage(), e);
+        }
+        return users;
+    }
+    
+    public boolean userExists(int userId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi kiểm tra user_id " + userId + ": " + e.getMessage());
+            throw e;
+        }
+        return false;
+    }
+
+    public int getAdminUserId() throws SQLException {
+        String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 1 AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi lấy admin user_id: " + e.getMessage());
+            throw e;
+        }
+        return -1;
+    }
+
+    public int getTransportUnitId() throws SQLException {
+        String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 4 AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi lấy transport unit user_id: " + e.getMessage());
+            throw e;
+        }
+        return -1;
+    }
+    
 }
