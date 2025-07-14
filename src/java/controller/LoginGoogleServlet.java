@@ -105,20 +105,19 @@ public class LoginGoogleServlet extends HttpServlet {
                 return;
             }
 
-            String hashedPassword = PasswordUtils.hashPassword("123");
             Date today = Date.valueOf(LocalDate.now());
             Users newUser = new Users(
                     -1,
                     googleUser.getName(),
                     email,
-                    hashedPassword,
+                    PasswordUtils.hashPassword("123"), 
                     6,
                     today,
                     null,
                     "active"
             );
 
-            boolean success = dao.signupAccount(newUser);
+            boolean success = dao.signupAccount(newUser); 
             if (!success) {
                 session = request.getSession(true);
                 session.setAttribute("error", "Không thể tạo tài khoản mới");
