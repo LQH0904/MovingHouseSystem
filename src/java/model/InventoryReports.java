@@ -15,6 +15,7 @@ public class InventoryReports {
     private String createdAt;
     private String updatedAt;
     private String title;
+    
 
     @Override
     public String toString() {
