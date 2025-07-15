@@ -3,6 +3,9 @@ package model;
 import java.util.Date;
 
 public class User {
+
+    public User(String username1, String hashedPassword, String email1, String role1) {
+    }
     private int userId;
     private String username;
     private String passwordHash;

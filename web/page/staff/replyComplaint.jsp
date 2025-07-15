@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/replyComplaint.css">
+
 
     <style>
         /* Ẩn các thanh điều hướng và phân trang không mong muốn nếu chúng được include toàn cục */

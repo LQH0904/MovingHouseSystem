@@ -45,15 +45,15 @@
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/LogViewerServlet" class="submenu-link">
                                     <i class="bx bx-calendar icon"></i>
-                                    <span class="link">Báo Cáo Vận Chuyển </span>
+                                    <span class="link"> admin </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="submenu-link">
                                     <i class="bx bx-calendar-week icon"></i>
-                                    <span class="link">Báo Cáo Kho Bãi </span>
+                                    <span class="link"> Bãi </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
@@ -66,29 +66,11 @@
                     </li>
                     
                     <li class="list">
-                        <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/LogViewerServlet" class="nav-link">
                             <i class="bx bx-bell icon"></i>
                             <span class="link">Đơn Hàng</span>
                         </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
-                            <i class="bx bx-message-rounded icon"></i>
-                            <span class="link">Báo Cáo Tồn Kho</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operatorComplaintList" class="nav-link">
-                            <i class="bx bx-pie-chart-alt-2 icon"></i>
-                            <span class="link">Khiếu Nại</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
-                            <span class="link">Duyệt Đơn</span>
-                        </a>
-                    </li>
+                   
                     <li class="list">
                         <a href="#" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>

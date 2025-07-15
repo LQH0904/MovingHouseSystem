@@ -65,15 +65,27 @@
                     </a>
                 </li>
                 <li class="list">
-                    <a href="#" class="nav-link">
+                    <a href="${pageContext.request.contextPath}/updateProfile" class="nav-link">
                         <i class="bx bx-cog icon"></i>
-                        <span class="link">Settings</span>
+                        <span class="link">Tài Khoản</span>
                     </a>
                 </li>
                 <li class="list">
                     <a href="${pageContext.request.contextPath}/logout" class="nav-link">
                         <i class="bx bx-log-out icon"></i>
                         <span class="link">Logout</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="${pageContext.request.contextPath}/LogViewerServlet" class="nav-link">
+                        <i class="bx bx-pie-chart-alt-2 icon"></i>
+                        <span class="link">Kiểm tra hoạt động của người dùng</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
+                        <i class="bx bx-pie-chart-alt-2 icon"></i>
+                        <span class="link">Phê duyệt các yêu cầu quan trọng</span>
                     </a>
                 </li>
             </ul>

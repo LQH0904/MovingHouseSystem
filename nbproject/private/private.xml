@@ -3,11 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/G:/SWP391/MovingHouseSystem/web/page/operator/OperatorReplyComplaint.jsp</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/web/page/operator/OperatorComplaintList.jsp</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/OperatorComplaintDAO.java</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/OperatorComplaintServlet.java</file>
-            <file>file:/G:/SWP391/MovingHouseSystem/src/java/controller/OperatorReplyComplaintServlet.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/IssueDAO.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/IssueHistoryDAO.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/UserDAO1.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/Notification.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/AttachmentDAO.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/services/IssueService.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/SystemLogDAO.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/Attachment.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/IssueHistory.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/SystemLogAdmin.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/services/UserService.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/IssueLog.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/IssueLogDAO.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/User1.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/dao/NotificationDAO.java</file>
+            <file>file:/G:/SWP391/MovingHouseSystem/src/java/model/Issue.java</file>
         </group>
     </open-files>
 </project-private>

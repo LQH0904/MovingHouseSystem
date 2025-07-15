@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
             Users user = (Users) session.getAttribute("acc");
             switch (user.getRoleId()) {
                 case 1: // Admin
-                    response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                    response.sendRedirect(request.getContextPath() + "/LogViewerServlet");
                     break;
                 case 2: // Operator
                     response.sendRedirect(request.getContextPath() + "/homeOperator");
@@ -129,7 +129,7 @@ public class LoginServlet extends HttpServlet {
         // Chuyển hướng dựa trên vai trò
         switch (user.getRoleId()) {
             case 1: // Admin
-                response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                response.sendRedirect(request.getContextPath() + "/LogViewerServlet");
                 break;
             case 2: // Operator
                 response.sendRedirect(request.getContextPath() + "/homeOperator");

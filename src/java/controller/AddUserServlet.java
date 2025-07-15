@@ -21,7 +21,7 @@ public class AddUserServlet extends HttpServlet {
 
         Role role = new Role(roleId, "");
 
-        User newUser = new User();
+        User newUser = new User(username, hashedPassword, email, role);
         newUser.setUsername(username);
         newUser.setPasswordHash(passwordHash);
         newUser.setEmail(email);

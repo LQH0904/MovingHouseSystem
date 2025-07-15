@@ -1,7 +1,7 @@
 package controller;
 
-import dao.ComplaintDAO; // Đảm bảo đúng import
-import model.Complaint; // Đảm bảo đúng import
+import dao.ComplaintDAO; 
+import model.Complaint; 
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
