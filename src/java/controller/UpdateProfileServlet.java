@@ -78,7 +78,7 @@ public class UpdateProfileServlet extends HttpServlet {
                 String currentAvatar = request.getParameter("currentAvatar");
                 if (avatarUrl == null) avatarUrl = currentAvatar;
 
-                Staff staff = new Staff(id, fullName, department, avatarUrl, status, email, phone, address);
+                Staff staff = new Staff(id, fullName, department, avatarUrl, status, email, phone);
                 StaffDAO dao = new StaffDAO();
                 dao.updateStaff(staff);
                 response.sendRedirect("updateProfile?success=1&type=staff");

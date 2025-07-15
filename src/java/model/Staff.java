@@ -11,7 +11,7 @@ public class Staff {
     private String phone;
     private String address; // Thêm địa chỉ
 
-    public Staff(int staffId, String fullName, String department, String avatarUrl, String status, String email, String phone, String address) {
+    public Staff(int staffId, String fullName, String department, String avatarUrl, String status, String email, String phone) {
         this.staffId = staffId;
         this.fullName = fullName;
         this.department = department;
