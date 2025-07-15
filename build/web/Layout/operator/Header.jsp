@@ -8,6 +8,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 
         <%-- Sửa đường dẫn CSS thành tuyệt đối --%>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
@@ -19,6 +20,7 @@
                 <i class="fas fa-bars text-white"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div style="color: white;font-family: 'UnifrakturMaguntia', cursive;font-size: 30px;"> chào mừng đến trang của Điều hành viên </div>
                 <ul class="navbar-nav ml-auto">
                     <li class="hori-selector">
                         <div class="left"></div>

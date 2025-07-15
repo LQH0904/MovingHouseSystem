@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/java/dao/SurveyConfigDAO.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>113</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/dao/StorageReportDataDAO.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/staff/viewOrderList.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/WEB-INF/web.xml</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/SignUp.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/staff/OrderDetailController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/404.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/model/StorageUnit.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/SignUpStorage.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/homeStaff.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/Test.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/model/PasswordUtils.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/UserController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/dao/UserDAO.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/model/Order.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/OrderListServlet.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/UserListServlet.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/SignUpTransport.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_test.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/model/CustomerSurvey.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/HistorySurveyTest.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_config.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/homeOperator.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/HistorySurveyTestController.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/SurveyCustomerCharController.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/SurveyCustomer.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/scaleTransportDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/StorageReportController.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/HistorySurveyTestDAO.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/SurveyCustomerCharDataDAO.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCharDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCustomerChar.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/ScaleAndCapacityReport.java</file>
         </group>
     </open-files>
 </project-private>
