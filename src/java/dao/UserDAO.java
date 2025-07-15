@@ -122,26 +122,89 @@ public class UserDAO {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean signupAccount(Users user) {
-        String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement psUser = null;
+        PreparedStatement psCustomer = null;
+        ResultSet rs = null;
+        boolean success = false;
+
+        String userQuery = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String customerQuery = "INSERT INTO Customers (customer_id, full_name, phone_number, address, created_at) VALUES (?, NULL, NULL, NULL, ?)";
+
         try {
-            try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getEmail());
-                ps.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
-                ps.setInt(4, user.getRoleId());
-                ps.setString(5, user.getStatus());
-
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                ps.setTimestamp(6, now);
-                ps.setTimestamp(7, null);
-
-                int rows = ps.executeUpdate();
-                return rows > 0;
+            conn = DBConnection.getConnection();
+            if (conn == null) {
+                LOGGER.log(Level.SEVERE, "Failed to get database connection");
+                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            conn.setAutoCommit(false);
+
+            psUser = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS);
+            psUser.setString(1, user.getUsername());
+            psUser.setString(2, user.getEmail());
+            psUser.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
+            psUser.setInt(4, user.getRoleId());
+            psUser.setString(5, user.getStatus());
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            psUser.setTimestamp(6, now);
+            psUser.setTimestamp(7, null);
+
+            int rows = psUser.executeUpdate();
+            if (rows == 0) {
+                throw new SQLException("Không thể chèn tài khoản người dùng");
+            }
+
+            rs = psUser.getGeneratedKeys();
+            int userId = -1;
+            if (rs.next()) {
+                userId = rs.getInt(1);
+            } else {
+                throw new SQLException("Không thể lấy user_id sau khi chèn tài khoản");
+            }
+
+            if (user.getRoleId() == 6) {
+                psCustomer = conn.prepareStatement(customerQuery);
+                psCustomer.setInt(1, userId);
+                psCustomer.setTimestamp(2, now);
+                int customerRows = psCustomer.executeUpdate();
+                if (customerRows == 0) {
+                    throw new SQLException("Không thể chèn bản ghi khách hàng");
+                }
+            }
+
+            conn.commit();
+            success = true;
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error signing up account for email: " + user.getEmail() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException rollbackEx) {
+                LOGGER.log(Level.SEVERE, "Error during rollback: " + rollbackEx.getMessage(), rollbackEx);
+            }
             return false;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (psUser != null) {
+                    psUser.close();
+                }
+                if (psCustomer != null) {
+                    psCustomer.close();
+                }
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Error closing resources: " + e.getMessage(), e);
+            }
         }
+        return success;
     }
 
     /**
@@ -204,6 +267,37 @@ public class UserDAO {
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error checking user by email: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Kiểm tra người dùng dựa trên email, bất kể role_id.
+     *
+     * @param email Email người dùng
+     * @return Đối tượng Users nếu tồn tại, null nếu không
+     */
+    public Users checkUserByEmailOnly(String email) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE LOWER(email) = LOWER(?)";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking user by email only: SQLState=" + e.getSQLState()
+                    + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
         }
         return null;
     }
@@ -447,8 +541,63 @@ public class UserDAO {
     }
 
     // Lưu thông tin Transport Unit
+    public boolean saveStorageUnit(StorageUnit unit, int userId) {
+        String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt("role_id") != 5) {
+                throw new IllegalArgumentException("User must have role_id = 5 (Storage Unit)");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking user role for storage unit: user_id=" + userId + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            return false;
+        }
+
+        String query = "INSERT INTO StorageUnits (storage_unit_id, warehouse_name, location, business_certificate, floor_plan, insurance, area, employee, phone_number, registration_status, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            if (unit.getWarehouseName() == null || unit.getWarehouseName().trim().isEmpty()) {
+                throw new IllegalArgumentException("Warehouse name cannot be null or empty");
+            }
+            if (unit.getEmployee() < 0) {
+                throw new IllegalArgumentException("Employee count cannot be negative");
+            }
+            if (unit.getBusinessCertificate() == null || unit.getBusinessCertificate().trim().isEmpty()) {
+                throw new IllegalArgumentException("Business certificate file path is null or empty");
+            }
+            if (unit.getFloorPlan() == null || unit.getFloorPlan().trim().isEmpty()) {
+                throw new IllegalArgumentException("Floor plan file path is null or empty");
+            }
+            if (unit.getInsurance() == null || unit.getInsurance().trim().isEmpty()) {
+                throw new IllegalArgumentException("Insurance file path is null or empty");
+            }
+
+            ps.setInt(1, userId);
+            ps.setString(2, truncate(unit.getWarehouseName(), 150));
+            ps.setString(3, truncate(unit.getLocation(), 255));
+            ps.setString(4, truncate(unit.getBusinessCertificate(), 2000));
+            ps.setString(5, truncate(unit.getFloorPlan(), 2000));
+            ps.setString(6, truncate(unit.getInsurance(), 2000));
+            ps.setString(7, truncate(unit.getArea(), 200));
+            ps.setInt(8, unit.getEmployee());
+            ps.setString(9, truncate(unit.getPhoneNumber(), 15));
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                LOGGER.warning("No rows affected when inserting StorageUnit for warehouse: " + unit.getWarehouseName());
+            }
+            return rows > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "SQLException saving StorageUnit for warehouse: ");
+            return false;
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.SEVERE, "Invalid input for StorageUnit: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    // saveTransportUnit với kiểm tra bổ sung
     public boolean saveTransportUnit(TransportUnit unit, int userId) {
-        // Kiểm tra role_id của user
         String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
             ps.setInt(1, userId);
@@ -457,15 +606,13 @@ public class UserDAO {
                 throw new IllegalArgumentException("User must have role_id = 4 (Transport Unit)");
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error checking user role: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
+            LOGGER.log(Level.SEVERE, "Error checking user role for transport unit: user_id=" + userId + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
             return false;
         }
 
-        // Sửa query để sử dụng transport_unit_id làm khóa chính
-        String query = "INSERT INTO TransportUnits (transport_unit_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, registration_status, created_at) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
+        String query = "INSERT INTO TransportUnits (transport_unit_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, insurance, registration_status, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-            // Kiểm tra dữ liệu đầu vào
             if (unit.getCompanyName() == null || unit.getCompanyName().trim().isEmpty()) {
                 throw new IllegalArgumentException("Company name cannot be null or empty");
             }
@@ -478,8 +625,14 @@ public class UserDAO {
             if (unit.getLoader() < 0) {
                 throw new IllegalArgumentException("Loader count cannot be negative");
             }
+            if (unit.getBusinessCertificate() == null || unit.getBusinessCertificate().trim().isEmpty()) {
+                throw new IllegalArgumentException("Business certificate file path is null or empty");
+            }
+            if (unit.getInsurance() == null || unit.getInsurance().trim().isEmpty()) {
+                throw new IllegalArgumentException("Insurance file path is null or empty");
+            }
 
-            ps.setInt(1, userId); // Sử dụng userId làm transport_unit_id
+            ps.setInt(1, userId);
             ps.setString(2, truncate(unit.getCompanyName(), 150));
             ps.setString(3, truncate(unit.getContactInfo(), 255));
             ps.setString(4, truncate(unit.getLocation(), 100));
@@ -487,14 +640,14 @@ public class UserDAO {
             ps.setBigDecimal(6, BigDecimal.valueOf(unit.getCapacity()).setScale(2, RoundingMode.HALF_UP));
             ps.setInt(7, unit.getLoader());
             ps.setString(8, truncate(unit.getBusinessCertificate(), 2000));
-
+            ps.setString(9, truncate(unit.getInsurance(), 2000));
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                LOGGER.warning("Eror: ");
+                LOGGER.warning("No rows affected when inserting TransportUnit for company: " + unit.getCompanyName());
             }
             return rows > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException saving TransportUnit: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
+            LOGGER.log(Level.SEVERE, "SQLException saving TransportUnit for company: ");
             return false;
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Invalid input for TransportUnit: " + e.getMessage(), e);
@@ -567,6 +720,100 @@ public class UserDAO {
         e.printStackTrace();
     }
     return 0;
+
+    public Users getUser2(String email, int roleId) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setInt(2, roleId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting user: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public List<Users> getUsersByRole2(int roleId) {
+        List<Users> users = new ArrayList<>();
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE role_id = ? AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Users user = new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+                users.add(user);
+            }
+            LOGGER.info("Fetched " + users.size() + " users for role_id: " + roleId);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching users by role: " + e.getMessage(), e);
+        }
+        return users;
+    }
+
+    public boolean userExists(int userId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi kiểm tra user_id " + userId + ": " + e.getMessage());
+            throw e;
+        }
+        return false;
+    }
+
+    public int getAdminUserId() throws SQLException {
+        String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 1 AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi lấy admin user_id: " + e.getMessage());
+            throw e;
+        }
+        return -1;
+    }
+
+    public int getTransportUnitId() throws SQLException {
+        String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 4 AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi lấy transport unit user_id: " + e.getMessage());
+            throw e;
+        }
+        return -1;
+    }
+
 }
     public List<User> getUsersByPage(int offset, int limit) {
     List<User> userList = new ArrayList<>();

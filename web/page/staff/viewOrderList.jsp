@@ -229,8 +229,13 @@ if (session.getAttribute("acc") == null) {
                     <div class="container-fluid">
                         <h2>Tổng quan đơn hàng</h2>
 
-                        <!-- Form lọc -->
-                        <form class="filter-form" action="${pageContext.request.contextPath}/orderList" method="get">
+                    <c:if test="${not empty errorMessage}">
+                        <div class="alert alert-danger" role="alert">
+                            ${errorMessage}
+                        </div>
+                    </c:if>
+                    <!-- Form lọc -->
+                    <form class="filter-form" action="${pageContext.request.contextPath}/orderList" method="get" id="filterForm">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <label>Trạng thái</label>
@@ -252,17 +257,20 @@ if (session.getAttribute("acc") == null) {
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label>ID đơn hàng</label>
-                                <input type="text" name="orderId" value="${orderId}" class="form-control" placeholder="Nhập ID đơn hàng">
+                                <input type="text" name="orderId" value="${orderId}" class="form-control" placeholder="Nhập ID đơn hàng" id="orderId">
+                                <div class="invalid-feedback" id="orderIdError"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <label>Tên đơn vị vận chuyển</label>
-                                <input type="text" name="transportUnitName" value="${transportUnitName}" class="form-control" placeholder="Nhập tên đơn vị vận chuyển">
+                                <input type="text" name="transportUnitName" value="${transportUnitName}" class="form-control" placeholder="Nhập tên đơn vị vận chuyển" id="transportUnitName">
+                                <div class="invalid-feedback" id="transportUnitNameError"></div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label>Tên đơn vị kho bãi</label>
-                                <input type="text" name="warehouseName" value="${warehouseName}" class="form-control" placeholder="Nhập tên kho bãi">
+                                <input type="text" name="warehouseName" value="${warehouseName}" class="form-control" placeholder="Nhập tên kho bãi" id="warehouseName">
+                                <div class="invalid-feedback" id="warehouseNameError"></div>
                             </div>
                             <div class="col-md-6 align-self-end mb-3">
                                 <button type="submit" class="btn btn-primary">Lọc</button>
@@ -275,12 +283,13 @@ if (session.getAttribute("acc") == null) {
                     <table class="table table-bordered mt-4">
                         <thead>
                             <tr>
-                                <th style="width:11%;">ID</th>
+                                <th style="width:7%;">ID</th>
                                 <th style="width:21%;">Khách hàng</th>
                                 <th style="width:16%;">Trạng thái</th>
                                 <th style="width:15%;">Ngày tạo</th>
-                                <th style="width:11%;">Tổng phí</th>
-                                <th style="width:10%;">Ngày giao</th>
+                                <th style="width:15%;">Tổng phí</th>
+                                <th style="width:15%;">Ngày giao</th>
+                                <th style="width:11%;">Chi tiết</th> <!-- Thêm cột tiêu đề -->
                             </tr>
                         </thead>
                         <tbody>
@@ -288,7 +297,6 @@ if (session.getAttribute("acc") == null) {
                                 <tr>
                                     <td>${order.orderId}</td>
                                     <td>${order.customerName != null ? order.customerName : 'N/A'}</td>
-                                    
                                     <td>
                                         <c:choose>
                                             <c:when test="${order.orderStatus == 'pending'}">
@@ -311,7 +319,7 @@ if (session.getAttribute("acc") == null) {
                                     <td>${order.createdAt}</td>
                                     <td>${order.totalFee}</td>
                                     <td>${order.deliveredAt != null ? order.deliveredAt : 'N/A'}</td>
-                                    <td> <a href="${pageContext.request.contextPath}/order/detailid/${order.orderId}">chi tiết</a> </td>
+                                    <td><a href="${pageContext.request.contextPath}/order/detailid/${order.orderId}">Chi tiết</a></td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -337,5 +345,42 @@ if (session.getAttribute("acc") == null) {
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById('filterForm').addEventListener('submit', function (event) {
+                let isValid = true;
+                const orderId = document.getElementById('orderId').value.trim();
+                const transportUnitName = document.getElementById('transportUnitName').value.trim();
+                const warehouseName = document.getElementById('warehouseName').value.trim();
+
+                document.getElementById('orderIdError').textContent = '';
+                document.getElementById('transportUnitNameError').textContent = '';
+                document.getElementById('warehouseNameError').textContent = '';
+
+                if (orderId !== '') {
+                    if (!/^\d+$/.test(orderId) || parseInt(orderId) <= 1) {
+                        document.getElementById('orderIdError').textContent = 'ID đơn hàng phải là số lớn hơn 1.';
+                        isValid = false;
+                    }
+                }
+
+                if (transportUnitName !== '') {
+                    if (!/^[a-zA-Z0-9\s]+$/.test(transportUnitName)) {
+                        document.getElementById('transportUnitNameError').textContent = 'Tên đơn vị vận chuyển chỉ được chứa chữ cái, số và khoảng trắng.';
+                        isValid = false;
+                    }
+                }
+
+                if (warehouseName !== '') {
+                    if (!/^[a-zA-Z0-9\s]+$/.test(warehouseName)) {
+                        document.getElementById('warehouseNameError').textContent = 'Tên đơn vị kho bãi chỉ được chứa chữ cái, số và khoảng trắng.';
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); 
+                }
+            });
+        </script>
     </body>
 </html>
