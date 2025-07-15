@@ -12,6 +12,18 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/AlertComplaint.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .status-normal { color: #10b981; background-color: #d1fae5; }
+        .status-warning { color: #f59e0b; background-color: #fef3c7; }
+        .status-danger { color: #ef4444; background-color: #fee2e2; }
+        .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .action-processed { color: #10b981; font-size: 18px; }
+        .action-pending { color: #6b7280; font-size: 18px; }
+        .btn-send-mail { background-color: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; }
+        .btn-send-mail:hover { background-color: #2563eb; }
+        .btn-send-mail:disabled { background-color: #9ca3af; cursor: not-allowed; }
+    </style>
 </head>
 <body>
 <div class="parent">
@@ -42,8 +54,8 @@
                         <i class="fas fa-building"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-number">${totalUnits}</div>
-                        <div class="stat-label">Tổng Đơn Vị</div>
+                        <div class="stat-number">${totalUnitsWithComplaints}</div>
+                        <div class="stat-label">Tổng Đơn Vị Có Phản Ánh</div>
                     </div>
                 </div>
 
@@ -53,7 +65,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-number">${totalComplaints}</div>
-                        <div class="stat-label">Tổng Phản Ánh</div>
+                        <div class="stat-label">Tổng Số Phản Ánh</div>
                     </div>
                 </div>
 
@@ -69,7 +81,7 @@
 
                 <div class="stat-card normal-units">
                     <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-content">
                         <div class="stat-number">${notSentWarnings}</div>
@@ -129,32 +141,56 @@
                         <tbody>
                         <c:forEach var="item" items="${complaints}" varStatus="loop">
                             <tr>
-                                <td>${loop.index + 1}</td>
+                                <td>${(currentPage - 1) * 10 + loop.index + 1}</td>
                                 <td>${item.unitName}</td>
                                 <td>${item.email}</td>
                                 <td>${item.address}</td>
                                 <td>${item.unitType == 'TRANSPORT' ? 'Vận chuyển' : 'Kho bãi'}</td>
                                 <td>${item.issueCount}</td>
-                                <td>${item.issueStatus}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${item.issueStatus == 'NORMAL'}">
+                                            <span class="status-badge status-normal">Bình thường</span>
+                                        </c:when>
+                                        <c:when test="${item.issueStatus == 'WARNING'}">
+                                            <span class="status-badge status-warning">Cảnh báo</span>
+                                        </c:when>
+                                        <c:when test="${item.issueStatus == 'DANGER'}">
+                                            <span class="status-badge status-danger">Nguy hiểm</span>
+                                        </c:when>
+                                    </c:choose>
+                                </td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${item.warningSent}">
-                                            <i class="fas fa-check-circle text-success"></i>
+                                            <i class="fas fa-check-circle action-processed" title="Đã xử lý"></i>
                                         </c:when>
                                         <c:otherwise>
-                                            <form method="POST" action="${pageContext.request.contextPath}/operator/alert-complaint">
-                                                <input type="hidden" name="action" value="sendWarning" />
-                                                <input type="hidden" name="unitId" value="${item.unitId}" />
-                                                <input type="hidden" name="unitType" value="${item.unitType}" />
-                                                <button type="submit" class="btn btn-sm btn-warning">
-                                                    <i class="fas fa-exclamation-circle"></i>
-                                                </button>
-                                            </form>
+                                            <i class="fas fa-clock action-pending" title="Chưa xử lý"></i>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></button>
+                                    <c:choose>
+                                        <c:when test="${item.warningSent}">
+                                            <button class="btn-send-mail" disabled>
+                                                <i class="fas fa-envelope"></i> Đã gửi
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form method="POST" action="${pageContext.request.contextPath}/operator/alert-complaint" style="display: inline;">
+                                                <input type="hidden" name="action" value="sendWarning" />
+                                                <input type="hidden" name="unitId" value="${item.unitId}" />
+                                                <input type="hidden" name="unitType" value="${item.unitType}" />
+                                                <input type="hidden" name="page" value="${currentPage}" />
+                                                <input type="hidden" name="unitTypeFilter" value="${unitType}" />
+                                                <input type="hidden" name="statusFilter" value="${status}" />
+                                                <button type="submit" class="btn-send-mail" onclick="return confirm('Bạn có chắc chắn muốn gửi mail cảnh báo cho đơn vị này?')">
+                                                    <i class="fas fa-envelope"></i> Gửi mail
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -162,12 +198,41 @@
                     </table>
                 </div>
 
+                <!-- Pagination -->
                 <div class="pagination-container">
                     <c:if test="${totalPages > 1}">
                         <div class="pagination">
+                            <c:if test="${currentPage > 1}">
+                                <a class="page-link" href="${pageContext.request.contextPath}/operator/alert-complaint?page=${currentPage - 1}&unitType=${unitType}&status=${status}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </c:if>
+                            
                             <c:forEach begin="1" end="${totalPages}" var="p">
-                                <a class="page-link ${p == currentPage ? 'active' : ''}" href="${pageContext.request.contextPath}/operator/alert-complaint?page=${p}&unitType=${unitType}&status=${status}">${p}</a>
+                                <c:if test="${p <= 3 || p >= totalPages - 2 || (p >= currentPage - 1 && p <= currentPage + 1)}">
+                                    <a class="page-link ${p == currentPage ? 'active' : ''}" 
+                                       href="${pageContext.request.contextPath}/operator/alert-complaint?page=${p}&unitType=${unitType}&status=${status}">
+                                        ${p}
+                                    </a>
+                                </c:if>
+                                <c:if test="${p == 4 && currentPage > 5}">
+                                    <span class="page-link">...</span>
+                                </c:if>
+                                <c:if test="${p == totalPages - 3 && currentPage < totalPages - 4}">
+                                    <span class="page-link">...</span>
+                                </c:if>
                             </c:forEach>
+                            
+                            <c:if test="${currentPage < totalPages}">
+                                <a class="page-link" href="${pageContext.request.contextPath}/operator/alert-complaint?page=${currentPage + 1}&unitType=${unitType}&status=${status}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </c:if>
+                        </div>
+                        
+                        <div class="pagination-info">
+                            Hiển thị ${(currentPage - 1) * 10 + 1} - ${currentPage * 10 > totalRecords ? totalRecords : currentPage * 10} 
+                            trong tổng số ${totalRecords} bản ghi
                         </div>
                     </c:if>
                 </div>

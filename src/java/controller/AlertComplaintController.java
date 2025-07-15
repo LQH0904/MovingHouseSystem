@@ -12,7 +12,7 @@ import java.util.List;
 @WebServlet(name = "AlertComplaintController", urlPatterns = {"/operator/alert-complaint"})
 public class AlertComplaintController extends HttpServlet {
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 5;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -33,19 +33,20 @@ public class AlertComplaintController extends HttpServlet {
         int total = dao.countFiltered(unitType, issueStatus);
         int totalPages = (int) Math.ceil((double) total / PAGE_SIZE);
 
-        // Các thống kê
-        int totalUnits = dao.countAllUnits();
-        int totalComplaints = dao.countAllComplaints();
-        int sentWarnings = dao.countWarningsSent();
-        int notSentWarnings = dao.countWarningsNotSent();
+        // Các thống kê theo yêu cầu mới
+        int totalUnitsWithComplaints = dao.countUnitsWithComplaints(); // Tổng đơn vị có phản ánh
+        int totalComplaints = dao.countAllComplaints(); // Tổng số phản ánh
+        int sentWarnings = dao.countUnitsWithWarningsSent(); // Đã cảnh báo
+        int notSentWarnings = dao.countUnitsWithWarningsNotSent(); // Chưa cảnh báo
 
         request.setAttribute("complaints", complaints);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalRecords", total);
         request.setAttribute("unitType", unitType);
         request.setAttribute("status", issueStatus);
 
-        request.setAttribute("totalUnits", totalUnits);
+        request.setAttribute("totalUnitsWithComplaints", totalUnitsWithComplaints);
         request.setAttribute("totalComplaints", totalComplaints);
         request.setAttribute("sentWarnings", sentWarnings);
         request.setAttribute("notSentWarnings", notSentWarnings);
@@ -60,9 +61,31 @@ public class AlertComplaintController extends HttpServlet {
         if ("sendWarning".equals(action)) {
             int unitId = Integer.parseInt(request.getParameter("unitId"));
             String unitType = request.getParameter("unitType");
+            
             AlertComplaintDAO dao = new AlertComplaintDAO();
             dao.markWarningSent(unitId, unitType);
-            // Optionally: trigger email sending logic here
+            
+            // TODO: Thêm logic gửi email thực tế ở đây
+            // EmailService.sendWarningEmail(unitId, unitType);
+            
+            // Giữ lại các tham số filter và page
+            String page = request.getParameter("page");
+            String unitTypeFilter = request.getParameter("unitTypeFilter");
+            String statusFilter = request.getParameter("statusFilter");
+            
+            String redirectUrl = request.getContextPath() + "/operator/alert-complaint?";
+            if (page != null && !page.isEmpty()) {
+                redirectUrl += "page=" + page + "&";
+            }
+            if (unitTypeFilter != null && !unitTypeFilter.isEmpty()) {
+                redirectUrl += "unitType=" + unitTypeFilter + "&";
+            }
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                redirectUrl += "status=" + statusFilter + "&";
+            }
+            
+            response.sendRedirect(redirectUrl);
+            return;
         }
         doGet(request, response);
     }

@@ -63,6 +63,11 @@ public class AlertComplaintDAO {
             WHERE row_num BETWEEN ? AND ?
         """;
 
+        // Thêm điều kiện lọc nếu có
+        if (unitType != null && !unitType.isEmpty()) {
+            sql = sql.replace("WHERE t.issue_count > 0", "WHERE t.issue_count > 0 AND t.unit_type = '" + unitType + "'");
+        }
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -82,9 +87,8 @@ public class AlertComplaintDAO {
                         status = "NORMAL";
                     }
 
-                    if ((unitType == null || unitType.isEmpty() || unitType.equals(currentUnitType)) &&
-                        (issueStatus == null || issueStatus.isEmpty() || issueStatus.equals(status))) {
-
+                    // Lọc theo trạng thái nếu có
+                    if (issueStatus == null || issueStatus.isEmpty() || issueStatus.equals(status)) {
                         AlertComplaint ac = new AlertComplaint();
                         ac.setUnitId(rs.getInt("unit_id"));
                         ac.setUnitName(rs.getString("unit_name"));
@@ -125,13 +129,24 @@ public class AlertComplaintDAO {
         return getFilteredUnitComplaints(unitType, issueStatus, 0, Integer.MAX_VALUE).size();
     }
 
-    public int countAllUnits() {
+    // Đếm tổng số đơn vị có phản ánh
+    public int countUnitsWithComplaints() {
         String sql = """
             SELECT COUNT(*) AS total FROM (
-                SELECT transport_unit_id AS id FROM TransportUnits
+                SELECT t.transport_unit_id AS unit_id
+                FROM TransportUnits t
+                JOIN Orders o ON o.transport_unit_id = t.transport_unit_id
+                JOIN Issues i ON i.order_id = o.order_id
+                GROUP BY t.transport_unit_id
+                
                 UNION
-                SELECT storage_unit_id AS id FROM StorageUnits
-            ) AS combined
+                
+                SELECT s.storage_unit_id AS unit_id
+                FROM StorageUnits s
+                JOIN Orders o ON o.storage_unit_id = s.storage_unit_id
+                JOIN Issues i ON i.order_id = o.order_id
+                GROUP BY s.storage_unit_id
+            ) AS units_with_complaints
         """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -155,8 +170,27 @@ public class AlertComplaintDAO {
         return 0;
     }
 
-    public int countWarningsSent() {
-        String sql = "SELECT COUNT(DISTINCT order_id) AS total FROM Issues WHERE warning_sent = 1";
+    // Đếm số đơn vị đã được cảnh báo
+    public int countUnitsWithWarningsSent() {
+        String sql = """
+            SELECT COUNT(*) AS total FROM (
+                SELECT t.transport_unit_id AS unit_id
+                FROM TransportUnits t
+                JOIN Orders o ON o.transport_unit_id = t.transport_unit_id
+                JOIN Issues i ON i.order_id = o.order_id
+                WHERE i.warning_sent = 1
+                GROUP BY t.transport_unit_id
+                
+                UNION
+                
+                SELECT s.storage_unit_id AS unit_id
+                FROM StorageUnits s
+                JOIN Orders o ON o.storage_unit_id = s.storage_unit_id
+                JOIN Issues i ON i.order_id = o.order_id
+                WHERE i.warning_sent = 1
+                GROUP BY s.storage_unit_id
+            ) AS units_with_warnings
+        """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -167,8 +201,27 @@ public class AlertComplaintDAO {
         return 0;
     }
 
-    public int countWarningsNotSent() {
-        String sql = "SELECT COUNT(DISTINCT order_id) AS total FROM Issues WHERE warning_sent = 0";
+    // Đếm số đơn vị chưa được cảnh báo
+    public int countUnitsWithWarningsNotSent() {
+        String sql = """
+            SELECT COUNT(*) AS total FROM (
+                SELECT t.transport_unit_id AS unit_id
+                FROM TransportUnits t
+                JOIN Orders o ON o.transport_unit_id = t.transport_unit_id
+                JOIN Issues i ON i.order_id = o.order_id
+                WHERE i.warning_sent = 0
+                GROUP BY t.transport_unit_id
+                
+                UNION
+                
+                SELECT s.storage_unit_id AS unit_id
+                FROM StorageUnits s
+                JOIN Orders o ON o.storage_unit_id = s.storage_unit_id
+                JOIN Issues i ON i.order_id = o.order_id
+                WHERE i.warning_sent = 0
+                GROUP BY s.storage_unit_id
+            ) AS units_without_warnings
+        """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
