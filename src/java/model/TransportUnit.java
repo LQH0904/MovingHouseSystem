@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package model;
 
 /**
@@ -21,12 +25,6 @@ public class TransportUnit {
 
     public TransportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, double capacity, int loader, String businessCertificate) {
         this.transportUnitId = transportUnitId;
-    private String registrationStatus;
-    private String insurance;   // thêm
-
-    public TransportUnit(String companyName, String contactInfo, String location,
-                         int vehicleCount, double capacity, int loader,
-                         String businessCertificate, String registrationStatus, String insurance) {
         this.companyName = companyName;
         this.contactInfo = contactInfo;
         this.registrationStatus = registrationStatus;
@@ -36,8 +34,6 @@ public class TransportUnit {
         this.capacity = capacity;
         this.loader = loader;
         this.businessCertificate = businessCertificate;
-        this.registrationStatus = registrationStatus;
-        this.insurance = insurance;
     }
 
     public int getTransportUnitId() {
@@ -48,7 +44,6 @@ public class TransportUnit {
         this.transportUnitId = transportUnitId;
     }
 
-    // Getters and Setters
     public String getCompanyName() {
         return companyName;
     }
@@ -127,12 +122,4 @@ public class TransportUnit {
     }
     
     
-
-    public String getInsurance() {
-        return insurance;
-    }
-
-    public void setInsurance(String insurance) {
-        this.insurance = insurance;
-    }
 }
