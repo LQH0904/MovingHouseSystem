@@ -563,14 +563,14 @@ public class UserDAO {
             if (unit.getEmployee() < 0) {
                 throw new IllegalArgumentException("Employee count cannot be negative");
             }
-            if (unit.getBusinessCertificate() == null || !unit.getBusinessCertificate().startsWith("/img/")) {
-                throw new IllegalArgumentException("Business certificate file path is invalid or null");
+            if (unit.getBusinessCertificate() == null || unit.getBusinessCertificate().trim().isEmpty()) {
+                throw new IllegalArgumentException("Business certificate file path is null or empty");
             }
-            if (unit.getFloorPlan() == null || !unit.getFloorPlan().startsWith("/img/")) {
-                throw new IllegalArgumentException("Floor plan file path is invalid or null");
+            if (unit.getFloorPlan() == null || unit.getFloorPlan().trim().isEmpty()) {
+                throw new IllegalArgumentException("Floor plan file path is null or empty");
             }
-            if (unit.getInsurance() == null || !unit.getInsurance().startsWith("/img/")) {
-                throw new IllegalArgumentException("Insurance file path is invalid or null");
+            if (unit.getInsurance() == null || unit.getInsurance().trim().isEmpty()) {
+                throw new IllegalArgumentException("Insurance file path is null or empty");
             }
 
             ps.setInt(1, userId);
@@ -578,7 +578,7 @@ public class UserDAO {
             ps.setString(3, truncate(unit.getLocation(), 255));
             ps.setString(4, truncate(unit.getBusinessCertificate(), 2000));
             ps.setString(5, truncate(unit.getFloorPlan(), 2000));
-            ps.setString(6, truncate(unit.getInsurance(), 255));
+            ps.setString(6, truncate(unit.getInsurance(), 2000));
             ps.setString(7, truncate(unit.getArea(), 200));
             ps.setInt(8, unit.getEmployee());
             ps.setString(9, truncate(unit.getPhoneNumber(), 15));
@@ -588,7 +588,7 @@ public class UserDAO {
             }
             return rows > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException saving StorageUnit for warehouse: " + unit.getWarehouseName() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "SQLException saving StorageUnit for warehouse: ");
             return false;
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Invalid input for StorageUnit: " + e.getMessage(), e);
@@ -625,11 +625,11 @@ public class UserDAO {
             if (unit.getLoader() < 0) {
                 throw new IllegalArgumentException("Loader count cannot be negative");
             }
-            if (unit.getBusinessCertificate() == null || !unit.getBusinessCertificate().startsWith("/img/")) {
-                throw new IllegalArgumentException("Business certificate file path is invalid or null");
+            if (unit.getBusinessCertificate() == null || unit.getBusinessCertificate().trim().isEmpty()) {
+                throw new IllegalArgumentException("Business certificate file path is null or empty");
             }
-            if (unit.getInsurance() == null || !unit.getInsurance().startsWith("/img/")) {
-                throw new IllegalArgumentException("Insurance file path is invalid or null");
+            if (unit.getInsurance() == null || unit.getInsurance().trim().isEmpty()) {
+                throw new IllegalArgumentException("Insurance file path is null or empty");
             }
 
             ps.setInt(1, userId);
@@ -640,14 +640,14 @@ public class UserDAO {
             ps.setBigDecimal(6, BigDecimal.valueOf(unit.getCapacity()).setScale(2, RoundingMode.HALF_UP));
             ps.setInt(7, unit.getLoader());
             ps.setString(8, truncate(unit.getBusinessCertificate(), 2000));
-            ps.setString(9, truncate(unit.getInsurance(), 255));
+            ps.setString(9, truncate(unit.getInsurance(), 2000));
             int rows = ps.executeUpdate();
             if (rows == 0) {
                 LOGGER.warning("No rows affected when inserting TransportUnit for company: " + unit.getCompanyName());
             }
             return rows > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException saving TransportUnit for company: " + unit.getCompanyName() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "SQLException saving TransportUnit for company: ");
             return false;
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Invalid input for TransportUnit: " + e.getMessage(), e);
@@ -714,11 +714,10 @@ public class UserDAO {
         }
         return users;
     }
-    
+
     public boolean userExists(int userId) throws SQLException {
         String query = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -733,9 +732,7 @@ public class UserDAO {
 
     public int getAdminUserId() throws SQLException {
         String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 1 AND status = 'active'";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt("user_id");
             }
@@ -748,9 +745,7 @@ public class UserDAO {
 
     public int getTransportUnitId() throws SQLException {
         String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 4 AND status = 'active'";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt("user_id");
             }
@@ -760,5 +755,5 @@ public class UserDAO {
         }
         return -1;
     }
-    
+
 }

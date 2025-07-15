@@ -49,9 +49,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="${pageContext.request.contextPath}/sendNotification"><i class="bi bi-send-fill"></i>Gửi Thông báo</a>
                             </li>
-<!--                            <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link" href="${pageContext.request.contextPath}/notifications"><i class="bi bi-bell-fill"></i>Thông báo</a>
-                            </li>-->
+                            </li>
                         </c:if>
                         <li class="nav-item">
                             <a class="nav-link" href="javascript:void(0);"><i class="bi bi-person-circle"></i>Tài Khoản</a>
