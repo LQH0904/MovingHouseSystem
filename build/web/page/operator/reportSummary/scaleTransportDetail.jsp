@@ -80,9 +80,10 @@ if (session.getAttribute("acc") == null) {
 
             .filter-form {
                 display: flex;
-                gap: 20px;
-                align-items: end;
+                gap: 17%;
+                align-items: center;
                 flex-wrap: wrap;
+                justify-content: center;
             }
 
             .filter-group {
@@ -1073,11 +1074,11 @@ if (session.getAttribute("acc") == null) {
             </svg>
         </span>
     </div>
-    
+
 
     <script>
         // Show loading overlay
-        
+
 
         // Hide loading overlay
         function hideLoading() {

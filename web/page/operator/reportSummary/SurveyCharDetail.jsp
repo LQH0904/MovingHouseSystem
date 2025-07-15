@@ -21,7 +21,7 @@
                 color: white;
                 padding: 10px 15px;
                 border-radius: 20px;
-                margin-bottom: 25px;
+                margin-bottom: 15px;
                 box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(255, 255, 255, 0.2);
@@ -43,7 +43,7 @@
             .filter-header {
                 display: flex;
                 align-items: center;
-                margin-bottom: -35px;
+                margin-bottom:-10px;
                 position: relative;
                 z-index: 1;
             }
@@ -500,7 +500,7 @@
             </div>
             <div class="div3">
                 <div style="padding: 20px;">
-                    <h2 style="text-align: center; color: #1e293b; margin-bottom: 30px;">
+                    <h2 style="text-align: center; color: #1e293b; margin-bottom: 15px;">
                         📋 Chi Tiết Khảo Sát Khách Hàng
                     </h2>
                     
@@ -564,7 +564,7 @@
                             <% for (CustomerSurvey survey : surveys) { %>
                                 <div class="survey-card">
                                     <div class="card-header">
-                                        <h3>Khảo sát #<%= survey.getSurveyId() %></h3>
+                                        <h3>Khảo sát #<%= survey.getSurveyId() %> (ID người khảo sát: <%= survey.getUserId() %>)</h3>
                                         <div class="survey-date">📅 <%= survey.getSurveyDate().substring(0, 16).replace("T", " ") %></div>
                                     </div>
                                     

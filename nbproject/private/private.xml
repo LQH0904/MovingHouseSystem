@@ -16,9 +16,17 @@
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/model/CustomerSurvey.java</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/HistorySurveyTest.jsp</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_config.css</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/homeOperator.jsp</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/HistorySurveyTestController.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/SurveyCustomerCharController.java</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/SurveyCustomer.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/scaleTransportDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/StorageReportController.java</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/HistorySurveyTestDAO.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/SurveyCustomerCharDataDAO.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCharDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCustomerChar.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/ScaleAndCapacityReport.java</file>
         </group>
     </open-files>
 </project-private>
