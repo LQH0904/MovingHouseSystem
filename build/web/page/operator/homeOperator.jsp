@@ -5,6 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
 String redirectURL = null;
@@ -13,6 +14,11 @@ if (session.getAttribute("acc") == null) {
     response.sendRedirect(request.getContextPath() + redirectURL);
     return;
 }
+
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
 %>
 <!DOCTYPE html>
 <html>
@@ -36,22 +42,33 @@ if (session.getAttribute("acc") == null) {
 
                 <div class="div3">
                     <div class="content-part">
-                        <div class="user">
-                            <div>
-                                <div class="title_form_1">Về người dùng</div>
+                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng <%= currentUsername %> đến trang dành cho quản trị viên</div>
+                    <div class="user">
+                        <div>
+                            <div class="title_form_1">Về người dùng</div>
+                        </div>
+
+                        <div class="user-char">
+                            <div class="title-user">
+                                <div class="title1">Tổng quan người dung</div>
+                                <p class="title2">Tổng số lượng người dùng trong hệ thống, đại diện cho cộng đồng đa dạng các cá nhân đã đăng ký, bao gồm nhiều vai trò và 
+                                    cấp độ truy cập khác nhau.</p>                              
                             </div>
-                            
-                            <div class="user-char">
-                                <div class="title-user">
-                                    <div class="title1">Tổng quan người dung</div>
-                                    <p class="title2">Tổng số lượng người dùng trong hệ thống, đại diện cho cộng đồng đa dạng các cá nhân đã đăng ký, bao gồm nhiều vai trò và 
-                                        cấp độ truy cập khác nhau.</p>                              
-                                </div>
-                                <div class="char-use">
-                                    <ul class="stats-list">
+                            <div class="char-use">
+                                <ul class="stats-list">
                                     <c:forEach var="role" items="${usersByRole}" varStatus="status">
                                         <li class="stats-item">
-                                            <span class="stats-label">${role.key}</span>
+                                            <span class="stats-label">
+                                                <c:choose>
+                                                    <c:when test="${role.key == 'Admin'}">Quản trị viên</c:when>
+                                                    <c:when test="${role.key == 'Operator'}">Điều hành viên</c:when>
+                                                    <c:when test="${role.key == 'Transport Unit'}">Đơn vị vận chuyển</c:when>
+                                                    <c:when test="${role.key == 'Customer'}">Khách hàng</c:when>
+                                                    <c:when test="${role.key == 'Staff'}">Nhân viên</c:when>
+                                                    <c:when test="${role.key == 'Storage Unit'}">Đơn vị lưu trữ</c:when>
+                                                    <c:otherwise>${role.key}</c:otherwise>
+                                                </c:choose>
+                                            </span>
                                             <div class="stats-bar">
                                                 <div class="stats-progress
                                                      <c:choose>
@@ -95,10 +112,10 @@ if (session.getAttribute("acc") == null) {
                             Các vấn đề được phân loại theo trạng thái xử lý:
                         </div>
 
-                        <span class="status-highlight status-open">"open" (mở)</span>,
-                        <span class="status-highlight status-progress">"in progress" (đang xử lý)</span>,
-                        <span class="status-highlight status-resolved">"resolved" (đã giải quyết)</span>, và
-                        <span class="status-highlight status-escalated">"escalated" (leo thang)</span>.
+                        <span class="status-highlight status-open">" mở "</span>,
+                        <span class="status-highlight status-progress">" đang xử lý "</span>,
+                        <span class="status-highlight status-resolved">" đã giải quyết "</span>, và
+                        <span class="status-highlight status-escalated">" leo thang "</span>.
 
                         <div class="description-text">
                             Đây là cách trực quan giúp theo dõi tiến độ và quản lý hiệu quả các vấn đề trong hệ thống.
@@ -106,7 +123,7 @@ if (session.getAttribute("acc") == null) {
                     </div>
                     <div id="chartTreeMap"></div>
                 </div>
-                 
+
                 <dix class="content-table">
                     <!-- Lịch bên phải trong div3 -->
                     <div class="calendar-widget">
@@ -134,9 +151,9 @@ if (session.getAttribute("acc") == null) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <img src="img/Lukasz Buda.gif" alt="test ảnh" style="width: 375px; padding: 10px; margin: 15px 0; border-radius: 22px;">
-                    
+
                     <div class="table-issue" style="width: 100%">
                         <table border="1">
                             <thead>
@@ -147,10 +164,25 @@ if (session.getAttribute("acc") == null) {
                             </thead>
                             <tbody>
                                 <c:forEach var="user" items="${topUsers}" varStatus="status">
-                                <tr>
-                                    <td>${user.key}</td>
-                                    <td>${user.value}</td>
-                                </tr>
+                                    <tr>
+                                        <td>${user.key}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${user.value eq 'open'}">Mở</c:when>
+                                                <c:when test="${user.value eq 'in_progress'}">Đang xử lý</c:when>
+                                                <c:when test="${user.value eq 'resolved'}">Đã giải quyết</c:when>
+                                                <c:when test="${user.value eq 'escalated'}">Leo thang</c:when>
+                                                <c:when test="${user.value eq 'pending'}">Chờ xử lý</c:when>
+                                                <c:when test="${user.value eq 'closed'}">Đã đóng</c:when>
+                                                <c:when test="${user.value eq 'cancelled'}">Đã hủy</c:when>
+                                                <c:when test="${user.value eq 'on hold'}">Tạm dừng</c:when>
+                                                <c:when test="${user.value eq 'review'}">Đang xem xét</c:when>
+                                                <c:when test="${user.value eq 'approved'}">Đã phê duyệt</c:when>
+                                                <c:when test="${user.value eq 'rejected'}">Đã từ chối</c:when>
+                                                <c:otherwise>${user.value}</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
                                 </c:forEach>
                                 <tr>
                                     <td>...</td>
@@ -164,7 +196,7 @@ if (session.getAttribute("acc") == null) {
 
 
 
-                
+
             </div>
         </div>
 
@@ -173,19 +205,33 @@ if (session.getAttribute("acc") == null) {
             // Tạo dữ liệu cho biểu đồ
             const userLabels = [
             <c:forEach var="role" items="${usersByRole}" varStatus="status">
-            "${role.key}"<c:if test="${!status.last}">,</c:if>
+            "<c:out value='${role.key eq "Admin" ? "Quản trị viên" : 
+                                 role.key eq "Operator" ? "Điều hành viên" : 
+                                 role.key eq "Transport Unit" ? "Đơn vị vận chuyển" : 
+                                 role.key eq "Customer" ? "Khách hàng" : 
+                                 role.key eq "Staff" ? "Nhân viên" : 
+                                 role.key eq "Storage Unit" ? "Đơn vị lưu trữ" : role.key}' />"<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
+
             const userPercentages = [
             <c:forEach var="role" items="${usersByRole}" varStatus="status">
                 ${(role.value * 100.0 / totalUsers)}<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
+
             const userCounts = [
             <c:forEach var="role" items="${usersByRole}" varStatus="status">
                 ${role.value}<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
+
+            const roleIds = [
+            <c:forEach var="role" items="${usersByRole}" varStatus="status">
+                ${roleIds[role.key]}<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+            ];
+
             // Dữ liệu cho biểu đồ
             const chartData = {
                 labels: userLabels,
@@ -248,16 +294,12 @@ if (session.getAttribute("acc") == null) {
             // Tạo custom legend - PHẦN ĐÃ SỬA
             function createCustomLegend() {
                 const legendContainer = document.getElementById('legend');
-                console.log('legendContainer:', legendContainer);
-                console.log('chartData.labels:', chartData.labels);
-                console.log('userCounts:', userCounts);
                 // Xóa legend cũ nếu có
                 legendContainer.innerHTML = '';
                 chartData.labels.forEach((label, index) => {
                     const percentage = chartData.datasets[0].data[index];
                     const count = userCounts[index];
                     const color = chartData.datasets[0].backgroundColor[index];
-                    console.log(`Item ${index}:`, {label, percentage, count, color});
                     const legendItem = document.createElement('div');
                     legendItem.className = 'legend-item';
                     legendItem.style.borderLeftColor = color;
@@ -266,12 +308,6 @@ if (session.getAttribute("acc") == null) {
                 <div class="legend-text">\${label}</div>
                 <div class="legend-value">\${percentage.toFixed(1)}% (\${count})</div>
             `;
-                    console.log('Creating legend with data:', {
-                        labels: chartData.labels,
-                        ata: chartData.datasets[0].data,
-                        userCounts: userCounts
-                    });
-                    console.log(legendItem.innerHTML);
                     // Thêm hiệu ứng hover
                     legendItem.addEventListener('mouseenter', () => {
                         doughnutChart.setActiveElements([{datasetIndex: 0, index: index}]);
@@ -281,6 +317,16 @@ if (session.getAttribute("acc") == null) {
                         doughnutChart.setActiveElements([]);
                         doughnutChart.update('none');
                     });
+
+                    // SỬA ĐOẠN NÀY - Click event với roleId từ array
+                    legendItem.addEventListener('click', () => {
+                        const baseUrl = 'http://localhost:9999/HouseMovingSystem/UserListServlet';
+                        const roleId = roleIds[index]; // Lấy roleId từ array bằng index
+                        const url = `\${baseUrl}?roleId=\${roleId}`;
+
+                        window.location.href = url;
+                    });
+
                     legendContainer.appendChild(legendItem);
                 });
             }
@@ -357,7 +403,17 @@ if (session.getAttribute("acc") == null) {
             //Hiển thị thống kê issue
             const issueStatusLabels = [
             <c:forEach var="stat" items="${issueStats}" varStatus="status">
-            "${stat.key}"<c:if test="${!status.last}">,</c:if>
+            "<c:out value='${stat.key eq "open" ? "Mở" : 
+                                 stat.key eq "in_progress" ? "Đang xử lý" : 
+                                 stat.key eq "resolved" ? "Đã giải quyết" : 
+                                 stat.key eq "escalated" ? "Leo thang" :
+                                 stat.key eq "pending" ? "Chờ xử lý" :
+                                 stat.key eq "closed" ? "Đã đóng" :
+                                 stat.key eq "cancelled" ? "Đã hủy" :
+                                 stat.key eq "on hold" ? "Tạm dừng" :
+                                 stat.key eq "review" ? "Đang xem xét" :
+                                 stat.key eq "approved" ? "Đã phê duyệt" :
+                                 stat.key eq "rejected" ? "Đã từ chối" : stat.key}' />"<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
             const issueStatusValues = [
@@ -399,7 +455,7 @@ if (session.getAttribute("acc") == null) {
                     });
                 }
 
-                return data.sort((a, b) => b.value - a.value); // Sắp xếp theo giá trị giảm dần
+                return data;
             }
 
 // Khởi tạo biểu đồ Treemap
@@ -442,7 +498,7 @@ if (session.getAttribute("acc") == null) {
                             left: 'center',
                             top: 80,
                             roam: false, // Tắt zoom và pan
-                            nodeClick: false, // Tắt click vào node
+                            nodeClick: true, // Tắt click vào node
                             sort: 'desc', // Sắp xếp theo giá trị giảm dần
                             squareRatio: 0.6, // Điều chỉnh tỷ lệ để tạo layout 2 cột
                             breadcrumb: {
@@ -496,6 +552,35 @@ if (session.getAttribute("acc") == null) {
                 };
                 // Thiết lập option và render biểu đồ
                 myChart.setOption(option);
+                // THÊM ĐOẠN CODE XỬ LÝ CLICK
+                myChart.on('click', function (params) {
+                    if (params.componentType === 'series' && params.data) {
+                        // Lấy tên trạng thái từ data được click
+                        const statusName = params.data.name;
+
+                        // Tạo URL với tham số statusFilter
+                        const baseUrl = 'http://localhost:9999/HouseMovingSystem/ComplaintServlet';
+                        const url = `\${baseUrl}?search=&statusFilter=\${encodeURIComponent(statusName)}&priorityFilter=`;
+
+                        console.log('Redirecting to:', url); // Debug log
+
+                        // Chuyển hướng đến trang ComplaintServlet
+                        window.location.href = url;
+                    }
+                });
+
+// 3. Có thể thêm cursor pointer để người dùng biết có thể click
+// Thêm CSS này vào phần style:
+                const additionalStyle = document.createElement('style');
+                additionalStyle.textContent += `
+#chartTreeMap {
+    cursor: pointer;
+}
+#chartTreeMap canvas {
+    cursor: pointer !important;
+}
+`;
+                document.head.appendChild(additionalStyle);
                 // Responsive - tự động resize khi window thay đổi kích thước
                 window.addEventListener('resize', function () {
                     myChart.resize();

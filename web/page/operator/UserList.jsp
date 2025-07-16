@@ -23,13 +23,16 @@
                         <form method="get" action="<%= request.getContextPath() %>/UserListServlet" class="role-select-form">
                         <select name="roleId" onchange="this.form.submit()" class="role-select">
                             <option value="">Hiển thị tất cả</option>
-
+                            <option value="1" <%= "1".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị quản trị viên</option>                            
                             <option value="2" <%= "2".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị người điều hành</option>
                             <option value="3" <%= "3".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị Nhân viên</option>
                             <option value="4" <%= "4".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị đơn vị vận chuyển</option>
                             <option value="5" <%= "5".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị kho bãi</option>
                             <option value="6" <%= "6".equals(request.getParameter("roleId")) ? "selected" : "" %>>Hiển thị khách hàng</option>
                         </select>
+<input type="text" name="searchKeyword" value="<%= request.getParameter("searchKeyword") != null ? request.getParameter("searchKeyword") : "" %>" />
+
+        <button type="submit" class="search-btn">Tìm kiếm</button>
                     </form>
 
                     <button class="add-user-btn" onclick="window.location.href = '<%= request.getContextPath() %>/page/operator/AddUser.jsp'">Thêm Người Dùng</button>
@@ -60,8 +63,10 @@
                             <td><%= user.getRole().getRoleName() %></td>
                             <td><%= user.getStatus().equalsIgnoreCase("active") ? "Đang hoạt động" : "Ngưng hoạt động" %></td>
                             <td>
-                                
-                                <button class="delete-btn" onclick="showConfirmDelete(<%= user.getUserId() %>, '<%= user.getUsername() %>', '<%= user.getEmail() %>', '<%= user.getRole().getRoleName() %>')">Xóa</button>
+                                <c:if test="${user.role.roleId != 1}">
+                                    <button class="detail-btn" onclick="window.location.href = '<%= request.getContextPath() %>/DetailUserServlet?id=<%= user.getUserId() %>'">Chi tiết</button>
+                                    <button class="delete-btn" onclick="showConfirmDelete(<%= user.getUserId() %>, '<%= user.getUsername() %>', '<%= user.getEmail() %>', '<%= user.getRole().getRoleName() %>')">Xóa</button>
+                                </c:if>                           
                             </td>
                         </tr>
                         <%
@@ -74,21 +79,21 @@
                 </table>
                 <div class="pagination-wrapper">
 
-    <c:if test="${totalPages > 1}">
-        <div class="pagination">
-            <c:forEach var="i" begin="1" end="${totalPages}">
-                <c:choose>
-                    <c:when test="${i == currentPage}">
-                        <span class="page-link active">${i}</span>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="UserListServlet?page=${i}" class="page-link">${i}</a>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-        </div>
-    </c:if>
-</div>
+                    <c:if test="${totalPages > 1}">
+                        <div class="pagination">
+                            <c:forEach var="i" begin="1" end="${totalPages}">
+                                <c:choose>
+                                    <c:when test="${i == currentPage}">
+                                        <span class="page-link active">${i}</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="UserListServlet?page=${i}" class="page-link">${i}</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </div>
+                    </c:if>
+                </div>
 
                 <div id="deleteModal" class="modal">
                     <div class="modal-content">

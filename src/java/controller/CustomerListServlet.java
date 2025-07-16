@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-@WebServlet("/CustomerListServlet")
+
 public class CustomerListServlet extends HttpServlet {
     private static final int USERS_PER_PAGE = 15;
 

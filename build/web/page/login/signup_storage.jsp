@@ -122,17 +122,6 @@
                     font-size: 0.9rem;
                 }
             }
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-            }
-
             .modal {
                 display: none;
                 position: fixed;
@@ -215,6 +204,7 @@
                 white-space: pre-wrap;
                 margin-top: 5px;
             }
+            
         </style>
     </head>
     <body>
@@ -398,5 +388,38 @@
                 });
             });
         </script>
+        <script>
+            function toggleButton() {
+                const checkbox = document.getElementById("agreeCheck");
+                const button = document.getElementById("confirmBtn");
+                if (button) {
+                    button.disabled = !checkbox.checked;
+                }
+            }
+
+            function showModal() {
+                document.getElementById("overlay").style.display = "block";
+                document.getElementById("policyModal").style.display = "block";
+                fetch('${pageContext.request.contextPath}/get-policy-data')
+                        .then(response => {
+                            if (!response.ok)
+                                throw new Error("Lỗi khi tải dữ liệu");
+                            return response.text();
+                        })
+                        .then(html => {
+                            document.getElementById("modalContent").innerHTML = html;
+                        })
+                        .catch(error => {
+                            document.getElementById("modalContent").innerHTML = "<p class='text-danger'>Không thể tải chính sách. Vui lòng thử lại sau.</p>";
+                            console.error(error);
+                        });
+            }
+
+            function hideModal() {
+                document.getElementById("overlay").style.display = "none";
+                document.getElementById("policyModal").style.display = "none";
+            }
+        </script>   
+
     </body>
 </html>

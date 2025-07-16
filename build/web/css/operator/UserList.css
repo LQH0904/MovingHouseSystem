@@ -53,7 +53,7 @@
 }
 
 /* Nút "Sửa" và "Xóa" */
-.edit-btn,
+
 .delete-btn {
     padding: 5px 10px;
     border: none;
@@ -61,15 +61,6 @@
     cursor: pointer;
     margin-right: 5px;
     width: 45%;  /* Tăng chiều dài của nút thao tác lên 1,5 lần */
-}
-
-.edit-btn {
-    background-color: #007bff; /* Màu xanh dương cho sửa */
-    color: white;
-}
-
-.edit-btn:hover {
-    background-color: #0056b3; /* Màu xanh đậm khi hover */
 }
 
 .delete-btn {
@@ -96,3 +87,25 @@
     font-weight: bold;
     cursor: pointer;
 }
+.search-input {
+    padding: 5px 10px;
+    margin-left: 10px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.search-btn {
+    padding: 5px 12px;
+    margin-left: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+

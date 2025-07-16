@@ -12,8 +12,6 @@
 </head>
 <body>
 <div class="parent">
-    <div class="div1"><jsp:include page="/Layout/staff/SideBar.jsp"></jsp:include> </div>
-    <div class="div2">  <jsp:include page="/Layout/staff/Header.jsp"></jsp:include> </div>
     <div class="div3">
         <h2 class="user-list-title">Danh Sách Khách Hàng</h2>
 
@@ -83,8 +81,6 @@
             </div>
         </div>
     </div>
-</div>
-                </div>
 </div>
 
 <script>

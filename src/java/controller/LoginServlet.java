@@ -135,7 +135,7 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/homeOperator");
                 break;
             case 3: // Staff
-                response.sendRedirect(request.getContextPath() + "/CustomerListServlet");
+                response.sendRedirect(request.getContextPath() + "/homeStaff");
                 break;
             case 4: // Transport Unit
                 response.sendRedirect(request.getContextPath() + "/transport/dashboard");

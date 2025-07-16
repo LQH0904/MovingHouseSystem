@@ -139,7 +139,7 @@ if (session.getAttribute("acc") == null) {
                         <div class="paper"></div>
                     </div>
                 </div>
-                tạo thông báo
+                Tạo thông báo
             </button>
         </div>
 

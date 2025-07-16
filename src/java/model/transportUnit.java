@@ -8,7 +8,7 @@ package model;
  *
  * @author Admin
  */
-public class transportUnit {
+public class TransportUnit {
     private int transportUnitId;
     private String companyName;
     private String contactInfo;
@@ -20,10 +20,10 @@ public class transportUnit {
     private int loader;
     private String businessCertificate;
 
-    public transportUnit() {
+    public TransportUnit() {
     }
 
-    public transportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, double capacity, int loader, String businessCertificate) {
+    public TransportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, double capacity, int loader, String businessCertificate) {
         this.transportUnitId = transportUnitId;
         this.companyName = companyName;
         this.contactInfo = contactInfo;

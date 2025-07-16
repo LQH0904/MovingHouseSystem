@@ -23,11 +23,13 @@ public class StorageReport {
     private double maintenanceCost;
     private double storageCostPerUnit;
     private double profit;
+    private int averageStorageDuration;
+    private double insuranceCost;
 
     public StorageReport() {
     }
 
-    public StorageReport(String reportDate, int storageUnitId, int quantityOnHand, double usedArea, double totalArea, int orderCount, int inboundCount, int outboundCount, int returnedOrders, double personnelCost, double maintenanceCost, double storageCostPerUnit, double profit) {
+    public StorageReport(String reportDate, int storageUnitId, int quantityOnHand, double usedArea, double totalArea, int orderCount, int inboundCount, int outboundCount, int returnedOrders, double personnelCost, double maintenanceCost, double storageCostPerUnit, double profit, int averageStorageDuration, double insuranceCost) {
         this.reportDate = reportDate;
         this.storageUnitId = storageUnitId;
         this.quantityOnHand = quantityOnHand;
@@ -41,6 +43,8 @@ public class StorageReport {
         this.maintenanceCost = maintenanceCost;
         this.storageCostPerUnit = storageCostPerUnit;
         this.profit = profit;
+        this.averageStorageDuration = averageStorageDuration;
+        this.insuranceCost = insuranceCost;
     }
 
     public String getReportDate() {
@@ -147,6 +151,23 @@ public class StorageReport {
         this.profit = profit;
     }
 
+    public int getAverageStorageDuration() {
+        return averageStorageDuration;
+    }
+
+    public void setAverageStorageDuration(int averageStorageDuration) {
+        this.averageStorageDuration = averageStorageDuration;
+    }
+
+    public double getInsuranceCost() {
+        return insuranceCost;
+    }
+
+    public void setInsuranceCost(double insuranceCost) {
+        this.insuranceCost = insuranceCost;
+    }
+
+    
     
     
     // add tên kho bãi
@@ -158,10 +179,11 @@ public class StorageReport {
 
     public void setWarehouseName(String warehouseName) {
         this.warehouseName = warehouseName;
-    }    
+    } 
 
     @Override
     public String toString() {
-        return "StorageReport{" + "reportDate=" + reportDate + ", storageUnitId=" + storageUnitId + ", quantityOnHand=" + quantityOnHand + ", usedArea=" + usedArea + ", totalArea=" + totalArea + ", orderCount=" + orderCount + ", inboundCount=" + inboundCount + ", outboundCount=" + outboundCount + ", returnedOrders=" + returnedOrders + ", personnelCost=" + personnelCost + ", maintenanceCost=" + maintenanceCost + ", storageCostPerUnit=" + storageCostPerUnit + ", profit=" + profit + ", warehouseName=" + warehouseName + '}';
+        return "StorageReport{" + "reportDate=" + reportDate + ", storageUnitId=" + storageUnitId + ", quantityOnHand=" + quantityOnHand + ", usedArea=" + usedArea + ", totalArea=" + totalArea + ", orderCount=" + orderCount + ", inboundCount=" + inboundCount + ", outboundCount=" + outboundCount + ", returnedOrders=" + returnedOrders + ", personnelCost=" + personnelCost + ", maintenanceCost=" + maintenanceCost + ", storageCostPerUnit=" + storageCostPerUnit + ", profit=" + profit + ", averageStorageDuration=" + averageStorageDuration + ", insuranceCost=" + insuranceCost + ", warehouseName=" + warehouseName + '}';
     }
+    
 }

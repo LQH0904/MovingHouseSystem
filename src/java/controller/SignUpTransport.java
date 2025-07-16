@@ -2,7 +2,7 @@ package controller;
 
 import dao.UserDAO;
 import model.Users;
-import model.transportUnit;
+import model.TransportUnit;
 import model.Email;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -172,7 +172,7 @@ public class SignUpTransport extends HttpServlet {
         user.setRoleId(4);
         user.setStatus("pending");
 
-        transportUnit transportUnit = new transportUnit();
+        TransportUnit transportUnit = new TransportUnit();
         transportUnit.setCompanyName(companyName);
         transportUnit.setContactInfo(contactInfo);
         transportUnit.setBusinessCertificate("/img/" + tempFileName.replace("temp_", ""));
@@ -210,7 +210,7 @@ public class SignUpTransport extends HttpServlet {
         String storedCode = (String) session.getAttribute("verificationCode");
         Long expiryTime = (Long) session.getAttribute("codeExpiry");
         Users user = (Users) session.getAttribute("pendingUser");
-        transportUnit transportUnit = (transportUnit) session.getAttribute("pendingTransportUnit");
+        TransportUnit transportUnit = (TransportUnit) session.getAttribute("pendingTransportUnit");
         String tempFilePath = (String) session.getAttribute("tempFilePath");
 
         if (storedCode == null || expiryTime == null || user == null || transportUnit == null || tempFilePath == null) {
@@ -318,7 +318,7 @@ public class SignUpTransport extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("pendingUser");
-        transportUnit transportUnit = (transportUnit) session.getAttribute("pendingTransportUnit");
+        TransportUnit transportUnit = (TransportUnit) session.getAttribute("pendingTransportUnit");
         String tempFilePath = (String) session.getAttribute("tempFilePath");
 
         if (user == null || transportUnit == null || tempFilePath == null) {

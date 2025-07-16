@@ -4,8 +4,6 @@
 --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -82,7 +80,7 @@
             .nav-tabs {
                 margin-bottom: 20px;
                 display: flex;
-                flex-wrap: nowrap;
+                flex-wrap: nowrap; 
                 width: 100%;
                 border-bottom: 2px solid #007bff;
             }
@@ -124,17 +122,6 @@
                     font-size: 0.9rem;
                 }
             }
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-            }
-
             .modal {
                 display: none;
                 position: fixed;
@@ -170,7 +157,6 @@
                 white-space: pre-wrap;
                 margin-top: 5px;
             }
-
         </style>
     </head>
     <body>
@@ -188,7 +174,7 @@
             </ul>
             <h2 class="signup-header">Đăng ký tài khoản Khách hàng</h2>
             <% String error = (String) request.getAttribute("error"); %>
-            <% if (error != null && !error.trim().isEmpty()) { %>
+            <% if (error != null) { %>
             <div class="alert alert-danger"><%= error %></div>
             <% } %>
             <form action="signup" method="post" id="signupForm" novalidate>
@@ -242,41 +228,41 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                            $(document).ready(function () {
-                                const $submitBtn = $('#submitBtn');
-                                const originalBtnText = $submitBtn.text();
+            $(document).ready(function () {
+                const $submitBtn = $('#submitBtn');
+                const originalBtnText = $submitBtn.text();
 
-                                $('#signupForm').on('submit', function (e) {
-                                    let isValid = true;
-                                    const $username = $('#username');
-                                    const $email = $('#email');
-                                    const $password = $('#password');
+                $('#signupForm').on('submit', function (e) {
+                    let isValid = true;
+                    const $username = $('#username');
+                    const $email = $('#email');
+                    const $password = $('#password');
 
-                                    $('.form-control').removeClass('is-invalid');
+                    $('.form-control').removeClass('is-invalid');
 
-                                    if ($username.val().length < 3 || $username.val().length > 20) {
-                                        $username.addClass('is-invalid');
-                                        isValid = false;
-                                    }
+                    if ($username.val().length < 3 || $username.val().length > 20) {
+                        $username.addClass('is-invalid');
+                        isValid = false;
+                    }
 
-                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                                    if (!emailRegex.test($email.val())) {
-                                        $email.addClass('is-invalid');
-                                        isValid = false;
-                                    }
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test($email.val())) {
+                        $email.addClass('is-invalid');
+                        isValid = false;
+                    }
 
-                                    if ($password.val().length < 6) {
-                                        $password.addClass('is-invalid');
-                                        isValid = false;
-                                    }
+                    if ($password.val().length < 6) {
+                        $password.addClass('is-invalid');
+                        isValid = false;
+                    }
 
-                                    if (!isValid) {
-                                        e.preventDefault();
-                                    } else {
-                                        $submitBtn.text('Đang xử lý...').prop('disabled', true);
-                                    }
-                                });
-                            });
+                    if (!isValid) {
+                        e.preventDefault();
+                    } else {
+                        $submitBtn.text('Đang xử lý...').prop('disabled', true);
+                    }
+                });
+            });
         </script>
         <script>
             function toggleButton() {
@@ -286,11 +272,13 @@
                     button.disabled = !checkbox.checked;
                 }
             }
+            const contextPath = '${pageContext.request.contextPath}';
 
             function showModal() {
                 document.getElementById("overlay").style.display = "block";
                 document.getElementById("policyModal").style.display = "block";
-                fetch('${pageContext.request.contextPath}/get-policy-data')
+                fetch(contextPath + '/get-policy-data')
+
                         .then(response => {
                             if (!response.ok)
                                 throw new Error("Lỗi khi tải dữ liệu");
@@ -309,6 +297,6 @@
                 document.getElementById("overlay").style.display = "none";
                 document.getElementById("policyModal").style.display = "none";
             }
-        </script>    
+        </script>   
     </body>
 </html>

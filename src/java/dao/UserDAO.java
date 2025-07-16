@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import model.StorageUnit;
-import model.transportUnit;
+import model.TransportUnit;
 import model.Users;
-
+import utils.DBContext;
 
 public class UserDAO {
 
@@ -448,7 +448,7 @@ public class UserDAO {
     }
 
     // Lưu thông tin Transport Unit
-    public boolean saveTransportUnit(transportUnit unit, int userId) {
+    public boolean saveTransportUnit(TransportUnit unit, int userId) {
         // Kiểm tra role_id của user
         String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
@@ -558,7 +558,7 @@ public class UserDAO {
         return value.length() > maxLength ? value.substring(0, maxLength) : value;
     }
     public int countAllUsers() {
-    String query = "SELECT COUNT(*) FROM Users WHERE role_id != 1";
+    String query = "SELECT COUNT(*) FROM Users WHERE role_id != 7";
     try (PreparedStatement stmt = conn.prepareStatement(query);
          ResultSet rs = stmt.executeQuery()) {
         if (rs.next()) {
@@ -573,7 +573,7 @@ public class UserDAO {
     List<User> userList = new ArrayList<>();
     String query = "SELECT u.user_id, u.username, u.password_hash, u.email, u.role_id, u.created_at, u.updated_at, u.status, r.role_name "
                  + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
-                 + "WHERE u.role_id != 1 " // loại admin
+                 
                  + "ORDER BY u.user_id "
                  + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
@@ -605,4 +605,129 @@ public class UserDAO {
 
     return userList;
 }
+     public int countUsersByRole(int roleId) {
+        String query;
+        if (roleId == 0) { // Hiển thị tất cả người dùng
+            query = "SELECT COUNT(*) FROM Users";
+        } else { // Lọc theo vai trò cụ thể
+            query = "SELECT COUNT(*) FROM Users WHERE role_id = ?";
+        }
+        
+        try (Connection currentConn = DBConnection.getConnection();
+             PreparedStatement stmt = currentConn.prepareStatement(query)) {
+            if (roleId != 0) {
+                stmt.setInt(1, roleId);
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+     public List<Users> getUsersByRoleAndPage(int roleId, int offset, int limit) {
+        List<Users> userList = new ArrayList<>();
+        String query;
+        if (roleId == 0) { // Hiển thị tất cả người dùng
+            query = "SELECT u.user_id, u.username, u.password_hash, u.email, u.role_id, u.created_at, u.updated_at, u.status, r.role_name "
+                  + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+                  + "ORDER BY u.user_id "
+                  + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        } else { // Lọc theo vai trò cụ thể
+            query = "SELECT u.user_id, u.username, u.password_hash, u.email, u.role_id, u.created_at, u.updated_at, u.status, r.role_name "
+                  + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+                  + "WHERE u.role_id = ? "
+                  + "ORDER BY u.user_id "
+                  + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        }
+
+        try (Connection currentConn = DBConnection.getConnection();
+             PreparedStatement stmt = currentConn.prepareStatement(query)) {
+            
+            int paramIndex = 1;
+            if (roleId != 0) {
+                stmt.setInt(paramIndex++, roleId);
+            }
+            stmt.setInt(paramIndex++, offset);
+            stmt.setInt(paramIndex++, limit);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Users user = new Users();
+                    user.setUserId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPasswordHash(rs.getString("password_hash"));
+                    user.setEmail(rs.getString("email"));
+
+                    Role role = new Role();
+                    role.setRoleId(rs.getInt("role_id"));
+                    role.setRoleName(rs.getString("role_name"));
+                    user.setRole(role); // Giả sử model.Users có phương thức setRole(Role role)
+                    
+                    user.setCreatedAt(rs.getTimestamp("created_at"));
+                    user.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    user.setStatus(rs.getString("status"));
+                    userList.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+     public int countSearchUsers(Integer roleId, String keyword) throws SQLException {
+    String sql = "SELECT COUNT(*) FROM users u JOIN role r ON u.roleId = r.roleId WHERE 1=1";
+    if (roleId != null) sql += " AND u.roleId = ?";
+    if (keyword != null && !keyword.isEmpty()) sql += " AND (u.username LIKE ? OR u.email LIKE ?)";
+
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        int index = 1;
+        if (roleId != null) ps.setInt(index++, roleId);
+        if (keyword != null && !keyword.isEmpty()) {
+            ps.setString(index++, "%" + keyword + "%");
+            ps.setString(index++, "%" + keyword + "%");
+        }
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) return rs.getInt(1);
+    }
+    return 0;
+}
+public List<User> searchUsers(Integer roleId, String keyword, int offset, int limit) throws SQLException {
+    List<User> list = new ArrayList<>();
+    String sql = "SELECT u.*, r.roleName FROM users u JOIN role r ON u.roleId = r.roleId WHERE 1=1";
+    if (roleId != null) sql += " AND u.roleId = ?";
+    if (keyword != null && !keyword.isEmpty()) sql += " AND (u.username LIKE ? OR u.email LIKE ?)";
+    sql += " ORDER BY u.createdAt DESC LIMIT ?, ?";
+
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        int index = 1;
+        if (roleId != null) ps.setInt(index++, roleId);
+        if (keyword != null && !keyword.isEmpty()) {
+            ps.setString(index++, "%" + keyword + "%");
+            ps.setString(index++, "%" + keyword + "%");
+        }
+        ps.setInt(index++, offset);
+        ps.setInt(index, limit);
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            User user = new User();
+            user.setUserId(rs.getInt("userId"));
+            user.setUsername(rs.getString("username"));
+            user.setEmail(rs.getString("email"));
+            user.setStatus(rs.getString("status"));
+            user.setCreatedAt(rs.getTimestamp("createdAt"));
+            user.setUpdatedAt(rs.getTimestamp("updatedAt"));
+            user.setRole(new Role(rs.getInt("roleId"), rs.getString("roleName")));
+            list.add(user);
+        }
+    }
+    return list;
+}
+
+    
 }
