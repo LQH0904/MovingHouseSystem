@@ -1,6 +1,6 @@
 <%-- 
     Document   : account_not_active
-    Created on : Jun 17, 2025, 03:29:00 AM 
+    Created on : Jun 17, 2025, 03:29:00 AM
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
