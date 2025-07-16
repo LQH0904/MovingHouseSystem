@@ -50,8 +50,11 @@
             .form-control.is-invalid {
                 border-color: #dc3545;
             }
-            .invalid-feedback {
+            .error-message {
+                color: #dc3545;
                 font-size: 0.85rem;
+                margin-bottom: 5px;
+                display: none;
             }
             .btn-primary {
                 background: #007bff;
@@ -80,7 +83,7 @@
             .nav-tabs {
                 margin-bottom: 20px;
                 display: flex;
-                flex-wrap: nowrap; 
+                flex-wrap: nowrap;
                 width: 100%;
                 border-bottom: 2px solid #007bff;
             }
@@ -145,27 +148,27 @@
             <form action="signup" method="post" id="signupForm" novalidate>
                 <div class="mb-3">
                     <label for="username" class="form-label">Tên đăng nhập</label>
+                    <div class="error-message" id="username_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập" required>
                     </div>
-                    <div class="invalid-feedback">Tên đăng nhập phải từ 3 đến 20 ký tự.</div>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
+                    <div class="error-message" id="email_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
                     </div>
-                    <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu</label>
+                    <div class="error-message" id="password_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
                     </div>
-                    <div class="invalid-feedback">Mật khẩu phải có ít nhất 6 ký tự.</div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100" id="submitBtn">Đăng ký</button>
             </form>
@@ -183,24 +186,42 @@
 
                 $('#signupForm').on('submit', function (e) {
                     let isValid = true;
-                    const $username = $('#username');
-                    const $email = $('#email');
-                    const $password = $('#password');
-
+                    $('.error-message').hide().text('');
                     $('.form-control').removeClass('is-invalid');
 
-                    if ($username.val().length < 3 || $username.val().length > 20) {
+                    // Validate username
+                    const $username = $('#username');
+                    if (!$username.val()) {
+                        $('#username_error').text('Vui lòng nhập tên đăng nhập.').show();
+                        $username.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($username.val().length < 3 || $username.val().length > 20) {
+                        $('#username_error').text('Tên đăng nhập phải từ 3 đến 20 ký tự.').show();
                         $username.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate email
+                    const $email = $('#email');
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test($email.val())) {
+                    if (!$email.val()) {
+                        $('#email_error').text('Vui lòng nhập email.').show();
+                        $email.addClass('is-invalid');
+                        isValid = false;
+                    } else if (!emailRegex.test($email.val())) {
+                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
                         $email.addClass('is-invalid');
                         isValid = false;
                     }
 
-                    if ($password.val().length < 6) {
+                    // Validate password
+                    const $password = $('#password');
+                    if (!$password.val()) {
+                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
+                        $password.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($password.val().length < 6) {
+                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
                         $password.addClass('is-invalid');
                         isValid = false;
                     }
