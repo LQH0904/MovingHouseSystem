@@ -230,12 +230,12 @@
         <div class="parent">
             <!-- Sidebar trái -->
             <div class="div1">
-                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
             </div>
 
             <!-- Header phía trên -->
             <div class="div2">
-                <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
+            <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
             </div>
 
             <!-- Nội dung chính -->
