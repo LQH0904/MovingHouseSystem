@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import model.StorageUnit;
+import model.StorageUnit1;
 import model.TransportUnit;
+import model.TransportUnit1;
 import model.Users;
 
 public class UserDAO {
@@ -447,8 +449,63 @@ public class UserDAO {
     }
 
     // Lưu thông tin Transport Unit
-    public boolean saveTransportUnit(TransportUnit unit, int userId) {
-        // Kiểm tra role_id của user
+    public boolean saveStorageUnit(StorageUnit1 unit, int userId) {
+        String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt("role_id") != 5) {
+                throw new IllegalArgumentException("User must have role_id = 5 (Storage Unit)");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking user role for storage unit: user_id=" + userId + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            return false;
+        }
+
+        String query = "INSERT INTO StorageUnits (storage_unit_id, warehouse_name, location, business_certificate, floor_plan, insurance, area, employee, phone_number, registration_status, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            if (unit.getWarehouseName() == null || unit.getWarehouseName().trim().isEmpty()) {
+                throw new IllegalArgumentException("Warehouse name cannot be null or empty");
+            }
+            if (unit.getEmployee() < 0) {
+                throw new IllegalArgumentException("Employee count cannot be negative");
+            }
+            if (unit.getBusinessCertificate() == null || unit.getBusinessCertificate().trim().isEmpty()) {
+                throw new IllegalArgumentException("Business certificate file path is null or empty");
+            }
+            if (unit.getFloorPlan() == null || unit.getFloorPlan().trim().isEmpty()) {
+                throw new IllegalArgumentException("Floor plan file path is null or empty");
+            }
+            if (unit.getInsurance() == null || unit.getInsurance().trim().isEmpty()) {
+                throw new IllegalArgumentException("Insurance file path is null or empty");
+            }
+
+            ps.setInt(1, userId);
+            ps.setString(2, truncate(unit.getWarehouseName(), 150));
+            ps.setString(3, truncate(unit.getLocation(), 255));
+            ps.setString(4, truncate(unit.getBusinessCertificate(), 2000));
+            ps.setString(5, truncate(unit.getFloorPlan(), 2000));
+            ps.setString(6, truncate(unit.getInsurance(), 2000));
+            ps.setString(7, truncate(unit.getArea(), 200));
+            ps.setInt(8, unit.getEmployee());
+            ps.setString(9, truncate(unit.getPhoneNumber(), 15));
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                LOGGER.warning("No rows affected when inserting StorageUnit for warehouse: " + unit.getWarehouseName());
+            }
+            return rows > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "SQLException saving StorageUnit for warehouse: ");
+            return false;
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.SEVERE, "Invalid input for StorageUnit: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    // saveTransportUnit với kiểm tra bổ sung
+    public boolean saveTransportUnit(TransportUnit1 unit, int userId) {
         String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
             ps.setInt(1, userId);
@@ -457,15 +514,13 @@ public class UserDAO {
                 throw new IllegalArgumentException("User must have role_id = 4 (Transport Unit)");
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error checking user role: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
+            LOGGER.log(Level.SEVERE, "Error checking user role for transport unit: user_id=" + userId + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
             return false;
         }
 
-        // Sửa query để sử dụng transport_unit_id làm khóa chính
-        String query = "INSERT INTO TransportUnits (transport_unit_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, registration_status, created_at) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
+        String query = "INSERT INTO TransportUnits (transport_unit_id, company_name, contact_info, location, vehicle_count, capacity, loader, business_certificate, insurance, registration_status, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-            // Kiểm tra dữ liệu đầu vào
             if (unit.getCompanyName() == null || unit.getCompanyName().trim().isEmpty()) {
                 throw new IllegalArgumentException("Company name cannot be null or empty");
             }
@@ -478,8 +533,14 @@ public class UserDAO {
             if (unit.getLoader() < 0) {
                 throw new IllegalArgumentException("Loader count cannot be negative");
             }
+            if (unit.getBusinessCertificate() == null || unit.getBusinessCertificate().trim().isEmpty()) {
+                throw new IllegalArgumentException("Business certificate file path is null or empty");
+            }
+            if (unit.getInsurance() == null || unit.getInsurance().trim().isEmpty()) {
+                throw new IllegalArgumentException("Insurance file path is null or empty");
+            }
 
-            ps.setInt(1, userId); // Sử dụng userId làm transport_unit_id
+            ps.setInt(1, userId);
             ps.setString(2, truncate(unit.getCompanyName(), 150));
             ps.setString(3, truncate(unit.getContactInfo(), 255));
             ps.setString(4, truncate(unit.getLocation(), 100));
@@ -487,64 +548,17 @@ public class UserDAO {
             ps.setBigDecimal(6, BigDecimal.valueOf(unit.getCapacity()).setScale(2, RoundingMode.HALF_UP));
             ps.setInt(7, unit.getLoader());
             ps.setString(8, truncate(unit.getBusinessCertificate(), 2000));
-
+            ps.setString(9, truncate(unit.getInsurance(), 2000));
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                LOGGER.warning("Eror: ");
+                LOGGER.warning("No rows affected when inserting TransportUnit for company: " + unit.getCompanyName());
             }
             return rows > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException saving TransportUnit: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
+            LOGGER.log(Level.SEVERE, "SQLException saving TransportUnit for company: ");
             return false;
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Invalid input for TransportUnit: " + e.getMessage(), e);
-            return false;
-        }
-    }
-
-    // Lưu thông tin Storage Unit
-    public boolean saveStorageUnit(StorageUnit unit, int userId) {
-        // Kiểm tra role_id của user
-        String roleCheckQuery = "SELECT role_id FROM Users WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next() && rs.getInt("role_id") != 5) {
-                throw new IllegalArgumentException("User must have role_id = 5 (Storage Unit)");
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error checking user role: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
-            return false;
-        }
-
-        String query = "INSERT INTO StorageUnits (storage_unit_id, warehouse_name, location, business_certificate, area, employee, phone_number, registration_status, created_at) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', GETDATE())";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-            // Kiểm tra dữ liệu đầu vào
-            if (unit.getWarehouseName() == null || unit.getWarehouseName().trim().isEmpty()) {
-                throw new IllegalArgumentException("Warehouse name cannot be null or empty");
-            }
-            if (unit.getEmployee() < 0) {
-                throw new IllegalArgumentException("Employee count cannot be negative");
-            }
-
-            ps.setInt(1, userId); // Sử dụng user_id làm storage_unit_id
-            ps.setString(2, truncate(unit.getWarehouseName(), 150));
-            ps.setString(3, truncate(unit.getLocation(), 255));
-            ps.setString(4, truncate(unit.getBusinessCertificate(), 2000));
-            ps.setDouble(5, unit.getArea());
-            ps.setInt(6, unit.getEmployee());
-            ps.setString(7, truncate(unit.getPhoneNumber(), 15));
-            int rows = ps.executeUpdate();
-            if (rows == 0) {
-                LOGGER.warning("No rows affected when inserting StorageUnit for warehouse: " + unit.getWarehouseName());
-            }
-            return rows > 0;
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException saving StorageUnit: " + e.getMessage() + ", SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode(), e);
-            return false;
-        } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.SEVERE, "Invalid input for StorageUnit: " + e.getMessage(), e);
             return false;
         }
     }
@@ -556,52 +570,146 @@ public class UserDAO {
         }
         return value.length() > maxLength ? value.substring(0, maxLength) : value;
     }
+
+    public Users getUser2(String email, int roleId) {
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setInt(2, roleId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting user: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public List<Users> getUsersByRole2(int roleId) {
+        List<Users> users = new ArrayList<>();
+        String query = "SELECT user_id, username, email, password_hash, role_id, created_at, updated_at, status "
+                + "FROM Users WHERE role_id = ? AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Users user = new Users(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getInt("role_id"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getString("status")
+                );
+                users.add(user);
+            }
+            LOGGER.info("Fetched " + users.size() + " users for role_id: " + roleId);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching users by role: " + e.getMessage(), e);
+        }
+        return users;
+    }
+
+    public boolean userExists(int userId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi kiểm tra user_id " + userId + ": " + e.getMessage());
+            throw e;
+        }
+        return false;
+    }
+
+    public int getAdminUserId() throws SQLException {
+        String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 1 AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi lấy admin user_id: " + e.getMessage());
+            throw e;
+        }
+        return -1;
+    }
+
+    public int getTransportUnitId() throws SQLException {
+        String query = "SELECT TOP 1 user_id FROM Users WHERE role_id = 4 AND status = 'active'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Lỗi lấy transport unit user_id: " + e.getMessage());
+            throw e;
+        }
+        return -1;
+    }
+
     public int countAllUsers() {
-    String query = "SELECT COUNT(*) FROM Users WHERE role_id != 1";
-    try (PreparedStatement stmt = conn.prepareStatement(query);
-         ResultSet rs = stmt.executeQuery()) {
-        if (rs.next()) {
-            return rs.getInt(1);
+        String query = "SELECT COUNT(*) FROM Users WHERE role_id != 1";
+        try (PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return 0;
     }
-    return 0;
-}
+
     public List<User> getUsersByPage(int offset, int limit) {
-    List<User> userList = new ArrayList<>();
-    String query = "SELECT u.user_id, u.username, u.password_hash, u.email, u.role_id, u.created_at, u.updated_at, u.status, r.role_name "
-                 + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
-                 + "WHERE u.role_id != 1 " // loại admin
-                 + "ORDER BY u.user_id "
-                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        List<User> userList = new ArrayList<>();
+        String query = "SELECT u.user_id, u.username, u.password_hash, u.email, u.role_id, u.created_at, u.updated_at, u.status, r.role_name "
+                + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+                + "WHERE u.role_id != 1 " // loại admin
+                + "ORDER BY u.user_id "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-    try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setInt(1, offset);
-        stmt.setInt(2, limit);
-        ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, offset);
+            stmt.setInt(2, limit);
+            ResultSet rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            User user = new User();
-            user.setUserId(rs.getInt("user_id"));
-            user.setUsername(rs.getString("username"));
-            user.setPasswordHash(rs.getString("password_hash"));
-            user.setEmail(rs.getString("email"));
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setUsername(rs.getString("username"));
+                user.setPasswordHash(rs.getString("password_hash"));
+                user.setEmail(rs.getString("email"));
 
-            Role role = new Role();
-            role.setRoleId(rs.getInt("role_id"));
-            role.setRoleName(rs.getString("role_name"));
-            user.setRole(role);
+                Role role = new Role();
+                role.setRoleId(rs.getInt("role_id"));
+                role.setRoleName(rs.getString("role_name"));
+                user.setRole(role);
 
-            user.setCreatedAt(rs.getDate("created_at"));
-            user.setUpdatedAt(rs.getDate("updated_at"));
-            user.setStatus(rs.getString("status"));
-            userList.add(user);
+                user.setCreatedAt(rs.getDate("created_at"));
+                user.setUpdatedAt(rs.getDate("updated_at"));
+                user.setStatus(rs.getString("status"));
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
 
-    return userList;
-}
+        return userList;
+    }
 }
