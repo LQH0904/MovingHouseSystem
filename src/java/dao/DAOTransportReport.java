@@ -2,7 +2,7 @@
 package dao;
 
 import utils.DBContext;
-import model.transportReport;
+import model.TransportReport;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 public class DAOTransportReport extends DBContext {
     
     // FIXED: Method to get transport reports with company names
-    public Vector<transportReport> getTransportReportWithCompanyName(String sql) {
-        Vector<transportReport> vector = new Vector<transportReport>();
+    public Vector<TransportReport> getTransportReportWithCompanyName(String sql) {
+        Vector<TransportReport> vector = new Vector<TransportReport>();
         
         try {
             System.out.println("=== DEBUG DAO ===");
@@ -48,7 +48,7 @@ public class DAOTransportReport extends DBContext {
                 String companyName = rs.getString("company_name");
                 
                 // Create transportReport object with company name
-                transportReport report = new transportReport(reportId, transportUnitId, reportYear, reportMonth, 
+                TransportReport report = new TransportReport(reportId, transportUnitId, reportYear, reportMonth, 
                     totalShipments, totalRevenue, plannedRevenue, totalWeight, 
                     onTimeCount, cancelCount, delayCount, createdAt);
                 
@@ -74,8 +74,8 @@ public class DAOTransportReport extends DBContext {
     }
     
     // Keep the original method for backward compatibility
-    public Vector<transportReport> getTransportReport(String sql) {
-        Vector<transportReport> vector = new Vector<transportReport>();
+    public Vector<TransportReport> getTransportReport(String sql) {
+        Vector<TransportReport> vector = new Vector<TransportReport>();
         try {
             Statement state = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet rs = state.executeQuery(sql);
@@ -95,7 +95,7 @@ public class DAOTransportReport extends DBContext {
                 int delayCount = rs.getInt("delay_count");
                 String createdAt = rs.getString("created_at");
                 
-                transportReport report = new transportReport(reportId, transportUnitId, reportYear, reportMonth, 
+                TransportReport report = new TransportReport(reportId, transportUnitId, reportYear, reportMonth, 
                     totalShipments, totalRevenue, plannedRevenue, totalWeight, 
                     onTimeCount, cancelCount, delayCount, createdAt);
                 vector.add(report);

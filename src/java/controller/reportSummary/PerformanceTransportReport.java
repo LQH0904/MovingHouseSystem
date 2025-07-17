@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import dao.TransportReportDataDAO;
-import model.transportReport;
+import model.TransportReport;
 import model.TransportUnit;
 import jakarta.servlet.RequestDispatcher;
 import java.util.Vector;
@@ -64,7 +64,7 @@ public class PerformanceTransportReport extends HttpServlet {
                 System.out.println("Request Method: " + request.getMethod());
                 System.out.println("Query String: " + request.getQueryString());
                 
-                Vector<transportReport> reportData;
+                Vector<TransportReport> reportData;
                 
                 // Kiểm tra có filter hay không
                 boolean hasFilter = (transportUnitId != null) || (year != null);
@@ -125,7 +125,7 @@ public class PerformanceTransportReport extends HttpServlet {
                 if (reportData != null && reportData.size() > 0) {
                     System.out.println("=== SAMPLE REPORT DATA ===");
                     for (int i = 0; i < Math.min(3, reportData.size()); i++) {
-                        transportReport report = reportData.get(i);
+                        TransportReport report = reportData.get(i);
                         System.out.println("Report " + (i+1) + ": " + 
                                          "Unit=" + report.getTransportUnitId() + 
                                          ", Company='" + report.getCompanyName() + "'" +
@@ -188,7 +188,7 @@ public class PerformanceTransportReport extends HttpServlet {
      * @param reportData Vector chứa dữ liệu báo cáo
      * @return Array chứa [totalShipments, totalRevenue, onTimePercentage, totalWeight]
      */
-    private double[] calculateStatisticsFromReportData(Vector<transportReport> reportData) {
+    private double[] calculateStatisticsFromReportData(Vector<TransportReport> reportData) {
         if (reportData == null || reportData.isEmpty()) {
             return new double[]{0, 0, 0, 0};
         }
@@ -198,7 +198,7 @@ public class PerformanceTransportReport extends HttpServlet {
         double totalWeight = 0;
         double totalOnTimeShipments = 0;
         
-        for (transportReport report : reportData) {
+        for (TransportReport report : reportData) {
             totalShipments += report.getTotalShipments();
             totalRevenue += report.getTotalRevenue();
             totalWeight += report.getTotalWeight();

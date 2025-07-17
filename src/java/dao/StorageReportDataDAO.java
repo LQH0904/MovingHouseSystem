@@ -14,7 +14,7 @@ import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.transportReport;
+import model.TransportReport;
 
 public class StorageReportDataDAO extends DBContext {
 

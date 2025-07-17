@@ -864,7 +864,7 @@ if (session.getAttribute("acc") == null) {
                     </button>
                 </a> 
             </div>
-            <a href="#">
+            <a href="http://localhost:9999/HouseMovingSystem/sendNotification">
                 <button class="continue-application">
                     <div>
                         <div class="pencil"></div>
