@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
 public class TransportUnit {
     private int transportUnitId;
     private String companyName;
@@ -118,8 +110,17 @@ public class TransportUnit {
 
     @Override
     public String toString() {
-        return "TransportUnit{" + "transportUnitId=" + transportUnitId + ", companyName=" + companyName + ", contactInfo=" + contactInfo + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", location=" + location + ", vehicleCount=" + vehicleCount + ", capacity=" + capacity + ", loader=" + loader + ", businessCertificate=" + businessCertificate + '}';
+        return "TransportUnit{" +
+                "transportUnitId=" + transportUnitId +
+                ", companyName='" + companyName + '\'' +
+                ", contactInfo='" + contactInfo + '\'' +
+                ", registrationStatus='" + registrationStatus + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", location='" + location + '\'' +
+                ", vehicleCount=" + vehicleCount +
+                ", capacity=" + capacity +
+                ", loader=" + loader +
+                ", businessCertificate='" + businessCertificate + '\'' +
+                '}';
     }
-    
-    
 }

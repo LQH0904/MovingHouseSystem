@@ -13,11 +13,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.sql.SQLException;
+import dao.UserDAO;
+import model.User;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+
 /**
  *
  * @author admin
  */
-@WebServlet(name="DetailUserServlet", urlPatterns={"/DetailUserServlet"})
+@WebServlet("/DetailUserServlet")
 public class DetailUserServlet extends HttpServlet {
    
     /** 
@@ -55,7 +61,6 @@ public class DetailUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
     } 
 
     /** 
