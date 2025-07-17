@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import model.PasswordUtils;
 import java.sql.SQLException;
 
+
 @WebServlet(name = "SignUp", urlPatterns = {"/signup"})
 public class SignUp extends HttpServlet {
 
@@ -88,7 +89,7 @@ public class SignUp extends HttpServlet {
         user.setEmail(email);
         user.setPasswordHash(hashedPassword);
         user.setRoleId(6);
-        user.setStatus("active");
+        user.setStatus("active"); // Lưu trực tiếp trạng thái active
 
         session.setAttribute("pendingUser", user);
         session.setAttribute("verificationCode", code);
@@ -108,64 +109,49 @@ public class SignUp extends HttpServlet {
     }
 
     private void handleConfirm(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    HttpSession session = request.getSession();
-    String inputCode = request.getParameter("code");
-    String storedCode = (String) session.getAttribute("verificationCode");
-    Long expiryTime = (Long) session.getAttribute("codeExpiry");
-    Users user = (Users) session.getAttribute("pendingUser");
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String inputCode = request.getParameter("code");
+        String storedCode = (String) session.getAttribute("verificationCode");
+        Long expiryTime = (Long) session.getAttribute("codeExpiry");
+        Users user = (Users) session.getAttribute("pendingUser");
 
-    if (storedCode == null || expiryTime == null || user == null) {
-        session.invalidate();
-        String errorMessage = "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại cho email: " + (user != null ? user.getEmail() : "unknown");
-        LOGGER.log(Level.WARNING, errorMessage);
-        request.setAttribute("error", errorMessage);
-        request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
-        return;
-    }
-
-    if (System.currentTimeMillis() > expiryTime) {
-        session.invalidate();
-        String errorMessage = "Mã xác nhận đã hết hạn cho email: " + user.getEmail();
-        LOGGER.log(Level.WARNING, errorMessage);
-        request.setAttribute("error", errorMessage);
-        request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
-        return;
-    }
-
-    if (!storedCode.equals(inputCode)) {
-        String errorMessage = "Mã xác nhận không đúng cho email: " + user.getEmail();
-        LOGGER.log(Level.WARNING, errorMessage);
-        request.setAttribute("error", errorMessage);
-        request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
-        return;
-    }
-
-    UserDAO dao = new UserDAO();
-    try {
-        if (!dao.signupAccount(user)) {
-            String errorMessage = "Không thể lưu tài khoản người dùng cho email: " + user.getEmail();
-            LOGGER.log(Level.SEVERE, errorMessage);
-            throw new SQLException(errorMessage);
+        if (storedCode == null || expiryTime == null || user == null) {
+            session.invalidate();
+            request.setAttribute("error", "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại");
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
+            return;
         }
-        session.invalidate();
-        response.sendRedirect(request.getContextPath() + "/signup?action=confirm&success=1");
-    } catch (SQLException e) {
-        String sqlState = e.getSQLState() != null ? e.getSQLState() : "null";
-        String errorMessage = "Đăng ký thất bại cho email: " + user.getEmail() + ", SQLState=" + sqlState + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage();
-        LOGGER.log(Level.SEVERE, "SQLException in confirm process: " + errorMessage, e);
-        session.invalidate();
-        String userMessage = "Đăng ký thất bại: " + (sqlState.equals("23000") ? "Tên đăng nhập hoặc email đã được sử dụng" : e.getMessage());
-        request.setAttribute("error", userMessage);
-        request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
-    } catch (Exception e) {
-        String errorMessage = "Lỗi hệ thống không xác định khi xác nhận tài khoản cho email: " + user.getEmail();
-        LOGGER.log(Level.SEVERE, errorMessage, e);
-        session.invalidate();
-        request.setAttribute("error", errorMessage + ": " + e.getMessage());
-        request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
+
+        if (System.currentTimeMillis() > expiryTime) {
+            session.invalidate();
+            request.setAttribute("error", "Mã xác nhận đã hết hạn, vui lòng đăng ký lại");
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
+            return;
+        }
+
+        if (!storedCode.equals(inputCode)) {
+            request.setAttribute("error", "Mã xác nhận không đúng");
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
+            return;
+        }
+
+        // Lưu dữ liệu vào cơ sở dữ liệu
+        UserDAO dao = new UserDAO();
+        try {
+            if (!dao.signupAccount(user)) {
+                throw new SQLException("Không thể lưu tài khoản người dùng");
+            }
+            session.invalidate();
+            response.sendRedirect(request.getContextPath() + "/signup?action=confirm&success=1");
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "SQLException in confirm process: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            session.invalidate();
+            request.setAttribute("error", "Đăng ký thất bại: " + (e.getSQLState().equals("23000") ? "Tên đăng nhập đã được sử dụng" : e.getMessage()));
+            request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
+        }
     }
-}
+
     private void handleResendCode(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -249,9 +235,8 @@ public class SignUp extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            String errorMessage = "Lỗi hệ thống: " + ex.getMessage();
-            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, "Error in doPost: " + errorMessage, ex);
-            request.setAttribute("error", errorMessage);
+            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "Lỗi hệ thống");
             request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
         }
     }

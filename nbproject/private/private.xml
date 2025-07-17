@@ -12,38 +12,8 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_test.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/model/CustomerSurvey.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/HistorySurveyTest.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/survey_config.css</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/homeOperator.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/HistorySurveyTestController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/SurveyCustomerCharController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/survey/SurveyCustomer.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/scaleTransportDetail.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/StorageReportController.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/HistorySurveyTestDAO.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/dao/SurveyCustomerCharDataDAO.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCharDetail.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCustomerChar.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code%20(4)/MovingHouseSystem-merge_code/src/java/controller/reportSummary/ScaleAndCapacityReport.java</file>
-            <file>file:/C:/MovingHouseSystem/web/404.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/js/Calander.js</file>
-            <file>file:/C:/MovingHouseSystem/web/Layout/staff/HomePage.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/Layout/operator/HomePage.jsp</file>
-            <file>file:/C:/MovingHouseSystem/src/java/controller/WebSocketInitializer.java</file>
-            <file>file:/C:/MovingHouseSystem/web/js/login.js</file>
-            <file>file:/C:/MovingHouseSystem/src/java/utils/DBConnection.java</file>
-            <file>file:/C:/MovingHouseSystem/web/Layout/operator/SideBar.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/Layout/staff/Header.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/js/SideBar.js</file>
-            <file>file:/C:/MovingHouseSystem/web/Layout/staff/SideBar.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/js/Header.js</file>
-            <file>file:/C:/MovingHouseSystem/web/Layout/operator/Header.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/index.html</file>
-            <file>file:/C:/MovingHouseSystem/web/not_activite.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/updateLater.jsp</file>
-            <file>file:/C:/MovingHouseSystem/web/Test.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem/MovingHouseSystem-hieunthe182014/web/page/operator/homeOperator.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem/MovingHouseSystem-hieunthe182014/web/page/operator/EditFeeConfiguration.jsp</file>
         </group>
     </open-files>
 </project-private>

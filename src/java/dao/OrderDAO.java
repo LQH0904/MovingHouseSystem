@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Issue;
 
 public class OrderDAO {
 
@@ -42,6 +41,7 @@ public class OrderDAO {
             }
         } catch (NumberFormatException e) {
             LOGGER.log(Level.WARNING, "Invalid orderId format: " + orderId, e);
+            // Bỏ qua điều kiện orderId nếu không hợp lệ
         }
 
         if (status != null && !status.isEmpty()) {
@@ -65,6 +65,7 @@ public class OrderDAO {
             params.add("%" + warehouseName + "%");
         }
 
+        // Thêm sắp xếp
         if (sortBy != null && (sortBy.equals("created_at") || sortBy.equals("updated_at"))) {
             query.append(" ORDER BY o.").append(sortBy);
             if (sortOrder != null && sortOrder.equals("desc")) {
@@ -105,71 +106,4 @@ public class OrderDAO {
         }
         return orders;
     }
-
-    public List<Issue> getIssuesByOrderId(int orderId) throws SQLException {
-        String query = "SELECT * FROM Issues WHERE order_id = ?";
-        List<Issue> issues = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, orderId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Issue issue = new Issue();
-                issue.setIssueId(rs.getInt("issue_id"));
-                issue.setDescription(rs.getString("description"));
-                issues.add(issue);
-                LOGGER.info("Fetched Issue ID: " + issue.getIssueId() + " for Order ID: " + orderId);
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error fetching issues for Order ID: " + orderId, e);
-            throw e;
-        }
-        return issues;
-    }
-    
-    public List<Orders> getOrderListNotification(String status, String customerId, String transportUnitId, String startDate, String endDate, String orderBy, String sortOrder, String limit) throws SQLException {
-        List<Orders> orders = new ArrayList<>();
-        String query = "SELECT o.* FROM Orders o " +
-                      "LEFT JOIN Notifications n ON n.order_id = o.order_id AND n.created_at >= DATEADD(hour, -24, GETDATE()) " +
-                      "WHERE n.notification_id IS NULL";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Orders order = new Orders();
-                order.setOrderId(rs.getInt("order_id"));
-                order.setCustomerId(rs.getInt("customer_id"));
-                order.setTransportUnitId(rs.getInt("transport_unit_id"));
-                order.setOrderStatus(rs.getString("order_status"));
-                order.setCreatedAt(rs.getTimestamp("created_at"));
-                order.setDeliverySchedule(rs.getTimestamp("delivery_schedule"));
-                order.setDeliveredAt(rs.getTimestamp("delivered_at"));
-                orders.add(order);
-            }
-        } catch (SQLException e) {
-            LOGGER.severe("Lỗi truy vấn danh sách đơn hàng: " + e.getMessage());
-            throw e;
-        }
-        return orders;
-    }
-
-    public List<Issue> getIssuesByOrderIdNotification(int orderId) throws SQLException {
-        List<Issue> issues = new ArrayList<>();
-        String query = "SELECT * FROM Issues WHERE order_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, orderId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Issue issue = new Issue();
-                issue.setOrderId(rs.getInt("order_id"));
-                issue.setDescription(rs.getString("description"));
-                issues.add(issue);
-            }
-        } catch (SQLException e) {
-            LOGGER.severe("Lỗi truy vấn vấn đề đơn hàng ID " + orderId + ": " + e.getMessage());
-            throw e;
-        }
-        return issues;
-    }
-    
 }

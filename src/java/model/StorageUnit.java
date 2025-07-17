@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package model;
 
 /**
@@ -14,25 +18,6 @@ public class StorageUnit {
     private Double area;
     private int employee;
     private String phoneNumber;
-    private String area;
-    private int employee;
-    private String phoneNumber;
-    private String registrationStatus;
-    private String insurance;    // thêm
-    private String floorPlan;    // thêm
-
-    public StorageUnit(String warehouseName, String location, String businessCertificate, String area,
-                       int employee, String phoneNumber, String registrationStatus, String insurance, String floorPlan) {
-        this.warehouseName = warehouseName;
-        this.location = location;
-        this.businessCertificate = businessCertificate;
-        this.area = area;
-        this.employee = employee;
-        this.phoneNumber = phoneNumber;
-        this.registrationStatus = registrationStatus;
-        this.insurance = insurance;
-        this.floorPlan = floorPlan;
-    }
 
     public StorageUnit() {
     }
@@ -56,7 +41,6 @@ public class StorageUnit {
     public void setStorageUnitId(int storageUnitId) {
         this.storageUnitId = storageUnitId;
     }
-    // Getters and Setters
 
     public String getWarehouseName() {
         return warehouseName;
@@ -103,11 +87,6 @@ public class StorageUnit {
     }
 
     public void setArea(Double area) {
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
         this.area = area;
     }
 
@@ -133,23 +112,4 @@ public class StorageUnit {
     }
 
     
-    public void setRegistrationStatus(String registrationStatus) {
-        this.registrationStatus = registrationStatus;
-    }
-
-    public String getInsurance() {
-        return insurance;
-    }
-
-    public void setInsurance(String insurance) {
-        this.insurance = insurance;
-    }
-
-    public String getFloorPlan() {
-        return floorPlan;
-    }
-
-    public void setFloorPlan(String floorPlan) {
-        this.floorPlan = floorPlan;
-    }
 }

@@ -45,11 +45,17 @@ public class SurveyCharDetailController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         try {
-            // Lấy parameters
+            // Lấy parameters cho filter thời gian
             String fromMonth = request.getParameter("fromMonth");
             String toMonth = request.getParameter("toMonth");
+
+            // Lấy parameters cho filter mức độ đánh giá
+            String satisfactionLevel = request.getParameter("satisfactionLevel");
+            String transportLevel = request.getParameter("transportLevel");
+            String consultantLevel = request.getParameter("consultantLevel");
+
             String pageParam = request.getParameter("page");
-            
+
             int currentPage = 1;
             if (pageParam != null && !pageParam.isEmpty()) {
                 try {
@@ -59,22 +65,17 @@ public class SurveyCharDetailController extends HttpServlet {
                 }
             }
 
-            // Lấy dữ liệu khảo sát
-            List<CustomerSurvey> allSurveys;
-            if ((fromMonth == null || fromMonth.trim().isEmpty()) && 
-                (toMonth == null || toMonth.trim().isEmpty())) {
-                allSurveys = surveyDAO.getAllCustomerSurveys();
-            } else {
-                allSurveys = surveyDAO.getCustomerSurveysByDateRange(fromMonth, toMonth);
-            }
+            // Lấy dữ liệu khảo sát theo điều kiện lọc
+            List<CustomerSurvey> allSurveys = getSurveysByFilters(
+                    fromMonth, toMonth, satisfactionLevel, transportLevel, consultantLevel);
 
             // Tính toán phân trang
             int totalSurveys = allSurveys.size();
             int totalPages = (int) Math.ceil((double) totalSurveys / SURVEYS_PER_PAGE);
-            
+
             int startIndex = (currentPage - 1) * SURVEYS_PER_PAGE;
             int endIndex = Math.min(startIndex + SURVEYS_PER_PAGE, totalSurveys);
-            
+
             List<CustomerSurvey> surveysForPage = allSurveys.subList(startIndex, endIndex);
 
             // Set attributes cho JSP
@@ -84,17 +85,63 @@ public class SurveyCharDetailController extends HttpServlet {
             request.setAttribute("totalSurveys", totalSurveys);
             request.setAttribute("fromMonth", fromMonth);
             request.setAttribute("toMonth", toMonth);
+            request.setAttribute("satisfactionLevel", satisfactionLevel);
+            request.setAttribute("transportLevel", transportLevel);
+            request.setAttribute("consultantLevel", consultantLevel);
 
             // Forward đến JSP
             request.getRequestDispatcher("page/operator/reportSummary/SurveyCharDetail.jsp")
-                   .forward(request, response);
+                    .forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Có lỗi xảy ra khi tải dữ liệu khảo sát: " + e.getMessage());
             request.getRequestDispatcher("page/operator/reportSummary/SurveyCharDetail.jsp")
-                   .forward(request, response);
+                    .forward(request, response);
         }
+    }
+
+    /**
+     * Lấy dữ liệu khảo sát theo các điều kiện lọc - KHÔNG ưu tiên
+     */
+    private List<CustomerSurvey> getSurveysByFilters(String fromMonth, String toMonth,
+            String satisfactionLevel, String transportLevel, String consultantLevel) {
+
+        // Bắt đầu với tất cả dữ liệu hoặc filter theo thời gian trước
+        List<CustomerSurvey> surveys;
+
+        if ((fromMonth == null || fromMonth.trim().isEmpty())
+                && (toMonth == null || toMonth.trim().isEmpty())) {
+            surveys = surveyDAO.getAllCustomerSurveys();
+        } else {
+            surveys = surveyDAO.getCustomerSurveysByDateRange(fromMonth, toMonth);
+        }
+
+        // Lọc thêm theo mức độ hài lòng nếu có
+        if (satisfactionLevel != null && !satisfactionLevel.trim().isEmpty()) {
+            int level = Integer.parseInt(satisfactionLevel);
+            surveys = surveys.stream()
+                    .filter(survey -> survey.getOverall_satisfaction() == level)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        // Lọc thêm theo mức độ chăm sóc vận chuyển nếu có
+        if (transportLevel != null && !transportLevel.trim().isEmpty()) {
+            int level = Integer.parseInt(transportLevel);
+            surveys = surveys.stream()
+                    .filter(survey -> survey.getTransport_care() == level)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        // Lọc thêm theo mức độ tư vấn chuyên nghiệp nếu có
+        if (consultantLevel != null && !consultantLevel.trim().isEmpty()) {
+            int level = Integer.parseInt(consultantLevel);
+            surveys = surveys.stream()
+                    .filter(survey -> survey.getConsultant_professionalism() == level)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        return surveys;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

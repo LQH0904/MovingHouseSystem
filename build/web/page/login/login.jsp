@@ -9,16 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
         <style>
-            
-            body {
-                background: linear-gradient(135deg, #007bff, #80d0ff);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                margin: 0;
-                font-family: 'Segoe UI', sans-serif;
-            }
+
             .container {
                 display: flex;
                 max-width: 900px;
@@ -121,9 +112,9 @@
                     <form id="loginForm" action="login" method="post">
                         <div class="form-group">
                             <select name="role_id" id="role_id" required>
-                                <option value="1">Quản trị viên</option>
-                                <option value="2">Điều hành</option>
-                                <option value="3">Nhân viên</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Operator</option>
+                                <option value="3">Staff</option>
                                 <option value="4">Đơn vị vận chuyển</option>
                                 <option value="5">Đơn vị kho bãi</option>
                                 <option value="6" selected>Khách hàng</option>

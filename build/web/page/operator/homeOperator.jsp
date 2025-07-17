@@ -43,7 +43,7 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
                 <div class="div3">
                     <div class="content-part">
                         <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng 
-                            <span style="color: #d100ff; font-weight: 800;"><%= currentUsername %></span> đến trang dành cho điều hành viên</div>
+                            <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername %></span> đến trang dành cho Điều hành viên</div>
                     <div class="user">
                         <div>
                             <div class="title_form_1">Về người dùng</div>
@@ -66,7 +66,7 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
                                                     <c:when test="${role.key == 'Transport Unit'}">Đơn vị vận chuyển</c:when>
                                                     <c:when test="${role.key == 'Customer'}">Khách hàng</c:when>
                                                     <c:when test="${role.key == 'Staff'}">Nhân viên</c:when>
-                                                    <c:when test="${role.key == 'Storage Unit'}">Đơn vị kho bãi</c:when>
+                                                    <c:when test="${role.key == 'Storage Unit'}">Đơn vị lưu trữ</c:when>
                                                     <c:otherwise>${role.key}</c:otherwise>
                                                 </c:choose>
                                             </span>
@@ -189,15 +189,9 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
                                     <td>...</td>
                                     <td>...</td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" style="margin-left: 7%;">Xem thêm</a>
-                                    </td>
-                                    <td></td>
-                                </tr>
                             </tbody>
                         </table>
-                        
+                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" style="padding: 7%;">Xem thêm</a>
                     </div>
                 </dix>
 
@@ -217,7 +211,7 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
                                  role.key eq "Transport Unit" ? "Đơn vị vận chuyển" : 
                                  role.key eq "Customer" ? "Khách hàng" : 
                                  role.key eq "Staff" ? "Nhân viên" : 
-                                 role.key eq "Storage Unit" ? "Đơn vị kho bãi" : role.key}' />"<c:if test="${!status.last}">,</c:if>
+                                 role.key eq "Storage Unit" ? "Đơn vị lưu trữ" : role.key}' />"<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
 
