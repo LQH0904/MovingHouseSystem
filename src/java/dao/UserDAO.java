@@ -712,4 +712,72 @@ public class UserDAO {
 
         return userList;
     }
+    
+    public List<User> searchUsers(Integer roleId, String keyword, int offset, int limit) throws SQLException {
+    List<User> users = new ArrayList<>();
+
+    String sql = "SELECT u.*, r.role_name FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+               + "WHERE (u.username LIKE ? OR u.email LIKE ?) "
+               + (roleId != null ? "AND u.role_id = ? " : "")
+               + "ORDER BY u.user_id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        int idx = 1;
+        ps.setString(idx++, "%" + keyword + "%");
+        ps.setString(idx++, "%" + keyword + "%");
+
+        if (roleId != null) {
+            ps.setInt(idx++, roleId);
+        }
+
+        ps.setInt(idx++, offset);
+        ps.setInt(idx, limit);
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            User user = new User();
+            user.setUserId(rs.getInt("user_id"));
+            user.setUsername(rs.getString("username"));
+            user.setEmail(rs.getString("email"));
+            user.setPasswordHash(rs.getString("password_hash"));
+            user.setStatus(rs.getString("status"));
+            user.setCreatedAt(rs.getTimestamp("created_at"));
+            user.setUpdatedAt(rs.getTimestamp("updated_at"));
+
+            Role role = new Role();
+            role.setRoleId(rs.getInt("role_id"));
+            role.setRoleName(rs.getString("role_name"));
+            user.setRole(role);
+
+            users.add(user);
+        }
+    }
+    return users;
+}
+    
+    public int countSearchUsers(Integer roleId, String keyword) throws SQLException {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Users WHERE (username LIKE ? OR email LIKE ?) "
+               + (roleId != null ? "AND role_id = ?" : "");
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        int idx = 1;
+        ps.setString(idx++, "%" + keyword + "%");
+        ps.setString(idx++, "%" + keyword + "%");
+
+        if (roleId != null) {
+            ps.setInt(idx, roleId);
+        }
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    }
+    return count;
+}
+
+
+    
+    
 }
