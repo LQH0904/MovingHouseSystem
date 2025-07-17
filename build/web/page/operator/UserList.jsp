@@ -63,11 +63,15 @@
                                     </c:choose>
                                 </td>
                                 <td>
-    <c:if test="${user.role.roleId != 1}">
-        <button class="detail-btn" onclick="window.location.href = 'DetailUserServlet?id=${user.userId}'">Chi tiết</button>
-        <button class="delete-btn" onclick="showConfirmDelete('${user.userId}', '${user.username}', '${user.email}', '${user.role.roleName}')">Xóa</button>
-    </c:if>
+  <c:if test="${user.role.roleId != 1}">
+    <form method="post" action="DetailUserServlet" style="display:inline;">
+        <input type="hidden" name="id" value="${user.userId}" />
+        <button type="submit" class="detail-btn">Chi tiết</button>
+    </form>
+    <button class="delete-btn" onclick="showConfirmDelete('${user.userId}', '${user.username}', '${user.email}', '${user.role.roleName}')">Xóa</button>
+  </c:if>
 </td>
+
 
                             </tr>
                         </c:forEach>
