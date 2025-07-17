@@ -4,20 +4,23 @@
 <html>
 <head>
     <title>Trang Quản Trị Viên - Quản lý đăng ký</title>
-<!--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">-->
+
 </head>
 <body>
 <div class="parent">
-<!--    <div class="div1"><jsp:include page="/Layout/admin/SideBar.jsp" /></div>
-    <div class="div2"><jsp:include page="/Layout/admin/Header.jsp" /></div>-->
+
     <div class="div3">
         <h2 class="page-title">Quản Lý Đăng Ký Đơn Vị</h2>
         <p>Chào mừng bạn đến với khu vực quản lý dành cho Quản trị viên!</p>
         <p>Ở đây bạn có thể duyệt yêu cầu đăng ký từ Đơn vị vận chuyển hoặc Kho bãi.</p>
         
-        <!-- TODO: Thêm bảng danh sách đăng ký tại đây -->
+         <div style="margin-top: 20px;">
+            <h3>Chức năng bảo mật</h3>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/admin/alerts"> Quản lý cảnh cáo bảo mật</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/blocks"> Quản lý người dùng bị chặn</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 </body>
