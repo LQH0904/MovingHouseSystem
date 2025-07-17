@@ -42,7 +42,8 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
 
                 <div class="div3">
                     <div class="content-part">
-                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng <%= currentUsername %> đến trang dành cho quản trị viên</div>
+                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng 
+                            <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername %></span> đến trang dành cho Điều hành viên</div>
                     <div class="user">
                         <div>
                             <div class="title_form_1">Về người dùng</div>

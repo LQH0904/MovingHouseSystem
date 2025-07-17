@@ -50,8 +50,11 @@
             .form-control.is-invalid {
                 border-color: #dc3545;
             }
-            .invalid-feedback {
+            .error-message {
+                color: #dc3545;
                 font-size: 0.85rem;
+                margin-bottom: 5px;
+                display: none;
             }
             .btn-primary {
                 background: #007bff;
@@ -80,7 +83,7 @@
             .nav-tabs {
                 margin-bottom: 20px;
                 display: flex;
-                flex-wrap: nowrap; 
+                flex-wrap: nowrap;
                 width: 100%;
                 border-bottom: 2px solid #007bff;
             }
@@ -122,41 +125,6 @@
                     font-size: 0.9rem;
                 }
             }
-            .modal {
-                display: none;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: #fff;
-                padding: 30px;
-                border-radius: 10px;
-                max-height: 80vh;
-                overflow-y: auto;
-                z-index: 1000;
-                width: 90%;
-                max-width: 600px;
-                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            }
-
-            .modal-close {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 1.5rem;
-                color: #333;
-                cursor: pointer;
-            }
-
-            .policy-item .title {
-                font-weight: bold;
-                margin-top: 15px;
-            }
-
-            .policy-item .content {
-                white-space: pre-wrap;
-                margin-top: 5px;
-            }
         </style>
     </head>
     <body>
@@ -180,42 +148,26 @@
             <form action="signup" method="post" id="signupForm" novalidate>
                 <div class="mb-3">
                     <label for="username" class="form-label">Tên đăng nhập</label>
+                    <div class="error-message" id="username_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập" required>
                     </div>
-                    <div class="invalid-feedback">Tên đăng nhập phải từ 3 đến 20 ký tự.</div>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
+                    <div class="error-message" id="email_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
                     </div>
-                    <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu</label>
+                    <div class="error-message" id="password_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
-                    </div>
-                    <div class="invalid-feedback">Mật khẩu phải có ít nhất 6 ký tự.</div>
-                </div>
-                <div class="mb-3">
-                    <label>
-                        <input type="checkbox" id="agreeCheck" onchange="toggleButton()"> Tôi đồng ý với 
-                        <a href="javascript:void(0)" onclick="showModal()" style="color: #007bff; text-decoration: underline;">các chính sách</a>
-                        của nhà phát triển.
-                    </label>
-
-
-                    <!-- Modal -->
-                    <div class="overlay" id="overlay" onclick="hideModal()"></div>
-                    <div class="modal" id="policyModal">
-                        <span class="modal-close" onclick="hideModal()">×</span>
-                        <div id="modalContent">
-                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100" id="submitBtn">Đăng ký</button>
@@ -234,24 +186,42 @@
 
                 $('#signupForm').on('submit', function (e) {
                     let isValid = true;
-                    const $username = $('#username');
-                    const $email = $('#email');
-                    const $password = $('#password');
-
+                    $('.error-message').hide().text('');
                     $('.form-control').removeClass('is-invalid');
 
-                    if ($username.val().length < 3 || $username.val().length > 20) {
+                    // Validate username
+                    const $username = $('#username');
+                    if (!$username.val()) {
+                        $('#username_error').text('Vui lòng nhập tên đăng nhập.').show();
+                        $username.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($username.val().length < 3 || $username.val().length > 20) {
+                        $('#username_error').text('Tên đăng nhập phải từ 3 đến 20 ký tự.').show();
                         $username.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate email
+                    const $email = $('#email');
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test($email.val())) {
+                    if (!$email.val()) {
+                        $('#email_error').text('Vui lòng nhập email.').show();
+                        $email.addClass('is-invalid');
+                        isValid = false;
+                    } else if (!emailRegex.test($email.val())) {
+                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
                         $email.addClass('is-invalid');
                         isValid = false;
                     }
 
-                    if ($password.val().length < 6) {
+                    // Validate password
+                    const $password = $('#password');
+                    if (!$password.val()) {
+                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
+                        $password.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($password.val().length < 6) {
+                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
                         $password.addClass('is-invalid');
                         isValid = false;
                     }
@@ -264,39 +234,5 @@
                 });
             });
         </script>
-        <script>
-            function toggleButton() {
-                const checkbox = document.getElementById("agreeCheck");
-                const button = document.getElementById("confirmBtn");
-                if (button) {
-                    button.disabled = !checkbox.checked;
-                }
-            }
-            const contextPath = '${pageContext.request.contextPath}';
-
-            function showModal() {
-                document.getElementById("overlay").style.display = "block";
-                document.getElementById("policyModal").style.display = "block";
-                fetch(contextPath + '/get-policy-data')
-
-                        .then(response => {
-                            if (!response.ok)
-                                throw new Error("Lỗi khi tải dữ liệu");
-                            return response.text();
-                        })
-                        .then(html => {
-                            document.getElementById("modalContent").innerHTML = html;
-                        })
-                        .catch(error => {
-                            document.getElementById("modalContent").innerHTML = "<p class='text-danger'>Không thể tải chính sách. Vui lòng thử lại sau.</p>";
-                            console.error(error);
-                        });
-            }
-
-            function hideModal() {
-                document.getElementById("overlay").style.display = "none";
-                document.getElementById("policyModal").style.display = "none";
-            }
-        </script>   
     </body>
 </html>

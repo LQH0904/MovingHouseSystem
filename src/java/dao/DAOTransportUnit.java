@@ -1,5 +1,8 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
-
 import utils.DBContext;
 import model.TransportUnit;
 import java.sql.PreparedStatement;
@@ -10,9 +13,13 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DAOTransportUnit extends DBContext {
+/**
+ *
+ * @author Admin
+ */
+public class DAOTransportUnit extends DBContext{
     public Vector<TransportUnit> getReports(String sql) {
-        Vector<TransportUnit> vector = new Vector<>();
+        Vector<TransportUnit> vector = new Vector<TransportUnit>();
 
         try {
             Statement state = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -26,20 +33,8 @@ public class DAOTransportUnit extends DBContext {
                 String location = rs.getString("location");
                 int vehicleCount = rs.getInt("vehicle_count");
                 int capacity = rs.getInt("capacity");
-
-                TransportUnit transportUnit = new TransportUnit(
-                        transportUnitId,
-                        companyName,
-                        contactInfo,
-                        registrationStatus,
-                        createdAt,
-                        location,
-                        vehicleCount,
-                        capacity,
-                        capacity,
-                        createdAt 
-                );
-
+                
+                TransportUnit transportUnit = new TransportUnit(transportUnitId, companyName, contactInfo, registrationStatus, createdAt, location, vehicleCount, capacity, capacity, createdAt);
                 vector.add(transportUnit);
             }
         } catch (SQLException ex) {

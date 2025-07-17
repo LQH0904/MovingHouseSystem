@@ -202,16 +202,185 @@ public class SurveyCustomerCharDataDAO extends DBContext {
 
         return surveys;
     }
-    private String formatDateString(String dateStr) {
-    try {
-        // Nếu là format YYYY-MM, chuyển thành YYYY-MM-01
-        if (dateStr.matches("\\d{4}-\\d{2}")) {
-            return dateStr + "-01";
+
+    /**
+     * Lọc dữ liệu khảo sát theo mức overall_satisfaction (1-5)
+     */
+    public List<CustomerSurvey> getCustomerSurveysBySatisfactionLevel(int minLevel, int maxLevel) {
+        List<CustomerSurvey> surveys = new ArrayList<>();
+        String sql = """
+        SELECT cs.* FROM CustomerSurvey cs
+        INNER JOIN Users u ON cs.user_id = u.user_id
+        WHERE u.role_id = 6 
+        AND cs.overall_satisfaction BETWEEN ? AND ?
+        ORDER BY cs.survey_date DESC
+        """;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, minLevel);
+            ps.setInt(2, maxLevel);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CustomerSurvey survey = new CustomerSurvey();
+                survey.setSurveyId(rs.getInt("survey_id"));
+                survey.setSurveyDate(rs.getString("survey_date"));
+                survey.setUserId(rs.getInt("user_id"));
+                survey.setOverall_satisfaction(rs.getInt("overall_satisfaction"));
+                survey.setRecommend_score(rs.getInt("recommend_score"));
+                survey.setTransport_care(rs.getInt("transport_care"));
+                survey.setConsultant_professionalism(rs.getInt("consultant_professionalism"));
+                survey.setExpectation(rs.getString("expectation"));
+                survey.setPacking_quality(rs.getString("packing_quality"));
+                survey.setItem_condition(rs.getString("item_condition"));
+                survey.setDelivery_timeliness(rs.getString("delivery_timeliness"));
+                survey.setBooking_process(rs.getString("booking_process"));
+                survey.setResponse_time(rs.getString("response_time"));
+                survey.setPrice_transparency(rs.getString("price_transparency"));
+                survey.setAge_group(rs.getString("age_group"));
+                survey.setArea(rs.getString("area"));
+                survey.setHousing_type(rs.getString("housing_type"));
+                survey.setUsage_frequency(rs.getString("usage_frequency"));
+                survey.setImportant_factor(rs.getString("important_factor"));
+                survey.setAdditional_service(rs.getString("additional_service"));
+                survey.setFeedback(rs.getString("feedback"));
+
+                surveys.add(survey);
+            }
+
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        // Nếu đã đúng format YYYY-MM-DD, trả về như cũ
-        return dateStr;
-    } catch (Exception e) {
-        return dateStr; // Fallback
+
+        return surveys;
     }
-}
+
+    /**
+     * Lọc dữ liệu khảo sát theo mức transport_care (1-5)
+     */
+    public List<CustomerSurvey> getCustomerSurveysByTransportCareLevel(int minLevel, int maxLevel) {
+        List<CustomerSurvey> surveys = new ArrayList<>();
+        String sql = """
+        SELECT cs.* FROM CustomerSurvey cs
+        INNER JOIN Users u ON cs.user_id = u.user_id
+        WHERE u.role_id = 6 
+        AND cs.transport_care BETWEEN ? AND ?
+        ORDER BY cs.survey_date DESC
+        """;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, minLevel);
+            ps.setInt(2, maxLevel);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CustomerSurvey survey = new CustomerSurvey();
+                survey.setSurveyId(rs.getInt("survey_id"));
+                survey.setSurveyDate(rs.getString("survey_date"));
+                survey.setUserId(rs.getInt("user_id"));
+                survey.setOverall_satisfaction(rs.getInt("overall_satisfaction"));
+                survey.setRecommend_score(rs.getInt("recommend_score"));
+                survey.setTransport_care(rs.getInt("transport_care"));
+                survey.setConsultant_professionalism(rs.getInt("consultant_professionalism"));
+                survey.setExpectation(rs.getString("expectation"));
+                survey.setPacking_quality(rs.getString("packing_quality"));
+                survey.setItem_condition(rs.getString("item_condition"));
+                survey.setDelivery_timeliness(rs.getString("delivery_timeliness"));
+                survey.setBooking_process(rs.getString("booking_process"));
+                survey.setResponse_time(rs.getString("response_time"));
+                survey.setPrice_transparency(rs.getString("price_transparency"));
+                survey.setAge_group(rs.getString("age_group"));
+                survey.setArea(rs.getString("area"));
+                survey.setHousing_type(rs.getString("housing_type"));
+                survey.setUsage_frequency(rs.getString("usage_frequency"));
+                survey.setImportant_factor(rs.getString("important_factor"));
+                survey.setAdditional_service(rs.getString("additional_service"));
+                survey.setFeedback(rs.getString("feedback"));
+
+                surveys.add(survey);
+            }
+
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return surveys;
+    }
+
+    /**
+     * Lọc dữ liệu khảo sát theo mức consultant_professionalism (1-5)
+     */
+    public List<CustomerSurvey> getCustomerSurveysByConsultantLevel(int minLevel, int maxLevel) {
+        List<CustomerSurvey> surveys = new ArrayList<>();
+        String sql = """
+        SELECT cs.* FROM CustomerSurvey cs
+        INNER JOIN Users u ON cs.user_id = u.user_id
+        WHERE u.role_id = 6 
+        AND cs.consultant_professionalism BETWEEN ? AND ?
+        ORDER BY cs.survey_date DESC
+        """;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, minLevel);
+            ps.setInt(2, maxLevel);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CustomerSurvey survey = new CustomerSurvey();
+                survey.setSurveyId(rs.getInt("survey_id"));
+                survey.setSurveyDate(rs.getString("survey_date"));
+                survey.setUserId(rs.getInt("user_id"));
+                survey.setOverall_satisfaction(rs.getInt("overall_satisfaction"));
+                survey.setRecommend_score(rs.getInt("recommend_score"));
+                survey.setTransport_care(rs.getInt("transport_care"));
+                survey.setConsultant_professionalism(rs.getInt("consultant_professionalism"));
+                survey.setExpectation(rs.getString("expectation"));
+                survey.setPacking_quality(rs.getString("packing_quality"));
+                survey.setItem_condition(rs.getString("item_condition"));
+                survey.setDelivery_timeliness(rs.getString("delivery_timeliness"));
+                survey.setBooking_process(rs.getString("booking_process"));
+                survey.setResponse_time(rs.getString("response_time"));
+                survey.setPrice_transparency(rs.getString("price_transparency"));
+                survey.setAge_group(rs.getString("age_group"));
+                survey.setArea(rs.getString("area"));
+                survey.setHousing_type(rs.getString("housing_type"));
+                survey.setUsage_frequency(rs.getString("usage_frequency"));
+                survey.setImportant_factor(rs.getString("important_factor"));
+                survey.setAdditional_service(rs.getString("additional_service"));
+                survey.setFeedback(rs.getString("feedback"));
+
+                surveys.add(survey);
+            }
+
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return surveys;
+    }
+
+    private String formatDateString(String dateStr) {
+        try {
+            // Nếu là format YYYY-MM, chuyển thành YYYY-MM-01
+            if (dateStr.matches("\\d{4}-\\d{2}")) {
+                return dateStr + "-01";
+            }
+            // Nếu đã đúng format YYYY-MM-DD, trả về như cũ
+            return dateStr;
+        } catch (Exception e) {
+            return dateStr; // Fallback
+        }
+    }
 }

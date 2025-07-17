@@ -3,7 +3,7 @@ package controller.reportSummary;
 
 import dao.DAOTransportReport;
 import dao.DAOTransportUnit;
-import model.transportReport;
+import model.TransportReport;
 import model.TransportUnit;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpSession;
@@ -34,7 +34,7 @@ public class transportReportController extends HttpServlet {
             }
 
             if (service.equals("listTransportReports")) {
-                Vector<transportReport> vector;
+                Vector<TransportReport> vector;
                 Vector<TransportUnit> transportUnits;
 
                 // Get filter parameters
@@ -113,7 +113,7 @@ public class transportReportController extends HttpServlet {
                     e.printStackTrace();
                     
                     // Set empty vectors to prevent null pointer exceptions
-                    request.setAttribute("transportReportsData", new Vector<transportReport>());
+                    request.setAttribute("transportReportsData", new Vector<TransportReport>());
                     request.setAttribute("transportUnitData", new Vector<TransportUnit>());
                     request.setAttribute("errorMessage", "Lỗi khi tải dữ liệu: " + e.getMessage());
                 }
@@ -127,7 +127,7 @@ public class transportReportController extends HttpServlet {
                 response.setContentType("application/json;charset=UTF-8");
                 
                 try {
-                    Vector<transportReport> reports = dao.getTransportReportWithCompanyName(
+                    Vector<TransportReport> reports = dao.getTransportReportWithCompanyName(
                         "SELECT tp.*, tu.company_name FROM dbo.TransportReport tp " +
                         "JOIN dbo.TransportUnits tu ON tp.transport_unit_id = tu.transport_unit_id " +
                         "ORDER BY tp.report_year DESC, tp.report_month DESC"

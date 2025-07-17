@@ -50,8 +50,11 @@
             .form-control.is-invalid {
                 border-color: #dc3545;
             }
-            .invalid-feedback {
+            .error-message {
+                color: #dc3545;
                 font-size: 0.85rem;
+                margin-bottom: 5px;
+                display: none;
             }
             .btn-primary {
                 background: #007bff;
@@ -122,89 +125,6 @@
                     font-size: 0.9rem;
                 }
             }
-            .modal {
-                display: none;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: #fff;
-                padding: 30px;
-                border-radius: 10px;
-                max-height: 80vh;
-                overflow-y: auto;
-                z-index: 1000;
-                width: 90%;
-                max-width: 600px;
-                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            }
-
-            .modal-close {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 1.5rem;
-                color: #333;
-                cursor: pointer;
-            }
-
-            .policy-item .title {
-                font-weight: bold;
-                margin-top: 15px;
-            }
-
-            .policy-item .content {
-                white-space: pre-wrap;
-                margin-top: 5px;
-            }
-            
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-            }
-
-            .modal {
-                display: none;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: #fff;
-                padding: 30px;
-                border-radius: 10px;
-                max-height: 80vh;
-                overflow-y: auto;
-                z-index: 1000;
-                width: 90%;
-                max-width: 600px;
-                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            }
-
-            .modal-close {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 1.5rem;
-                color: #333;
-                cursor: pointer;
-            }
-
-            .policy-item .title {
-                font-weight: bold;
-                margin-top: 15px;
-            }
-
-            .policy-item .content {
-                white-space: pre-wrap;
-                margin-top: 5px;
-            }
-            
         </style>
     </head>
     <body>
@@ -228,81 +148,79 @@
             <form action="signup_storage" method="post" id="signupForm" enctype="multipart/form-data" novalidate>
                 <div class="mb-3">
                     <label for="warehouse_name" class="form-label">Tên kho bãi</label>
+                    <div class="error-message" id="warehouse_name_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
                         <input type="text" class="form-control" id="warehouse_name" name="warehouse_name" placeholder="Nhập tên kho bãi" required>
                     </div>
-                    <div class="invalid-feedback">Tên kho bãi phải từ 3 đến 150 ký tự.</div>
                 </div>
                 <div class="mb-3">
                     <label for="phone_number" class="form-label">Số điện thoại</label>
+                    <div class="error-message" id="phone_number_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
                         <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Nhập số điện thoại" required>
                     </div>
-                    <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ (10-15 chữ số).</div>
                 </div>
                 <div class="mb-3">
                     <label for="business_certificate" class="form-label">Giấy phép kinh doanh (ảnh)</label>
+                    <div class="error-message" id="business_certificate_error"></div>
                     <div class="input-group">
                         <input type="file" class="form-control" id="business_certificate" name="business_certificate" accept=".jpg,.jpeg,.png" required>
                     </div>
-                    <div class="invalid-feedback">Vui lòng chọn file ảnh (.jpg, .jpeg, .png).</div>
+                </div>
+                <div class="mb-3">
+                    <label for="floor_plan" class="form-label">Ảnh mặt bằng kho (ảnh)</label>
+                    <div class="error-message" id="floor_plan_error"></div>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="floor_plan" name="floor_plan" accept=".jpg,.jpeg,.png" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="insurance" class="form-label">Giấy tờ bảo hiểm (ảnh)</label>
+                    <div class="error-message" id="insurance_error"></div>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="insurance" name="insurance" accept=".jpg,.jpeg,.png" required>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="location" class="form-label">Địa điểm</label>
+                    <div class="error-message" id="location_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                         <input type="text" class="form-control" id="location" name="location" placeholder="Nhập địa điểm">
                     </div>
-                    <div class="invalid-feedback">Địa điểm phải từ 5 đến 255 ký tự.</div>
                 </div>
                 <div class="mb-3">
                     <label for="area" class="form-label">Diện tích (m²)</label>
+                    <div class="error-message" id="area_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-ruler"></i></span>
                         <input type="text" class="form-control" id="area" name="area" placeholder="Nhập diện tích" pattern="^\\d+(\\.\\d{1,2})?$">
                     </div>
-                    <div class="invalid-feedback">Vui lòng nhập diện tích hợp lệ (tối đa 200 ký tự, định dạng số với tối đa 2 chữ số thập phân).</div>
                 </div>
                 <div class="mb-3">
                     <label for="employee" class="form-label">Số lượng nhân viên</label>
+                    <div class="error-message" id="employee_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-users"></i></span>
                         <input type="number" class="form-control" id="employee" name="employee" placeholder="Nhập số lượng nhân viên" min="0" required>
                     </div>
-                    <div class="invalid-feedback">Vui lòng nhập số lượng hợp lệ.</div>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
+                    <div class="error-message" id="email_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email" required>
                     </div>
-                    <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu</label>
+                    <div class="error-message" id="password_error"></div>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
-                    </div>
-                    <div class="invalid-feedback">Mật khẩu phải có ít nhất 6 ký tự.</div>
-                </div>
-                <div class="mb-3">
-                    <label>
-                        <input type="checkbox" id="agreeCheck" onchange="toggleButton()"> Tôi đồng ý với 
-                        <a href="javascript:void(0)" onclick="showModal()" style="color: #007bff; text-decoration: underline;">các chính sách</a>
-                        của nhà phát triển.
-                    </label>
-
-
-                    <!-- Modal -->
-                    <div class="overlay" id="overlay" onclick="hideModal()"></div>
-                    <div class="modal" id="policyModal">
-                        <span class="modal-close" onclick="hideModal()">×</span>
-                        <div id="modalContent">
-                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100" id="submitBtn">Đăng ký</button>
@@ -321,61 +239,129 @@
 
                 $('#signupForm').on('submit', function (e) {
                     let isValid = true;
+                    $('.error-message').hide().text('');
                     $('.form-control').removeClass('is-invalid');
 
+                    // Validate warehouse_name
                     const $warehouse_name = $('#warehouse_name');
-                    if ($warehouse_name.val().length < 3 || $warehouse_name.val().length > 150) {
+                    if (!$warehouse_name.val()) {
+                        $('#warehouse_name_error').text('Vui lòng nhập tên kho bãi.').show();
+                        $warehouse_name.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($warehouse_name.val().length < 3 || $warehouse_name.val().length > 150) {
+                        $('#warehouse_name_error').text('Tên kho bãi phải từ 3 đến 150 ký tự.').show();
                         $warehouse_name.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate phone_number
                     const $phone_number = $('#phone_number');
                     const phoneRegex = /^[0-9]{10,15}$/;
-                    if (!phoneRegex.test($phone_number.val())) {
+                    if (!$phone_number.val()) {
+                        $('#phone_number_error').text('Vui lòng nhập số điện thoại.').show();
+                        $phone_number.addClass('is-invalid');
+                        isValid = false;
+                    } else if (!phoneRegex.test($phone_number.val())) {
+                        $('#phone_number_error').text('Số điện thoại phải từ 10 đến 15 chữ số.').show();
                         $phone_number.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate business_certificate
                     const $business_certificate = $('#business_certificate');
                     if (!$business_certificate.val()) {
+                        $('#business_certificate_error').text('Vui lòng chọn file giấy phép kinh doanh.').show();
                         $business_certificate.addClass('is-invalid');
                         isValid = false;
                     } else {
                         const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
                         if (!allowedExtensions.test($business_certificate.val())) {
+                            $('#business_certificate_error').text('File phải có định dạng .jpg, .jpeg hoặc .png.').show();
                             $business_certificate.addClass('is-invalid');
                             isValid = false;
                         }
                     }
 
+                    // Validate floor_plan
+                    const $floor_plan = $('#floor_plan');
+                    if (!$floor_plan.val()) {
+                        $('#floor_plan_error').text('Vui lòng chọn file ảnh mặt bằng kho.').show();
+                        $floor_plan.addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                        if (!allowedExtensions.test($floor_plan.val())) {
+                            $('#floor_plan_error').text('File mặt bằng kho phải có định dạng .jpg, .jpeg hoặc .png.').show();
+                            $floor_plan.addClass('is-invalid');
+                            isValid = false;
+                        }
+                    }
+
+                    // Validate insurance
+                    const $insurance = $('#insurance');
+                    if (!$insurance.val()) {
+                        $('#insurance_error').text('Vui lòng chọn file giấy tờ bảo hiểm.').show();
+                        $insurance.addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                        if (!allowedExtensions.test($insurance.val())) {
+                            $('#insurance_error').text('File bảo hiểm phải có định dạng .jpg, .jpeg hoặc .png.').show();
+                            $insurance.addClass('is-invalid');
+                            isValid = false;
+                        }
+                    }
+
+                    // Validate location
                     const $location = $('#location');
                     if ($location.val() && ($location.val().length < 5 || $location.val().length > 255)) {
+                        $('#location_error').text('Địa điểm phải từ 5 đến 255 ký tự.').show();
                         $location.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate area
                     const $area = $('#area');
                     const areaRegex = /^\d+(\.\d{1,2})?$/;
                     if ($area.val() && ($area.val().length > 200 || !areaRegex.test($area.val()))) {
+                        $('#area_error').text('Diện tích phải là số với tối đa 2 chữ số thập phân.').show();
                         $area.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate employee
                     const $employee = $('#employee');
-                    if ($employee.val() < 0) {
+                    if (!$employee.val()) {
+                        $('#employee_error').text('Vui lòng nhập số lượng nhân viên.').show();
+                        $employee.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($employee.val() < 0) {
+                        $('#employee_error').text('Số lượng nhân viên không được âm.').show();
                         $employee.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate email
                     const $email = $('#email');
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test($email.val())) {
+                    if (!$email.val()) {
+                        $('#email_error').text('Vui lòng nhập email.').show();
+                        $email.addClass('is-invalid');
+                        isValid = false;
+                    } else if (!emailRegex.test($email.val())) {
+                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
                         $email.addClass('is-invalid');
                         isValid = false;
                     }
 
+                    // Validate password
                     const $password = $('#password');
-                    if ($password.val().length < 6) {
+                    if (!$password.val()) {
+                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
+                        $password.addClass('is-invalid');
+                        isValid = false;
+                    } else if ($password.val().length < 6) {
+                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
                         $password.addClass('is-invalid');
                         isValid = false;
                     }
@@ -388,38 +374,5 @@
                 });
             });
         </script>
-        <script>
-            function toggleButton() {
-                const checkbox = document.getElementById("agreeCheck");
-                const button = document.getElementById("confirmBtn");
-                if (button) {
-                    button.disabled = !checkbox.checked;
-                }
-            }
-
-            function showModal() {
-                document.getElementById("overlay").style.display = "block";
-                document.getElementById("policyModal").style.display = "block";
-                fetch('${pageContext.request.contextPath}/get-policy-data')
-                        .then(response => {
-                            if (!response.ok)
-                                throw new Error("Lỗi khi tải dữ liệu");
-                            return response.text();
-                        })
-                        .then(html => {
-                            document.getElementById("modalContent").innerHTML = html;
-                        })
-                        .catch(error => {
-                            document.getElementById("modalContent").innerHTML = "<p class='text-danger'>Không thể tải chính sách. Vui lòng thử lại sau.</p>";
-                            console.error(error);
-                        });
-            }
-
-            function hideModal() {
-                document.getElementById("overlay").style.display = "none";
-                document.getElementById("policyModal").style.display = "none";
-            }
-        </script>   
-
     </body>
 </html>
