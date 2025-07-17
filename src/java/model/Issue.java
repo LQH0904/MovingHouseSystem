@@ -11,6 +11,7 @@ public class Issue {
     private String status;
     private String priority;
     private LocalDateTime createdAt;
+    private LocalDateTime resolvedAt; // ✅ Bổ sung trường này
 
     public Issue() {
     }
@@ -78,5 +79,13 @@ public class Issue {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getResolvedAt() {
+        return resolvedAt;
+    }
+
+    public void setResolvedAt(LocalDateTime resolvedAt) {
+        this.resolvedAt = resolvedAt;
     }
 }

@@ -3,12 +3,7 @@ package dao;
 import model.Issue;
 import utils.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +15,6 @@ public class IssueDAO {
         int generatedId = -1;
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS)) {
-
             pstmt.setInt(1, issue.getUserId());
             pstmt.setInt(2, issue.getOrderId());
             pstmt.setString(3, issue.getDescription());
@@ -42,7 +36,7 @@ public class IssueDAO {
     }
 
     public Issue getIssueById(int issueId) throws SQLException {
-        String SQL = "SELECT issue_id, user_id, order_id, description, status, priority, created_at FROM [dbo].[Issues] WHERE issue_id = ?";
+        String SQL = "SELECT issue_id, user_id, order_id, description, status, priority, created_at, resolved_at FROM [dbo].[Issues] WHERE issue_id = ?";
         Issue issue = null;
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {
@@ -57,6 +51,9 @@ public class IssueDAO {
                     issue.setStatus(rs.getString("status"));
                     issue.setPriority(rs.getString("priority"));
                     issue.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    if (rs.getTimestamp("resolved_at") != null) {
+                        issue.setResolvedAt(rs.getTimestamp("resolved_at").toLocalDateTime());
+                    }
                 }
             }
         }
@@ -65,7 +62,7 @@ public class IssueDAO {
 
     public List<Issue> getIssuesByUserId(int userId) throws SQLException {
         List<Issue> issues = new ArrayList<>();
-        String SQL = "SELECT issue_id, user_id, order_id, description, status, priority, created_at FROM [dbo].[Issues] WHERE user_id = ? ORDER BY created_at DESC";
+        String SQL = "SELECT issue_id, user_id, order_id, description, status, priority, created_at, resolved_at FROM [dbo].[Issues] WHERE user_id = ? ORDER BY created_at DESC";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {
             pstmt.setInt(1, userId);
@@ -79,6 +76,9 @@ public class IssueDAO {
                     issue.setStatus(rs.getString("status"));
                     issue.setPriority(rs.getString("priority"));
                     issue.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    if (rs.getTimestamp("resolved_at") != null) {
+                        issue.setResolvedAt(rs.getTimestamp("resolved_at").toLocalDateTime());
+                    }
                     issues.add(issue);
                 }
             }
@@ -88,7 +88,7 @@ public class IssueDAO {
 
     public List<Issue> getFilteredIssues(String status, String priority, Integer orderId, Integer userId, LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
         List<Issue> issues = new ArrayList<>();
-        StringBuilder SQL = new StringBuilder("SELECT issue_id, user_id, order_id, description, status, priority, created_at FROM [dbo].[Issues] WHERE 1=1");
+        StringBuilder SQL = new StringBuilder("SELECT issue_id, user_id, order_id, description, status, priority, created_at, resolved_at FROM [dbo].[Issues] WHERE 1=1");
 
         List<Object> params = new ArrayList<>();
 
@@ -120,7 +120,6 @@ public class IssueDAO {
         SQL.append(" ORDER BY created_at DESC");
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL.toString())) {
-
             for (int i = 0; i < params.size(); i++) {
                 Object param = params.get(i);
                 if (param instanceof String) {
@@ -142,6 +141,9 @@ public class IssueDAO {
                     issue.setStatus(rs.getString("status"));
                     issue.setPriority(rs.getString("priority"));
                     issue.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    if (rs.getTimestamp("resolved_at") != null) {
+                        issue.setResolvedAt(rs.getTimestamp("resolved_at").toLocalDateTime());
+                    }
                     issues.add(issue);
                 }
             }
@@ -154,6 +156,29 @@ public class IssueDAO {
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {
             pstmt.setString(1, newStatus);
             pstmt.setInt(2, issueId);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        }
+    }
+
+    // ✅ Hàm mới: Cập nhật status, priority và resolved_at nếu status = resolved
+    public boolean updateStatusPriority(int issueId, String newStatus, String newPriority) throws SQLException {
+        String SQL;
+        if ("resolved".equalsIgnoreCase(newStatus)) {
+            SQL = "UPDATE [dbo].[Issues] SET status = ?, priority = ?, resolved_at = ? WHERE issue_id = ?";
+        } else {
+            SQL = "UPDATE [dbo].[Issues] SET status = ?, priority = ? WHERE issue_id = ?";
+        }
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.setString(1, newStatus);
+            pstmt.setString(2, newPriority);
+            if ("resolved".equalsIgnoreCase(newStatus)) {
+                pstmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                pstmt.setInt(4, issueId);
+            } else {
+                pstmt.setInt(3, issueId);
+            }
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         }

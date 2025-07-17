@@ -5,24 +5,11 @@ public class Staff {
     private int staffId;
     private String fullName;
     private String department;
-    private String avatarUrl;
     private String status;
     private String email;
     private String phone;
     private String address; // Thêm địa chỉ
 
-    public Staff(int staffId, String fullName, String department, String avatarUrl, String status, String email, String phone) {
-        this.staffId = staffId;
-        this.fullName = fullName;
-        this.department = department;
-        this.avatarUrl = avatarUrl;
-        this.status = status;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-    }
-
-    // Getter & Setter
     public int getStaffId() {
         return staffId;
     }
@@ -45,14 +32,6 @@ public class Staff {
 
     public void setDepartment(String department) {
         this.department = department;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     public String getStatus() {
@@ -86,4 +65,18 @@ public class Staff {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public Staff() {
+    }
+
+    public Staff(int staffId, String fullName, String department, String status, String email, String phone, String address) {
+        this.staffId = staffId;
+        this.fullName = fullName;
+        this.department = department;
+        this.status = status;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
+
 }

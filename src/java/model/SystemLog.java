@@ -14,12 +14,17 @@ public class SystemLog {
     public SystemLog(int adminId, String auditAction, String par) {
     }
 
+    public SystemLog() {
+        this.timestamp = new Date();
+    }
+
+    
     public SystemLog(int logId, int userId, String username, String action, Date timestamp, String details) {
         this.logId = logId;
         this.userId = userId;
         this.username = username;
         this.action = action;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
         this.details = details;
     }
 

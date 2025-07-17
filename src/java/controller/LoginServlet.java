@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.SystemLogDAO;
 import dao.UserDAO;
 import model.Users;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.PasswordUtils;
+import model.SystemLog;
 
 /**
  *
@@ -61,7 +63,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
+        
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String roleIdStr = request.getParameter("role_id");
@@ -125,7 +127,14 @@ public class LoginServlet extends HttpServlet {
         newSession.setAttribute("acc", user);
         newSession.setAttribute("username", user.getUsername());
         newSession.setAttribute("email", user.getEmail());
-
+        //Create Log
+        SystemLogDAO aO = new SystemLogDAO();
+        SystemLog log = new SystemLog();
+        log.setUserId(user.getUserId());
+        log.setUsername(user.getUsername());
+        log.setAction("Login");
+        log.setDetails(user.getUsername() + "Đăng nhập");
+        aO.createSystemLog(log);
         // Chuyển hướng dựa trên vai trò
         switch (user.getRoleId()) {
             case 1: // Admin

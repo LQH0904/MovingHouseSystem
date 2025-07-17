@@ -12,7 +12,7 @@
         <style>
             .updated-ids {
                 font-weight: bold;
-                color: #28a745; 
+                color: #28a745;
                 margin-left: 5px;
             }
             .alert {
@@ -37,17 +37,28 @@
             }
 
             @keyframes fadeOut {
-                0% { background-color: #fff3cd; } /* Bắt đầu với màu highlight */
-                100% { background-color: transparent; } /* Kết thúc với màu nền trong suốt */
+                0% {
+                    background-color: #fff3cd;
+                } /* Bắt đầu với màu highlight */
+                100% {
+                    background-color: transparent;
+                } /* Kết thúc với màu nền trong suốt */
             }
         </style>
     </head>
     <body>
+        <c:if test="${requestScope.successMessage}">
+            <p class="alert alert-success">${successMessage}</p>
+        </c:if>
+        <c:if test="${requestScope.errorMessage}">
+            <p class="alert alert-danger">${errorMessage}</p>
+        </c:if>
+
         <div class="parent">
             <div class="div1"><jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include></div>
             <div class="div2"><jsp:include page="../../Layout/operator/Header.jsp"></jsp:include></div>
-            <div class="div3">
-                <h1>Danh sách Khiếu nại</h1>
+                <div class="div3">
+                    <h1>Danh sách Khiếu nại</h1>
 
                 <c:if test="${not empty successMessage}">
                     <p class="alert alert-success">
@@ -201,36 +212,36 @@
 
         <script src="${pageContext.request.contextPath}/js/Header.js"></script>
         <script>
-            var modal = document.getElementById("assignModal");
-            var span = document.getElementsByClassName("close-button")[0];
+                                    var modal = document.getElementById("assignModal");
+                                    var span = document.getElementsByClassName("close-button")[0];
 
-            function openAssignModal(issueId) {
-                document.getElementById('modalIssueId').value = issueId;
-                modal.style.display = "block";
-            }
+                                    function openAssignModal(issueId) {
+                                        document.getElementById('modalIssueId').value = issueId;
+                                        modal.style.display = "block";
+                                    }
 
-            function closeAssignModal() {
-                modal.style.display = "none";
-            }
+                                    function closeAssignModal() {
+                                        modal.style.display = "none";
+                                    }
 
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
+                                    window.onclick = function (event) {
+                                        if (event.target == modal) {
+                                            modal.style.display = "none";
+                                        }
+                                    }
 
-            // JavaScript để tự động cuộn và xóa highlight
-            document.addEventListener('DOMContentLoaded', function() {
-                var highlightedId = '${highlightedComplaintId}';
-                if (highlightedId && highlightedId !== '') {
-                    var row = document.getElementById('complaint-' + highlightedId);
-                    if (row) {
-                        // Cuộn đến hàng được highlight
-                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // CSS animation sẽ tự động xử lý việc fadeOut
-                    }
-                }
-            });
+                                    // JavaScript để tự động cuộn và xóa highlight
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        var highlightedId = '${highlightedComplaintId}';
+                                        if (highlightedId && highlightedId !== '') {
+                                            var row = document.getElementById('complaint-' + highlightedId);
+                                            if (row) {
+                                                // Cuộn đến hàng được highlight
+                                                row.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                                // CSS animation sẽ tự động xử lý việc fadeOut
+                                            }
+                                        }
+                                    });
         </script>
     </body>
 </html>

@@ -71,6 +71,19 @@
                             <span class="link">Đơn Hàng</span>
                         </a>
                    
+                            <li class="list">
+                        <a href="${pageContext.request.contextPath}/operatorComplaintList" class="nav-link">
+                            <i class="bx bx-bell icon"></i>
+                            <span class="link">Danh sách khiếu nại</span>
+                        </a>
+                   
+                            <li class="list">
+                        <a href="${pageContext.request.contextPath}/LogViewerServlet" class="nav-link">
+                            <i class="bx bx-bell icon"></i>
+                            <span class="link">Đơn Hàng</span>
+                        </a>
+                   
+                            
                     <li class="list">
                         <a href="#" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>

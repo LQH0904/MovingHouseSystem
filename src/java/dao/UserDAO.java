@@ -309,7 +309,7 @@ public class UserDAO {
             stmt.setInt(1, userId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    user = new User(username, hashedPassword, email, role);
+                    user = new User();
                     user.setUserId(rs.getInt("user_id"));
                     user.setUsername(rs.getString("username"));
                     user.setPasswordHash(rs.getString("password_hash"));
@@ -339,7 +339,7 @@ public class UserDAO {
 
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                User user = new User(username, hashedPassword, email, role);
+                User user = new User();
                 user.setUserId(rs.getInt("user_id"));
                 user.setUsername(rs.getString("username"));
                 user.setPasswordHash(rs.getString("password_hash"));
@@ -370,7 +370,7 @@ public class UserDAO {
             stmt.setInt(1, roleId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    User user = new User(username, hashedPassword, email, role);
+                    User user = new User();
                     user.setUserId(rs.getInt("user_id"));
                     user.setUsername(rs.getString("username"));
                     user.setEmail(rs.getString("email"));
@@ -582,7 +582,7 @@ public class UserDAO {
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            User user = new User(username, hashedPassword, email, role);
+            User user = new User();
             user.setUserId(rs.getInt("user_id"));
             user.setUsername(rs.getString("username"));
             user.setPasswordHash(rs.getString("password_hash"));

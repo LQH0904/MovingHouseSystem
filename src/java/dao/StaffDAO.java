@@ -32,15 +32,10 @@ public class StaffDAO {
 
     public void updateStaff(Staff staff) throws Exception {
         Connection conn = DBConnection.getConnection();
-        String sql = "UPDATE Staff SET full_name = ?, department = ?, avatar_url = ?, status = ?, email = ?, phone = ?, updated_at = GETDATE() WHERE staff_id = ?";
+        String sql = "UPDATE Staff SET full_name = ?, department = ? WHERE staff_id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, staff.getFullName());
         ps.setString(2, staff.getDepartment());
-        ps.setString(3, staff.getAvatarUrl());
-        ps.setString(4, staff.getStatus());
-        ps.setString(5, staff.getEmail());
-        ps.setString(6, staff.getPhone());
-        ps.setInt(7, staff.getStaffId());
         ps.executeUpdate();
         ps.close();
         conn.close();
