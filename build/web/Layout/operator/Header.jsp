@@ -20,7 +20,7 @@
                 <i class="fas fa-bars text-white"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div style="color: white;font-family: 'UnifrakturMaguntia', cursive;font-size: 30px;"> chào mừng đến trang operator </div>
+                <div style="color: white;font-family: 'UnifrakturMaguntia', cursive;font-size: 30px;"> chào mừng đến trang dành cho điều hành viên </div>
                 <ul class="navbar-nav ml-auto">
                     <li class="hori-selector">
                         <div class="left"></div>
