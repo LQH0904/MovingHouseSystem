@@ -71,6 +71,21 @@
 .delete-btn:hover {
     background-color: #c82333; /* Màu đỏ đậm khi hover */
 }
+.detail-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff; /* xanh nước biển */
+    color: white;
+    margin-right: 5px;
+    width: 45%;
+}
+
+.detail-btn:hover {
+    background-color: #0056b3; /* xanh đậm khi hover */
+}
+
 
 /* Modal */
 .modal-content {
@@ -107,5 +122,36 @@
 
 .search-btn:hover {
     background-color: #0056b3;
+}
+
+.pagination-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* khoảng cách giữa các nút */
+    flex-wrap: nowrap; /* tránh xuống dòng */
+    margin-top: 10px;
+}
+
+.pagination-buttons button {
+    display: inline-block; /* Quan trọng */
+    padding: 6px 12px;
+    border: 1px solid #007bff;
+    background-color: white;
+    color: #007bff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    min-width: 40px;
+}
+
+.pagination-buttons button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 

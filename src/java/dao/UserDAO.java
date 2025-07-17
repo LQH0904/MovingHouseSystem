@@ -679,11 +679,14 @@ public class UserDAO {
         return userList;
     }
      public int countSearchUsers(Integer roleId, String keyword) throws SQLException {
-    String sql = "SELECT COUNT(*) FROM users u JOIN role r ON u.roleId = r.roleId WHERE 1=1";
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Users u JOIN Roles r ON u.role_id = r.role_id WHERE 1=1";
+
     if (roleId != null) sql += " AND u.roleId = ?";
     if (keyword != null && !keyword.isEmpty()) sql += " AND (u.username LIKE ? OR u.email LIKE ?)";
 
-    try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
         int index = 1;
         if (roleId != null) ps.setInt(index++, roleId);
         if (keyword != null && !keyword.isEmpty()) {
@@ -692,18 +695,23 @@ public class UserDAO {
         }
 
         ResultSet rs = ps.executeQuery();
-        if (rs.next()) return rs.getInt(1);
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
     }
-    return 0;
+    return count;
 }
-public List<User> searchUsers(Integer roleId, String keyword, int offset, int limit) throws SQLException {
-    List<User> list = new ArrayList<>();
-    String sql = "SELECT u.*, r.roleName FROM users u JOIN role r ON u.roleId = r.roleId WHERE 1=1";
-    if (roleId != null) sql += " AND u.roleId = ?";
-    if (keyword != null && !keyword.isEmpty()) sql += " AND (u.username LIKE ? OR u.email LIKE ?)";
-    sql += " ORDER BY u.createdAt DESC LIMIT ?, ?";
 
-    try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+public List<User> searchUsers(Integer roleId, String keyword, int offset, int limit) throws SQLException {
+    List<User> users = new ArrayList<>();
+    String sql = "SELECT u.*, r.role_name FROM Users u JOIN Roles r ON u.role_id = r.role_id WHERE 1=1";
+
+    if (roleId != null) sql += " AND u.role_id = ?";
+    if (keyword != null && !keyword.isEmpty()) sql += " AND (u.username LIKE ? OR u.email LIKE ?)";
+    sql += " ORDER BY u.created_at DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
         int index = 1;
         if (roleId != null) ps.setInt(index++, roleId);
         if (keyword != null && !keyword.isEmpty()) {
@@ -715,19 +723,22 @@ public List<User> searchUsers(Integer roleId, String keyword, int offset, int li
 
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            User user = new User();
-            user.setUserId(rs.getInt("userId"));
-            user.setUsername(rs.getString("username"));
-            user.setEmail(rs.getString("email"));
-            user.setStatus(rs.getString("status"));
-            user.setCreatedAt(rs.getTimestamp("createdAt"));
-            user.setUpdatedAt(rs.getTimestamp("updatedAt"));
-            user.setRole(new Role(rs.getInt("roleId"), rs.getString("roleName")));
-            list.add(user);
+            User u = new User();
+            u.setUserId(rs.getInt("user_id"));
+            u.setUsername(rs.getString("username"));
+            u.setEmail(rs.getString("email"));
+            u.setStatus(rs.getString("status"));
+            u.setCreatedAt(rs.getTimestamp("created_at"));
+            u.setUpdatedAt(rs.getTimestamp("updated_at"));
+            u.setRole(new Role(rs.getInt("role_id"), rs.getString("role_name")));
+            users.add(u);
         }
     }
-    return list;
+    return users;
 }
+
+
+
 
     
 }

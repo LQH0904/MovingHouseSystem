@@ -49,6 +49,7 @@ public class CustomerListServlet extends HttpServlet {
 
         int fromIndex = (page - 1) * USERS_PER_PAGE;
         int toIndex = Math.min(fromIndex + USERS_PER_PAGE, totalUsers);
+        
 
         List<User> usersToDisplay = customers.subList(fromIndex, toIndex);
 
