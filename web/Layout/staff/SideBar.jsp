@@ -23,7 +23,7 @@
         <div class="sidebar-content">
             <ul class="lists">
                 <li class="list">
-                    <a href="${pageContext.request.contextPath}/UserListServlet" class="nav-link">
+                    <a href="${pageContext.request.contextPath}/CustomerListServlet" class="nav-link">
                         <i class="bx bx-home-alt icon"></i>
                         <span class="link">Người dùng</span>
                     </a>
