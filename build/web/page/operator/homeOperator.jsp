@@ -8,17 +8,17 @@
 <%@ page import="model.Users" %>
 <%
 // Kiểm tra session
-String redirectURL = null;
-if (session.getAttribute("acc") == null) {
-    redirectURL = "/login";
-    response.sendRedirect(request.getContextPath() + redirectURL);
-    return;
-}
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
 
 // Lấy thông tin user từ session
-Users userAccount = (Users) session.getAttribute("acc");
-int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
-String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
 %>
 <!DOCTYPE html>
 <html>
@@ -43,7 +43,7 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
                 <div class="div3">
                     <div class="content-part">
                         <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng 
-                            <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername %></span> đến trang dành cho Điều hành viên</div>
+                            <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername%></span> đến trang dành cho Điều hành viên</div>
                     <div class="user">
                         <div>
                             <div class="title_form_1">Về người dùng</div>
@@ -554,16 +554,61 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
                 // Thiết lập option và render biểu đồ
                 myChart.setOption(option);
                 // THÊM ĐOẠN CODE XỬ LÝ CLICK
+                // Tạo mapping từ tiếng Việt sang tiếng Anh
+                const statusMapping = {
+                    'Mở': 'open',
+                    'Đang xử lý': 'in_progress',
+                    'Đã giải quyết': 'resolved',
+                    'Leo thang': 'escalated',
+                    'Chờ xử lý': 'pending',
+                    'Đã đóng': 'closed',
+                    'Đã hủy': 'cancelled',
+                    'Tạm dừng': 'on hold',
+                    'Đang xem xét': 'review',
+                    'Đã phê duyệt': 'approved',
+                    'Đã từ chối': 'rejected'
+                };
+
+// Chuẩn bị dữ liệu cho ECharts Treemap với thêm originalStatus
+                function prepareTreemapData() {
+                    const data = [];
+                    const totalIssues = issueStatusValues.reduce((sum, value) => sum + value, 0);
+
+                    // Tạo mapping ngược từ index để lấy original status
+                    const originalStatuses = [
+            <c:forEach var="stat" items="${issueStats}" varStatus="status">
+                    "${stat.key}"<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+                    ];
+
+                    for (let i = 0; i < issueStatusLabels.length; i++) {
+                        const value = issueStatusValues[i];
+                        const percentage = totalIssues > 0 ? ((value / totalIssues) * 100).toFixed(1) : 0;
+                        data.push({
+                            name: issueStatusLabels[i],
+                            value: value,
+                            percentage: percentage,
+                            originalStatus: originalStatuses[i], // Thêm trường này
+                            itemStyle: itemStyles[i % itemStyles.length]
+                        });
+                    }
+
+                    return data;
+                }
+
+// Cách 1: Sử dụng originalStatus (khuyên dùng)
                 myChart.on('click', function (params) {
                     if (params.componentType === 'series' && params.data) {
-                        // Lấy tên trạng thái từ data được click
-                        const statusName = params.data.name;
+                        // Lấy original status (tiếng Anh) từ data
+                        const originalStatus = params.data.originalStatus;
 
-                        // Tạo URL với tham số statusFilter
+                        // Tạo URL với tham số statusFilter sử dụng originalStatus
                         const baseUrl = 'http://localhost:9999/HouseMovingSystem/ComplaintServlet';
-                        const url = `\${baseUrl}?search=&statusFilter=\${encodeURIComponent(statusName)}&priorityFilter=`;
+                        const url = `\${baseUrl}?search=&statusFilter=\${encodeURIComponent(originalStatus)}&priorityFilter=`;
 
-                        console.log('Redirecting to:', url); // Debug log
+                        console.log('Clicked status (Vietnamese):', params.data.name);
+                        console.log('Original status (English):', originalStatus);
+                        console.log('Redirecting to:', url);
 
                         // Chuyển hướng đến trang ComplaintServlet
                         window.location.href = url;

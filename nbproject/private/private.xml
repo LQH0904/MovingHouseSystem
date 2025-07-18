@@ -13,15 +13,22 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/reportSummary/PerformanceTransportReport.java</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/Test.jsp</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/WEB-INF/web.xml</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/scaleTransportDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/utils/DBContext.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/CostAndProfitReport.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/Layout/operator/Header.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/notifications.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/scaleAndCapacity.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/Test.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/dao/SurveyCustomerCharDataDAO.java</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/reportSummary/SurveyCustomerCharController.java</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/AnalyzeReportServlet.java</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/src/java/controller/reportSummary/transportReportController.java</file>
             <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/performanceReport.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/CostAndProfitReport.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/notifications.jsp</file>
-            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/scaleAndCapacity.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/js/SideBar.js</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/page/operator/reportSummary/SurveyCharDetail.jsp</file>
+            <file>file:/D:/tai_lieu_hoc_tap/SWP_tailieu/merge/MovingHouseSystem-merge_code/MovingHouseSystem-merge_code/web/css/Header.css</file>
         </group>
     </open-files>
 </project-private>
