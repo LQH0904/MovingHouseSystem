@@ -178,56 +178,23 @@
                                     <tr>
                                         <th>STT</th>
                                         <th>Tên Đơn Vị</th>
-                                        <th>Email</th>
-                                        <th>Địa Chỉ</th>
-                                        <th>Loại</th>
-                                        <th>Số Phản Ánh</th>
-                                        <th>Trạng Thái</th>
-                                        <th>Xử Lý</th>
-                                        <th>Thao Tác</th>
+                                        <th>Loại đơn vị</th>
+                                        <th>Số phản ánh</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="item" items="${complaints}" varStatus="loop">
+                                    <c:forEach var="item" items="${summaryList}" varStatus="loop">
                                         <tr>
-                                            <td>${(currentPage - 1) * 10 + loop.index + 1}</td>
-                                            <td>${item.unitName}</td>
-                                            <td>${item.email}</td>
-                                            <td>${item.address}</td>
-                                            <td>${item.unitType == 'TRANSPORT' ? 'Vận chuyển' : 'Kho bãi'}</td>
+                                            <td>${loop.index + 1}</td>
+                                            <td>${item.unitId}</td>
+                                            <td>${item.unitType}</td>
                                             <td>${item.issueCount}</td>
                                             <td>
-                                                <c:choose>
-                                                    <c:when test="${item.issueStatus == 'NORMAL'}">
-                                                        <span class="status-badge status-normal">Bình thường</span>
-                                                    </c:when>
-                                                    <c:when test="${item.issueStatus == 'WARNING'}">
-                                                        <span class="status-badge status-warning">Cảnh báo</span>
-                                                    </c:when>
-                                                    <c:when test="${item.issueStatus == 'DANGER'}">
-                                                        <span class="status-badge status-danger">Nguy hiểm</span>
-                                                    </c:when>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${item.warningSent}">
-                                                        <i class="fas fa-check-circle action-processed" title="Đã xử lý"></i>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <i class="fas fa-clock action-pending" title="Chưa xử lý"></i>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <form method="post" action="${pageContext.request.contextPath}/send-warning">
-                                                    <input type="hidden" name="unitId" value="${item.unitId}"/>
-                                                    <input type="hidden" name="unitType" value="${item.unitType}"/>
-                                                    <button type="submit" class="btn-send-mail" ${item.warningSent ? 'disabled' : ''}>
-                                                        <i class="fas fa-envelope"></i> Gửi mail
-                                                    </button>
+                                                <form action="alert-complaint-detail" method="get" style="display:inline;">
+                                                    <input type="hidden" name="unitId" value="${item.unitId}" />
+                                                    <button type="submit">Xem chi tiết</button>
                                                 </form>
-
                                             </td>
                                         </tr>
                                     </c:forEach>
