@@ -28,13 +28,15 @@ public class AlertComplaintController extends HttpServlet {
           }
       }
 
-      // Chuẩn hóa tham số 'type' để khớp với casing trong DB (nếu cần)
-      String normalizedType = type;
-      if (type != null && !type.isEmpty() && !type.equalsIgnoreCase("all")) {
+      // Chuẩn hóa tham số 'type':
+      // - Nếu là "all" hoặc rỗng (""), coi là null (không lọc theo loại)
+      // - Nếu là "transport" hoặc "storage", chuẩn hóa chữ cái đầu
+      String normalizedType = null; // Default to null (no type filter)
+      if (type != null && !type.trim().isEmpty() && !type.equalsIgnoreCase("all")) {
+          // Only normalize if it's not empty and not "all"
           normalizedType = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
-      } else if (type != null && type.equalsIgnoreCase("all")) {
-          normalizedType = null;
       }
+      // If type is null, empty string, or "all", normalizedType remains null. This is correct.
 
       AlertComplaintDAO dao = new AlertComplaintDAO();
 
