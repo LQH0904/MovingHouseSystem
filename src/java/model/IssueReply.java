@@ -7,7 +7,6 @@ public class IssueReply {
     private int replyId;           // ID phản hồi
     private int issueId;           // ID khiếu nại
     private int replierId;         // ID người trả lời
-    private String replierName;    // Tên người trả lời
     private String replyContent;   // Nội dung phản hồi
     private Timestamp repliedAt;   // Thời gian phản hồi
 
@@ -15,11 +14,10 @@ public class IssueReply {
     public IssueReply() {
     }
 
-    public IssueReply(int replyId, int issueId, int replierId, String replierName, String replyContent, Timestamp repliedAt) {
+    public IssueReply(int replyId, int issueId, int replierId, String replyContent, Timestamp repliedAt) {
         this.replyId = replyId;
         this.issueId = issueId;
         this.replierId = replierId;
-        this.replierName = replierName;
         this.replyContent = replyContent;
         this.repliedAt = repliedAt;
     }
@@ -49,13 +47,7 @@ public class IssueReply {
         this.replierId = replierId;
     }
 
-    public String getReplierName() {
-        return replierName;
-    }
 
-    public void setReplierName(String replierName) {
-        this.replierName = replierName;
-    }
 
     public String getReplyContent() {
         return replyContent;

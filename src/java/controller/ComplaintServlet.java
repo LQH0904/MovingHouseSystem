@@ -33,22 +33,21 @@ public class ComplaintServlet extends HttpServlet {
             try {
                 issueId = Integer.parseInt(request.getParameter("issueId"));
             } catch (NumberFormatException e) {
-                System.err.println("ComplaintServlet: Định dạng ID khiếu nại không hợp lệ cho hành động xem: " + request.getParameter("issueId"));
+                System.err.println("ComplaintServlet: Invalid complaint ID format for view action: " + request.getParameter("issueId"));
                 response.sendRedirect(request.getContextPath() + "/ComplaintServlet");
                 return;
             }
 
-            // Chuyển sang Servlet chi tiết mới
             response.sendRedirect(request.getContextPath() + "/viewComplaintDetail?issueId=" + issueId);
             return;
         } else {
             String searchTerm = request.getParameter("search");
             String statusFilter = request.getParameter("statusFilter");
             String priorityFilter = request.getParameter("priorityFilter");
-
-            // Lấy thêm tham số ngày bắt đầu và kết thúc
             String startDateStr = request.getParameter("startDate");
             String endDateStr = request.getParameter("endDate");
+            String minIdStr = request.getParameter("minId");
+            String maxIdStr = request.getParameter("maxId");
 
             int currentPage = 1;
             if (request.getParameter("page") != null) {
@@ -61,11 +60,13 @@ public class ComplaintServlet extends HttpServlet {
             int recordsPerPage = 10;
             int offset = (currentPage - 1) * recordsPerPage;
 
-            // Gọi DAO với filter ngày
-            int totalComplaints = complaintDAO.getTotalComplaintCount(searchTerm, statusFilter, priorityFilter, startDateStr, endDateStr);
+            int totalComplaints = complaintDAO.getTotalComplaintCount(searchTerm, statusFilter, priorityFilter,
+                    startDateStr, endDateStr, minIdStr, maxIdStr);
             int totalPages = (int) Math.ceil((double) totalComplaints / recordsPerPage);
 
-            List<Complaint> complaints = complaintDAO.getAllComplaints(searchTerm, statusFilter, priorityFilter, startDateStr, endDateStr, offset, recordsPerPage);
+            List<Complaint> complaints = complaintDAO.getAllComplaints(searchTerm, statusFilter, priorityFilter,
+                    startDateStr, endDateStr, minIdStr, maxIdStr,
+                    offset, recordsPerPage);
 
             request.setAttribute("complaints", complaints);
             request.setAttribute("totalComplaints", totalComplaints);
@@ -74,24 +75,24 @@ public class ComplaintServlet extends HttpServlet {
             request.setAttribute("searchTerm", searchTerm);
             request.setAttribute("statusFilter", statusFilter);
             request.setAttribute("priorityFilter", priorityFilter);
-
-            // Giữ lại giá trị ngày để load lại form
             request.setAttribute("startDate", startDateStr);
             request.setAttribute("endDate", endDateStr);
+            request.setAttribute("minId", minIdStr);
+            request.setAttribute("maxId", maxIdStr);
 
             String updateStatus = request.getParameter("updateStatus");
             if ("success".equals(updateStatus)) {
-                request.setAttribute("updateMessage", "Cập nhật khiếu nại thành công!");
+                request.setAttribute("updateMessage", "Complaint updated successfully!");
                 request.setAttribute("updateMessageType", "success");
             } else if ("success_escalated".equals(updateStatus)) {
-                request.setAttribute("updateMessage", "Khiếu nại đã được chuyển cấp thành công!");
+                request.setAttribute("updateMessage", "Complaint escalated successfully!");
                 request.setAttribute("updateMessageType", "success");
             } else if ("error".equals(updateStatus)) {
                 String errorMessage = request.getParameter("message");
                 if (errorMessage == null) {
-                    errorMessage = "Có lỗi xảy ra khi cập nhật khiếu nại.";
+                    errorMessage = "An error occurred while updating the complaint.";
                 }
-                request.setAttribute("updateMessage", "Lỗi: " + errorMessage);
+                request.setAttribute("updateMessage", "Error: " + errorMessage);
                 request.setAttribute("updateMessageType", "danger");
             }
 

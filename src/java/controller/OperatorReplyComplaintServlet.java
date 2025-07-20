@@ -1,37 +1,26 @@
 package controller;
 
+import dao.ComplaintDAO;
 import dao.OperatorComplaintDAO;
-import model.OperatorComplaint;
-import model.UserComplaint;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Complaint;
+import model.IssueReply;
+import model.UserComplaint;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Users;
 
 @WebServlet(name = "OperatorReplyComplaintServlet", urlPatterns = {"/OperatorReplyComplaintServlet"})
 public class OperatorReplyComplaintServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(OperatorReplyComplaintServlet.class.getName());
     private OperatorComplaintDAO operatorComplaintDAO;
-
-    private static final String LOGGED_IN_USER_SESSION_ATTR = "loggedInUser";
-    private static final String STATUS_RESOLVED = "resolved";
-    private static final String STATUS_CLOSED = "closed";
-    private static final String UNASSIGNED_VALUE = "unassigned";
-
-    private static final String ERROR_MESSAGE_ATTR = "errorMessage";
-    private static final String SUCCESS_MESSAGE_ATTR = "successMessage";
-    private static final String CURRENT_COMPLAINT_ATTR = "currentComplaint";
-    private static final String OPERATORS_LIST_ATTR = "operatorsList";
-    private static final String COMPLAINT_REPLIES_ATTR = "complaintReplies";
-    private static final String UPDATED_ISSUE_IDS_SESSION_ATTR = "updatedIssueIds"; 
-
-    private static final String OPERATOR_REPLY_COMPLAINT_JSP = "/page/operator/OperatorReplyComplaint.jsp";
-    private static final String OPERATOR_COMPLAINT_LIST_REDIRECT = "/operatorComplaintList";
 
     @Override
     public void init() throws ServletException {
@@ -41,133 +30,127 @@ public class OperatorReplyComplaintServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-
-        String issueIdParam = request.getParameter("issueId");
+        request.setCharacterEncoding("UTF-8");
+ComplaintDAO aO = new ComplaintDAO();
         HttpSession session = request.getSession();
-
-        if (issueIdParam == null || issueIdParam.trim().isEmpty()) {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "Thiếu ID khiếu nại để xem chi tiết.");
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
-            return;
-        }
-
         try {
-            int issueId = Integer.parseInt(issueIdParam);
-            OperatorComplaint complaint = operatorComplaintDAO.getComplaintById(issueId);
-
-            if (complaint != null) {
-                request.setAttribute(CURRENT_COMPLAINT_ATTR, complaint);
-
-                List<UserComplaint> operators = operatorComplaintDAO.getOperators();
-                request.setAttribute(OPERATORS_LIST_ATTR, operators);
-
-                List<String> replies = operatorComplaintDAO.getComplaintReplies(issueId);
-                request.setAttribute(COMPLAINT_REPLIES_ATTR, replies);
-
-                request.getRequestDispatcher(OPERATOR_REPLY_COMPLAINT_JSP).forward(request, response);
-            } else {
-                request.setAttribute(ERROR_MESSAGE_ATTR, "Không tìm thấy khiếu nại với ID: " + issueId + ".");
-                request.getRequestDispatcher( OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
+            String issueIdParam = request.getParameter("issueId");
+            if (issueIdParam == null || issueIdParam.isEmpty()) {
+                session.setAttribute("errorMessage", "Thiếu thông tin ID khiếu nại");
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+                return;
             }
+
+            int issueId = Integer.parseInt(issueIdParam);
+            Complaint complaint = operatorComplaintDAO.getComplaintById(issueId);
+            
+            if (complaint == null) {
+                session.setAttribute("errorMessage", "Không tìm thấy khiếu nại với ID: " + issueId);
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+                return;
+            }
+
+            List<IssueReply> replyHistory = aO.getRepliesByIssueId(issueId);
+            List<UserComplaint> operators = operatorComplaintDAO.getOperators();
+
+            request.setAttribute("complaint", complaint);
+            request.setAttribute("replyHistory", replyHistory);
+            request.setAttribute("operators", operators);
+
+            // Transfer session messages to request
+            transferSessionMessagesToRequest(session, request);
+
+            request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
+
         } catch (NumberFormatException e) {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "ID khiếu nại không hợp lệ.");
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
+            logger.log(Level.WARNING, "Invalid complaint ID format", e);
+            session.setAttribute("errorMessage", "ID khiếu nại không hợp lệ");
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
         } catch (Exception e) {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "Đã xảy ra lỗi khi tải chi tiết khiếu nại hoặc danh sách operator.");
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
+            logger.log(Level.SEVERE, "Error processing request", e);
+            session.setAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
-        HttpSession session = request.getSession(false);
-        Users currentUser = null;
-
-        if (session != null) {
-            currentUser = (Users) session.getAttribute("acc");
-        }
-
-        if (currentUser == null || currentUser.getUserId() == 0) {
-            request.getRequestDispatcher("/operatorComplaintList").forward(request, response);
-            return;
-        }
-
-        int repliedByUserId = currentUser.getUserId();
-
+        HttpSession session = request.getSession();
         String issueIdParam = request.getParameter("issueId");
-        String status = request.getParameter("status");
-        String priority = request.getParameter("priority");
-        String assignedToParam = request.getParameter("assignedTo");
-        String replyContent = request.getParameter("replyContent");
+        String redirectUrl = request.getContextPath() + "/OperatorReplyComplaintServlet?issueId=" + issueIdParam;
 
-        int issueId;
         try {
-            issueId = Integer.parseInt(issueIdParam);
-        } catch (NumberFormatException e) {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "ID khiếu nại không hợp lệ.");
-            request.getRequestDispatcher( OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
-            return;
-        }
-
-        Integer assignedTo = null;
-        if (assignedToParam != null && !assignedToParam.trim().isEmpty() && !UNASSIGNED_VALUE.equals(assignedToParam)) {
-            try {
-                assignedTo = Integer.parseInt(assignedToParam);
-            } catch (NumberFormatException e) {System.out.println("1");
-                request.setAttribute(ERROR_MESSAGE_ATTR, "ID operator được gán không hợp lệ.");
-                request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
+            Users u = (Users)session.getAttribute("acc");
+            Integer staffId = u.getUserId();
+            if (staffId == null) {
+                session.setAttribute("errorMessage", "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.");
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
                 return;
             }
-        }
 
-        if (status == null || status.trim().isEmpty() || priority == null || priority.trim().isEmpty()) {
-            System.out.println("2");
-            request.setAttribute(ERROR_MESSAGE_ATTR, "Trạng thái hoặc mức độ ưu tiên không được để trống.");
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
-            return;
-        }
-
-        if ((STATUS_RESOLVED.equalsIgnoreCase(status) || STATUS_CLOSED.equalsIgnoreCase(status)) &&
-            (replyContent == null || replyContent.trim().isEmpty())) {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "Vui lòng nhập nội dung phản hồi khi giải quyết hoặc đóng khiếu nại.");
-            request.getRequestDispatcher( OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
-            return;
-        }
-
-        if (replyContent != null && replyContent.length() > 200) {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "Nội dung phản hồi không được vượt quá 200 ký tự.");
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
-            return;
-        }
-
-        boolean success = operatorComplaintDAO.updateComplaintAndAddReply(
-                issueId, status, priority, assignedTo, replyContent, repliedByUserId);
-
-        if (success) {
-            request.setAttribute(SUCCESS_MESSAGE_ATTR, "Khiếu nại đã được cập nhật và phản hồi thành công!");
-            
-            List<Integer> updatedIssueIds = (List<Integer>) session.getAttribute(UPDATED_ISSUE_IDS_SESSION_ATTR);
-            if (updatedIssueIds == null) {
-                updatedIssueIds = new ArrayList<>();
+            if (issueIdParam == null || issueIdParam.isEmpty()) {
+                session.setAttribute("errorMessage", "Thiếu thông tin ID khiếu nại");
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+                return;
             }
-            if (!updatedIssueIds.contains(issueId)) {
-                updatedIssueIds.add(issueId);
-            }
-            request.setAttribute(UPDATED_ISSUE_IDS_SESSION_ATTR, updatedIssueIds); 
 
-            // Chuyển hướng kèm theo ID khiếu nại để highlight
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT + "?highlightId=" + issueId).forward(request, response);
-        } else {
-            request.setAttribute(ERROR_MESSAGE_ATTR, "Cập nhật khiếu nại thất bại. Vui lòng thử lại.");
-            request.getRequestDispatcher(OPERATOR_COMPLAINT_LIST_REDIRECT).forward(request, response);
+            int issueId = Integer.parseInt(issueIdParam);
+            String replyContent = request.getParameter("replyContent");
+            String status = request.getParameter("status");
+            String priority = request.getParameter("priority");
+            String assignedToStr = request.getParameter("assignedTo");
+
+            if (replyContent == null || replyContent.trim().isEmpty()) {
+                session.setAttribute("errorMessage", "Nội dung phản hồi không được để trống");
+                response.sendRedirect(redirectUrl);
+                return;
+            }
+
+            // Create and save reply
+            IssueReply reply = new IssueReply();
+            reply.setIssueId(issueId);
+            reply.setReplierId(staffId);
+            reply.setContent(replyContent.trim());
+
+            // Parse assignedTo
+            Integer assignedTo = (assignedToStr != null && !assignedToStr.isEmpty()) 
+                    ? Integer.parseInt(assignedToStr) : null;
+
+            // Save to database
+            operatorComplaintDAO.addReply(reply);
+            operatorComplaintDAO.updateComplaintStatusPriorityAssigned(issueId, status, priority, assignedTo);
+
+            session.setAttribute("successMessage", "Gửi phản hồi thành công!");
+
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARNING, "Invalid number format", e);
+            session.setAttribute("errorMessage", "Dữ liệu đầu vào không hợp lệ");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error processing reply", e);
+            session.setAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+        }
+
+        response.sendRedirect(redirectUrl);
+    }
+
+    private void transferSessionMessagesToRequest(HttpSession session, HttpServletRequest request) {
+        String successMessage = (String) session.getAttribute("successMessage");
+        String errorMessage = (String) session.getAttribute("errorMessage");
+
+        if (successMessage != null) {
+            request.setAttribute("successMessage", successMessage);
+            session.removeAttribute("successMessage");
+        }
+        if (errorMessage != null) {
+            request.setAttribute("errorMessage", errorMessage);
+            session.removeAttribute("errorMessage");
         }
     }
 }

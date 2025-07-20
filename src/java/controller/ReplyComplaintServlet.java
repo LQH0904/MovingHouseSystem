@@ -4,15 +4,14 @@ import dao.ComplaintDAO;
 import dao.IssueReplyDAO;
 import model.Complaint;
 import model.IssueReply;
+import model.Users;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
-import model.Users;
 
 @WebServlet(name = "ReplyComplaintServlet", urlPatterns = {"/replyComplaint"})
 public class ReplyComplaintServlet extends HttpServlet {
@@ -33,12 +32,22 @@ public class ReplyComplaintServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
+        // Vérifier si l'utilisateur est connecté
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         String issueIdParam = request.getParameter("issueId");
         if (issueIdParam != null && !issueIdParam.isEmpty()) {
             try {
                 int issueId = Integer.parseInt(issueIdParam);
                 Complaint complaint = complaintDAO.getComplaintById(issueId);
                 List<IssueReply> replies = replyDAO.getRepliesByIssueId(issueId);
+                for (IssueReply reply : replies) {
+                    System.out.println(reply.getContent());
+                }
 
                 request.setAttribute("currentComplaint", complaint);
                 request.setAttribute("replies", replies);
@@ -54,18 +63,29 @@ public class ReplyComplaintServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession hs = request.getSession();
-        Users user = (Users)hs.getAttribute("acc");
+
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+
+        // Vérification de la session
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        Users user = (Users) session.getAttribute("acc");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         String issueIdParam = request.getParameter("issueId");
         String replyContent = request.getParameter("replyContent");
         String newStatus = request.getParameter("status");
         String newPriority = request.getParameter("priority");
-        System.out.println("okeee");
-        System.out.println(issueIdParam + replyContent + newPriority +   newStatus);
 
+        // Validation des paramètres
         if (issueIdParam == null || replyContent == null || replyContent.trim().isEmpty()
                 || newStatus == null || newPriority == null) {
             response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=thieu_du_lieu");
@@ -75,15 +95,16 @@ public class ReplyComplaintServlet extends HttpServlet {
         try {
             int issueId = Integer.parseInt(issueIdParam);
 
+            // Création de la réponse
             IssueReply reply = new IssueReply();
             reply.setIssueId(issueId);
-            reply.setReplierId(user.getUserId()); // TODO: Lấy từ session
-            reply.setContent(replyContent);
+            reply.setReplierId(user.getUserId());
+            reply.setContent(replyContent.trim());
             reply.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
+            // Enregistrement en base de données
             boolean success = replyDAO.addReply(reply);
             boolean updateSuccess = complaintDAO.updateComplaintStatusAndPriority(issueId, newStatus, newPriority);
-            System.out.println(success + "" + updateSuccess);
 
             if (success && updateSuccess) {
                 response.sendRedirect(request.getContextPath() + "/replyComplaint?issueId=" + issueId);
@@ -93,6 +114,9 @@ public class ReplyComplaintServlet extends HttpServlet {
 
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=ID_khong_hop_le");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=loi_he_thong");
         }
     }
 }

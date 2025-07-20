@@ -72,22 +72,39 @@
                 </form>
 
                 <h4 class="mt-5 text-primary">Lịch sử phản hồi</h4>
-                <c:if test="${not empty replies}">
-                    <div class="list-group">
-                        <c:forEach var="reply" items="${replies}">
-                            <div class="list-group-item">
-                                <div>
-                                    <strong>${reply.replierName}</strong> - <fmt:formatDate value="${reply.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
-                                </div>
-                                <div>${reply.content}</div>
-                            </div>
-                        </c:forEach>
+                  <c:choose>
+                <c:when test="${empty replies}">
+                    <div class="empty-history">
+                        <i class="bi bi-chat-left-text" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-0">Chưa có phản hồi nào</p>
                     </div>
-                </c:if>
-                <c:if test="${empty replies}">
-                    <p class="text-muted">Chưa có phản hồi nào.</p>
-                </c:if>
-            </c:if>
+                </c:when>
+                <c:otherwise>
+                    <div class="table-responsive history-table">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">Thời gian</th>
+                                    <th style="width: 20%">ID Người phản hồi</th>
+                                    <th style="width: 60%">Nội dung</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="reply" items="${replies}">
+                                    <tr>
+                                        <td>
+                                            <fmt:formatDate value="${reply.repliedAt}" pattern="dd/MM/yyyy HH:mm" />
+                                        </td>
+                                        <td><c:out value="${reply.replierId}"/></td>
+                                        <td><c:out value="${reply.replyContent}"/></td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+</c:if>  
 
             <c:if test="${currentComplaint == null}">
                 <div class="alert alert-warning text-center">Không tìm thấy thông tin khiếu nại.</div>

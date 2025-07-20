@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.List;
 
 @WebServlet(name = "OperatorComplaintListServlet", urlPatterns = {"/operatorComplaintList"})
@@ -20,7 +21,6 @@ public class OperatorComplaintServlet extends HttpServlet {
     private OperatorComplaintDAO complaintDAO;
 
     private static final int RECORDS_PER_PAGE = 10;
-    private static final String UPDATED_ISSUE_IDS_SESSION_ATTR = "updatedIssueIds"; 
 
     @Override
     public void init() throws ServletException {
@@ -38,34 +38,41 @@ public class OperatorComplaintServlet extends HttpServlet {
         String successMessage = (String) session.getAttribute("successMessage");
         if (successMessage != null) {
             request.setAttribute("successMessage", successMessage);
-            session.removeAttribute("successMessage"); 
+            session.removeAttribute("successMessage");
         }
 
         String errorMessage = (String) session.getAttribute("errorMessage");
         if (errorMessage != null) {
             request.setAttribute("errorMessage", errorMessage);
-            session.removeAttribute("errorMessage"); 
-        }
-        
-        List<Integer> updatedIssueIds = (List<Integer>) session.getAttribute(UPDATED_ISSUE_IDS_SESSION_ATTR);
-        if (updatedIssueIds != null) {
-            request.setAttribute(UPDATED_ISSUE_IDS_SESSION_ATTR, updatedIssueIds);
-            session.removeAttribute(UPDATED_ISSUE_IDS_SESSION_ATTR); // XÓA KHỎI SESSION SAU KHI DÙNG
-        }
-
-        // Nhận ID khiếu nại cần highlight từ request parameter
-        String highlightIdParam = request.getParameter("highlightId");
-        if (highlightIdParam != null && !highlightIdParam.trim().isEmpty()) {
-            try {
-                int highlightId = Integer.parseInt(highlightIdParam);
-                request.setAttribute("highlightedComplaintId", highlightId);
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid highlightId parameter: " + highlightIdParam);
-            }
+            session.removeAttribute("errorMessage");
         }
 
         String searchTerm = request.getParameter("searchTerm");
         String priorityFilter = request.getParameter("priorityFilter");
+        if (priorityFilter == null || priorityFilter.isEmpty()) {
+            priorityFilter = "all";
+        }
+
+        String assignedToFilter = request.getParameter("assignedToFilter");
+        if (assignedToFilter == null || assignedToFilter.isEmpty()) {
+            assignedToFilter = "all";
+        }
+
+        String fromDateStr = request.getParameter("fromDate");
+        String toDateStr = request.getParameter("toDate");
+
+        Date fromDate = null;
+        Date toDate = null;
+        try {
+            if (fromDateStr != null && !fromDateStr.isEmpty()) {
+                fromDate = Date.valueOf(fromDateStr);
+            }
+            if (toDateStr != null && !toDateStr.isEmpty()) {
+                toDate = Date.valueOf(toDateStr);
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi định dạng ngày");
+        }
 
         int page = 1;
         if (request.getParameter("page") != null) {
@@ -78,12 +85,13 @@ public class OperatorComplaintServlet extends HttpServlet {
 
         int offset = (page - 1) * RECORDS_PER_PAGE;
 
-        int totalComplaints = complaintDAO.getTotalEscalatedComplaintCount(searchTerm, priorityFilter);
+        int totalComplaints = complaintDAO.getFilteredComplaintCount(searchTerm, priorityFilter, assignedToFilter, fromDate, toDate);
         int totalPages = (int) Math.ceil((double) totalComplaints / RECORDS_PER_PAGE);
 
-        List<OperatorComplaint> escalatedComplaints = complaintDAO.getEscalatedComplaints(
-                searchTerm, priorityFilter, offset, RECORDS_PER_PAGE
+        List<OperatorComplaint> escalatedComplaints = complaintDAO.getFilteredComplaints(
+                searchTerm, priorityFilter, assignedToFilter, fromDate, toDate, offset, RECORDS_PER_PAGE
         );
+
         List<UserComplaint> operators = complaintDAO.getOperators();
 
         request.setAttribute("escalatedComplaints", escalatedComplaints);
@@ -92,6 +100,9 @@ public class OperatorComplaintServlet extends HttpServlet {
         request.setAttribute("totalComplaints", totalComplaints);
         request.setAttribute("searchTerm", searchTerm);
         request.setAttribute("priorityFilter", priorityFilter);
+        request.setAttribute("assignedToFilter", assignedToFilter);
+        request.setAttribute("fromDate", fromDateStr);
+        request.setAttribute("toDate", toDateStr);
         request.setAttribute("operators", operators);
 
         request.getRequestDispatcher("/page/operator/OperatorComplaintList.jsp").forward(request, response);
