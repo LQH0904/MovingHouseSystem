@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AlertComplaint;
 import model.ChartDataPoint;
+import utils.MailUtil; // Import MailUtil
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -116,6 +117,7 @@ public class UnitDetailController extends HttpServlet {
             request.setAttribute("initialChartMonth", initialMonth);
             request.setAttribute("initialChartWeek", initialWeek);
 
+            // Forward to JSP
             request.getRequestDispatcher("/page/operator/DetailUnitIssue.jsp").forward(request, response);
         } else {
             System.err.println("UnitDetailController: Unit details not found in DAO for unitId: " + unitId);
@@ -124,7 +126,58 @@ public class UnitDetailController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String action = request.getParameter("action");
+    if ("sendEmail".equals(action)) {
+        System.out.println("UnitDetailController: Handling POST request to send email.");
+        String toEmail = request.getParameter("unitEmail");
+        String unitName = request.getParameter("unitName");
+        String warningLevel = request.getParameter("warningLevel");
+        String unitIdStr = request.getParameter("unitId");
+
+        int unitId = -1;
+        try {
+            unitId = Integer.parseInt(unitIdStr);
+        } catch (NumberFormatException e) {
+            System.err.println("UnitDetailController: Invalid unitId for email sending: " + unitIdStr);
+            request.getSession().setAttribute("emailMessage", "Lỗi: Mã đơn vị không hợp lệ.");
+            response.sendRedirect(request.getContextPath() + "/operator/unit-detail/" + unitIdStr);
+            return;
+        }
+
+        // 
+        String warningLevelVN = switch (warningLevel.toLowerCase()) {
+            case "normal" -> "BÌNH THƯỜNG";
+            case "warning" -> "CẢNH BÁO";
+            case "danger" -> "NGUY HIỂM";
+            default -> "KHÔNG XÁC ĐỊNH";
+        };
+
+        String subject = "Cảnh báo về tình trạng phản ánh của đơn vị " + unitName;
+        String content = "Kính gửi đơn vị " + unitName + ",\n\n"
+                + "Chúng tôi xin thông báo về tình trạng phản ánh của đơn vị bạn.\n"
+                + "MỨC ĐỘ CẢNH BÁO HIỆN TẠI: " + warningLevelVN + "\n"
+                + "Vui lòng kiểm tra hệ thống để biết thêm chi tiết và có biện pháp khắc phục kịp thời.\n\n"
+                + "Trân trọng,\n"
+                + "Hệ thống cảnh báo";
+
+        boolean success = MailUtil.sendWarningEmail(toEmail, subject, content);
+
+        if (success) {
+            System.out.println("UnitDetailController: Email sent successfully to " + toEmail);
+            request.getSession().setAttribute("emailMessage", "Email cảnh báo đã được gửi thành công đến " + toEmail + ".");
+            request.getSession().setAttribute("emailMessageType", "success");
+        } else {
+            System.err.println("UnitDetailController: Failed to send email to " + toEmail);
+            request.getSession().setAttribute("emailMessage", "Gửi email thất bại. Vui lòng kiểm tra log server.");
+            request.getSession().setAttribute("emailMessageType", "error");
+        }
+
+        // Tránh gửi lại email khi F5
+        response.sendRedirect(request.getContextPath() + "/operator/unit-detail/" + unitId);
+    } else {
         doGet(request, response);
     }
+}
+
 }

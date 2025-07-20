@@ -24,6 +24,16 @@
             </div>
             <div class="div3">
                 <div class="content-container">
+                    <c:if test="${not empty sessionScope.emailMessage}">
+                        <div class="alert alert-${sessionScope.emailMessageType == 'success' ? 'success' : 'warning'}">
+                            <i class="fas ${sessionScope.emailMessageType == 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                            <div class="alert-content">
+                                ${sessionScope.emailMessage}
+                            </div>
+                        </div>
+                        <c:remove var="emailMessage" scope="session"/>
+                        <c:remove var="emailMessageType" scope="session"/>
+                    </c:if>
                     <div class="page-header">
                         <div class="header-content">
                             <div class="header-text">
@@ -73,9 +83,16 @@
                                 </li>
                             </ul>
                             <div class="action-buttons detail-actions">
-                                <button type="button" class="btn btn-primary btn-mail" aria-label="Gửi mail cảnh báo" onclick="alert('Chức năng gửi mail chưa được triển khai cho đơn vị ${unitDetails.unitName} - ${unitDetails.email}')">
-                                    <i class="fas fa-envelope"></i> Gửi Mail
-                                </button>
+                                <form action="${pageContext.request.contextPath}/operator/unit-detail/${unitDetails.unitId}" method="post" style="display:inline;">
+                                    <input type="hidden" name="action" value="sendEmail"/>
+                                    <input type="hidden" name="unitId" value="${unitDetails.unitId}"/>
+                                    <input type="hidden" name="unitName" value="${unitDetails.unitName}"/>
+                                    <input type="hidden" name="unitEmail" value="${unitDetails.email}"/>
+                                    <input type="hidden" name="warningLevel" value="${unitDetails.warningLevel}"/>
+                                    <button type="submit" class="btn btn-primary btn-mail" aria-label="Gửi mail cảnh báo">
+                                        <i class="fas fa-envelope"></i> Gửi Mail
+                                    </button>
+                                </form>
                             </div>
                         </div>
 

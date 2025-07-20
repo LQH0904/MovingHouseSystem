@@ -2,15 +2,12 @@ package utils;
 
 import java.util.Properties;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.*;
 
 public class MailUtil {
 
-    private static final String FROM_EMAIL = "hethongchuyennhag5@gmail.com"; // Thay bằng email gửi đi
-    private static final String PASSWORD = "namdxbxtmvivmntr"; // Thay bằng mật khẩu ứng dụng
+    private static final String FROM_EMAIL = "hethongchuyennhag5@gmail.com"; // Email gửi đi
+    private static final String PASSWORD = "namdxbxtmvivmntr"; // Mật khẩu ứng dụng
 
     public static boolean sendWarningEmail(String toEmail, String subject, String content) {
         Properties props = new Properties();
@@ -26,19 +23,30 @@ public class MailUtil {
         });
 
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL, "Hệ thống cảnh báo"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(subject);
+            // Tạo message với UTF-8
+            MimeMessage message = new MimeMessage(session);
 
+            // Đặt người gửi với tên hiển thị hỗ trợ UTF-8
+            message.setFrom(new InternetAddress(FROM_EMAIL, "Hệ thống cảnh báo", "UTF-8"));
+
+            // Đặt người nhận
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+
+            // Đặt tiêu đề có mã hóa UTF-8
+            message.setSubject(subject, "UTF-8");
+
+            // Tạo phần thân email với mã hóa UTF-8
             MimeBodyPart bodyPart = new MimeBodyPart();
             bodyPart.setContent(content, "text/plain; charset=UTF-8");
 
+            // Tạo multipart và gắn body vào
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(bodyPart);
 
+            // Gắn multipart vào nội dung mail
             message.setContent(multipart);
 
+            // Gửi mail
             Transport.send(message);
             return true;
 
