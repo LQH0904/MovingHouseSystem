@@ -7,72 +7,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Báo Cáo Phản Ánh Đơn Vị Vận Chuyển</title>
-
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/AlertComplaint.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/AlertComplaint.css"> <%-- Đảm bảo đường dẫn này đúng --%>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-        <style>
-            .status-normal {
-                color: #10b981;
-                background-color: #d1fae5;
-            }
-            .status-warning {
-                color: #f59e0b;
-                background-color: #fef3c7;
-            }
-            .status-danger {
-                color: #ef4444;
-                background-color: #fee2e2;
-            }
-            .status-badge {
-                padding: 4px 12px;
-                border-radius: 12px;
-                font-size: 12px;
-                font-weight: 500;
-            }
-            .action-processed {
-                color: #10b981;
-                font-size: 18px;
-            }
-            .action-pending {
-                color: #6b7280;
-                font-size: 18px;
-            }
-            .btn-send-mail {
-                background-color: #3b82f6;
-                color: white;
-                border: none;
-                padding: 6px 12px;
-                border-radius: 6px;
-                font-size: 12px;
-                cursor: pointer;
-            }
-            .btn-send-mail:hover {
-                background-color: #2563eb;
-            }
-            .btn-send-mail:disabled {
-                background-color: #9ca3af;
-                cursor: not-allowed;
-            }
-            .alert {
-                padding: 10px 15px;
-                margin: 15px 0;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            .alert-success {
-                background-color: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
-            }
-            .alert-error {
-                background-color: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-            }
-        </style>
+        
     </head>
     <body>
         <div class="parent">
@@ -93,117 +32,167 @@
                                 </h1>
                                 <p class="page-subtitle">Theo dõi và quản lý chất lượng dịch vụ các đơn vị vận chuyển và kho bãi</p>
                             </div>
+                            <%-- Thêm phần header-actions nếu bạn có các nút hành động ở đây --%>
+                            <div class="header-actions">
+                                <%-- Ví dụ: <button class="btn btn-primary"><i class="fas fa-plus"></i> Thêm mới</button> --%>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Statistics Cards -->
+                    <!-- Statistics Grid -->
                     <div class="stats-grid">
                         <div class="stat-card total-units">
                             <div class="stat-icon">
                                 <i class="fas fa-building"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-number">${totalUnitsWithComplaints}</div>
+                                <div class="stat-number">${totalUnits}</div>
                                 <div class="stat-label">Tổng Đơn Vị Có Phản Ánh</div>
+                                <%-- <div class="stat-change positive">+10%</div> --%> <%-- Ví dụ về stat-change --%>
                             </div>
                         </div>
-
                         <div class="stat-card total-complaints">
                             <div class="stat-icon">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-number">${totalComplaints}</div>
+                                <div class="stat-number">${totalIssues}</div>
                                 <div class="stat-label">Tổng Số Phản Ánh</div>
+                                <%-- <div class="stat-change negative">-5%</div> --%> <%-- Ví dụ về stat-change --%>
                             </div>
                         </div>
-
+                        <%-- Bạn có thể thêm các stat-card khác nếu cần --%>
+                        <%--
                         <div class="stat-card warning-units">
                             <div class="stat-icon">
                                 <i class="fas fa-bell"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-number">${sentWarnings}</div>
-                                <div class="stat-label">Đã Cảnh Báo</div>
+                                <div class="stat-number">2</div>
+                                <div class="stat-label">Đơn Vị Cảnh Báo</div>
                             </div>
                         </div>
-
                         <div class="stat-card normal-units">
                             <div class="stat-icon">
-                                <i class="fas fa-clock"></i>
+                                <i class="fas fa-check-circle"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-number">${notSentWarnings}</div>
-                                <div class="stat-label">Chưa Cảnh Báo</div>
+                                <div class="stat-number">4</div>
+                                <div class="stat-label">Đơn Vị Bình Thường</div>
                             </div>
                         </div>
+                        --%>
                     </div>
-
+                    <!-- Filter Section -->
                     <div class="filter-section">
                         <div class="filter-header">
                             <h3><i class="fas fa-filter"></i> Bộ lọc</h3>
                         </div>
-                        <form method="GET" action="${pageContext.request.contextPath}/operator/alert-complaint" class="filter-form">
+                        <form method="get" class="filter-form">
                             <div class="filter-grid">
                                 <div class="filter-group">
-                                    <label><i class="fas fa-truck"></i> Loại Đơn Vị</label>
-                                    <select name="unitType" class="form-select">
-                                        <option value="" ${empty unitType ? 'selected' : ''}>Tất cả</option>
-                                        <option value="TRANSPORT" ${unitType == 'TRANSPORT' ? 'selected' : ''}>Vận chuyển</option>
-                                        <option value="WAREHOUSE" ${unitType == 'WAREHOUSE' ? 'selected' : ''}>Kho bãi</option>
-                                    </select>
+                                    <label for="search-input"><i class="fas fa-search"></i> Tìm theo tên đơn vị</label>
+                                    <input type="text" id="search-input" name="search" placeholder="Nhập tên đơn vị..." value="${search}" class="form-input" />
                                 </div>
                                 <div class="filter-group">
-                                    <label><i class="fas fa-traffic-light"></i> Trạng thái</label>
-                                    <select name="status" class="form-select">
-                                        <option value="" ${empty status ? 'selected' : ''}>Tất cả</option>
-                                        <option value="NORMAL" ${status == 'NORMAL' ? 'selected' : ''}>Bình thường</option>
-                                        <option value="WARNING" ${status == 'WARNING' ? 'selected' : ''}>Cảnh báo</option>
-                                        <option value="DANGER" ${status == 'DANGER' ? 'selected' : ''}>Nguy hiểm</option>
+                                    <label for="type-select"><i class="fas fa-truck"></i> Loại đơn vị</label>
+                                    <select id="type-select" name="type" class="form-select">
+                                        <option value="all" ${type == 'all' ? 'selected' : ''}>Tất cả</option>
+                                        <option value="transport" ${type == 'transport' ? 'selected' : ''}>Vận chuyển</option>
+                                        <option value="storage" ${type == 'storage' ? 'selected' : ''}>Kho</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="filter-actions">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search"></i> Lọc dữ liệu
-                                </button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Lọc</button>
+                                <a href="${pageContext.request.contextPath}/operator/alert-complaint" class="btn btn-outline"><i class="fas fa-sync-alt"></i> Đặt lại</a>
                             </div>
                         </form>
                     </div>
-
+                    <!-- Table Container -->
                     <div class="table-container">
+                        <div class="table-header">
+                            <h3 class="table-title"><i class="fas fa-table"></i> Danh sách Phản ánh</h3>
+                            <div class="table-actions">
+                                <%-- Ví dụ: <button class="btn btn-export"><i class="fas fa-file-excel"></i> Xuất Excel</button> --%>
+                            </div>
+                        </div>
                         <div class="table-wrapper">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>STT</th>
-                                        <th>Tên Đơn Vị</th>
+                                        <th>Mã đơn vị</th>
+                                        <th>Tên</th>
+                                        <th>Email</th>
                                         <th>Loại đơn vị</th>
                                         <th>Số phản ánh</th>
-                                        <th>Hành động</th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="item" items="${summaryList}" varStatus="loop">
+                                    <c:forEach var="item" items="${data}">
                                         <tr>
-                                            <td>${loop.index + 1}</td>
                                             <td>${item.unitId}</td>
-                                            <td>${item.unitType}</td>
+                                            <td>${item.unitName}</td>
+                                            <td>${item.email}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${item.unitType == 'Transport'}">
+                                                        <span class="type-badge type-transport">Vận chuyển</span>
+                                                    </c:when>
+                                                    <c:when test="${item.unitType == 'Storage'}">
+                                                        <span class="type-badge type-warehouse">Kho</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="type-badge neutral">Khác (${item.unitType})</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                             <td>${item.issueCount}</td>
                                             <td>
-                                                <form action="alert-complaint-detail" method="get" style="display:inline;">
-                                                    <input type="hidden" name="unitId" value="${item.unitId}" />
-                                                    <button type="submit">Xem chi tiết</button>
-                                                </form>
+                                                <a href="unit-detail?unitId=${item.unitId}&type=${item.unitType}" class="btn btn-sm btn-view" aria-label="Xem chi tiết">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     </c:forEach>
+                                    <c:if test="${empty data}">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">Không tìm thấy dữ liệu nào.</td>
+                                        </tr>
+                                    </c:if>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            Hiển thị ${data.size()} trên tổng số ${totalRecordsForPagination} kết quả
+                        </div>
+                        <div class="pagination">
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <c:choose>
+                                    <c:when test="${i == currentPage}">
+                                        <span class="page-link active">${i}</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="?page=${i}&search=${search}&type=${type}" class="page-link">${i}</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
             </div>
-
+        </div>
+        <%-- Loading Overlay  --%>
+        
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        </div>
+        
     </body>
 </html>
