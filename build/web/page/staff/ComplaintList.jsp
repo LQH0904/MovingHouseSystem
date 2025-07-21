@@ -11,10 +11,13 @@
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
-        <title>Complaint List</title>
+        <title>Danh sách khiếu nại</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
+
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/complaintList.css">
     </head>
     <body class="bg-light">
@@ -26,44 +29,44 @@
                 <jsp:include page="/Layout/operator/Header.jsp"></jsp:include>
                 </div>
                 <div class="div3 p-4">
-                    <h3 class="mb-4 text-primary border-bottom pb-2">Complaint List</h3>
+                    <h3 class="mb-4 text-primary border-bottom pb-2">Danh sách khiếu nại</h3>
 
                 <c:if test="${not empty updateMessage}">
                     <div class="alert alert-${updateMessageType} alert-dismissible fade show" role="alert">
                         <c:out value="${updateMessage}"/>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                     </div>
                 </c:if>
 
                 <form action="${pageContext.request.contextPath}/ComplaintServlet" method="get" class="mb-4">
                     <div class="row g-3">
                         <div class="col-md-2">
-                            <input type="number" name="minId" class="form-control" placeholder="From ID" 
+                            <input type="number" name="minId" class="form-control" placeholder="Từ ID" 
                                    value="${param.minId}" min="1">
                         </div>
                         <div class="col-md-2">
-                            <input type="number" name="maxId" class="form-control" placeholder="To ID" 
+                            <input type="number" name="maxId" class="form-control" placeholder="Đến ID" 
                                    value="${param.maxId}" min="1">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" name="search" class="form-control" placeholder="Search by name or description"
+                            <input type="text" name="search" class="form-control" placeholder="Tìm theo tên hoặc mô tả"
                                    value="${searchTerm != null ? searchTerm : ''}">
                         </div>
                         <div class="col-md-2">
                             <select name="statusFilter" class="form-select">
-                                <option value="">-- Status --</option>
-                                <option value="open" ${statusFilter eq 'open' ? 'selected' : ''}>Open</option>
-                                <option value="in_progress" ${statusFilter eq 'in_progress' ? 'selected' : ''}>In Progress</option>
-                                <option value="resolved" ${statusFilter eq 'resolved' ? 'selected' : ''}>Resolved</option>
-                                <option value="escalated" ${statusFilter eq 'escalated' ? 'selected' : ''}>Escalated</option>
+                                <option value="">-- Trạng thái --</option>
+                                <option value="open" ${statusFilter eq 'open' ? 'selected' : ''}>Mở</option>
+                                <option value="in_progress" ${statusFilter eq 'in_progress' ? 'selected' : ''}>Đang xử lý</option>
+                                <option value="resolved" ${statusFilter eq 'resolved' ? 'selected' : ''}>Đã giải quyết</option>
+                                <option value="escalated" ${statusFilter eq 'escalated' ? 'selected' : ''}>Chuyển cấp</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <select name="priorityFilter" class="form-select">
-                                <option value="">-- Priority --</option>
-                                <option value="low" ${priorityFilter eq 'low' ? 'selected' : ''}>Low</option>
-                                <option value="normal" ${priorityFilter eq 'normal' ? 'selected' : ''}>Normal</option>
-                                <option value="high" ${priorityFilter eq 'high' ? 'selected' : ''}>High</option>
+                                <option value="">-- Mức độ ưu tiên --</option>
+                                <option value="low" ${priorityFilter eq 'low' ? 'selected' : ''}>Thấp</option>
+                                <option value="normal" ${priorityFilter eq 'normal' ? 'selected' : ''}>Bình thường</option>
+                                <option value="high" ${priorityFilter eq 'high' ? 'selected' : ''}>Cao</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -83,12 +86,12 @@
                         <thead class="table-primary">
                             <tr>
                                 <th>ID</th>
-                                <th>Sender</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Priority</th>
-                                <th>Created At</th>
-                                <th>Action</th>
+                                <th>Người gửi</th>
+                                <th>Mô tả</th>
+                                <th>Trạng thái</th>
+                                <th>Ưu tiên</th>
+                                <th>Ngày tạo</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,14 +107,14 @@
                                             <td><fmt:formatDate value="${complaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
                                             <td>
                                                 <a href="${pageContext.request.contextPath}/ComplaintServlet?action=view&issueId=${complaint.issueId}"
-                                                   class="btn btn-sm btn-info">Details / Reply</a>
+                                                   class="btn btn-sm btn-info">Chi tiết / Phản hồi</a>
                                             </td>
                                         </tr>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
                                     <tr>
-                                        <td colspan="7" class="text-center">No complaints found.</td>
+                                        <td colspan="7" class="text-center">Không tìm thấy khiếu nại nào.</td>
                                     </tr>
                                 </c:otherwise>
                             </c:choose>

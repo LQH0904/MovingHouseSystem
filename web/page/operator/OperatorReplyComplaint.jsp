@@ -15,6 +15,9 @@
         <title>Phản hồi khiếu nại</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <style>
             :root {
                 --primary-color: #3498db;
