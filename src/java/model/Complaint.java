@@ -3,24 +3,18 @@ package model;
 import java.sql.Timestamp;
 
 public class Complaint {
+
     private int issueId;
     private int userId;
-    private String username; // Tên người tạo khiếu nại
+    private String username;
     private String description;
     private String status;
     private String priority;
     private Timestamp createdAt;
     private Timestamp resolvedAt;
-    private Integer assignedTo; // ID của operator được gán
-    private String assignedToUsername; // Tên của operator được gán
-    // Các cột sau KHÔNG CÓ TRONG SCHEMA DB bạn đã cung cấp, nên sẽ không được đưa vào đây.
-    // private String escalationReason;
-    // private Integer escalatedByUserId;
-    // private String replyContent;
 
-    // Constructor đầy đủ khớp với các cột CÓ TRONG DB của bạn
     public Complaint(int issueId, int userId, String username, String description, String status, String priority,
-                     Timestamp createdAt, Timestamp resolvedAt, Integer assignedTo, String assignedToUsername) {
+            Timestamp createdAt, Timestamp resolvedAt) {
         this.issueId = issueId;
         this.userId = userId;
         this.username = username;
@@ -29,15 +23,11 @@ public class Complaint {
         this.priority = priority;
         this.createdAt = createdAt;
         this.resolvedAt = resolvedAt;
-        this.assignedTo = assignedTo;
-        this.assignedToUsername = assignedToUsername;
     }
 
-    // Constructor mặc định (cần cho một số trường hợp khởi tạo)
     public Complaint() {
     }
 
-    // --- Getters and Setters ---
     public int getIssueId() {
         return issueId;
     }
@@ -100,21 +90,5 @@ public class Complaint {
 
     public void setResolvedAt(Timestamp resolvedAt) {
         this.resolvedAt = resolvedAt;
-    }
-
-    public Integer getAssignedTo() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(Integer assignedTo) {
-        this.assignedTo = assignedTo;
-    }
-
-    public String getAssignedToUsername() {
-        return assignedToUsername;
-    }
-
-    public void setAssignedToUsername(String assignedToUsername) {
-        this.assignedToUsername = assignedToUsername;
     }
 }

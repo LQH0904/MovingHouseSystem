@@ -53,15 +53,15 @@
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/LogViewerServlet" class="submenu-link">
                                     <i class="bx bx-calendar icon"></i>
-                                    <span class="link">Báo Cáo Vận Chuyển </span>
+                                    <span class="link"> admin </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="submenu-link">
                                     <i class="bx bx-calendar-week icon"></i>
-                                    <span class="link">Báo Cáo Kho Bãi </span>
+                                    <span class="link"> Bãi </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
@@ -82,15 +82,10 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
-                            <span class="link">Khiếu Nại</span>
+                            <span class="link">Danh sách khiếu nại</span>
                         </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
-                            <span class="link">Duyệt Đơn</span>
-                        </a>
-                    </li>
+                   
+                            
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
