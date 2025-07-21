@@ -33,7 +33,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-mainbg">
             <div class="container-fluid">
-                <a class="navbar-brand navbar-logo" href="${pageContext.request.contextPath}/homeOperator">
+                <a class="navbar-brand navbar-logo" href="${pageContext.request.contextPath}/homeStaff">
                     <img src="${pageContext.request.contextPath}/img/logo.jpg" alt="Logo" style="width: 254px; height: 64px; border-radius: 15px;" />
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

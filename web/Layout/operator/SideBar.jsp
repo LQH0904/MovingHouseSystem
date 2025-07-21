@@ -92,7 +92,7 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
-                            <span class="link">mẫu survey</span>
+                            <span class="link">Mẫu phiếu khảo sát</span>
                         </a>
                     </li>
                     <li class="list">

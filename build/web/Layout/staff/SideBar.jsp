@@ -17,69 +17,91 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     </head>
     <body>
-        
+
         <!-- Sidebar -->
         <div class="sidebar">
-        <div class="sidebar-content">
-            <ul class="lists">
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/UserListServlet" class="nav-link">
-                        <i class="bx bx-home-alt icon"></i>
-                        <span class="link">Người dùng</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/repURL" class="nav-link">
-                        <i class="bx bx-bar-chart-alt-2 icon"></i>
-                        <span class="link">Báo Cáo Doanh Thu</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
-                        <i class="bx bx-bell icon"></i>
-                        <span class="link">Đơn Hàng</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/inventoryReport" class="nav-link">
-                        <i class="bx bx-message-rounded icon"></i>
-                        <span class="link">Báo Cáo Tồn Kho</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
-                        <i class="bx bx-pie-chart-alt-2 icon"></i>
-                        <span class="link">Khiếu Nại</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/operator/listApplication" class="nav-link">
-                        <i class="bx bx-heart icon"></i>
-                        <span class="link">Duyệt Đơn</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-folder-open icon"></i>
-                        <span class="link">Files</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-cog icon"></i>
-                        <span class="link">Settings</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/logout" class="nav-link">
-                        <i class="bx bx-log-out icon"></i>
-                        <span class="link">Logout</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="sidebar-content">
+                <ul class="lists">
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/UserListServlet" class="nav-link">
+                            <i class="bx bx-home-alt icon"></i>
+                            <span class="link">Người dùng</span>
+                        </a>
+                    </li>
+                    <!-- Menu có submenu -->
+                    <li class="list has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(event)">
+                            <i class="bx bx-bar-chart-alt-2 icon"></i>
+                            <span class="link">Báo Cáo </span>
+                            <i class="bx bx-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li class="submenu-item">
+                                <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="submenu-link">
+                                    <i class="bx bx-calendar icon"></i>
+                                    <span class="link">Báo Cáo Vận Chuyển </span>
+                                </a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="submenu-link">
+                                    <i class="bx bx-calendar-week icon"></i>
+                                    <span class="link">Báo Cáo Kho Bãi </span>
+                                </a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="http://localhost:9999/HouseMovingSystem/SurveyCustomerCharController?action=page" class="submenu-link">
+                                    <i class="bx bx-calendar-alt icon"></i>
+                                    <span class="link">Báo Cáo Khách Hàng </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
+                            <i class="bx bx-bell icon"></i>
+                            <span class="link">Đơn Hàng</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/inventoryReport" class="nav-link">
+                            <i class="bx bx-message-rounded icon"></i>
+                            <span class="link">Báo Cáo Tồn Kho</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
+                            <i class="bx bx-pie-chart-alt-2 icon"></i>
+                            <span class="link">Khiếu Nại</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/operator/listApplication" class="nav-link">
+                            <i class="bx bx-heart icon"></i>
+                            <span class="link">Duyệt Đơn</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="nav-link">
+                            <i class="bx bx-folder-open icon"></i>
+                            <span class="link">Thử phiếu khảo sát</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="#" class="nav-link">
+                            <i class="bx bx-cog icon"></i>
+                            <span class="link">Settings</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/logout" class="nav-link">
+                            <i class="bx bx-log-out icon"></i>
+                            <span class="link">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
-</body>
+        <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
+    </body>
 </html>

@@ -13,6 +13,7 @@ if (session.getAttribute("acc") == null) {
 Users userAccount = (Users) session.getAttribute("acc");
 int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
 String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -433,11 +434,20 @@ String currentUsername = userAccount.getUsername(); // Lấy thêm username đ�
             </div>
         </div>
         <div style="margin-top: 40px; display: flex; justify-content: space-around;">
+            <% if (currentUserRoleId != 3) { %>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/customer-survey">
                 <button>
                     <b>Quay lại trang trước</b>
                 </button>
             </a>
+            <% } %>
+            <% if (currentUserRoleId == 3) { %>
+            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeStaff">
+                <button>
+                    <b>Quay lại trang chủ</b>
+                </button>
+            </a>
+            <% } %>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/HistorySurveyTestController">
                 <button>
                     <b>Lịch sử thử khảo sát</b>
