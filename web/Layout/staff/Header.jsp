@@ -24,7 +24,7 @@
         <ul class="navbar-nav ml-auto">
             <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
             <li class="nav-item active">
-                <a class="nav-link" href="${pageContext.request.contextPath}/updateProfile?type=${sessionScope.type}&id=${sessionScope.id}">
+                <a class="nav-link" href="${pageContext.request.contextPath}/profile?type=${sessionScope.type}&id=${sessionScope.id}">
                     <i class="far fa-address-book"></i>Tài Khoản
                 </a>
             </li>

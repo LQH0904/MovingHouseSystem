@@ -231,7 +231,6 @@
         </style>
     </head>
     <body>
-        <!-- ✅ Phần bổ sung Header và Sidebar -->
         <div class="parent">
             <div class="div1">
                 <jsp:include page="/Layout/operator/SideBar.jsp" />
@@ -240,7 +239,6 @@
                 <jsp:include page="/Layout/operator/Header.jsp" />
             </div>
             <div class="div3">
-                <!-- ✅ Từ đây trở đi là code gốc của bạn, giữ nguyên 100% -->
                 <h1>Danh sách Khiếu nại</h1>
 
                 <c:if test="${not empty successMessage}">

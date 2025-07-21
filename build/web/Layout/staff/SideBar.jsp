@@ -65,7 +65,7 @@
                     </a>
                 </li>
                 <li class="list">
-                    <a href="${pageContext.request.contextPath}/updateProfile" class="nav-link">
+                    <a href="${pageContext.request.contextPath}/profile" class="nav-link">
                         <i class="bx bx-cog icon"></i>
                         <span class="link">Tài Khoản</span>
                     </a>
