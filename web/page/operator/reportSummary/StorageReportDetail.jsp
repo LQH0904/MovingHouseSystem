@@ -1,14 +1,21 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
-String redirectURL = null;
-if (session.getAttribute("acc") == null) {
-    redirectURL = "/login";
-    response.sendRedirect(request.getContextPath() + redirectURL);
-    return;
-}
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -760,21 +767,32 @@ if (session.getAttribute("acc") == null) {
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
             <div class="div1">
                 <jsp:include page="../../../Layout/operator/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../../Layout/operator/Header.jsp"></jsp:include>
                 </div>
-                <div class="div3">
-                    <div class="storage-container">
-                        <!-- Page Header -->
-                        <div class="page-header">
-                            <h1 class="page-title">Chi tiết Báo cáo Storage</h1>
-                            <p class="page-subtitle">Quản lý và theo dõi tất cả báo cáo storage với tính năng lọc</p>
-                        </div>
+            <% } %>
 
-                        <!-- Error/Success Messages -->
+            <% if (currentUserRoleId == 3) { %>
+            <div class="div1">
+                <jsp:include page="../../../Layout/staff/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../../Layout/staff/Header.jsp"></jsp:include>
+                </div>
+            <% }%>  
+            <div class="div3">
+                <div class="storage-container">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1 class="page-title">Chi tiết Báo cáo Storage</h1>
+                        <p class="page-subtitle">Quản lý và theo dõi tất cả báo cáo storage với tính năng lọc</p>
+                    </div>
+
+                    <!-- Error/Success Messages -->
                     <c:if test="${not empty errorMessage}">
                         <div class="error-message">
                             <strong>Lỗi:</strong> ${errorMessage}
@@ -822,7 +840,7 @@ if (session.getAttribute("acc") == null) {
                         <div class="filter-section">
                             <div class="filter-header">
                                 <h3 class="filter-title">🔍 Bộ lọc</h3>
-                                
+
                             </div>
 
                             <form method="GET" action="StorageReportDetailController" id="filterForm">
@@ -920,7 +938,9 @@ if (session.getAttribute("acc") == null) {
                                             <c:forEach var="report" items="${storageReports}" varStatus="status">
                                                 <tr class="main-row">
                                                     <td class="number-cell">${status.index + 1}</td>
-                                                    <td class="date-cell">${report.reportDate}</td>
+                                                    <td class="date-cell">
+                                                        <span class="date-display" data-date="${report.reportDate}"></span>
+                                                    </td>
                                                     <td class="warehouse-name">${report.warehouseName}</td>
                                                     <td class="number-cell">${report.storageUnitId}</td>
                                                     <td class="number-cell">
@@ -1128,6 +1148,26 @@ if (session.getAttribute("acc") == null) {
         <!-- Toast Notification -->
         <div id="toast" class="toast"></div>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.date-display').forEach(function (element) {
+                    const dateStr = element.getAttribute('data-date');
+                    const dateParts = dateStr.split('-');
+                    const year = parseInt(dateParts[0]);
+                    let month = parseInt(dateParts[1]) + 1; // Cộng thêm 1 tháng
+
+                    // Xử lý trường hợp tháng > 12
+                    if (month > 12) {
+                        month = 1;
+                        year = year + 1;
+                    }
+
+                    // Format tháng với leading zero
+                    const formattedMonth = month < 10 ? '0' + month : month;
+                    element.textContent = formattedMonth + '/' + year;
+                });
+            });
+        </script>
         <script>
             // Show toast notification
             function showToast(message, type = 'success') {
