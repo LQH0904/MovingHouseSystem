@@ -41,18 +41,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                        <div class="hori-selector"></div>
-                        <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 2)}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/analyz"><i class="bi bi-bar-chart-fill"></i>Phân tích Báo cáo</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/sendNotification"><i class="bi bi-send-fill"></i>Gửi Thông báo</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/notifications"><i class="bi bi-bell-fill"></i>Thông báo</a>
-                            </li>
-                        </c:if>
+                        <div class="hori-selector"></div>                      
                         <li class="nav-item">
                             <a class="nav-link" href="javascript:void(0);"><i class="bi bi-person-circle"></i>Tài Khoản</a>
                         </li>

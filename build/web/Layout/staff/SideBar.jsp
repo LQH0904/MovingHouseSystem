@@ -28,6 +28,33 @@
                         <span class="link">Người dùng</span>
                     </a>
                 </li>
+                
+                <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 3)}">
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/analyz" class="nav-link">
+                                <i class="bx bx-pie-chart-alt-2 icon"></i>
+                                <span class="link">Phân tích Báo cáo</span>
+                            </a>
+                        </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/sendNotification" class="nav-link">
+                                <i class="bx bx-message-rounded icon"></i>
+                                <span class="link">Gửi Thông báo</span>
+                            </a>
+                        </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/notifications" class="nav-link">
+                                <i class="bx bx-bell icon"></i>
+                                <span class="link">Thông báo</span>
+                            </a>
+                        </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
+                                <i class="bx bx-export icon"></i>
+                                <span class="link">Xuất dữ liệu</span>
+                            </a>
+                        </li>
+                    </c:if>
                 <li class="list">
                     <a href="${pageContext.request.contextPath}/repURL" class="nav-link">
                         <i class="bx bx-bar-chart-alt-2 icon"></i>
@@ -64,12 +91,12 @@
                         <span class="link">Files</span>
                     </a>
                 </li>
-                <li class="list">
+<!--                <li class="list">
                     <a href="#" class="nav-link">
                         <i class="bx bx-cog icon"></i>
                         <span class="link">Settings</span>
                     </a>
-                </li>
+                </li>-->
                 <li class="list">
                     <a href="${pageContext.request.contextPath}/logout" class="nav-link">
                         <i class="bx bx-log-out icon"></i>
