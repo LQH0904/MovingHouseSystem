@@ -16,4 +16,8 @@
             <div class="div3"> </div>
         </div>
     </body>
+<<<<<<< HEAD:build/web/Layout/operator/HomePage.jsp
 </html>
+=======
+</html>
+>>>>>>> origin/Test:web/Layout/HomePage.jsp

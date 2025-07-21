@@ -38,7 +38,14 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
+<<<<<<< HEAD:web/Layout/operator/Header.jsp
         <%-- Sửa đường dẫn JS thành tuyệt đối --%>
         <script src="${pageContext.request.contextPath}/js/Header.js"></script>
     </body>
 </html>
+=======
+        <!-- Custom JS -->
+        <script src="../js/Header.js"></script>
+    </body>
+</html>
+>>>>>>> origin/Test:web/Layout/Header.jsp

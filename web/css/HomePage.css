@@ -17,6 +17,7 @@
     /* Không cần position: fixed; ở đây */
 }
 .div3 {
+<<<<<<< HEAD
     grid-area: 2 / 2 / 3 / 3; /* Content */
     border: 0px solid rgb(62, 49, 49);
     box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
@@ -25,4 +26,7 @@
 
     /* Thêm thuộc tính này để chỉ div3 có thể cuộn */
     overflow-y: auto; /* hoặc scroll */
+=======
+  grid-area: 2 / 2 / 3 / 3; /* Content */
+>>>>>>> origin/Test
 }

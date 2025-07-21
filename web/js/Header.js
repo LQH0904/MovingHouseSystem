@@ -55,4 +55,14 @@ jQuery(document).ready(function($){
 	var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
 	// Add active class to target link
 	target.parent().addClass('active');
+<<<<<<< HEAD
 });
+=======
+});
+
+
+
+
+
+
+>>>>>>> origin/Test
