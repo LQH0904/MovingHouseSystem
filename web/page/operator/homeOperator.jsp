@@ -19,6 +19,7 @@
     Users userAccount = (Users) session.getAttribute("acc");
     int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
     String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html>
@@ -38,7 +39,7 @@
                 </div>
                 <div class="div2">
                 <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
-                </div>
+                </div>  
 
                 <div class="div3">
                     <div class="content-part">

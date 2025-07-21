@@ -771,7 +771,7 @@ if (session.getAttribute("acc") == null) {
                         <!-- Page Header -->
                         <div class="page-header">
                             <h1 class="page-title">Chi tiết Báo cáo Storage</h1>
-                            <p class="page-subtitle">Quản lý và theo dõi tất cả báo cáo storage với tính năng lọc và xuất dữ liệu</p>
+                            <p class="page-subtitle">Quản lý và theo dõi tất cả báo cáo storage với tính năng lọc</p>
                         </div>
 
                         <!-- Error/Success Messages -->
@@ -821,12 +821,8 @@ if (session.getAttribute("acc") == null) {
                         <!-- Filter Section -->
                         <div class="filter-section">
                             <div class="filter-header">
-                                <h3 class="filter-title">🔍 Bộ lọc và Xuất dữ liệu</h3>
-                                <div>
-                                    <a href="javascript:void(0)" onclick="exportToExcel()" class="export-btn" id="exportBtn">
-                                        📊 Xuất Excel
-                                    </a>
-                                </div>
+                                <h3 class="filter-title">🔍 Bộ lọc</h3>
+                                
                             </div>
 
                             <form method="GET" action="StorageReportDetailController" id="filterForm">

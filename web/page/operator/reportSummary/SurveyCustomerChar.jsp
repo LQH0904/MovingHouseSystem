@@ -1,6 +1,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
+%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -209,551 +225,562 @@
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
             <div class="div1">
                 <jsp:include page="../../../Layout/operator/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../../Layout/operator/Header.jsp"></jsp:include>
                 </div>
-                <div class="div3">
-                    <h1 style="text-align: center; color: #333; margin-bottom: 10px;">
-                        📊 Biểu đồ Khảo sát Khách hàng
-                    </h1>
+            <% } %>
 
-                    <!-- Bộ lọc thời gian -->
-                    <div class="controls">
-                        <div class="filter-row">
-                            <div class="filter-group">
-                                <label>Từ tháng:</label>
-                                <input type="month" id="fromMonth" style="color: black;"/>
-                            </div>
-                            <div class="filter-group">
-                                <label>Đến tháng:</label>
-                                <input type="month" id="toMonth" style="color: black;"/>
-                            </div>
-                            <button class="btn" onclick="loadChartData()">Lọc dữ liệu</button>
-                            <button class="btn" onclick="resetFilter()">Đặt lại</button>
+            <% if (currentUserRoleId == 3) { %>
+            <div class="div1">
+                <jsp:include page="../../../Layout/staff/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../../Layout/staff/Header.jsp"></jsp:include>
+                </div>
+            <% }%>    
+            <div class="div3">
+                <h1 style="text-align: center; color: #333; margin-bottom: 10px;">
+                    📊 Biểu đồ Khảo sát Khách hàng
+                </h1>
+
+                <!-- Bộ lọc thời gian -->
+                <div class="controls">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Từ tháng:</label>
+                            <input type="month" id="fromMonth" style="color: black;"/>
                         </div>
-                    </div>
-
-                    <!-- Loading -->
-                    <div id="loading" class="loading">
-                        <div>⏳ Đang tải dữ liệu...</div>
-                    </div>
-
-                    <!-- Gauge Charts Section -->
-                    <div class="chart-container" style="display: none;" id="gaugeSection">
-                        <h2 style="text-align: center; color: #007bff; margin-bottom: 10px;">
-                            🎯 Biểu đồ Đánh giá
-                        </h2>
-                        <div class="chart-grid">
-                            <!-- Mức độ hài lòng tổng thể -->
-                            <div class="chart-container">
-                                <div class="chart-title">Mức độ hài lòng tổng thể</div>
-                                <div class="gauge-container">
-                                    <canvas id="overallSatisfactionGauge" class="gauge-canvas"></canvas>
-                                    <div class="gauge-value" id="overallSatisfactionValue">0.0</div>
-                                </div>
-                            </div>
-
-                            <!-- Chăm sóc vận chuyển -->
-                            <div class="chart-container">
-                                <div class="chart-title">Chăm sóc vận chuyển</div>
-                                <div class="gauge-container">
-                                    <canvas id="transportCareGauge" class="gauge-canvas"></canvas>
-                                    <div class="gauge-value" id="transportCareValue">0.0</div>
-                                </div>
-                            </div>
-
-                            <!-- Tính chuyên nghiệp của tư vấn -->
-                            <div class="chart-container">
-                                <div class="chart-title">Tính chuyên nghiệp của tư vấn</div>
-                                <div class="gauge-container">
-                                    <canvas id="consultantProfessionalismGauge" class="gauge-canvas"></canvas>
-                                    <div class="gauge-value" id="consultantProfessionalismValue">0.0</div>
-                                </div>
-                            </div>
+                        <div class="filter-group">
+                            <label>Đến tháng:</label>
+                            <input type="month" id="toMonth" style="color: black;"/>
                         </div>
-                    </div>
-
-                    <!-- Pie Charts Section -->
-                    <div class="chart-container" style="display: none;" id="pieSection">
-                        <h2 style="text-align: center; color: #28a745; margin-bottom: 10px;">
-                            🥧 Biểu đồ Tròn
-                        </h2>
-                        <div class="chart-grid">
-                            <!-- Tình trạng đồ đạc khi nhận -->
-                            <div class="chart-container">
-                                <div class="chart-title">Tình trạng đồ đạc khi nhận</div>
-                                <div id="itemConditionPie" class="pie-chart"></div>
-                            </div>
-
-                            <!-- Tính đúng giờ của việc giao hàng -->
-                            <div class="chart-container">
-                                <div class="chart-title">Tính đúng giờ của việc giao hàng</div>
-                                <div id="deliveryTimelinessPie" class="pie-chart"></div>
-                            </div>
-
-                            <!-- Quy trình đặt dịch vụ -->
-                            <div class="chart-container">
-                                <div class="chart-title">Quy trình đặt dịch vụ</div>
-                                <div id="bookingProcessPie" class="pie-chart"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Radar Charts Section -->
-                    <div class="chart-container" style="display: none;" id="radarSection">
-                        <h2 style="text-align: center; color: #dc3545; margin-bottom: 10px;">
-                            📡 Biểu đồ Radar
-                        </h2>
-                        <div class="chart-grid">
-                            <!-- Thời gian phản hồi -->
-                            <div class="chart-container">
-                                <div class="chart-title">Thời gian phản hồi</div>
-                                <div class="radar-chart">
-                                    <canvas id="responseTimeRadar"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Yếu tố quan trọng nhất -->
-                            <div class="chart-container">
-                                <div class="chart-title">Yếu tố quan trọng nhất</div>
-                                <div class="radar-chart">
-                                    <canvas id="importantFactorRadar"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Tần suất sử dụng dịch vụ -->
-                            <div class="chart-container">
-                                <div class="chart-title">Tần suất sử dụng dịch vụ</div>
-                                <div class="radar-chart">
-                                    <canvas id="usageFrequencyRadar"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="butt">
-                        <a href="http://localhost:9999/HouseMovingSystem/SurveyCharDetailController">
-                            <button class="cssbuttons-io-button">
-                                Chi tiết bảng
-                                <div class="icon">
-                                    <svg
-                                        height="24"
-                                        width="24"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                    <path d="M0 0h24v24H0z" fill="none"></path>
-                                    <path
-                                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-                                        fill="currentColor"
-                                        ></path>
-                                    </svg>
-                                </div>
-                            </button>
-                        </a> 
+                        <button class="btn" onclick="loadChartData()">Lọc dữ liệu</button>
+                        <button class="btn" onclick="resetFilter()">Đặt lại</button>
                     </div>
                 </div>
+
+                <!-- Loading -->
+                <div id="loading" class="loading">
+                    <div>⏳ Đang tải dữ liệu...</div>
+                </div>
+
+                <!-- Gauge Charts Section -->
+                <div class="chart-container" style="display: none;" id="gaugeSection">
+                    <h2 style="text-align: center; color: #007bff; margin-bottom: 10px;">
+                        🎯 Biểu đồ Đánh giá
+                    </h2>
+                    <div class="chart-grid">
+                        <!-- Mức độ hài lòng tổng thể -->
+                        <div class="chart-container">
+                            <div class="chart-title">Mức độ hài lòng tổng thể</div>
+                            <div class="gauge-container">
+                                <canvas id="overallSatisfactionGauge" class="gauge-canvas"></canvas>
+                                <div class="gauge-value" id="overallSatisfactionValue">0.0</div>
+                            </div>
+                        </div>
+
+                        <!-- Chăm sóc vận chuyển -->
+                        <div class="chart-container">
+                            <div class="chart-title">Chăm sóc vận chuyển</div>
+                            <div class="gauge-container">
+                                <canvas id="transportCareGauge" class="gauge-canvas"></canvas>
+                                <div class="gauge-value" id="transportCareValue">0.0</div>
+                            </div>
+                        </div>
+
+                        <!-- Tính chuyên nghiệp của tư vấn -->
+                        <div class="chart-container">
+                            <div class="chart-title">Tính chuyên nghiệp của tư vấn</div>
+                            <div class="gauge-container">
+                                <canvas id="consultantProfessionalismGauge" class="gauge-canvas"></canvas>
+                                <div class="gauge-value" id="consultantProfessionalismValue">0.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pie Charts Section -->
+                <div class="chart-container" style="display: none;" id="pieSection">
+                    <h2 style="text-align: center; color: #28a745; margin-bottom: 10px;">
+                        🥧 Biểu đồ Tròn
+                    </h2>
+                    <div class="chart-grid">
+                        <!-- Tình trạng đồ đạc khi nhận -->
+                        <div class="chart-container">
+                            <div class="chart-title">Tình trạng đồ đạc khi nhận</div>
+                            <div id="itemConditionPie" class="pie-chart"></div>
+                        </div>
+
+                        <!-- Tính đúng giờ của việc giao hàng -->
+                        <div class="chart-container">
+                            <div class="chart-title">Tính đúng giờ của việc giao hàng</div>
+                            <div id="deliveryTimelinessPie" class="pie-chart"></div>
+                        </div>
+
+                        <!-- Quy trình đặt dịch vụ -->
+                        <div class="chart-container">
+                            <div class="chart-title">Quy trình đặt dịch vụ</div>
+                            <div id="bookingProcessPie" class="pie-chart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radar Charts Section -->
+                <div class="chart-container" style="display: none;" id="radarSection">
+                    <h2 style="text-align: center; color: #dc3545; margin-bottom: 10px;">
+                        📡 Biểu đồ Radar
+                    </h2>
+                    <div class="chart-grid">
+                        <!-- Thời gian phản hồi -->
+                        <div class="chart-container">
+                            <div class="chart-title">Thời gian phản hồi</div>
+                            <div class="radar-chart">
+                                <canvas id="responseTimeRadar"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Yếu tố quan trọng nhất -->
+                        <div class="chart-container">
+                            <div class="chart-title">Yếu tố quan trọng nhất</div>
+                            <div class="radar-chart">
+                                <canvas id="importantFactorRadar"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Tần suất sử dụng dịch vụ -->
+                        <div class="chart-container">
+                            <div class="chart-title">Tần suất sử dụng dịch vụ</div>
+                            <div class="radar-chart">
+                                <canvas id="usageFrequencyRadar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="butt">
+                    <a href="http://localhost:9999/HouseMovingSystem/SurveyCharDetailController">
+                        <button class="cssbuttons-io-button">
+                            Chi tiết bảng
+                            <div class="icon">
+                                <svg
+                                    height="24"
+                                    width="24"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                                    fill="currentColor"
+                                    ></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </a> 
+                </div>
             </div>
+        </div>
 
-            <script>
+        <script>
 
-                let chartData = null;
-                let gaugeCharts = {};
-                let pieCharts = {};
-                let radarCharts = {};
+            let chartData = null;
+            let gaugeCharts = {};
+            let pieCharts = {};
+            let radarCharts = {};
 
-                // Load dữ liệu khi trang được tải
-                document.addEventListener('DOMContentLoaded', function () {
-                    loadChartData();
-                });
+            // Load dữ liệu khi trang được tải
+            document.addEventListener('DOMContentLoaded', function () {
+                loadChartData();
+            });
 
-                // Hàm load dữ liệu từ server
-                function loadChartData() {
-                    showLoading(true);
+            // Hàm load dữ liệu từ server
+            function loadChartData() {
+                showLoading(true);
 
-                    const fromMonth = document.getElementById('fromMonth').value;
-                    const toMonth = document.getElementById('toMonth').value;
+                const fromMonth = document.getElementById('fromMonth').value;
+                const toMonth = document.getElementById('toMonth').value;
 
-                    let url = '${pageContext.request.contextPath}/SurveyCustomerCharController';
-                    const params = new URLSearchParams();
+                let url = '${pageContext.request.contextPath}/SurveyCustomerCharController';
+                const params = new URLSearchParams();
 
-                    if (fromMonth)
-                        params.append('fromMonth', fromMonth);
-                    if (toMonth)
-                        params.append('toMonth', toMonth);
+                if (fromMonth)
+                    params.append('fromMonth', fromMonth);
+                if (toMonth)
+                    params.append('toMonth', toMonth);
 
-                    if (params.toString()) {
-                        url += '?' + params.toString();
-                    }
-
-                    fetch(url)
-                            .then(response => response.json())
-                            .then(data => {
-                                chartData = data;
-                                if (data.success) {
-                                    renderAllCharts();
-                                } else {
-                                    alert('Lỗi: ' + data.message);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Lỗi khi tải dữ liệu: ' + error.message);
-                            })
-                            .finally(() => {
-                                showLoading(false);
-                            });
+                if (params.toString()) {
+                    url += '?' + params.toString();
                 }
 
-                // Hiển thị/ẩn loading
-                function showLoading(show) {
-                    const loadingEl = document.getElementById('loading');
-                    const gaugeSectionEl = document.getElementById('gaugeSection');
-                    const pieSectionEl = document.getElementById('pieSection');
-                    const radarSectionEl = document.getElementById('radarSection');
+                fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            chartData = data;
+                            if (data.success) {
+                                renderAllCharts();
+                            } else {
+                                alert('Lỗi: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Lỗi khi tải dữ liệu: ' + error.message);
+                        })
+                        .finally(() => {
+                            showLoading(false);
+                        });
+            }
 
-                    if (show) {
-                        loadingEl.style.display = 'block';
-                        gaugeSectionEl.style.display = 'none';
-                        pieSectionEl.style.display = 'none';
-                        radarSectionEl.style.display = 'none';
-                    } else {
-                        loadingEl.style.display = 'none';
-                        // Delay hiển thị để đảm bảo DOM ready
-                        setTimeout(() => {
-                            gaugeSectionEl.style.display = 'block';
-                            pieSectionEl.style.display = 'block';
-                            radarSectionEl.style.display = 'block';
-                        }, 100);
-                    }
-                }
+            // Hiển thị/ẩn loading
+            function showLoading(show) {
+                const loadingEl = document.getElementById('loading');
+                const gaugeSectionEl = document.getElementById('gaugeSection');
+                const pieSectionEl = document.getElementById('pieSection');
+                const radarSectionEl = document.getElementById('radarSection');
 
-                // Render tất cả biểu đồ
-                function renderAllCharts() {
-                    if (!chartData || !chartData.success)
-                        return;
-
-                    // Render Gauge Charts trước
-                    renderGaugeChart('overallSatisfactionGauge', 'overallSatisfactionValue',
-                            chartData.overallSatisfaction, 'Mức độ hài lòng tổng thể');
-                    renderGaugeChart('transportCareGauge', 'transportCareValue',
-                            chartData.transportCare, 'Chăm sóc vận chuyển');
-                    renderGaugeChart('consultantProfessionalismGauge', 'consultantProfessionalismValue',
-                            chartData.consultantProfessionalism, 'Tính chuyên nghiệp');
-
-                    // Delay render Pie Charts để đảm bảo DOM đã render xong
+                if (show) {
+                    loadingEl.style.display = 'block';
+                    gaugeSectionEl.style.display = 'none';
+                    pieSectionEl.style.display = 'none';
+                    radarSectionEl.style.display = 'none';
+                } else {
+                    loadingEl.style.display = 'none';
+                    // Delay hiển thị để đảm bảo DOM ready
                     setTimeout(() => {
-                        renderPieChart('itemConditionPie', chartData.itemCondition, 'Tình trạng đồ đạc');
-                        renderPieChart('deliveryTimelinessPie', chartData.deliveryTimeliness, 'Tính đúng giờ giao hàng');
-                        renderPieChart('bookingProcessPie', chartData.bookingProcess, 'Quy trình đặt dịch vụ');
-                    }, 200);
-
-                    // Delay render Radar Charts
-                    setTimeout(() => {
-                        renderRadarChart('responseTimeRadar', chartData.responseTime, 'Thời gian phản hồi');
-                        renderRadarChart('importantFactorRadar', chartData.importantFactor, 'Yếu tố quan trọng');
-                        renderRadarChart('usageFrequencyRadar', chartData.usageFrequency, 'Tần suất sử dụng');
-                    }, 300);
+                        gaugeSectionEl.style.display = 'block';
+                        pieSectionEl.style.display = 'block';
+                        radarSectionEl.style.display = 'block';
+                    }, 100);
                 }
+            }
+
+            // Render tất cả biểu đồ
+            function renderAllCharts() {
+                if (!chartData || !chartData.success)
+                    return;
+
+                // Render Gauge Charts trước
+                renderGaugeChart('overallSatisfactionGauge', 'overallSatisfactionValue',
+                        chartData.overallSatisfaction, 'Mức độ hài lòng tổng thể');
+                renderGaugeChart('transportCareGauge', 'transportCareValue',
+                        chartData.transportCare, 'Chăm sóc vận chuyển');
+                renderGaugeChart('consultantProfessionalismGauge', 'consultantProfessionalismValue',
+                        chartData.consultantProfessionalism, 'Tính chuyên nghiệp');
+
+                // Delay render Pie Charts để đảm bảo DOM đã render xong
+                setTimeout(() => {
+                    renderPieChart('itemConditionPie', chartData.itemCondition, 'Tình trạng đồ đạc');
+                    renderPieChart('deliveryTimelinessPie', chartData.deliveryTimeliness, 'Tính đúng giờ giao hàng');
+                    renderPieChart('bookingProcessPie', chartData.bookingProcess, 'Quy trình đặt dịch vụ');
+                }, 200);
+
+                // Delay render Radar Charts
+                setTimeout(() => {
+                    renderRadarChart('responseTimeRadar', chartData.responseTime, 'Thời gian phản hồi');
+                    renderRadarChart('importantFactorRadar', chartData.importantFactor, 'Yếu tố quan trọng');
+                    renderRadarChart('usageFrequencyRadar', chartData.usageFrequency, 'Tần suất sử dụng');
+                }, 300);
+            }
 
 
-                // Render Gauge Chart (similar to the provided HTML)
-                function renderGaugeChart(canvasId, valueId, data, title) {
-                    if (!data || !data.average)
-                        return;
+            // Render Gauge Chart (similar to the provided HTML)
+            function renderGaugeChart(canvasId, valueId, data, title) {
+                if (!data || !data.average)
+                    return;
 
-                    const canvas = document.getElementById(canvasId);
+                const canvas = document.getElementById(canvasId);
 
-                    const ctx = canvas.getContext('2d');
-                    const valueDisplay = document.getElementById(valueId);
+                const ctx = canvas.getContext('2d');
+                const valueDisplay = document.getElementById(valueId);
 
-                    // Thiết lập biểu đồ
-                    const centerX = canvas.width / 2;
-                    const centerY = canvas.height - 30;
-                    const radius = 80;
-                    const startAngle = Math.PI;
-                    const endAngle = 0;
+                // Thiết lập biểu đồ
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height - 30;
+                const radius = 80;
+                const startAngle = Math.PI;
+                const endAngle = 0;
 
-                    // Màu sắc cho 5 phần (đỏ sang xanh)
-                    const colors = ['#F44336', '#FF9800', '#FFEB3B', '#8BC34A', '#4CAF50'];
+                // Màu sắc cho 5 phần (đỏ sang xanh)
+                const colors = ['#F44336', '#FF9800', '#FFEB3B', '#8BC34A', '#4CAF50'];
 
-                    // Xóa canvas
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Xóa canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                    // Vẽ nền
-                    const bgGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius + 10);
-                    bgGradient.addColorStop(0, '#ffffff');
-                    bgGradient.addColorStop(1, '#f8f9fa');
+                // Vẽ nền
+                const bgGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius + 10);
+                bgGradient.addColorStop(0, '#ffffff');
+                bgGradient.addColorStop(1, '#f8f9fa');
 
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, radius + 10, startAngle, endAngle);
-                    ctx.fillStyle = bgGradient;
-                    ctx.fill();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius + 10, startAngle, endAngle);
+                ctx.fillStyle = bgGradient;
+                ctx.fill();
 
-                    // Vẽ 5 phần của gauge
-                    for (let i = 0; i < 5; i++) {
-                        const sectionStartAngle = startAngle + (i * Math.PI / 5);
-                        const sectionEndAngle = startAngle + ((i + 1) * Math.PI / 5);
-
-                        ctx.beginPath();
-                        ctx.moveTo(centerX, centerY);
-                        ctx.arc(centerX, centerY, radius, sectionStartAngle, sectionEndAngle);
-                        ctx.closePath();
-                        ctx.fillStyle = colors[i];
-                        ctx.fill();
-
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                    }
-
-                    // Vẽ vòng tròn bên trong
-                    const innerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 25);
-                    innerGradient.addColorStop(0, '#ffffff');
-                    innerGradient.addColorStop(1, '#f0f0f0');
-
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
-                    ctx.fillStyle = innerGradient;
-                    ctx.fill();
-                    ctx.strokeStyle = '#ddd';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    // Vẽ kim chỉ
-                    const angle = startAngle + ((data.average - 1) / 4) * Math.PI;
-                    const needleLength = radius - 10;
-                    const needleEndX = centerX + Math.cos(angle) * needleLength;
-                    const needleEndY = centerY + Math.sin(angle) * needleLength;
-
-                    // Kim chỉ hình mũi tên
-                    const needleWidth = 4;
-                    const needleBackLength = 15;
-
-                    const perpAngle = angle + Math.PI / 2;
-                    const perpX = Math.cos(perpAngle) * needleWidth;
-                    const perpY = Math.sin(perpAngle) * needleWidth;
-
-                    const backX = centerX - Math.cos(angle) * needleBackLength;
-                    const backY = centerY - Math.sin(angle) * needleBackLength;
+                // Vẽ 5 phần của gauge
+                for (let i = 0; i < 5; i++) {
+                    const sectionStartAngle = startAngle + (i * Math.PI / 5);
+                    const sectionEndAngle = startAngle + ((i + 1) * Math.PI / 5);
 
                     ctx.beginPath();
-                    ctx.moveTo(needleEndX, needleEndY);
-                    ctx.lineTo(centerX + perpX, centerY + perpY);
-                    ctx.lineTo(backX, backY);
-                    ctx.lineTo(centerX - perpX, centerY - perpY);
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius, sectionStartAngle, sectionEndAngle);
                     ctx.closePath();
-                    ctx.fillStyle = '#2c3e50';
+                    ctx.fillStyle = colors[i];
                     ctx.fill();
-                    ctx.strokeStyle = '#1a252f';
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
                     ctx.lineWidth = 1;
                     ctx.stroke();
-
-                    // Đầu kim
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
-                    ctx.fillStyle = '#2c3e50';
-                    ctx.fill();
-                    ctx.strokeStyle = '#1a252f';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    // Hiển thị giá trị
-                    valueDisplay.textContent = data.average.toFixed(1);
                 }
 
-                // Render Pie Chart với ECharts
-                function renderPieChart(containerId, data, title) {
-                    if (!data || !data.data)
-                        return;
+                // Vẽ vòng tròn bên trong
+                const innerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 25);
+                innerGradient.addColorStop(0, '#ffffff');
+                innerGradient.addColorStop(1, '#f0f0f0');
 
-                    const container = document.getElementById(containerId);
-                    if (!container)
-                        return;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
+                ctx.fillStyle = innerGradient;
+                ctx.fill();
+                ctx.strokeStyle = '#ddd';
+                ctx.lineWidth = 2;
+                ctx.stroke();
 
-                    // Dispose chart cũ nếu có
-                    if (pieCharts[containerId]) {
-                        pieCharts[containerId].dispose();
-                        delete pieCharts[containerId];
+                // Vẽ kim chỉ
+                const angle = startAngle + ((data.average - 1) / 4) * Math.PI;
+                const needleLength = radius - 10;
+                const needleEndX = centerX + Math.cos(angle) * needleLength;
+                const needleEndY = centerY + Math.sin(angle) * needleLength;
+
+                // Kim chỉ hình mũi tên
+                const needleWidth = 4;
+                const needleBackLength = 15;
+
+                const perpAngle = angle + Math.PI / 2;
+                const perpX = Math.cos(perpAngle) * needleWidth;
+                const perpY = Math.sin(perpAngle) * needleWidth;
+
+                const backX = centerX - Math.cos(angle) * needleBackLength;
+                const backY = centerY - Math.sin(angle) * needleBackLength;
+
+                ctx.beginPath();
+                ctx.moveTo(needleEndX, needleEndY);
+                ctx.lineTo(centerX + perpX, centerY + perpY);
+                ctx.lineTo(backX, backY);
+                ctx.lineTo(centerX - perpX, centerY - perpY);
+                ctx.closePath();
+                ctx.fillStyle = '#2c3e50';
+                ctx.fill();
+                ctx.strokeStyle = '#1a252f';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Đầu kim
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = '#2c3e50';
+                ctx.fill();
+                ctx.strokeStyle = '#1a252f';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Hiển thị giá trị
+                valueDisplay.textContent = data.average.toFixed(1);
+            }
+
+            // Render Pie Chart với ECharts
+            function renderPieChart(containerId, data, title) {
+                if (!data || !data.data)
+                    return;
+
+                const container = document.getElementById(containerId);
+                if (!container)
+                    return;
+
+                // Dispose chart cũ nếu có
+                if (pieCharts[containerId]) {
+                    pieCharts[containerId].dispose();
+                    delete pieCharts[containerId];
+                }
+
+                // Đảm bảo container có kích thước trước khi khởi tạo chart
+                if (container.offsetWidth === 0 || container.offsetHeight === 0) {
+                    // Retry sau khi DOM render xong
+                    setTimeout(() => renderPieChart(containerId, data, title), 100);
+                    return;
+                }
+
+                const chart = echarts.init(container);
+                pieCharts[containerId] = chart;
+
+                const option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        top: '15px',
+                        textStyle: {
+                            fontSize: 12
+                        }
+                    },
+                    series: [{
+                            name: title,
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            center: ['60%', '50%'],
+                            padAngle: 5,
+                            itemStyle: {
+                                borderRadius: 10,
+                                borderColor: '#fff',
+                                borderWidth: 2
+                            },
+                            data: data.data,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            },
+                            label: {
+                                show: false
+                            },
+                            labelLine: {
+                                show: false  // Ẩn đường kẻ từ chart đến label
+                            }
+                        }]
+                };
+
+                chart.setOption(option);
+
+                // Force resize sau khi set option
+                setTimeout(() => {
+                    if (chart && !chart.isDisposed()) {
+                        chart.resize();
                     }
+                }, 50);
+            }
 
-                    // Đảm bảo container có kích thước trước khi khởi tạo chart
-                    if (container.offsetWidth === 0 || container.offsetHeight === 0) {
-                        // Retry sau khi DOM render xong
-                        setTimeout(() => renderPieChart(containerId, data, title), 100);
-                        return;
-                    }
 
-                    const chart = echarts.init(container);
-                    pieCharts[containerId] = chart;
+            // Render Radar Chart với Chart.js
+            function renderRadarChart(canvasId, data, title) {
+                if (!data || !data.labels || !data.data)
+                    return;
 
-                    const option = {
-                        tooltip: {
-                            trigger: 'item',
-                            formatter: '{a} <br/>{b}: {c} ({d}%)'
-                        },
-                        legend: {
-                            orient: 'vertical',
-                            left: 'left',
-                            top: '15px',
-                            textStyle: {
-                                fontSize: 12
+                const ctx = document.getElementById(canvasId).getContext('2d');
+
+                if (radarCharts[canvasId]) {
+                    radarCharts[canvasId].destroy();
+                }
+
+                const chart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                                label: title,
+                                data: data.data,
+                                borderColor: 'rgb(54, 162, 235)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgb(54, 162, 235)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgb(54, 162, 235)',
+                                fill: true
+                            }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: title,
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            legend: {
+                                display: false
                             }
                         },
-                        series: [{
-                                name: title,
-                                type: 'pie',
-                                radius: ['40%', '70%'],
-                                center: ['60%', '50%'],
-                                padAngle: 5,
-                                itemStyle: {
-                                    borderRadius: 10,
-                                    borderColor: '#fff',
-                                    borderWidth: 2
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.1)'
                                 },
-                                data: data.data,
-                                emphasis: {
-                                    itemStyle: {
-                                        shadowBlur: 10,
-                                        shadowOffsetX: 0,
-                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 12
                                     }
                                 },
-                                label: {
-                                    show: false
+                                ticks: {
+                                    display: true,
+                                    stepSize: 1
                                 },
-                                labelLine: {
-                                    show: false  // Ẩn đường kẻ từ chart đến label
-                                }
-                            }]
-                    };
+                                beginAtZero: true
+                            }
+                        },
+                        elements: {
+                            line: {
+                                borderWidth: 3
+                            }
+                        }
+                    }
+                });
 
-                    chart.setOption(option);
+                radarCharts[canvasId] = chart;
+            }
 
-                    // Force resize sau khi set option
-                    setTimeout(() => {
+            // Reset bộ lọc
+            function resetFilter() {
+                document.getElementById('fromMonth').value = '';
+                document.getElementById('toMonth').value = '';
+                loadChartData();
+            }
+
+            // Cleanup khi trang được unload
+            window.addEventListener('beforeunload', function () {
+                // Cleanup ECharts
+                Object.values(pieCharts).forEach(chart => {
+                    if (chart)
+                        chart.dispose();
+                });
+
+                // Cleanup Chart.js
+                Object.values(radarCharts).forEach(chart => {
+                    if (chart)
+                        chart.destroy();
+                });
+            });
+
+            // Responsive handling
+            window.addEventListener('resize', function () {
+                // Debounce resize events
+                clearTimeout(window.resizeTimeout);
+                window.resizeTimeout = setTimeout(() => {
+                    // Resize ECharts
+                    Object.values(pieCharts).forEach(chart => {
                         if (chart && !chart.isDisposed()) {
                             chart.resize();
                         }
-                    }, 50);
-                }
-
-
-                // Render Radar Chart với Chart.js
-                function renderRadarChart(canvasId, data, title) {
-                    if (!data || !data.labels || !data.data)
-                        return;
-
-                    const ctx = document.getElementById(canvasId).getContext('2d');
-
-                    if (radarCharts[canvasId]) {
-                        radarCharts[canvasId].destroy();
-                    }
-
-                    const chart = new Chart(ctx, {
-                        type: 'radar',
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                    label: title,
-                                    data: data.data,
-                                    borderColor: 'rgb(54, 162, 235)',
-                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                    borderWidth: 2,
-                                    pointBackgroundColor: 'rgb(54, 162, 235)',
-                                    pointBorderColor: '#fff',
-                                    pointHoverBackgroundColor: '#fff',
-                                    pointHoverBorderColor: 'rgb(54, 162, 235)',
-                                    fill: true
-                                }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: title,
-                                    font: {
-                                        size: 16,
-                                        weight: 'bold'
-                                    }
-                                },
-                                legend: {
-                                    display: false
-                                }
-                            },
-                            scales: {
-                                r: {
-                                    angleLines: {
-                                        display: true,
-                                        color: 'rgba(0, 0, 0, 0.1)'
-                                    },
-                                    grid: {
-                                        color: 'rgba(0, 0, 0, 0.1)'
-                                    },
-                                    pointLabels: {
-                                        font: {
-                                            size: 12
-                                        }
-                                    },
-                                    ticks: {
-                                        display: true,
-                                        stepSize: 1
-                                    },
-                                    beginAtZero: true
-                                }
-                            },
-                            elements: {
-                                line: {
-                                    borderWidth: 3
-                                }
-                            }
-                        }
                     });
 
-                    radarCharts[canvasId] = chart;
-                }
-
-                // Reset bộ lọc
-                function resetFilter() {
-                    document.getElementById('fromMonth').value = '';
-                    document.getElementById('toMonth').value = '';
-                    loadChartData();
-                }
-
-                // Cleanup khi trang được unload
-                window.addEventListener('beforeunload', function () {
-                    // Cleanup ECharts
-                    Object.values(pieCharts).forEach(chart => {
-                        if (chart)
-                            chart.dispose();
-                    });
-
-                    // Cleanup Chart.js
-                    Object.values(radarCharts).forEach(chart => {
-                        if (chart)
-                            chart.destroy();
-                    });
-                });
-
-                // Responsive handling
-                window.addEventListener('resize', function () {
-                    // Debounce resize events
-                    clearTimeout(window.resizeTimeout);
-                    window.resizeTimeout = setTimeout(() => {
-                        // Resize ECharts
-                        Object.values(pieCharts).forEach(chart => {
-                            if (chart && !chart.isDisposed()) {
-                                chart.resize();
-                            }
-                        });
-
-                        // Chart.js tự động resize với responsive: true
-                    }, 100);
-                });
+                    // Chart.js tự động resize với responsive: true
+                }, 100);
+            });
 
         </script>
     </body>

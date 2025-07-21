@@ -934,13 +934,6 @@ if (session.getAttribute("acc") == null) {
                         </c:forEach>
                     </div>
                 </div>
-
-                <!-- Export Section -->
-                <div class="export-section">
-                    <button class="export-btn" onclick="exportToCSV()">
-                        📥 Xuất báo cáo CSV
-                    </button>
-                </div>
             </div>
         </div>
         <div class="butt">
