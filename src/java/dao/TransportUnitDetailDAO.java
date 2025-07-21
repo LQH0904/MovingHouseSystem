@@ -129,4 +129,39 @@ public class TransportUnitDetailDAO {
             return false;
         }
     }
+    
+    public boolean updateApprovalStatus(int transportUnitId, String registrationStatus, String userStatus) {
+    String sql1 = "UPDATE TransportUnits SET registration_status = ?, updated_at = CURRENT_TIMESTAMP WHERE transport_unit_id = ?";
+    String sql2 = "UPDATE Users SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?";
+    
+    try (Connection conn = DBConnection.getConnection()) {
+        conn.setAutoCommit(false); // bắt đầu transaction
+
+        try (
+            PreparedStatement ps1 = conn.prepareStatement(sql1);
+            PreparedStatement ps2 = conn.prepareStatement(sql2)
+        ) {
+            ps1.setString(1, registrationStatus);
+            ps1.setInt(2, transportUnitId);
+            ps1.executeUpdate();
+
+            ps2.setString(1, userStatus);
+            ps2.setInt(2, transportUnitId);
+            ps2.executeUpdate();
+
+            conn.commit(); // nếu cả 2 thành công
+            return true;
+        } catch (SQLException e) {
+            conn.rollback(); // nếu có lỗi, rollback
+            e.printStackTrace();
+            return false;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
 }

@@ -3,6 +3,7 @@ package controller;
 import dao.StorageUnitDetailDAO;
 import model.StorageUnitDetail;
 import dao.TransportUnitDetailDAO;
+import dao.UnitRegistrationDAO;
 import model.TransportUnitDetail;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,48 +14,63 @@ import java.io.IOException;
 public class ApplicationDetailController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        String idParam = request.getParameter("id");
-        String typeParam = request.getParameter("type");
+    String idParam = request.getParameter("id");
+    String typeParam = request.getParameter("type");
+    String action = request.getParameter("action");
 
-        if (idParam == null || typeParam == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id or type parameter.");
+    if (idParam == null || typeParam == null) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id or type parameter.");
+        return;
+    }
+
+    try {
+        int id = Integer.parseInt(idParam);
+        int type = Integer.parseInt(typeParam);
+
+        // Xử lý approve / reject
+        if (action != null && (action.equals("approve") || action.equals("reject"))) {
+            String registrationStatus = action.equals("approve") ? "approved" : "rejected";
+            String userStatus = action.equals("approve") ? "active" : "inactive";
+
+            UnitRegistrationDAO dao = new UnitRegistrationDAO();
+            dao.updateUnitRegistrationStatus(id, registrationStatus, userStatus);
+
+            // Chuyển hướng lại trang chi tiết
+            response.sendRedirect(request.getContextPath() + "/application-detail?id=" + id + "&type=" + type);
             return;
         }
 
-        try {
-            int id = Integer.parseInt(idParam);
-            int type = Integer.parseInt(typeParam);
+        // Hiển thị chi tiết
+        if (type == 5) {
+            StorageUnitDetailDAO storageDAO = new StorageUnitDetailDAO();
+            StorageUnitDetail detail = storageDAO.getStorageUnitById(id);
 
-            if (type == 5) { // Type 5 = Storage Unit
-                StorageUnitDetailDAO storageDAO = new StorageUnitDetailDAO();
-                StorageUnitDetail detail = storageDAO.getStorageUnitById(id);
-
-                if (detail != null) {
-                    request.setAttribute("unit", detail);
-                    request.setAttribute("type", "storage");
-                    request.getRequestDispatcher("/page/operator/StorageUnitDetail.jsp").forward(request, response);
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy kho lưu trữ.");
-                }
-            } else if (type == 4)  {
-                TransportUnitDetailDAO transportDAO = new TransportUnitDetailDAO();
-                TransportUnitDetail detailTransport = transportDAO.getTransportUnitById(id);
-
-                if (detailTransport != null) {
-                    request.setAttribute("unitT", detailTransport);
-                    request.setAttribute("type", "transport");
-                    request.getRequestDispatcher("/page/operator/TransportUnitDetail.jsp").forward(request, response);
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy kho lưu trữ.");
-                }
+            if (detail != null) {
+                request.setAttribute("unit", detail);
+                request.setAttribute("type", "storage");
+                request.getRequestDispatcher("/page/operator/StorageUnitDetail.jsp").forward(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy kho lưu trữ.");
             }
-            
+        } else if (type == 4) {
+            TransportUnitDetailDAO transportDAO = new TransportUnitDetailDAO();
+            TransportUnitDetail detail = transportDAO.getTransportUnitById(id);
 
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tham số không hợp lệ.");
+            if (detail != null) {
+                request.setAttribute("unitT", detail);
+                request.setAttribute("type", "transport");
+                request.getRequestDispatcher("/page/operator/TransportUnitDetail.jsp").forward(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy đơn vị vận chuyển.");
+            }
         }
+
+    } catch (NumberFormatException e) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tham số không hợp lệ.");
     }
+}
+
 }

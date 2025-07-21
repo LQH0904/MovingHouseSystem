@@ -802,25 +802,41 @@
 
     <script>
     let currentAction = '';
+    const unitType = 'transport';
+    const unitId = '${unit.transportUnitId}';
     
-    function showConfirmModal(action) {
-        currentAction = action;
-        const modal = document.getElementById('confirmModal');
-        const title = document.getElementById('modalTitle');
-        const message = document.getElementById('modalMessage');
-        
-        if (action === 'approve') {
-            title.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận duyệt';
-            message.textContent = 'Bạn có chắc chắn muốn duyệt đơn vị vận chuyển này?';
-        } else {
-            title.innerHTML = '<i class="fas fa-times-circle"></i> Xác nhận từ chối';
-            message.textContent = 'Bạn có chắc chắn muốn từ chối đơn vị vận chuyển này?';
-        }
-        
-        // Thay đổi từ 'block' thành 'flex' để center modal
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
+    function confirmAction() {
+    if (isProcessing) return;
+
+    isProcessing = true;
+    const confirmBtn = document.getElementById('confirmBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const confirmText = document.getElementById('confirmText');
+
+    loadingSpinner.style.display = 'inline-block';
+    confirmText.textContent = 'Đang xử lý...';
+    confirmBtn.disabled = true;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = unitType === 'transport' ? 'update-transport-status' : 'update-storage-status';
+
+    const idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.name = unitType === 'transport' ? 'transport_unit_id' : 'storage_unit_id';
+    idInput.value = unitId;
+
+    const actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = currentAction;
+
+    form.appendChild(idInput);
+    form.appendChild(actionInput);
+    document.body.appendChild(form);
+    form.submit();
+}
+
     
     function confirmAction() {
         // Hiển thị loading

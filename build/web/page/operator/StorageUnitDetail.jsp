@@ -759,68 +759,33 @@
                 </div>
             </div>
         </div>
+   
+   
 
             <script>
-            let currentAction = '';
-            let isProcessing = false;
-            
-            function showConfirmModal(action) {
-                currentAction = action;
-                const modal = document.getElementById('confirmModal');
-                const title = document.getElementById('modalTitle');
-                const message = document.getElementById('modalMessage');
+            let selectedAction = '';
+  const unitType = '${type}';
+  const unitId = '${type == "storage" ? unit.storageUnitId : unit.transportUnitId}';
 
-                if (action === 'approve') {
-                    title.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận duyệt';
-                    message.textContent = 'Bạn có chắc chắn muốn duyệt đơn vị kho bãi này?';
-                } else {
-                    title.innerHTML = '<i class="fas fa-times-circle"></i> Xác nhận từ chối';
-                    message.textContent = 'Bạn có chắc chắn muốn từ chối đơn vị kho bãi này?';
-                }
+  function showConfirmModal(action) {
+    selectedAction = action;
+    const message = action === 'approve'
+      ? "Bạn có chắc chắn muốn <b>duyệt</b> đơn vị này?"
+      : "Bạn có chắc chắn muốn <b>từ chối</b> đơn vị này?";
+    document.getElementById("modalMessage").innerHTML = message;
+    document.getElementById("confirmModal").style.display = "block";
+  }
 
-                // Use class instead of style.display
-                modal.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
-            
-            function confirmAction() {
-                if (isProcessing) return;
-                
-                isProcessing = true;
-                const confirmBtn = document.getElementById('confirmBtn');
-                const loadingSpinner = document.getElementById('loadingSpinner');
-                const confirmText = document.getElementById('confirmText');
-                
-                // Show loading state
-                loadingSpinner.style.display = 'inline-block';
-                confirmText.textContent = 'Đang xử lý...';
-                confirmBtn.disabled = true;
-                
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'update-storage-status';
-                
-                const storageIdInput = document.createElement('input');
-                storageIdInput.type = 'hidden';
-                storageIdInput.name = 'storage_unit_id';
-                storageIdInput.value = '${storageUnit.storage_unit_id}';
-                
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = currentAction;
-                
-                form.appendChild(storageIdInput);
-                form.appendChild(actionInput);
-                document.body.appendChild(form);
-                form.submit();
-            }
-            
-            function closeModal() {
-                const modal = document.getElementById('confirmModal');
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
+  function closeModal() {
+    document.getElementById("confirmModal").style.display = "none";
+  }
+
+  function confirmAction() {
+    if (selectedAction && unitId && unitType) {
+      const url = `application-detail?action=${selectedAction}&id=${unitId}&type=${unitType}`;
+      window.location.href = url;
+    }
+  }
             
             function openImageModal(src, title) {
                 const modal = document.getElementById('imageModal');

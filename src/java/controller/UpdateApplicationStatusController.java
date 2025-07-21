@@ -50,7 +50,7 @@ public class UpdateStatusController extends HttpServlet {
             throws ServletException, IOException {
         
         String storageUnitIdStr = request.getParameter("storage_unit_id");
-        String action = request.getParameter("action");
+        String action = request.getParameter("registration_status");
         
         if (storageUnitIdStr == null || action == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, 
@@ -60,7 +60,7 @@ public class UpdateStatusController extends HttpServlet {
         
         try {
             int storageUnitId = Integer.parseInt(storageUnitIdStr);
-            String status = "approve".equals(action) ? "approved" : "rejected";
+            String status = "pending".equals(action) ? "approved" : "rejected";
             
             boolean success = storageUnitDAO.updateRegistrationStatus(storageUnitId, status);
             
