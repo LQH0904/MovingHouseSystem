@@ -103,5 +103,25 @@
         </div>
 
         <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
+        <script>
+            function toggleSubmenu(event) {
+                event.preventDefault();
+                const listItem = event.currentTarget.parentElement;
+                const submenu = listItem.querySelector('.submenu');
+                const arrow = listItem.querySelector('.arrow');
+                
+                // Toggle active class
+                listItem.classList.toggle('active');
+                
+                // Rotate arrow
+                if (listItem.classList.contains('active')) {
+                    arrow.style.transform = 'rotate(180deg)';
+                    submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                } else {
+                    arrow.style.transform = 'rotate(0deg)';
+                    submenu.style.maxHeight = '0px';
+                }
+            }
+        </script>
     </body>
 </html>
