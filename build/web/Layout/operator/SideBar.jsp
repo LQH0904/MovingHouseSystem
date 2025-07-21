@@ -72,12 +72,6 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
-                            <i class="bx bx-message-rounded icon"></i>
-                            <span class="link">Báo Cáo Tồn Kho</span>
-                        </a>
-                    </li>
-                    <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Khiếu Nại</span>
@@ -92,7 +86,7 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
-                            <span class="link">mẫu survey</span>
+                            <span class="link">Mẫu phiếu khảo sát</span>
                         </a>
                     </li>
                     <li class="list">

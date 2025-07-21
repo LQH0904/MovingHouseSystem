@@ -15,8 +15,8 @@
     </head>
     <body>
         <div class="parent">
-            <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp"/></div>
-            <div class="div2"><jsp:include page="/Layout/operator/Header.jsp"/></div>
+            <div class="div1"><jsp:include page="/Layout/staff/SideBar.jsp"/></div>
+            <div class="div2"><jsp:include page="/Layout/staff/Header.jsp"/></div>
             <div class="div3">
                 <div class="container-fluid">
                     <!-- Page Header -->

@@ -49,7 +49,7 @@ public class homeStaff extends HttpServlet {
             request.setAttribute("totalUsers", totalUsers);
             request.setAttribute("usersByRole", usersByRole);
 
-            request.getRequestDispatcher("page/operator/homeOperator.jsp").forward(request, response);
+            request.getRequestDispatcher("page/staff/homeStaff.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace(); // In lỗi ra console để debug

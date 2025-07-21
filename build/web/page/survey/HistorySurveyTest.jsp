@@ -1,6 +1,22 @@
 <%@ page import="model.CustomerSurvey" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+String redirectURL = null;
+if (session.getAttribute("acc") == null) {
+    redirectURL = "/login";
+    response.sendRedirect(request.getContextPath() + redirectURL);
+    return;
+}
+
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
+%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -301,7 +317,7 @@
     <body>
         <div class="container">
             <div class="header">
-                <h1>📊 Lịch Sử Khảo Sát Khách Hàng</h1>
+                <h1>📊 Lịch Sử Thử Phiếu Khảo Sát Khách Hàng</h1>
                 <p>Quản lý và theo dõi phản hồi từ khách hàng về dịch vụ vận chuyển</p>
             </div>
 
@@ -450,11 +466,20 @@
                     <b>Trở về trang Test phiếu khảo sát</b>
                 </button>
             </a>
+            <% if (currentUserRoleId != 3) { %>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeOperator">
                 <button>
                     <b>Quay lại trang chủ</b>
                 </button>
             </a>
+            <% } %>
+            <% if (currentUserRoleId == 3) { %>
+            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeStaff">
+                <button>
+                    <b>Quay lại trang chủ</b>
+                </button>
+            </a>
+            <% } %>
         </div>
 
     </body>

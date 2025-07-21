@@ -42,7 +42,7 @@
 
                 <div class="div3">
                     <div class="content-part">
-                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">chào mừng 
+                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">Chào mừng 
                             <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername%></span> đến trang dành cho Điều hành viên</div>
                     <div class="user">
                         <div>
