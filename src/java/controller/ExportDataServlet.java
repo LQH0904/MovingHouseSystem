@@ -54,7 +54,7 @@ public class ExportDataServlet extends HttpServlet {
             return;
         }
         Users userAccount = (Users) session.getAttribute("acc");
-        if (userAccount.getRoleId() != 1 && userAccount.getRoleId() != 3) {
+        if (userAccount.getRoleId() != 1 && userAccount.getRoleId() != 2 && userAccount.getRoleId() != 3) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -69,7 +69,7 @@ public class ExportDataServlet extends HttpServlet {
             return;
         }
         Users userAccount = (Users) session.getAttribute("acc");
-        if (userAccount.getRoleId() != 1 && userAccount.getRoleId() != 3) {
+        if (userAccount.getRoleId() != 1 && userAccount.getRoleId() != 2 && userAccount.getRoleId() != 3) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }

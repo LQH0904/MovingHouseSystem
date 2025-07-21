@@ -42,6 +42,12 @@
                                 <span class="link">Thông báo</span>
                             </a>
                         </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
+                                <i class="bx bx-export icon"></i>
+                                <span class="link">Xuất dữ liệu</span>
+                            </a>
+                        </li>
                     </c:if>
 
                     <!-- Menu có submenu -->
@@ -53,15 +59,15 @@
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/LogViewerServlet" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="submenu-link">
                                     <i class="bx bx-calendar icon"></i>
-                                    <span class="link"> admin </span>
+                                    <span class="link">Báo Cáo Vận Chuyển </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="submenu-link">
                                     <i class="bx bx-calendar-week icon"></i>
-                                    <span class="link"> Bãi </span>
+                                    <span class="link">Báo Cáo Kho Bãi </span>
                                 </a>
                             </li>
                             <li class="submenu-item">

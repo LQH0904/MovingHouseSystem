@@ -1,5 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId();
+    String currentUsername = userAccount.getUsername();
+    int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
+%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -210,16 +225,27 @@
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
+            <div class="div1">
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
+                </div>
+            <% } %>
+
+            <% if (currentUserRoleId == 3) { %>
             <div class="div1">
                 <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
-                <div class="div3 main-content">
-                    <div class="container-fluid">
-                        <h2>Xuất dữ liệu</h2>
-                        <p class="text-muted">Chọn bảng, định dạng, và các cột cần xuất. Bạn có thể lọc dữ liệu bằng trạng thái, ngày, hoặc từ khóa.</p>
+            <% }%>  
+            <div class="div3 main-content">
+                <div class="container-fluid">
+                    <h2>Xuất dữ liệu</h2>
+                    <p class="text-muted">Chọn bảng, định dạng, và các cột cần xuất. Bạn có thể lọc dữ liệu bằng trạng thái, ngày, hoặc từ khóa.</p>
                     <c:if test="${not empty error}">
                         <div class="alert alert-danger">${error}</div>
                     </c:if>

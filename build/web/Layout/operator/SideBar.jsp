@@ -42,6 +42,12 @@
                                 <span class="link">Thông báo</span>
                             </a>
                         </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
+                                <i class="bx bx-export icon"></i>
+                                <span class="link">Xuất dữ liệu</span>
+                            </a>
+                        </li>
                     </c:if>
 
                     <!-- Menu có submenu -->
@@ -53,15 +59,15 @@
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
-                                <a href="http://localhost:9999/HouseMovingSystem/LogViewerServlet" class="submenu-link">
+                                <a href="http://localhost:9999/HouseMovingSystem/transportReport" class="submenu-link">
                                     <i class="bx bx-calendar icon"></i>
-                                    <span class="link"> admin </span>
+                                    <span class="link">Báo Cáo Vận Chuyển </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
                                 <a href="http://localhost:9999/HouseMovingSystem/StorageReportController" class="submenu-link">
                                     <i class="bx bx-calendar-week icon"></i>
-                                    <span class="link"> Bãi </span>
+                                    <span class="link">Báo Cáo Kho Bãi </span>
                                 </a>
                             </li>
                             <li class="submenu-item">
@@ -74,18 +80,16 @@
                     </li>
 
                     <li class="list">
-                        <a href="${pageContext.request.contextPath}/LogViewerServlet" class="nav-link">
-                            <i class="bx bx-bell icon"></i>
+                        <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
+                            <i class="bx bx-calendar-alt icon"></i>
                             <span class="link">Đơn Hàng</span>
                         </a>
-                   
-                            <li class="list">
-                        <a href="${pageContext.request.contextPath}/operatorComplaintList" class="nav-link">
-                            <i class="bx bx-bell icon"></i>
+                    </li>
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
+                            <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Danh sách khiếu nại</span>
                         </a>
-                   
-                            
                    
                             
                     <li class="list">
