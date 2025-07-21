@@ -4,6 +4,7 @@
  */
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -13,19 +14,32 @@ import java.sql.Timestamp;
  */
 public class TransportReport1 {
 
-    private int reportId;
-    private int transportUnitId;
-    private int reportYear;
-    private int reportMonth;
-    private int totalShipments;
-    private BigDecimal totalRevenue;
-    private BigDecimal plannedRevenue;
-    private BigDecimal totalWeight;
-    private int onTimeCount;
-    private int cancelCount;
-    private int delayCount;
-    private Timestamp createdAt;
-    private String companyName;
+   @JsonProperty("report_id")
+private int reportId;
+@JsonProperty("transport_unit_id")
+private int transportUnitId;
+@JsonProperty("report_year")
+private int reportYear;
+@JsonProperty("report_month")
+private int reportMonth;
+@JsonProperty("total_shipments")
+private int totalShipments;
+@JsonProperty("total_revenue")
+private BigDecimal totalRevenue;
+@JsonProperty("planned_revenue")
+private BigDecimal plannedRevenue;
+@JsonProperty("total_weight")
+private BigDecimal totalWeight;
+@JsonProperty("on_time_count")
+private int onTimeCount;
+@JsonProperty("cancel_count")
+private int cancelCount;
+@JsonProperty("delay_count")
+private int delayCount;
+@JsonProperty("created_at")
+private Timestamp createdAt;
+@JsonProperty("company_name")
+private String companyName;
 
     public int getReportId() {
         return reportId;
