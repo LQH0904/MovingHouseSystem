@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
 String redirectURL = null;
@@ -8,6 +9,11 @@ if (session.getAttribute("acc") == null) {
     response.sendRedirect(request.getContextPath() + redirectURL);
     return;
 }
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId();
+String currentUsername = userAccount.getUsername();
+int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -86,20 +92,24 @@ if (session.getAttribute("acc") == null) {
                     </button>
                 </a> 
             </div>
-            <button class="continue-application">
-                <div>
-                    <div class="pencil"></div>
-                    <div class="folder">
-                        <div class="top">
-                            <svg viewBox="0 0 24 27">
-                            <path d="M1,0 L23,0 C23.5522847,-1.01453063e-16 24,0.44771525 24,1 L24,8.17157288 C24,8.70200585 23.7892863,9.21071368 23.4142136,9.58578644 L20.5857864,12.4142136 C20.2107137,12.7892863 20,13.2979941 20,13.8284271 L20,26 C20,26.5522847 19.5522847,27 19,27 L1,27 C0.44771525,27 6.76353751e-17,26.5522847 0,26 L0,1 C-6.76353751e-17,0.44771525 0.44771525,1.01453063e-16 1,0 Z"></path>
-                            </svg>
+            <% if (currentUserRoleId != 3) { %>
+            <a href="http://localhost:9999/HouseMovingSystem/sendNotification">
+                <button class="continue-application">
+                    <div>
+                        <div class="pencil"></div>
+                        <div class="folder">
+                            <div class="top">
+                                <svg viewBox="0 0 24 27">
+                                <path d="M1,0 L23,0 C23.5522847,-1.01453063e-16 24,0.44771525 24,1 L24,8.17157288 C24,8.70200585 23.7892863,9.21071368 23.4142136,9.58578644 L20.5857864,12.4142136 C20.2107137,12.7892863 20,13.2979941 20,13.8284271 L20,26 C20,26.5522847 19.5522847,27 19,27 L1,27 C0.44771525,27 6.76353751e-17,26.5522847 0,26 L0,1 C-6.76353751e-17,0.44771525 0.44771525,1.01453063e-16 1,0 Z"></path>
+                                </svg>
+                            </div>
+                            <div class="paper"></div>
                         </div>
-                        <div class="paper"></div>
                     </div>
-                </div>
-                tạo thông báo
-            </button>
+                    Tạo thông báo
+                </button>
+            </a>
+            <% } %>
         </div>
         <script>
             // Dữ liệu từ ảnh: các đơn vị vận tải và số lượng xe

@@ -1,28 +1,20 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Notification {
 
     private int notificationId;
     private int userId;
     private Integer orderId;
-    private String notificationType;
     private String message;
     private String status;
-    private LocalDateTime createdAt;
-
-    public Notification() {
-    }
-
-    public Notification(int userId, Integer orderId, String notificationType, String message, String status) {
-        this.userId = userId;
-        this.orderId = orderId;
-        this.notificationType = notificationType;
-        this.message = message;
-        this.status = status;
-        this.createdAt = LocalDateTime.now();
-    }
+    private String notificationType;
+    private Timestamp createdAt;
 
     public int getNotificationId() {
         return notificationId;
@@ -48,14 +40,6 @@ public class Notification {
         this.orderId = orderId;
     }
 
-    public String getNotificationType() {
-        return notificationType;
-    }
-
-    public void setNotificationType(String notificationType) {
-        this.notificationType = notificationType;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -72,11 +56,19 @@ public class Notification {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
+    }
+
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 }

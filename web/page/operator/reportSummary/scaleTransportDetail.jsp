@@ -1,14 +1,21 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
-String redirectURL = null;
-if (session.getAttribute("acc") == null) {
-    redirectURL = "/login";
-    response.sendRedirect(request.getContextPath() + redirectURL);
-    return;
-}
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -80,9 +87,10 @@ if (session.getAttribute("acc") == null) {
 
             .filter-form {
                 display: flex;
-                gap: 20px;
-                align-items: end;
+                gap: 17%;
+                align-items: center;
                 flex-wrap: wrap;
+                justify-content: center;
             }
 
             .filter-group {
@@ -483,36 +491,62 @@ if (session.getAttribute("acc") == null) {
             }
 
             /* Loading Animation */
-            .loading {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 9999;
+            /* Prior to using this loader, please ensure that you have set a background image or background color, as the text is transparent and not designed with a solid color. */
+            .loader {
+                --ANIMATION-DELAY-MULTIPLIER: 70ms;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: row;
                 justify-content: center;
                 align-items: center;
+                overflow: hidden;
             }
-
-            .loading-spinner {
-                width: 50px;
-                height: 50px;
-                border: 5px solid #f3f3f3;
-                border-top: 5px solid #667eea;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
+            .loader span {
+                padding: 0;
+                margin: 0;
+                letter-spacing: -5rem;
+                animation-delay: 0s;
+                transform: translateY(4rem);
+                animation: hideAndSeek 1s alternate infinite cubic-bezier(0.86, 0, 0.07, 1);
             }
-
-            @keyframes spin {
+            .loader .l {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 0);
+            }
+            .loader .o {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 1);
+            }
+            .loader .a {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 2);
+            }
+            .loader .d {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 3);
+            }
+            .loader .ispan {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 4);
+            }
+            .loader .n {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 5);
+            }
+            .loader .g {
+                animation-delay: calc(var(--ANIMATION-DELAY-MULTIPLIER) * 6);
+            }
+            .letter {
+                width: fit-content;
+                height: 3rem;
+            }
+            .i {
+                margin-inline: 5px;
+            }
+            @keyframes hideAndSeek {
                 0% {
-                    transform: rotate(0deg);
+                    transform: translateY(4rem);
                 }
                 100% {
-                    transform: rotate(360deg);
+                    transform: translateY(0rem);
                 }
             }
+
 
             /* Tooltips */
             .tooltip {
@@ -654,21 +688,32 @@ if (session.getAttribute("acc") == null) {
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
             <div class="div1">
                 <jsp:include page="../../../Layout/operator/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../../Layout/operator/Header.jsp"></jsp:include>
                 </div>
-                <div class="div3">
-                    <div class="container">
-                        <!-- Header -->
-                        <div class="header animate-in">
-                            <h1>📊 Chi tiết Quy mô & Năng lực Vận tải</h1>
-                            <p>Phân tích toàn diện về quy mô hoạt động, năng lực vận chuyển và phân bố địa lý của các đơn vị vận tải</p>
-                        </div>
+            <% } %>
 
-                        <!-- Error Message -->
+            <% if (currentUserRoleId == 3) { %>
+            <div class="div1">
+                <jsp:include page="../../../Layout/staff/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../../Layout/staff/Header.jsp"></jsp:include>
+                </div>
+            <% }%>  
+            <div class="div3">
+                <div class="container">
+                    <!-- Header -->
+                    <div class="header animate-in">
+                        <h1>📊 Chi tiết Quy mô & Năng lực Vận tải</h1>
+                        <p>Phân tích toàn diện về quy mô hoạt động, năng lực vận chuyển và phân bố địa lý của các đơn vị vận tải</p>
+                    </div>
+
+                    <!-- Error Message -->
                     <c:if test="${not empty errorMessage}">
                         <div style="background: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #f5c6cb; text-align: center; font-weight: 600;">
                             ⚠️ ${errorMessage}
@@ -876,7 +921,7 @@ if (session.getAttribute("acc") == null) {
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
-                                                
+
                                             </tr>
                                         </c:forEach>
                                     </tbody>
@@ -907,13 +952,6 @@ if (session.getAttribute("acc") == null) {
                         </c:forEach>
                     </div>
                 </div>
-
-                <!-- Export Section -->
-                <div class="export-section">
-                    <button class="export-btn" onclick="exportToCSV()">
-                        📥 Xuất báo cáo CSV
-                    </button>
-                </div>
             </div>
         </div>
         <div class="butt">
@@ -939,16 +977,10 @@ if (session.getAttribute("acc") == null) {
         </div>
     </div>
 
-    <!-- Loading overlay -->
-    <div class="loading" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-    </div>
 
     <script>
         // Show loading overlay
-        function showLoading() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
+
 
         // Hide loading overlay
         function hideLoading() {

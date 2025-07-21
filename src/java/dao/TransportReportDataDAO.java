@@ -5,7 +5,7 @@
 package dao;
 
 import utils.DBContext;
-import model.transportReport;
+import model.TransportReport;
 import model.TransportUnit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,8 +21,8 @@ public class TransportReportDataDAO extends DBContext {
      * Lấy tất cả dữ liệu Transport Report với thông tin Transport Unit
      * @return Vector chứa transportReport objects với thông tin company name
      */
-    public Vector<transportReport> getAllTransportReportData() {
-        Vector<transportReport> result = new Vector<>();
+    public Vector<TransportReport> getAllTransportReportData() {
+        Vector<TransportReport> result = new Vector<>();
         String sql = "SELECT tr.*, tu.company_name " +
                      "FROM TransportReport tr " +
                      "JOIN TransportUnits tu ON tr.transport_unit_id = tu.transport_unit_id " +
@@ -34,7 +34,7 @@ public class TransportReportDataDAO extends DBContext {
             ResultSet rs = state.executeQuery(sql);
             
             while (rs.next()) {
-                transportReport report = new transportReport(
+                TransportReport report = new TransportReport(
                     rs.getInt("report_id"),
                     rs.getInt("transport_unit_id"),
                     rs.getInt("report_year"),
@@ -63,8 +63,8 @@ public class TransportReportDataDAO extends DBContext {
     /**
      * Lấy dữ liệu Transport Report với filter
      */
-    public Vector<transportReport> getFilteredTransportReportData(String transportUnitId, String year, String companyName) {
-        Vector<transportReport> result = new Vector<>();
+    public Vector<TransportReport> getFilteredTransportReportData(String transportUnitId, String year, String companyName) {
+        Vector<TransportReport> result = new Vector<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT tr.*, tu.company_name ");
         sql.append("FROM TransportReport tr ");
@@ -91,7 +91,7 @@ public class TransportReportDataDAO extends DBContext {
             ResultSet rs = state.executeQuery(sql.toString());
             
             while (rs.next()) {
-                transportReport report = new transportReport(
+                TransportReport report = new TransportReport(
                     rs.getInt("report_id"),
                     rs.getInt("transport_unit_id"),
                     rs.getInt("report_year"),

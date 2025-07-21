@@ -1,14 +1,21 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
-String redirectURL = null;
-if (session.getAttribute("acc") == null) {
-    redirectURL = "/login";
-    response.sendRedirect(request.getContextPath() + redirectURL);
-    return;
-}
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -365,8 +372,12 @@ if (session.getAttribute("acc") == null) {
             }
 
             @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
             }
 
             /* Utilization bar */
@@ -565,7 +576,7 @@ if (session.getAttribute("acc") == null) {
             .toast.error {
                 background: #e74c3c;
             }
-            
+
             .cssbuttons-io-button {
                 background-image: linear-gradient(19deg, #21D4FD 0%, #B721FF 100%);
                 color: white;
@@ -651,22 +662,134 @@ if (session.getAttribute("acc") == null) {
                 justify-content: flex-start;
                 margin: 20px;
             }
+            .detail-toggle {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                transition: all 0.3s ease;
+            }
+
+            .detail-toggle:hover {
+                background: #0056b3;
+            }
+
+            .detail-toggle.expanded {
+                background: #28a745;
+            }
+
+            .detail-toggle.expanded i {
+                transform: rotate(180deg);
+            }
+
+            .detail-toggle i {
+                transition: transform 0.3s ease;
+                margin-right: 5px;
+            }
+
+            .detail-row {
+                background: #f8f9fa;
+                border-top: 1px solid #dee2e6;
+            }
+
+            .detail-content {
+                padding: 20px;
+            }
+
+            .detail-content h4 {
+                margin: 0 0 15px 0;
+                color: #495057;
+                font-size: 16px;
+                border-bottom: 2px solid #007bff;
+                padding-bottom: 5px;
+            }
+
+            .detail-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .detail-section h5 {
+                margin: 0 0 10px 0;
+                color: #6c757d;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .detail-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .detail-item:last-child {
+                border-bottom: none;
+            }
+
+            .detail-item .label {
+                font-weight: 500;
+                color: #495057;
+            }
+
+            .detail-item .value {
+                font-weight: 600;
+            }
+
+            .profit-value {
+                color: #28a745;
+                font-weight: bold;
+            }
+
+            .status-low {
+                color: #17a2b8;
+            }
+
+            .status-medium {
+                color: #ffc107;
+            }
+
+            .status-high {
+                color: #dc3545;
+            }
+
+            @media (max-width: 768px) {
+                .detail-grid {
+                    grid-template-columns: 1fr;
+                    gap: 15px;
+                }
+            }
         </style>
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
             <div class="div1">
                 <jsp:include page="../../../Layout/operator/SideBar.jsp"></jsp:include>
-            </div>
-            <div class="div2">
+                </div>
+                <div class="div2">
                 <jsp:include page="../../../Layout/operator/Header.jsp"></jsp:include>
-            </div>
+                </div>
+            <% } %>
+
+            <% if (currentUserRoleId == 3) { %>
+            <div class="div1">
+                <jsp:include page="../../../Layout/staff/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../../Layout/staff/Header.jsp"></jsp:include>
+                </div>
+            <% }%>  
             <div class="div3">
                 <div class="storage-container">
                     <!-- Page Header -->
                     <div class="page-header">
                         <h1 class="page-title">Chi tiết Báo cáo Storage</h1>
-                        <p class="page-subtitle">Quản lý và theo dõi tất cả báo cáo storage với tính năng lọc và xuất dữ liệu</p>
+                        <p class="page-subtitle">Quản lý và theo dõi tất cả báo cáo storage với tính năng lọc</p>
                     </div>
 
                     <!-- Error/Success Messages -->
@@ -690,47 +813,43 @@ if (session.getAttribute("acc") == null) {
                                     <fmt:formatNumber value="${overallStats[0]}" pattern="#,###"/>
                                 </c:if>
                                 <c:if test="${empty overallStats}">0</c:if>
+                                </div>
+                                <div class="stat-label">Tổng nhập kho</div>
                             </div>
-                            <div class="stat-label">Tổng nhập kho</div>
-                        </div>
-                        <div class="stat-card outbound">
-                            <div class="stat-value">
+                            <div class="stat-card outbound">
+                                <div class="stat-value">
                                 <c:if test="${not empty overallStats}">
                                     <fmt:formatNumber value="${overallStats[1]}" pattern="#,###"/>
                                 </c:if>
                                 <c:if test="${empty overallStats}">0</c:if>
+                                </div>
+                                <div class="stat-label">Tổng xuất kho</div>
                             </div>
-                            <div class="stat-label">Tổng xuất kho</div>
-                        </div>
-                        <div class="stat-card profit">
-                            <div class="stat-value">
+                            <div class="stat-card profit">
+                                <div class="stat-value">
                                 <c:if test="${not empty overallStats}">
                                     <fmt:formatNumber value="${overallStats[2]}" pattern="#,###"/>
                                 </c:if>
                                 <c:if test="${empty overallStats}">0</c:if>
+                                </div>
+                                <div class="stat-label">Tổng lợi nhuận (VNĐ)</div>
                             </div>
-                            <div class="stat-label">Tổng lợi nhuận (VNĐ)</div>
                         </div>
-                    </div>
 
-                    <!-- Filter Section -->
-                    <div class="filter-section">
-                        <div class="filter-header">
-                            <h3 class="filter-title">🔍 Bộ lọc và Xuất dữ liệu</h3>
-                            <div>
-                                <a href="javascript:void(0)" onclick="exportToExcel()" class="export-btn" id="exportBtn">
-                                    📊 Xuất Excel
-                                </a>
+                        <!-- Filter Section -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h3 class="filter-title">🔍 Bộ lọc</h3>
+
                             </div>
-                        </div>
-                        
-                        <form method="GET" action="StorageReportDetailController" id="filterForm">
-                            <input type="hidden" name="service" value="filterStorageReports">
-                            <div class="filter-row">
-                                <div class="filter-group">
-                                    <label class="filter-label">Kho bãi:</label>
-                                    <select name="storageUnitId" class="filter-input">
-                                        <option value="">-- Tất cả kho --</option>
+
+                            <form method="GET" action="StorageReportDetailController" id="filterForm">
+                                <input type="hidden" name="service" value="filterStorageReports">
+                                <div class="filter-row">
+                                    <div class="filter-group">
+                                        <label class="filter-label">Kho bãi:</label>
+                                        <select name="storageUnitId" class="filter-input">
+                                            <option value="">-- Tất cả kho --</option>
                                         <c:forEach var="unit" items="${storageUnits}">
                                             <option value="${unit.storageUnitId}" 
                                                     ${selectedStorageUnitId == unit.storageUnitId ? 'selected' : ''}>
@@ -759,7 +878,7 @@ if (session.getAttribute("acc") == null) {
                                            value="${selectedWarehouseName}">
                                 </div>
 
-                                <div class="filter-group">
+                                <div class="filter-group" style="display: flex; flex-direction: row">
                                     <button type="submit" class="filter-btn" id="filterBtn">
                                         🔍 Lọc dữ liệu
                                     </button>
@@ -808,25 +927,20 @@ if (session.getAttribute("acc") == null) {
                                                 <th>Ngày báo cáo</th>
                                                 <th>Tên kho</th>
                                                 <th>ID Storage Unit</th>
-                                                <th>Số lượng tồn kho</th>
+                                                <th>Số hàng trong kho</th>
                                                 <th>Diện tích sử dụng (m²)</th>
                                                 <th>Tổng diện tích (m²)</th>
                                                 <th>Tỷ lệ sử dụng (%)</th>
-                                                <th>Số đơn hàng</th>
-                                                <th>Nhập kho</th>
-                                                <th>Xuất kho</th>
-                                                <th>Đơn trả lại</th>
-                                                <th>Chi phí nhân sự (VNĐ)</th>
-                                                <th>Chi phí bảo trì (VNĐ)</th>
-                                                <th>Chi phí lưu kho/đơn vị (VNĐ)</th>
-                                                <th>Lợi nhuận (VNĐ)</th>
+                                                <th>Chi tiết</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <c:forEach var="report" items="${storageReports}" varStatus="status">
-                                                <tr>
+                                                <tr class="main-row">
                                                     <td class="number-cell">${status.index + 1}</td>
-                                                    <td class="date-cell">${report.reportDate}</td>
+                                                    <td class="date-cell">
+                                                        <span class="date-display" data-date="${report.reportDate}"></span>
+                                                    </td>
                                                     <td class="warehouse-name">${report.warehouseName}</td>
                                                     <td class="number-cell">${report.storageUnitId}</td>
                                                     <td class="number-cell">
@@ -846,29 +960,63 @@ if (session.getAttribute("acc") == null) {
                                                         </div>
                                                         <small><fmt:formatNumber value="${utilizationRate}" pattern="#.#"/>%</small>
                                                     </td>
-                                                    <td class="number-cell">
-                                                        <fmt:formatNumber value="${report.orderCount}" pattern="#,###"/>
+                                                    <td class="action-cell">
+                                                        <button class="detail-toggle" onclick="toggleDetails(${status.index})">
+                                                            <i class="fas fa-chevron-down"></i> Xem chi tiết
+                                                        </button>
                                                     </td>
-                                                    <td class="number-cell status-low">
-                                                        <fmt:formatNumber value="${report.inboundCount}" pattern="#,###"/>
-                                                    </td>
-                                                    <td class="number-cell status-medium">
-                                                        <fmt:formatNumber value="${report.outboundCount}" pattern="#,###"/>
-                                                    </td>
-                                                    <td class="number-cell status-high">
-                                                        <fmt:formatNumber value="${report.returnedOrders}" pattern="#,###"/>
-                                                    </td>
-                                                    <td class="number-cell currency-cell">
-                                                        <fmt:formatNumber value="${report.personnelCost}" pattern="#,###"/>
-                                                    </td>
-                                                    <td class="number-cell currency-cell">
-                                                        <fmt:formatNumber value="${report.maintenanceCost}" pattern="#,###"/>
-                                                    </td>
-                                                    <td class="number-cell currency-cell">
-                                                        <fmt:formatNumber value="${report.storageCostPerUnit}" pattern="#,###.##"/>
-                                                    </td>
-                                                    <td class="number-cell currency-cell">
-                                                        <fmt:formatNumber value="${report.profit}" pattern="#,###"/>
+                                                </tr>
+                                                <!-- Chi tiết ẩn -->
+                                                <tr class="detail-row" id="detail-${status.index}" style="display: none;">
+                                                    <td colspan="9">
+                                                        <div class="detail-content">
+                                                            <h4>Thông tin chi tiết</h4>
+                                                            <div class="detail-grid">
+                                                                <div class="detail-section">
+                                                                    <h5>Đơn hàng & Vận chuyển</h5>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Số đơn hàng:</span>
+                                                                        <span class="value"><fmt:formatNumber value="${report.orderCount}" pattern="#,###"/></span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Thời gian lưu kho trung Bình trong tháng:</span>
+                                                                        <span class="value status-low"><fmt:formatNumber value="${report.averageStorageDuration}"/> Ngày</span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Chi phí bảo hiểm hàng hóa</span>
+                                                                        <span class="value status-medium"><fmt:formatNumber value="${report.insuranceCost}" pattern="#,###"/> VNĐ</span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Đơn trả lại:</span>
+                                                                        <span class="value status-high"><fmt:formatNumber value="${report.returnedOrders}" pattern="#,###"/></span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="detail-section">
+                                                                    <h5>Chi phí & Lợi nhuận</h5>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Chi phí nhân sự:</span>
+                                                                        <span class="value currency-cell"><fmt:formatNumber value="${report.personnelCost}" pattern="#,###"/> VNĐ</span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Chi phí bảo trì:</span>
+                                                                        <span class="value currency-cell"><fmt:formatNumber value="${report.maintenanceCost}" pattern="#,###"/> VNĐ</span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Chi phí lưu kho/đơn vị:</span>
+                                                                        <span class="value currency-cell"><fmt:formatNumber value="${report.storageCostPerUnit}" pattern="#,###.##"/> VNĐ</span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label">Số tiền thu đc:</span>
+                                                                        <span class="value currency-cell profit-value"><fmt:formatNumber value="${report.profit+report.storageCostPerUnit+report.maintenanceCost+report.personnelCost+report.insuranceCost}" pattern="#,###"/> VNĐ</span>
+                                                                    </div>
+                                                                    <div class="detail-item">
+                                                                        <span class="label" style="font-size: 15px; font-weight: 700; padding: 2px;">Lợi nhuận:</span>
+                                                                        <span class="value currency-cell profit-value" style="color: red"><fmt:formatNumber value="${report.profit}" pattern="#,###"/> VNĐ</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -974,26 +1122,26 @@ if (session.getAttribute("acc") == null) {
                     </c:if>
                 </div>
                 <div class="butt">
-                <a href="http://localhost:9999/HouseMovingSystem/StorageReportController">
-                    <button class="cssbuttons-io-button">
-                        quay lại trang trước
-                        <div class="icon">
-                            <svg
-                                height="24"
-                                width="24"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                                >
-                            <path d="M0 0h24v24H0z" fill="none"></path>
-                            <path
-                                d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-                                fill="currentColor"
-                                ></path>
-                            </svg>
-                        </div>
-                    </button>
-                </a> 
-            </div>
+                    <a href="http://localhost:9999/HouseMovingSystem/StorageReportController">
+                        <button class="cssbuttons-io-button">
+                            quay lại trang trước
+                            <div class="icon">
+                                <svg
+                                    height="24"
+                                    width="24"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                                    fill="currentColor"
+                                    ></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </a> 
+                </div>
             </div>
         </div>
 
@@ -1001,13 +1149,33 @@ if (session.getAttribute("acc") == null) {
         <div id="toast" class="toast"></div>
 
         <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.date-display').forEach(function (element) {
+                    const dateStr = element.getAttribute('data-date');
+                    const dateParts = dateStr.split('-');
+                    const year = parseInt(dateParts[0]);
+                    let month = parseInt(dateParts[1]) + 1; // Cộng thêm 1 tháng
+
+                    // Xử lý trường hợp tháng > 12
+                    if (month > 12) {
+                        month = 1;
+                        year = year + 1;
+                    }
+
+                    // Format tháng với leading zero
+                    const formattedMonth = month < 10 ? '0' + month : month;
+                    element.textContent = formattedMonth + '/' + year;
+                });
+            });
+        </script>
+        <script>
             // Show toast notification
             function showToast(message, type = 'success') {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
                 toast.className = `toast ${type}`;
                 toast.classList.add('show');
-                
+
                 setTimeout(() => {
                     toast.classList.remove('show');
                 }, 3000);
@@ -1024,7 +1192,7 @@ if (session.getAttribute("acc") == null) {
                     // Get current filter values
                     const form = document.getElementById('filterForm');
                     const formData = new FormData(form);
-                    
+
                     // Build export URL with filter parameters
                     let exportUrl = 'StorageReportDetailController?service=exportExcel';
                     for (let [key, value] of formData.entries()) {
@@ -1032,22 +1200,22 @@ if (session.getAttribute("acc") == null) {
                             exportUrl += '&' + key + '=' + encodeURIComponent(value);
                         }
                     }
-                    
+
                     // Show loading state
                     const exportBtn = document.getElementById('exportBtn');
                     const originalText = exportBtn.innerHTML;
                     exportBtn.innerHTML = '⏳ Đang xuất...';
                     exportBtn.style.pointerEvents = 'none';
-                    
+
                     // Create hidden iframe for download
                     const iframe = document.createElement('iframe');
                     iframe.style.display = 'none';
                     iframe.src = exportUrl;
                     document.body.appendChild(iframe);
-                    
+
                     // Show success notification
                     showToast('Đang tải file Excel, vui lòng chờ...', 'success');
-                    
+
                     // Restore button after 3 seconds
                     setTimeout(() => {
                         exportBtn.innerHTML = originalText;
@@ -1057,11 +1225,11 @@ if (session.getAttribute("acc") == null) {
                         }
                         showToast('File Excel đã được tải xuống!', 'success');
                     }, 3000);
-                    
+
                 } catch (error) {
                     console.error('Export error:', error);
                     showToast('Có lỗi xảy ra khi xuất file Excel!', 'error');
-                    
+
                     // Restore button
                     const exportBtn = document.getElementById('exportBtn');
                     exportBtn.innerHTML = '📊 Xuất Excel';
@@ -1070,16 +1238,16 @@ if (session.getAttribute("acc") == null) {
             }
 
             // Form submission with loading state
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const form = document.getElementById('filterForm');
                 if (form) {
-                    form.addEventListener('submit', function(e) {
+                    form.addEventListener('submit', function (e) {
                         const submitBtn = document.getElementById('filterBtn');
                         if (submitBtn) {
                             submitBtn.innerHTML = '⏳ Đang lọc...';
                             submitBtn.disabled = true;
                         }
-                        
+
                         // Show loading notification
                         showToast('Đang áp dụng bộ lọc...', 'success');
                     });
@@ -1100,10 +1268,10 @@ if (session.getAttribute("acc") == null) {
 
                 // Add hover effects to stat cards
                 document.querySelectorAll('.stat-card').forEach(card => {
-                    card.addEventListener('mouseenter', function() {
+                    card.addEventListener('mouseenter', function () {
                         this.style.transform = 'translateY(-3px) scale(1.02)';
                     });
-                    card.addEventListener('mouseleave', function() {
+                    card.addEventListener('mouseleave', function () {
                         this.style.transform = 'translateY(-3px)';
                     });
                 });
@@ -1124,7 +1292,7 @@ if (session.getAttribute("acc") == null) {
 
                 // Initialize tooltips for utilization bars
                 document.querySelectorAll('.utilization-bar').forEach(bar => {
-                    bar.addEventListener('mouseenter', function() {
+                    bar.addEventListener('mouseenter', function () {
                         const percentage = this.nextElementSibling.textContent;
                         this.title = `Tỷ lệ sử dụng: ${percentage}`;
                     });
@@ -1133,13 +1301,13 @@ if (session.getAttribute("acc") == null) {
                 // Add click handlers for table rows
                 document.querySelectorAll('.storage-table tbody tr').forEach(row => {
                     row.style.cursor = 'pointer';
-                    row.addEventListener('click', function() {
+                    row.addEventListener('click', function () {
                         // Highlight selected row
                         document.querySelectorAll('.storage-table tbody tr').forEach(r => {
                             r.style.backgroundColor = '';
                         });
                         this.style.backgroundColor = '#e3f2fd';
-                        
+
                         // Get report details (optional - for future use)
                         const reportId = this.cells[0].textContent;
                         console.log('Selected report:', reportId);
@@ -1148,7 +1316,7 @@ if (session.getAttribute("acc") == null) {
             });
 
             // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
+            document.addEventListener('keydown', function (e) {
                 // Ctrl+Enter to submit filter form
                 if (e.ctrlKey && e.key === 'Enter') {
                     e.preventDefault();
@@ -1157,19 +1325,19 @@ if (session.getAttribute("acc") == null) {
                         form.submit();
                     }
                 }
-                
+
                 // Ctrl+E to export Excel
                 if (e.ctrlKey && e.key === 'e') {
                     e.preventDefault();
                     exportToExcel();
                 }
-                
+
                 // Ctrl+R to reset filters
                 if (e.ctrlKey && e.key === 'r') {
                     e.preventDefault();
                     clearFilters();
                 }
-                
+
                 // Escape to clear selection
                 if (e.key === 'Escape') {
                     document.querySelectorAll('.storage-table tbody tr').forEach(r => {
@@ -1186,8 +1354,9 @@ if (session.getAttribute("acc") == null) {
             // Search within table (optional enhancement)
             function searchTable() {
                 const input = document.getElementById('tableSearch');
-                if (!input) return;
-                
+                if (!input)
+                    return;
+
                 const filter = input.value.toUpperCase();
                 const table = document.querySelector('.storage-table');
                 const rows = table.getElementsByTagName('tr');
@@ -1195,21 +1364,21 @@ if (session.getAttribute("acc") == null) {
                 for (let i = 1; i < rows.length; i++) { // Skip header
                     const cells = rows[i].getElementsByTagName('td');
                     let found = false;
-                    
+
                     for (let j = 0; j < cells.length; j++) {
                         if (cells[j].textContent.toUpperCase().indexOf(filter) > -1) {
                             found = true;
                             break;
                         }
                     }
-                    
+
                     rows[i].style.display = found ? '' : 'none';
                 }
             }
 
             // Auto-refresh functionality (commented out by default)
             function enableAutoRefresh(intervalMinutes = 5) {
-                setInterval(function() {
+                setInterval(function () {
                     if (!document.hidden) {
                         console.log('Auto-refreshing data...');
                         // Uncomment below to enable auto-refresh
@@ -1223,16 +1392,16 @@ if (session.getAttribute("acc") == null) {
                 const table = document.querySelector('.storage-table');
                 const tbody = table.querySelector('tbody');
                 const rows = Array.from(tbody.querySelectorAll('tr'));
-                
+
                 // Determine sort direction
                 const isAscending = table.getAttribute('data-sort-dir') !== 'asc';
                 table.setAttribute('data-sort-dir', isAscending ? 'asc' : 'desc');
-                
+
                 // Sort rows
                 rows.sort((a, b) => {
                     const aVal = a.cells[columnIndex].textContent.trim();
                     const bVal = b.cells[columnIndex].textContent.trim();
-                    
+
                     let result = 0;
                     if (dataType === 'number') {
                         const aNum = parseFloat(aVal.replace(/[,\s]/g, '')) || 0;
@@ -1243,28 +1412,28 @@ if (session.getAttribute("acc") == null) {
                     } else {
                         result = aVal.localeCompare(bVal);
                     }
-                    
+
                     return isAscending ? result : -result;
                 });
-                
+
                 // Re-append sorted rows
                 rows.forEach(row => tbody.appendChild(row));
-                
+
                 // Update row numbers
                 rows.forEach((row, index) => {
                     row.cells[0].textContent = index + 1;
                 });
-                
+
                 showToast(`Đã sắp xếp theo cột ${columnIndex + 1} (${isAscending ? 'tăng dần' : 'giảm dần'})`, 'success');
             }
 
             // Add sorting to table headers (optional enhancement)
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const headers = document.querySelectorAll('.storage-table th');
                 headers.forEach((header, index) => {
                     if (index > 0) { // Skip STT column
                         header.style.cursor = 'pointer';
-                        header.addEventListener('click', function() {
+                        header.addEventListener('click', function () {
                             let dataType = 'string';
                             if (index >= 4 && index <= 15) { // Numeric columns
                                 dataType = 'number';
@@ -1273,7 +1442,7 @@ if (session.getAttribute("acc") == null) {
                             }
                             sortTable(index, dataType);
                         });
-                        
+
                         // Add sort indicator
                         header.innerHTML += ' <span style="font-size: 10px; opacity: 0.7;">↕</span>';
                     }
@@ -1283,10 +1452,10 @@ if (session.getAttribute("acc") == null) {
             // Performance monitoring
             function trackPerformance() {
                 if ('performance' in window) {
-                    window.addEventListener('load', function() {
+                    window.addEventListener('load', function () {
                         const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
                         console.log(`Page load time: ${loadTime}ms`);
-                        
+
                         if (loadTime > 3000) {
                             console.warn('Page load time is slow. Consider optimizing.');
                         }
@@ -1301,7 +1470,7 @@ if (session.getAttribute("acc") == null) {
             function handleResponsiveTable() {
                 const table = document.querySelector('.storage-table');
                 const wrapper = document.querySelector('.table-wrapper');
-                
+
                 if (window.innerWidth < 768) {
                     table.style.fontSize = '11px';
                     wrapper.style.maxHeight = '400px';
@@ -1311,9 +1480,25 @@ if (session.getAttribute("acc") == null) {
                 }
             }
 
+            function toggleDetails(index) {
+                const detailRow = document.getElementById('detail-' + index);
+                const toggleButton = event.target.closest('.detail-toggle');
+                const icon = toggleButton.querySelector('i');
+
+                if (detailRow.style.display === 'none') {
+                    detailRow.style.display = 'table-row';
+                    toggleButton.classList.add('expanded');
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-up"></i> Ẩn chi tiết';
+                } else {
+                    detailRow.style.display = 'none';
+                    toggleButton.classList.remove('expanded');
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-down"></i> Xem chi tiết';
+                }
+            }
+
             // Handle window resize
             window.addEventListener('resize', handleResponsiveTable);
-            
+
             // Initialize responsive handling
             handleResponsiveTable();
 

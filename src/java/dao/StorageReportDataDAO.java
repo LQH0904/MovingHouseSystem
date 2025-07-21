@@ -14,7 +14,7 @@ import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.transportReport;
+import model.TransportReport;
 
 public class StorageReportDataDAO extends DBContext {
 
@@ -43,7 +43,9 @@ public class StorageReportDataDAO extends DBContext {
                         rs.getDouble("personnel_cost"),
                         rs.getDouble("maintenance_cost"),
                         rs.getDouble("storage_cost_per_unit"),
-                        rs.getDouble("profit")
+                        rs.getDouble("profit"),
+                        rs.getInt("average_storage_duration"),
+                        rs.getDouble("insurance_cost")
                 );
 
                 report.setWarehouseName(rs.getString("warehouse_name"));
@@ -144,7 +146,9 @@ public class StorageReportDataDAO extends DBContext {
                         rs.getDouble("personnel_cost"),
                         rs.getDouble("maintenance_cost"),
                         rs.getDouble("storage_cost_per_unit"),
-                        rs.getDouble("profit")
+                        rs.getDouble("profit"),
+                        rs.getInt("average_storage_duration"),
+                        rs.getDouble("insurance_cost")
                 );
 
                 report.setWarehouseName(rs.getString("warehouse_name"));
@@ -340,7 +344,6 @@ public class StorageReportDataDAO extends DBContext {
         return result;
     }
 
-
     // ========== THÊM MỚI: Các phương thức cho báo cáo hiệu suất hoạt động nhập/xuất kho ==========
     /**
      * Lấy dữ liệu tần suất nhập/xuất kho theo tháng cho từng kho (6 tháng gần
@@ -460,8 +463,6 @@ public class StorageReportDataDAO extends DBContext {
     }
 
     /**
-     * ========== THÊM MỚI: Phương thức lấy dữ liệu sử dụng không gian lưu trữ ==========
-     * Lấy dữ liệu sử dụng không gian lưu trữ theo kho
      *
      * @return Vector<Object[]> - [warehouseName, avgUsedArea, avgTotalArea,
      * avgUtilizationRate, maxUtilizationRate, minUtilizationRate, location]
@@ -582,118 +583,119 @@ public class StorageReportDataDAO extends DBContext {
     }
 
     /**
- * Lấy thống kê hoạt động nhập/xuất kho theo tháng với bộ lọc (6 tháng gần nhất)
- *
- * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
- * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
- * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
- * @return Vector<Object[]> - [warehouseName, year, month, monthlyInbound, 
- * monthlyOutbound, efficiency]
- */
-public Vector<Object[]> getFilteredMonthlyInOutActivity(int storageUnitId, String fromMonth, String toMonth) {
-    Vector<Object[]> result = new Vector<>();
-    StringBuilder sql = new StringBuilder();
-    
-    sql.append("WITH MonthlyData AS ( ");
-    sql.append("    SELECT ");
-    sql.append("        su.warehouse_name, ");
-    sql.append("        YEAR(sr.report_date) as report_year, ");
-    sql.append("        MONTH(sr.report_date) as report_month, ");
-    sql.append("        SUM(sr.inbound_count) as monthly_inbound, ");
-    sql.append("        SUM(sr.outbound_count) as monthly_outbound ");
-    sql.append("    FROM StorageReport sr ");
-    sql.append("    JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
-    sql.append("    WHERE su.registration_status = 'approved' ");
-    
-    Vector<Object> parameters = new Vector<>();
-    
-    // Lọc theo storage_unit_id
-    if (storageUnitId > 0) {
-        sql.append("    AND sr.storage_unit_id = ? ");
-        parameters.add(storageUnitId);
-    }
-    
-    // Lọc theo khoảng thời gian
-    if (fromMonth != null && !fromMonth.trim().isEmpty()) {
-        sql.append("    AND sr.report_date >= ? ");
-        parameters.add(fromMonth + "-01");
-    }
-    
-    if (toMonth != null && !toMonth.trim().isEmpty()) {
-        String endDate = getMonthEndDate(toMonth);
-        sql.append("    AND sr.report_date <= ? ");
-        parameters.add(endDate);
-    }
-    
-    sql.append("    GROUP BY su.warehouse_name, YEAR(sr.report_date), MONTH(sr.report_date) ");
-    sql.append("), ");
-    sql.append("RankedData AS ( ");
-    sql.append("    SELECT *, ");
-    sql.append("        ROW_NUMBER() OVER (ORDER BY report_year DESC, report_month DESC) as rn ");
-    sql.append("    FROM MonthlyData ");
-    sql.append(") ");
-    sql.append("SELECT ");
-    sql.append("    warehouse_name, ");
-    sql.append("    report_year, ");
-    sql.append("    report_month, ");
-    sql.append("    monthly_inbound, ");
-    sql.append("    monthly_outbound, ");
-    sql.append("    CASE ");
-    sql.append("        WHEN monthly_inbound > 0 THEN ");
-    sql.append("            CAST(monthly_outbound AS FLOAT) / monthly_inbound ");
-    sql.append("        ELSE 0 ");
-    sql.append("    END as efficiency_ratio ");
-    sql.append("FROM RankedData ");
-    
-    // Nếu không có bộ lọc thời gian, chỉ lấy 6 tháng gần nhất
-    if ((fromMonth == null || fromMonth.trim().isEmpty()) && 
-        (toMonth == null || toMonth.trim().isEmpty())) {
-        sql.append("WHERE rn <= 36 "); // 6 tháng x 6 kho tối đa
-    }
-    
-    sql.append("ORDER BY report_year DESC, report_month DESC, warehouse_name");
+     * Lấy thống kê hoạt động nhập/xuất kho theo tháng với bộ lọc (6 tháng gần
+     * nhất)
+     *
+     * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
+     * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
+     * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
+     * @return Vector<Object[]> - [warehouseName, year, month, monthlyInbound,
+     * monthlyOutbound, efficiency]
+     */
+    public Vector<Object[]> getFilteredMonthlyInOutActivity(int storageUnitId, String fromMonth, String toMonth) {
+        Vector<Object[]> result = new Vector<>();
+        StringBuilder sql = new StringBuilder();
 
-    try {
-        PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+        sql.append("WITH MonthlyData AS ( ");
+        sql.append("    SELECT ");
+        sql.append("        su.warehouse_name, ");
+        sql.append("        YEAR(sr.report_date) as report_year, ");
+        sql.append("        MONTH(sr.report_date) as report_month, ");
+        sql.append("        SUM(sr.inbound_count) as monthly_inbound, ");
+        sql.append("        SUM(sr.outbound_count) as monthly_outbound ");
+        sql.append("    FROM StorageReport sr ");
+        sql.append("    JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
+        sql.append("    WHERE su.registration_status = 'approved' ");
 
-        // Log SQL để debug
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO, 
-            "Filtered Monthly Activity SQL Query: " + sql.toString());
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO, 
-            "Parameters: " + parameters.toString());
+        Vector<Object> parameters = new Vector<>();
 
-        // Set parameters
-        for (int i = 0; i < parameters.size(); i++) {
-            pstmt.setObject(i + 1, parameters.get(i));
+        // Lọc theo storage_unit_id
+        if (storageUnitId > 0) {
+            sql.append("    AND sr.storage_unit_id = ? ");
+            parameters.add(storageUnitId);
         }
 
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            Object[] monthlyData = new Object[]{
-                rs.getString("warehouse_name"), // [0] - Tên kho
-                rs.getInt("report_year"), // [1] - Năm
-                rs.getInt("report_month"), // [2] - Tháng
-                rs.getInt("monthly_inbound"), // [3] - Nhập kho tháng
-                rs.getInt("monthly_outbound"), // [4] - Xuất kho tháng
-                rs.getDouble("efficiency_ratio") // [5] - Tỷ lệ hiệu suất
-            };
-            result.add(monthlyData);
+        // Lọc theo khoảng thời gian
+        if (fromMonth != null && !fromMonth.trim().isEmpty()) {
+            sql.append("    AND sr.report_date >= ? ");
+            parameters.add(fromMonth + "-01");
         }
 
-        rs.close();
-        pstmt.close();
+        if (toMonth != null && !toMonth.trim().isEmpty()) {
+            String endDate = getMonthEndDate(toMonth);
+            sql.append("    AND sr.report_date <= ? ");
+            parameters.add(endDate);
+        }
 
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO, 
-            "Filtered Monthly Activity Query result count: " + result.size());
+        sql.append("    GROUP BY su.warehouse_name, YEAR(sr.report_date), MONTH(sr.report_date) ");
+        sql.append("), ");
+        sql.append("RankedData AS ( ");
+        sql.append("    SELECT *, ");
+        sql.append("        ROW_NUMBER() OVER (ORDER BY report_year DESC, report_month DESC) as rn ");
+        sql.append("    FROM MonthlyData ");
+        sql.append(") ");
+        sql.append("SELECT ");
+        sql.append("    warehouse_name, ");
+        sql.append("    report_year, ");
+        sql.append("    report_month, ");
+        sql.append("    monthly_inbound, ");
+        sql.append("    monthly_outbound, ");
+        sql.append("    CASE ");
+        sql.append("        WHEN monthly_inbound > 0 THEN ");
+        sql.append("            CAST(monthly_outbound AS FLOAT) / monthly_inbound ");
+        sql.append("        ELSE 0 ");
+        sql.append("    END as efficiency_ratio ");
+        sql.append("FROM RankedData ");
 
-    } catch (SQLException ex) {
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE, 
-            "SQL Error in getFilteredMonthlyInOutActivity", ex);
+        // Nếu không có bộ lọc thời gian, chỉ lấy 6 tháng gần nhất
+        if ((fromMonth == null || fromMonth.trim().isEmpty())
+                && (toMonth == null || toMonth.trim().isEmpty())) {
+            sql.append("WHERE rn <= 36 "); // 6 tháng x 6 kho tối đa
+        }
+
+        sql.append("ORDER BY report_year DESC, report_month DESC, warehouse_name");
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            // Log SQL để debug
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Filtered Monthly Activity SQL Query: " + sql.toString());
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Parameters: " + parameters.toString());
+
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Object[] monthlyData = new Object[]{
+                    rs.getString("warehouse_name"), // [0] - Tên kho
+                    rs.getInt("report_year"), // [1] - Năm
+                    rs.getInt("report_month"), // [2] - Tháng
+                    rs.getInt("monthly_inbound"), // [3] - Nhập kho tháng
+                    rs.getInt("monthly_outbound"), // [4] - Xuất kho tháng
+                    rs.getDouble("efficiency_ratio") // [5] - Tỷ lệ hiệu suất
+                };
+                result.add(monthlyData);
+            }
+
+            rs.close();
+            pstmt.close();
+
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Filtered Monthly Activity Query result count: " + result.size());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE,
+                    "SQL Error in getFilteredMonthlyInOutActivity", ex);
+        }
+
+        return result;
     }
-
-    return result;
-}
 
     /**
      * Lấy dữ liệu so sánh hiệu suất nhập/xuất giữa các kho
@@ -726,15 +728,18 @@ public Vector<Object[]> getFilteredMonthlyInOutActivity(int storageUnitId, Strin
                 + "    -- Tính điểm hiệu suất tổng hợp (0-100) "
                 + "    CASE "
                 + "        WHEN avg_inbound > 0 THEN "
-                + "            (avg_outbound / avg_inbound * 30) + " + //30 % cho tỷ lệ xuất / nhập
-        "            (avg_utilization * 0.4) + " +             // 40% cho tỷ lệ sử dụng
-        "            (CASE WHEN total_profit > 0 THEN 30 ELSE 0 END) " + // 30% cho lợi nhuận
-        "        ELSE 0 " +
-                 "    END as performance_score, " +
-                 "    location " +
-                 "FROM PerformanceData " +
-                 "ORDER BY performance_score DESC";
-    
+                + "            (avg_outbound / avg_inbound * 30) + "
+                + //30 % cho tỷ lệ xuất / nhập
+                "            (avg_utilization * 0.4) + "
+                + // 40% cho tỷ lệ sử dụng
+                "            (CASE WHEN total_profit > 0 THEN 30 ELSE 0 END) "
+                + // 30% cho lợi nhuận
+                "        ELSE 0 "
+                + "    END as performance_score, "
+                + "    location "
+                + "FROM PerformanceData "
+                + "ORDER BY performance_score DESC";
+
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -761,310 +766,474 @@ public Vector<Object[]> getFilteredMonthlyInOutActivity(int storageUnitId, Strin
 
         return result;
     }
-    
+
     // ========== THÊM MỚI: Các phương thức lọc dữ liệu hiệu suất hoạt động ==========
+    /**
+     * Lấy dữ liệu tần suất nhập/xuất kho theo kho với bộ lọc
+     *
+     * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
+     * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
+     * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
+     * @return Vector<Object[]> - [warehouseName, year, month, inboundCount,
+     * outboundCount, inboundFrequency, outboundFrequency]
+     */
+    public Vector<Object[]> getFilteredWarehouseInOutFrequencyData(int storageUnitId, String fromMonth, String toMonth) {
+        Vector<Object[]> result = new Vector<>();
+        StringBuilder sql = new StringBuilder();
 
-/**
- * Lấy dữ liệu tần suất nhập/xuất kho theo kho với bộ lọc
- *
- * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
- * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
- * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
- * @return Vector<Object[]> - [warehouseName, year, month, inboundCount, outboundCount, inboundFrequency, outboundFrequency]
- */
-public Vector<Object[]> getFilteredWarehouseInOutFrequencyData(int storageUnitId, String fromMonth, String toMonth) {
-    Vector<Object[]> result = new Vector<>();
-    StringBuilder sql = new StringBuilder();
-    
-    sql.append("WITH MonthlyData AS ( ");
-    sql.append("    SELECT ");
-    sql.append("        su.warehouse_name, ");
-    sql.append("        YEAR(sr.report_date) as report_year, ");
-    sql.append("        MONTH(sr.report_date) as report_month, ");
-    sql.append("        SUM(sr.inbound_count) as total_inbound, ");
-    sql.append("        SUM(sr.outbound_count) as total_outbound, ");
-    sql.append("        COUNT(*) as days_in_month ");
-    sql.append("    FROM StorageReport sr ");
-    sql.append("    JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
-    sql.append("    WHERE su.registration_status = 'approved' ");
-    
-    Vector<Object> parameters = new Vector<>();
-    
-    // Lọc theo storage_unit_id
-    if (storageUnitId > 0) {
-        sql.append("    AND sr.storage_unit_id = ? ");
-        parameters.add(storageUnitId);
-    }
-    
-    // Lọc theo khoảng thời gian
-    if (fromMonth != null && !fromMonth.trim().isEmpty()) {
-        sql.append("    AND sr.report_date >= ? ");
-        parameters.add(fromMonth + "-01");
-    }
-    
-    if (toMonth != null && !toMonth.trim().isEmpty()) {
-        // Xử lý tháng chẵn và tháng 2
-        String endDate = getMonthEndDate(toMonth);
-        sql.append("    AND sr.report_date <= ? ");
-        parameters.add(endDate);
-    }
-    
-    sql.append("    GROUP BY su.warehouse_name, YEAR(sr.report_date), MONTH(sr.report_date) ");
-    sql.append(") ");
-    sql.append("SELECT ");
-    sql.append("    warehouse_name, ");
-    sql.append("    report_year, ");
-    sql.append("    report_month, ");
-    sql.append("    total_inbound, ");
-    sql.append("    total_outbound, ");
-    sql.append("    CAST(total_inbound AS FLOAT) / days_in_month as inbound_frequency, ");
-    sql.append("    CAST(total_outbound AS FLOAT) / days_in_month as outbound_frequency ");
-    sql.append("FROM MonthlyData ");
-    sql.append("ORDER BY report_year DESC, report_month DESC, warehouse_name");
+        sql.append("WITH MonthlyData AS ( ");
+        sql.append("    SELECT ");
+        sql.append("        su.warehouse_name, ");
+        sql.append("        YEAR(sr.report_date) as report_year, ");
+        sql.append("        MONTH(sr.report_date) as report_month, ");
+        sql.append("        SUM(sr.inbound_count) as total_inbound, ");
+        sql.append("        SUM(sr.outbound_count) as total_outbound, ");
+        sql.append("        COUNT(*) as days_in_month ");
+        sql.append("    FROM StorageReport sr ");
+        sql.append("    JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
+        sql.append("    WHERE su.registration_status = 'approved' ");
 
-    try {
-        PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+        Vector<Object> parameters = new Vector<>();
 
-        // Log SQL để debug
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO, 
-            "Filtered Frequency SQL Query: " + sql.toString());
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO, 
-            "Parameters: " + parameters.toString());
-
-        // Set parameters
-        for (int i = 0; i < parameters.size(); i++) {
-            pstmt.setObject(i + 1, parameters.get(i));
+        // Lọc theo storage_unit_id
+        if (storageUnitId > 0) {
+            sql.append("    AND sr.storage_unit_id = ? ");
+            parameters.add(storageUnitId);
         }
 
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            Object[] frequencyData = new Object[]{
-                rs.getString("warehouse_name"), // [0] - Tên kho
-                rs.getInt("report_year"), // [1] - Năm
-                rs.getInt("report_month"), // [2] - Tháng
-                rs.getInt("total_inbound"), // [3] - Tổng nhập kho
-                rs.getInt("total_outbound"), // [4] - Tổng xuất kho
-                rs.getDouble("inbound_frequency"), // [5] - Tần suất nhập (lần/ngày)
-                rs.getDouble("outbound_frequency") // [6] - Tần suất xuất (lần/ngày)
-            };
-            result.add(frequencyData);
+        // Lọc theo khoảng thời gian
+        if (fromMonth != null && !fromMonth.trim().isEmpty()) {
+            sql.append("    AND sr.report_date >= ? ");
+            parameters.add(fromMonth + "-01");
         }
 
-        rs.close();
-        pstmt.close();
-
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO, 
-            "Filtered Frequency Query result count: " + result.size());
-
-    } catch (SQLException ex) {
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE, 
-            "SQL Error in getFilteredWarehouseInOutFrequencyData", ex);
-    }
-
-    return result;
-}
-
-/**
- * Lấy dữ liệu tỷ lệ đơn hàng trả lại theo kho với bộ lọc
- *
- * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
- * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
- * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
- * @return Vector<Object[]> - [warehouseName, totalOrders, returnedOrders, returnRate, location]
- */
-public Vector<Object[]> getFilteredWarehouseReturnRateData(int storageUnitId, String fromMonth, String toMonth) {
-    Vector<Object[]> result = new Vector<>();
-    StringBuilder sql = new StringBuilder();
-    
-    sql.append("SELECT ");
-    sql.append("    su.warehouse_name, ");
-    sql.append("    su.location, ");
-    sql.append("    SUM(sr.order_count) as total_orders, ");
-    sql.append("    SUM(sr.returned_orders) as total_returned, ");
-    sql.append("    CASE ");
-    sql.append("        WHEN SUM(sr.order_count) > 0 THEN ");
-    sql.append("            CAST(SUM(sr.returned_orders) AS FLOAT) * 100.0 / SUM(sr.order_count) ");
-    sql.append("        ELSE 0 ");
-    sql.append("    END as return_rate ");
-    sql.append("FROM StorageReport sr ");
-    sql.append("JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
-    sql.append("WHERE su.registration_status = 'approved' ");
-    
-    Vector<Object> parameters = new Vector<>();
-    
-    // Lọc theo storage_unit_id
-    if (storageUnitId > 0) {
-        sql.append("AND sr.storage_unit_id = ? ");
-        parameters.add(storageUnitId);
-    }
-    
-    // Lọc theo khoảng thời gian
-    if (fromMonth != null && !fromMonth.trim().isEmpty()) {
-        sql.append("AND sr.report_date >= ? ");
-        parameters.add(fromMonth + "-01");
-    }
-    
-    if (toMonth != null && !toMonth.trim().isEmpty()) {
-        String endDate = getMonthEndDate(toMonth);
-        sql.append("AND sr.report_date <= ? ");
-        parameters.add(endDate);
-    }
-    
-    sql.append("GROUP BY su.storage_unit_id, su.warehouse_name, su.location ");
-    sql.append("HAVING SUM(sr.order_count) > 0 ");
-    sql.append("ORDER BY return_rate DESC");
-
-    try {
-        PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-
-        // Set parameters
-        for (int i = 0; i < parameters.size(); i++) {
-            pstmt.setObject(i + 1, parameters.get(i));
+        if (toMonth != null && !toMonth.trim().isEmpty()) {
+            // Xử lý tháng chẵn và tháng 2
+            String endDate = getMonthEndDate(toMonth);
+            sql.append("    AND sr.report_date <= ? ");
+            parameters.add(endDate);
         }
 
-        ResultSet rs = pstmt.executeQuery();
+        sql.append("    GROUP BY su.warehouse_name, YEAR(sr.report_date), MONTH(sr.report_date) ");
+        sql.append(") ");
+        sql.append("SELECT ");
+        sql.append("    warehouse_name, ");
+        sql.append("    report_year, ");
+        sql.append("    report_month, ");
+        sql.append("    total_inbound, ");
+        sql.append("    total_outbound, ");
+        sql.append("    CAST(total_inbound AS FLOAT) / days_in_month as inbound_frequency, ");
+        sql.append("    CAST(total_outbound AS FLOAT) / days_in_month as outbound_frequency, ");
+        sql.append("    average_storage_duration, ");
+        sql.append("    insurance_cost ");
+        sql.append("FROM MonthlyData ");
+        sql.append("ORDER BY report_year DESC, report_month DESC, warehouse_name");
 
-        while (rs.next()) {
-            Object[] returnData = new Object[]{
-                rs.getString("warehouse_name"), // [0] - Tên kho
-                rs.getInt("total_orders"), // [1] - Tổng đơn hàng
-                rs.getInt("total_returned"), // [2] - Đơn hàng trả lại
-                rs.getDouble("return_rate"), // [3] - Tỷ lệ trả hàng (%)
-                rs.getString("location") // [4] - Vị trí kho
-            };
-            result.add(returnData);
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            // Log SQL để debug
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Filtered Frequency SQL Query: " + sql.toString());
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Parameters: " + parameters.toString());
+
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Object[] frequencyData = new Object[]{
+                    rs.getString("warehouse_name"), // [0] - Tên kho
+                    rs.getInt("report_year"), // [1] - Năm
+                    rs.getInt("report_month"), // [2] - Tháng
+                    rs.getInt("total_inbound"), // [3] - Tổng nhập kho
+                    rs.getInt("total_outbound"), // [4] - Tổng xuất kho
+                    rs.getDouble("inbound_frequency"), // [5] - Tần suất nhập (lần/ngày)
+                    rs.getDouble("outbound_frequency") // [6] - Tần suất xuất (lần/ngày)
+                };
+                result.add(frequencyData);
+            }
+
+            rs.close();
+            pstmt.close();
+
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Filtered Frequency Query result count: " + result.size());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE,
+                    "SQL Error in getFilteredWarehouseInOutFrequencyData", ex);
         }
 
-        rs.close();
-        pstmt.close();
-
-    } catch (SQLException ex) {
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE, 
-            "SQL Error in getFilteredWarehouseReturnRateData", ex);
+        return result;
     }
 
-    return result;
-}
+    /**
+     * Lấy dữ liệu tỷ lệ đơn hàng trả lại theo kho với bộ lọc
+     *
+     * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
+     * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
+     * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
+     * @return Vector<Object[]> - [warehouseName, totalOrders, returnedOrders,
+     * returnRate, location]
+     */
+    public Vector<Object[]> getFilteredWarehouseReturnRateData(int storageUnitId, String fromMonth, String toMonth) {
+        Vector<Object[]> result = new Vector<>();
+        StringBuilder sql = new StringBuilder();
 
-/**
- * Lấy dữ liệu sử dụng không gian lưu trữ theo kho với bộ lọc
- *
- * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
- * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
- * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
- * @return Vector<Object[]> - [warehouseName, avgUsedArea, avgTotalArea, avgUtilizationRate, maxUtilizationRate, minUtilizationRate, location]
- */
-public Vector<Object[]> getFilteredWarehouseSpaceUtilizationData(int storageUnitId, String fromMonth, String toMonth) {
-    Vector<Object[]> result = new Vector<>();
-    StringBuilder sql = new StringBuilder();
-    
-    sql.append("SELECT ");
-    sql.append("    su.warehouse_name, ");
-    sql.append("    su.location, ");
-    sql.append("    AVG(sr.used_area) as avg_used_area, ");
-    sql.append("    AVG(sr.total_area) as avg_total_area, ");
-    sql.append("    AVG(sr.used_area * 100.0 / sr.total_area) as avg_utilization_rate, ");
-    sql.append("    MAX(sr.used_area * 100.0 / sr.total_area) as max_utilization_rate, ");
-    sql.append("    MIN(sr.used_area * 100.0 / sr.total_area) as min_utilization_rate ");
-    sql.append("FROM StorageReport sr ");
-    sql.append("JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
-    sql.append("WHERE su.registration_status = 'approved' ");
-    sql.append("AND sr.total_area > 0 ");
-    
-    Vector<Object> parameters = new Vector<>();
-    
-    // Lọc theo storage_unit_id
-    if (storageUnitId > 0) {
-        sql.append("AND sr.storage_unit_id = ? ");
-        parameters.add(storageUnitId);
-    }
-    
-    // Lọc theo khoảng thời gian
-    if (fromMonth != null && !fromMonth.trim().isEmpty()) {
-        sql.append("AND sr.report_date >= ? ");
-        parameters.add(fromMonth + "-01");
-    }
-    
-    if (toMonth != null && !toMonth.trim().isEmpty()) {
-        String endDate = getMonthEndDate(toMonth);
-        sql.append("AND sr.report_date <= ? ");
-        parameters.add(endDate);
-    }
-    
-    sql.append("GROUP BY su.storage_unit_id, su.warehouse_name, su.location ");
-    sql.append("ORDER BY avg_utilization_rate DESC");
+        sql.append("SELECT ");
+        sql.append("    su.warehouse_name, ");
+        sql.append("    su.location, ");
+        sql.append("    SUM(sr.order_count) as total_orders, ");
+        sql.append("    SUM(sr.returned_orders) as total_returned, ");
+        sql.append("    CASE ");
+        sql.append("        WHEN SUM(sr.order_count) > 0 THEN ");
+        sql.append("            CAST(SUM(sr.returned_orders) AS FLOAT) * 100.0 / SUM(sr.order_count) ");
+        sql.append("        ELSE 0 ");
+        sql.append("    END as return_rate ");
+        sql.append("FROM StorageReport sr ");
+        sql.append("JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
+        sql.append("WHERE su.registration_status = 'approved' ");
 
-    try {
-        PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+        Vector<Object> parameters = new Vector<>();
 
-        // Set parameters
-        for (int i = 0; i < parameters.size(); i++) {
-            pstmt.setObject(i + 1, parameters.get(i));
+        // Lọc theo storage_unit_id
+        if (storageUnitId > 0) {
+            sql.append("AND sr.storage_unit_id = ? ");
+            parameters.add(storageUnitId);
         }
 
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            Object[] spaceData = new Object[]{
-                rs.getString("warehouse_name"), // [0] - Tên kho
-                rs.getDouble("avg_used_area"), // [1] - Diện tích sử dụng trung bình
-                rs.getDouble("avg_total_area"), // [2] - Tổng diện tích trung bình
-                rs.getDouble("avg_utilization_rate"), // [3] - Tỷ lệ sử dụng trung bình (%)
-                rs.getDouble("max_utilization_rate"), // [4] - Tỷ lệ sử dụng tối đa (%)
-                rs.getDouble("min_utilization_rate"), // [5] - Tỷ lệ sử dụng tối thiểu (%)
-                rs.getString("location") // [6] - Vị trí kho
-            };
-            result.add(spaceData);
+        // Lọc theo khoảng thời gian
+        if (fromMonth != null && !fromMonth.trim().isEmpty()) {
+            sql.append("AND sr.report_date >= ? ");
+            parameters.add(fromMonth + "-01");
         }
 
-        rs.close();
-        pstmt.close();
-
-    } catch (SQLException ex) {
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE, 
-            "SQL Error in getFilteredWarehouseSpaceUtilizationData", ex);
-    }
-
-    return result;
-}
-
-/**
- * Hàm hỗ trợ tính toán ngày cuối tháng (xử lý tháng chẵn và tháng 2)
- *
- * @param monthYear Chuỗi định dạng YYYY-MM
- * @return Chuỗi ngày cuối tháng định dạng YYYY-MM-DD
- */
-private String getMonthEndDate(String monthYear) {
-    try {
-        String[] parts = monthYear.split("-");
-        int year = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]);
-        
-        int lastDay;
-        switch (month) {
-            case 2: // Tháng 2
-                // Kiểm tra năm nhuận
-                if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                    lastDay = 29; // Năm nhuận
-                } else {
-                    lastDay = 28; // Năm thường
-                }
-                break;
-            case 4: case 6: case 9: case 11: // Tháng chẵn có 30 ngày
-                lastDay = 30;
-                break;
-            default: // Tháng lẻ có 31 ngày
-                lastDay = 31;
-                break;
+        if (toMonth != null && !toMonth.trim().isEmpty()) {
+            String endDate = getMonthEndDate(toMonth);
+            sql.append("AND sr.report_date <= ? ");
+            parameters.add(endDate);
         }
-        
-        return String.format("%04d-%02d-%02d", year, month, lastDay);
-        
-    } catch (Exception e) {
-        Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.WARNING, 
-            "Error calculating month end date for: " + monthYear, e);
-        return monthYear + "-31"; // Fallback
+
+        sql.append("GROUP BY su.storage_unit_id, su.warehouse_name, su.location ");
+        sql.append("HAVING SUM(sr.order_count) > 0 ");
+        sql.append("ORDER BY return_rate DESC");
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Object[] returnData = new Object[]{
+                    rs.getString("warehouse_name"), // [0] - Tên kho
+                    rs.getInt("total_orders"), // [1] - Tổng đơn hàng
+                    rs.getInt("total_returned"), // [2] - Đơn hàng trả lại
+                    rs.getDouble("return_rate"), // [3] - Tỷ lệ trả hàng (%)
+                    rs.getString("location") // [4] - Vị trí kho
+                };
+                result.add(returnData);
+            }
+
+            rs.close();
+            pstmt.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE,
+                    "SQL Error in getFilteredWarehouseReturnRateData", ex);
+        }
+
+        return result;
     }
-}
+
+    /**
+     * Lấy dữ liệu sử dụng không gian lưu trữ theo kho với bộ lọc
+     *
+     * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
+     * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
+     * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
+     * @return Vector<Object[]> - [warehouseName, avgUsedArea, avgTotalArea,
+     * avgUtilizationRate, maxUtilizationRate, minUtilizationRate, location]
+     */
+    public Vector<Object[]> getFilteredWarehouseSpaceUtilizationData(int storageUnitId, String fromMonth, String toMonth) {
+        Vector<Object[]> result = new Vector<>();
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ");
+        sql.append("    su.warehouse_name, ");
+        sql.append("    su.location, ");
+        sql.append("    AVG(sr.used_area) as avg_used_area, ");
+        sql.append("    AVG(sr.total_area) as avg_total_area, ");
+        sql.append("    AVG(sr.used_area * 100.0 / sr.total_area) as avg_utilization_rate, ");
+        sql.append("    MAX(sr.used_area * 100.0 / sr.total_area) as max_utilization_rate, ");
+        sql.append("    MIN(sr.used_area * 100.0 / sr.total_area) as min_utilization_rate ");
+        sql.append("FROM StorageReport sr ");
+        sql.append("JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
+        sql.append("WHERE su.registration_status = 'approved' ");
+        sql.append("AND sr.total_area > 0 ");
+
+        Vector<Object> parameters = new Vector<>();
+
+        // Lọc theo storage_unit_id
+        if (storageUnitId > 0) {
+            sql.append("AND sr.storage_unit_id = ? ");
+            parameters.add(storageUnitId);
+        }
+
+        // Lọc theo khoảng thời gian
+        if (fromMonth != null && !fromMonth.trim().isEmpty()) {
+            sql.append("AND sr.report_date >= ? ");
+            parameters.add(fromMonth + "-01");
+        }
+
+        if (toMonth != null && !toMonth.trim().isEmpty()) {
+            String endDate = getMonthEndDate(toMonth);
+            sql.append("AND sr.report_date <= ? ");
+            parameters.add(endDate);
+        }
+
+        sql.append("GROUP BY su.storage_unit_id, su.warehouse_name, su.location ");
+        sql.append("ORDER BY avg_utilization_rate DESC");
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Object[] spaceData = new Object[]{
+                    rs.getString("warehouse_name"), // [0] - Tên kho
+                    rs.getDouble("avg_used_area"), // [1] - Diện tích sử dụng trung bình
+                    rs.getDouble("avg_total_area"), // [2] - Tổng diện tích trung bình
+                    rs.getDouble("avg_utilization_rate"), // [3] - Tỷ lệ sử dụng trung bình (%)
+                    rs.getDouble("max_utilization_rate"), // [4] - Tỷ lệ sử dụng tối đa (%)
+                    rs.getDouble("min_utilization_rate"), // [5] - Tỷ lệ sử dụng tối thiểu (%)
+                    rs.getString("location") // [6] - Vị trí kho
+                };
+                result.add(spaceData);
+            }
+
+            rs.close();
+            pstmt.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE,
+                    "SQL Error in getFilteredWarehouseSpaceUtilizationData", ex);
+        }
+
+        return result;
+    }
+
+    /**
+     * Hàm hỗ trợ tính toán ngày cuối tháng (xử lý tháng chẵn và tháng 2)
+     *
+     * @param monthYear Chuỗi định dạng YYYY-MM
+     * @return Chuỗi ngày cuối tháng định dạng YYYY-MM-DD
+     */
+    private String getMonthEndDate(String monthYear) {
+        try {
+            String[] parts = monthYear.split("-");
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+
+            int lastDay;
+            switch (month) {
+                case 2: // Tháng 2
+                    // Kiểm tra năm nhuận
+                    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                        lastDay = 29; // Năm nhuận
+                    } else {
+                        lastDay = 28; // Năm thường
+                    }
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11: // Tháng chẵn có 30 ngày
+                    lastDay = 30;
+                    break;
+                default: // Tháng lẻ có 31 ngày
+                    lastDay = 31;
+                    break;
+            }
+
+            return String.format("%04d-%02d-%02d", year, month, lastDay);
+
+        } catch (Exception e) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.WARNING,
+                    "Error calculating month end date for: " + monthYear, e);
+            return monthYear + "-31"; // Fallback
+        }
+
+    }
+
+    /**
+     * Lấy dữ liệu thời gian lưu trữ trung bình và tên kho trong 6 tháng gần
+     * nhất
+     *
+     * @return Vector<Object[]> - [warehouseName, year, month,
+     * averageStorageDuration]
+     */
+    public Vector<Object[]> getAverageStorageDurationData() {
+        Vector<Object[]> result = new Vector<>();
+        String sql = "WITH MonthlyData AS ( "
+                + "    SELECT "
+                + "        su.warehouse_name, "
+                + "        YEAR(sr.report_date) as report_year, "
+                + "        MONTH(sr.report_date) as report_month, "
+                + "        sr.average_storage_duration, "
+                + "        ROW_NUMBER() OVER (ORDER BY sr.report_date DESC) as rn "
+                + "    FROM StorageReport sr "
+                + "    JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id "
+                + "    WHERE su.registration_status = 'approved' "
+                + "    AND sr.average_storage_duration IS NOT NULL "
+                + ") "
+                + "SELECT "
+                + "    warehouse_name, "
+                + "    report_year, "
+                + "    report_month, "
+                + "    average_storage_duration "
+                + "FROM MonthlyData "
+                + "WHERE rn <= 36 " // 6 tháng x 6 kho tối đa
+                + "ORDER BY report_year DESC, report_month DESC, warehouse_name";
+
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+
+            while (rs.next()) {
+                Object[] durationData = new Object[]{
+                    rs.getString("warehouse_name"), // [0] - Tên kho
+                    rs.getInt("report_year"), // [1] - Năm
+                    rs.getInt("report_month"), // [2] - Tháng
+                    rs.getInt("average_storage_duration") // [3] - Thời gian lưu trữ TB (ngày)
+                };
+                result.add(durationData);
+            }
+
+            rs.close();
+            state.close();
+
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Average Storage Duration Query result count: " + result.size());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE,
+                    "SQL Error in getAverageStorageDurationData", ex);
+        }
+
+        return result;
+    }
+
+    /**
+     * Lấy dữ liệu thời gian lưu trữ trung bình và tên kho với bộ lọc
+     *
+     * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
+     * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
+     * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
+     * @return Vector<Object[]> - [warehouseName, year, month,
+     * averageStorageDuration]
+     */
+    /**
+     * Lấy dữ liệu thời gian lưu trữ trung bình và tên kho với bộ lọc (SỬA ĐỔI)
+     *
+     * @param storageUnitId ID đơn vị kho (0 nếu không lọc theo ID)
+     * @param fromMonth Tháng bắt đầu (định dạng YYYY-MM hoặc null)
+     * @param toMonth Tháng kết thúc (định dạng YYYY-MM hoặc null)
+     * @return Vector<Object[]> - [warehouseName, year, month,
+     * averageStorageDuration]
+     */
+    public Vector<Object[]> getFilteredAverageStorageDurationData(int storageUnitId, String fromMonth, String toMonth) {
+        Vector<Object[]> result = new Vector<>();
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ");
+        sql.append("    su.warehouse_name, ");
+        sql.append("    YEAR(sr.report_date) as report_year, ");
+        sql.append("    MONTH(sr.report_date) as report_month, ");
+        sql.append("    AVG(CAST(sr.average_storage_duration AS FLOAT)) as avg_storage_duration ");
+        sql.append("FROM StorageReport sr ");
+        sql.append("JOIN StorageUnits su ON sr.storage_unit_id = su.storage_unit_id ");
+        sql.append("WHERE su.registration_status = 'approved' ");
+        sql.append("AND sr.average_storage_duration IS NOT NULL ");
+        sql.append("AND sr.average_storage_duration > 0 ");
+
+        Vector<Object> parameters = new Vector<>();
+
+        // Lọc theo storage_unit_id
+        if (storageUnitId > 0) {
+            sql.append("AND sr.storage_unit_id = ? ");
+            parameters.add(storageUnitId);
+        }
+
+        // Lọc theo khoảng thời gian
+        if (fromMonth != null && !fromMonth.trim().isEmpty()) {
+            sql.append("AND sr.report_date >= ? ");
+            parameters.add(fromMonth + "-01");
+        }
+
+        if (toMonth != null && !toMonth.trim().isEmpty()) {
+            String endDate = getMonthEndDate(toMonth);
+            sql.append("AND sr.report_date <= ? ");
+            parameters.add(endDate);
+        }
+
+        sql.append("GROUP BY su.warehouse_name, YEAR(sr.report_date), MONTH(sr.report_date) ");
+        sql.append("ORDER BY YEAR(sr.report_date) DESC, MONTH(sr.report_date) DESC, su.warehouse_name");
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            // Log SQL để debug
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Filtered Average Storage Duration SQL Query: " + sql.toString());
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Parameters: " + parameters.toString());
+
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Object[] durationData = new Object[]{
+                    rs.getString("warehouse_name"), // [0] - Tên kho
+                    rs.getInt("report_year"), // [1] - Năm
+                    rs.getInt("report_month"), // [2] - Tháng
+                    rs.getDouble("avg_storage_duration") // [3] - Thời gian lưu trữ TB (ngày)
+                };
+                result.add(durationData);
+            }
+
+            rs.close();
+            pstmt.close();
+
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.INFO,
+                    "Filtered Average Storage Duration Query result count: " + result.size());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StorageReportDataDAO.class.getName()).log(Level.SEVERE,
+                    "SQL Error in getFilteredAverageStorageDurationData", ex);
+        }
+
+        return result;
+    }
+    
+    
 }

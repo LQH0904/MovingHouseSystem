@@ -27,187 +27,165 @@ if (session.getAttribute("acc") == null) {
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-        <style>
-            body {
-                background-color: #F7FAFC;
-                font-family: 'Poppins', sans-serif;
-                margin: 0;
-            }
-            .main-content {
-                overflow-y: auto;
-                padding: 10px;
-                max-height: calc(100vh - 60px);
-                position: relative;
-                z-index: 1;
-                width: 100%;
-            }
-            .container-fluid {
-                background: white;
-                padding: 15px;
-                border-radius: 12px;
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-                margin-bottom: 40px;
-                position: relative;
-                z-index: 1;
-                clear: both;
-                width: 100%; /* Giãn toàn bộ chiều rộng */
-            }
+        <style>         
+                    
             h2 {
-                color: #4A00E0;
-                font-weight: 700;
-                margin-bottom: 25px;
+                color: #007bff;
+                font-weight: 600;
                 text-align: center;
-            }
-            .filter-form {
-                background: #E6E6FA;
-                padding: 20px;
-                border-radius: 10px;
-                margin-bottom: 25px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
             .filter-form .form-control {
-                border: 2px solid #D6BCFA;
-                border-radius: 8px;
-                transition: border-color 0.3s ease;
+                border: 2px solid #e0e7ff;
+                border-radius: 10px;
+                transition: border-color 0.3s, box-shadow 0.3s;
             }
             .filter-form .form-control:focus {
-                border-color: #4A00E0;
-                box-shadow: 0 0 5px rgba(74, 0, 224, 0.3);
+                border-color: #007bff;
+                box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
             }
             .filter-form label {
                 font-weight: 500;
-                color: #2D3748;
+                color: #333;
+                margin-bottom: 8px;
             }
             .filter-form .btn-primary {
-                background: #4A00E0;
+                background: linear-gradient(90deg, #007bff 0%, #00c4ff 100%);
                 border: none;
-                padding: 10px 20px;
-                border-radius: 8px;
+                padding: 12px 24px;
+                border-radius: 10px;
                 font-weight: 500;
-                transition: background 0.3s ease;
+                text-transform: uppercase;
+                transition: transform 0.2s, box-shadow 0.2s;
             }
             .filter-form .btn-primary:hover {
-                background: #3B00B3;
+                transform: scale(1.05);
+                box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
             }
             .filter-form .btn-secondary {
-                background: #A0AEC0;
+                background: #6c757d;
                 border: none;
-                padding: 10px 20px;
-                border-radius: 8px;
+                padding: 12px 24px;
+                border-radius: 10px;
                 font-weight: 500;
-                transition: background 0.3s ease;
+                text-transform: uppercase;
+                transition: transform 0.2s, box-shadow 0.2s;
             }
             .filter-form .btn-secondary:hover {
-                background: #718096;
+                transform: scale(1.05);
+                background: #5a6268;
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
             }
             .table {
                 width: 100%;
-                table-layout: fixed;
                 border-collapse: collapse;
-                margin: 0; /* Loại bỏ margin thừa */
-                padding: 0; /* Loại bỏ padding thừa */
+                background: #f8f9fa;
+                border-radius: 10px;
+                overflow: hidden;
             }
             .table thead th {
-                background: #4A00E0;
+                background: linear-gradient(90deg, #007bff 0%, #00c4ff 100%);
                 color: white;
                 font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 padding: 15px;
                 text-align: center;
-                width: 9.09%; /* 100% / 11 cột ≈ 9.09% cho mỗi cột */
-                overflow: hidden; /* Ngăn tràn nội dung */
-                white-space: nowrap; /* Ngăn xuống dòng */
+                vertical-align: middle;
             }
             .table tbody td {
-                background: #F7FAFC;
+                background: #ffffff;
                 vertical-align: middle;
                 padding: 12px;
-                color: #2D3748;
-                border-bottom: 1px solid #E2E8F0;
+                color: #333;
+                border-bottom: 1px solid #e0e7ff;
                 text-align: center;
-                width: 9.09%;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
             }
             .table tbody tr:hover {
-                background: #EDF2F7;
+                background: #e0e7ff;
                 transition: background 0.2s ease;
             }
             .table a {
-                color: #4A00E0;
+                color: #007bff;
                 text-decoration: none;
                 font-weight: 500;
             }
             .table a:hover {
                 text-decoration: underline;
-                color: #3B00B3;
+                color: #0056b3;
             }
             .pagination-wrapper {
-                margin-top: 30px;
-                margin-bottom: 20px;
+                margin: 30px 0;
                 display: flex;
                 justify-content: center;
-                position: relative;
-                z-index: 1;
-                clear: both;
             }
-            .pagination-wrapper .pagination {
-                margin: 0;
+            .pagination {
+                border-radius: 10px;
+                overflow: hidden;
+                background: #ffffff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
-            .pagination-wrapper .page-link {
-                color: #4A00E0;
-                background: #E6E6FA;
-                border: 1px solid #D6BCFA;
-                border-radius: 8px;
+            .pagination .page-link {
+                color: #007bff;
+                background: #f8f9fa;
+                border: none;
+                padding: 10px 20px;
                 margin: 0 5px;
-                padding: 8px 16px;
-                transition: all 0.3s ease;
+                border-radius: 8px;
+                transition: background-color 0.3s, color 0.3s;
             }
-            .pagination-wrapper .page-link:hover {
-                background: #4A00E0;
+            .pagination .page-link:hover {
+                background: #007bff;
                 color: white;
-                border-color: #4A00E0;
             }
-            .pagination-wrapper .page-item.active .page-link {
-                background: #4A00E0;
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(90deg, #007bff 0%, #00c4ff 100%);
                 color: white;
-                border-color: #4A00E0;
             }
-            .pagination-wrapper .page-item.disabled .page-link {
-                background: #EDF2F7;
-                color: #A0AEC0;
-                border-color: #E2E8F0;
+            .pagination .page-item.disabled .page-link {
+                background: #f8f9fa;
+                color: #6c757d;
+                cursor: not-allowed;
             }
             .status-icon {
                 font-size: 1.5rem;
                 vertical-align: middle;
             }
             .status-pending {
-                color: #FFA500;
-            } /* Orange for pending */
+                color: #ffa500;
+            }
             .status-in_progress {
-                color: #1E90FF;
-            } /* Blue for in_progress */
+                color: #007bff;
+            }
             .status-delivered {
-                color: #28A745;
-            } /* Green for delivered */
+                color: #28a745;
+            }
             .status-cancelled {
-                color: #DC3545;
-            } /* Red for cancelled */
-
+                color: #dc3545;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
             @media (max-width: 768px) {
-                .table thead th, .table tbody td {
-                    width: auto;
-                    min-width: 80px;
-                    padding: 8px;
-                }
-                .container-fluid {
+                .div3.main-content {
+                    margin-left: 0;
+                    width: 100%;
                     padding: 10px;
                 }
-                .main-content {
-                    padding: 5px;
+                .container-fluid {
+                    padding: 15px;
+                }
+                .table thead th, .table tbody td {
+                    font-size: 0.9rem;
+                    padding: 8px;
+                }
+                .filter-form .row > div {
+                    margin-bottom: 15px;
                 }
             }
         </style>
@@ -227,7 +205,7 @@ if (session.getAttribute("acc") == null) {
                 <!-- Nội dung chính -->
                 <div class="div3 main-content">
                     <div class="container-fluid">
-                        <h2>Tổng quan đơn hàng</h2>
+                        <h2>Đơn hàng</h2>
 
                         <!-- Form lọc -->
                         <form class="filter-form" action="${pageContext.request.contextPath}/orderList" method="get">

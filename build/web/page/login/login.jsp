@@ -5,165 +5,163 @@
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Đăng nhập</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
         <style>
-
-            .container {
-                display: flex;
-                max-width: 900px;
-                height: auto;
-                background: #fff;
-                border-radius: 30px;
-                overflow: hidden;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-                margin: 50px auto;
+            /* Custom animations */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
-
-            .left-section {
-                flex: 1;
-                background: url('img/bgr.jpg') center center / cover no-repeat;
+            .fade-in {
+                animation: fadeIn 0.6s ease-out forwards;
+            }
+            .hover-scale {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            }
+            .form-group {
                 position: relative;
-                color: white;
-                padding: 30px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                border-radius: 30px 0 0 30px;
-                min-width: 300px;
+                margin-bottom: 1.5rem;
             }
-
-            .overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.4);
-                z-index: 1;
-                border-radius: 30px 0 0 30px;
-            }
-
+            .form-group input,
             .form-group select {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                font-family: Poppins, sans-serif;
-                font-size: 16px;
-                margin-bottom: 15px;
+                transition: all 0.3s ease;
             }
-            .right-section {
-                flex: 1;
-                padding: 40px;
-                box-sizing: border-box;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
-                min-width: 300px;
+            .form-group label {
+                position: absolute;
+                left: 1rem;
+                top: 0.75rem;
+                color: #6b7280;
+                transition: all 0.3s ease;
+                pointer-events: none;
+                font-size: 1rem;
             }
-
-            .error-message {
-                color: red;
-                font-weight: bold;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                word-break: break-word;
-                max-width: 100%;
-                text-align: center;
-
-                .right-section p {
-                    max-width: 100%;
-                    word-break: break-word;
-                }
-
-                .form-group select:focus {
-                    outline: none;
-                    border-color: #007bff;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <!-- Left Section -->
-                <div class="left-section">
-                    <div class="overlay"></div>
-                    <div class="left-header" style="position: relative;
-                         z-index: 2;">
-                        <span>Work for Day</span>
-                        <div class="buttons">
-                            <button onclick="location.href = 'signup'">Sign Up</button>
-                            <button onclick="location.href = '#'">Home</button>
-                        </div>
-                    </div>
+            .form-group input:focus + label,
+            .form-group input:not(:placeholder-shown) + label,
+            .form-group select:focus + label,
+            .form-group select:not([value=""]) + label {
+                transform: translateY(-1.8rem);
+                font-size: 0.75rem;
+                color: #3b82f6;
+                background: #fff;
+                padding: 0 0.25rem;
+            }
+            .form-group select:not([value=""]) + label {
+                transform: translateY(-1.8rem);
+                font-size: 0.75rem;
+                color: #3b82f6;
+            }
+            .left-section::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+                border-radius: 1.5rem 0 0 1.5rem;
+                z-index: 1;
+            }
+        </style>
+    </head>
+    <body class="bg-gradient-to-br from-blue-600 to-indigo-400 flex items-center justify-center min-h-screen p-4">
+        <div class="container max-w-4xl w-full bg-white rounded-3xl shadow-2xl flex overflow-hidden animate-[fadeIn_0.6s_ease-out]">
+            <!-- Left Section -->
+            <div class="left-section relative flex-1 bg-[url('img/bgr.jpg')] bg-cover bg-center p-8 flex flex-col justify-between text-white min-w-[300px]">
+                <div class="relative z-10">
+                    <h1 class="text-3xl font-bold tracking-tight">Work for Day</h1>
+                    <p class="mt-2 text-sm opacity-80">Nền tảng kết nối dịch vụ vận chuyển và kho bãi</p>
                 </div>
-
-                <div class="right-section">
-                    <p class="logo">Welcome to Website</p>
-
-                    <c:if test="${not empty mess}">
-                <p style="color: red; font-weight: bold;">${mess}</p>
-            </c:if>
-            <c:if test="${not empty error}">
-                <p style="color: red; font-weight: bold;">${error}</p>
-            </c:if>
-
-
-                    <form id="loginForm" action="login" method="post">
-                        <div class="form-group">
-                            <select name="role_id" id="role_id" required>
-                                <option value="1">Admin</option>
-                                <option value="2">Operator</option>
-                                <option value="3">Staff</option>
-                                <option value="4">Đơn vị vận chuyển</option>
-                                <option value="5">Đơn vị kho bãi</option>
-                                <option value="6" selected>Khách hàng</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="email" id="email" value="${email != null ? email : ''}" required />
-                            <label for="email">Email</label>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" name="password" id="password" required />
-                            <label for="password">Password</label>
-                        </div>
-
-                        <a href="forgot" class="forgot-password">Quên mật khẩu?</a>
-                        <div class="or-divider">— hoặc —</div>
-
-                        <button type="button" class="google-login" onclick="loginWithGoogle()">
-                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" />
-                            Đăng nhập với Google
-                        </button>
-
-                        <button type="submit" class="login-btn">Đăng nhập</button>
-
-                        <button type="button" class="google-login" onclick="location.href = 'signup'" 
-                                style="margin-top: 10px;
-                                width: 100%;
-                                padding: 10px;
-                                color: black;
-                                border: none;
-                                border-radius: 10px;
-                                cursor: pointer;">
-                            Tạo tài khoản
-                        </button>
-                    </form>
-                </div>
+                <div class="relative z-10 flex space-x-4">
+                    <button onclick="location.href = 'signup'" class="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover-scale hover:bg-blue-50 transition-colors">Đăng ký</button>
+                    <button onclick="window.location.href = 'http://localhost:9999/HouseMovingSystem/homePage/homePage.html'" class="bg-transparent border border-white px-6 py-2 rounded-full font-medium hover-scale hover:bg-white hover:text-blue-600 transition-colors">Trang chủ</button>            </div>
             </div>
 
-            <script>
-                function loginWithGoogle() {
-                    const roleId = document.getElementById('role_id').value;
-                    const googleAuthUrl = 'https://accounts.google.com/o/oauth2/auth?scope=email profile openid' +
-                            '&redirect_uri=http://localhost:8080/HouseMovingSystem/LoginGoogleServlet' +
-                            '&response_type=code' +
-                            '&client_id=820713583757-asdgtkcasbf9maf6uvu91kpc67k5d418.apps.googleusercontent.com' +
-                            '&approval_prompt=force' +
-                            '&state=role_id=' + encodeURIComponent(roleId);
-                    window.location.href = googleAuthUrl;
+            <!-- Right Section -->
+            <div class="right-section flex-1 p-10 flex flex-col justify-center min-w-[300px]">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Chào mừng bạn đến với Website</h2>
+
+                <c:if test="${not empty mess}">
+                    <p class="text-red-500 font-medium text-center mb-4">${mess}</p>
+                </c:if>
+                <c:if test="${not empty error}">
+                    <p class="text-red-500 font-medium text-center mb-4">${error}</p>
+                </c:if>
+
+                <form id="loginForm" action="login" method="post" class="space-y-6">
+                    <div class="form-group">
+                        <select name="role_id" id="role_id" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" required>
+                            <option value="" disabled>Chọn vai trò</option>
+                            <option value="1">Quản trị viên</option>
+                            <option value="2">Điều hành</option>
+                            <option value="3">Nhân viên</option>
+                            <option value="4">Đơn vị vận chuyển</option>
+                            <option value="5">Đơn vị kho bãi</option>
+                            <option value="6" selected>Khách hàng</option>
+                        </select>
+                        <label for="role_id">Vai trò</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="email" id="email" value="${email != null ? email : ''}" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder=" " required />
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder=" " required />
+                        <label for="password">Mật khẩu</label>
+                    </div>
+
+                    <a href="forgot" class="text-blue-600 text-sm hover:underline text-right block">Quên mật khẩu?</a>
+
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover-scale hover:bg-blue-700 transition-colors">Đăng nhập</button>
+
+                    <div class="flex items-center justify-center space-x-4 my-4">
+                        <span class="h-px w-12 bg-gray-300"></span>
+                        <span class="text-gray-500 text-sm">hoặc</span>
+                        <span class="h-px w-12 bg-gray-300"></span>
+                    </div>
+
+                    <button type="button" class="google-login w-full bg-white text-gray-800 py-3 rounded-lg font-medium border border-gray-300 hover-scale hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2" onclick="loginWithGoogle()">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" class="w-5 h-5" />
+                        <span>Đăng nhập với Google</span>
+                    </button>
+
+                    <button type="button" class="w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-medium hover-scale hover:bg-gray-200 transition-colors" onclick="location.href = 'signup'">Tạo tài khoản</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function loginWithGoogle() {
+                const roleId = document.getElementById('role_id').value;
+                const googleAuthUrl = 'https://accounts.google.com/o/oauth2/auth?scope=email profile openid' +
+                        '&redirect_uri=http://localhost:9999/HouseMovingSystem/LoginGoogleServlet' +
+                        '&response_type=code' +
+                        '&client_id=820713583757-asdgtkcasbf9maf6uvu91kpc67k5d418.apps.googleusercontent.com' +
+                        '&approval_prompt=force' +
+                        '&state=role_id=' + encodeURIComponent(roleId);
+                window.location.href = googleAuthUrl;
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const select = document.getElementById('role_id');
+                const label = select.nextElementSibling;
+                if (select.value !== '') {
+                    label.style.transform = 'translateY(-1.8rem)';
+                    label.style.fontSize = '0.75rem';
+                    label.style.color = '#3b82f6';
+                    label.style.background = '#fff';
+                    label.style.padding = '0 0.25rem';
                 }
-            </script>
-        </body>
-    </html>
+            });
+        </script>
+    </body>
+</html>

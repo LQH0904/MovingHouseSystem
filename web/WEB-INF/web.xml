@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee                               https://jakarta.ee/xml/ns/jakartaee/web-app_4_0.xsd">
+=======
+<web-app version="4.0" 
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+    
+    <!-- User Management Servlets -->
+>>>>>>> merge_code
     <servlet>
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>controller.UserListServlet</servlet-class>
@@ -19,7 +29,6 @@
         <url-pattern>/Operator/AddUserServlet</url-pattern>
     </servlet-mapping>
 
-
     <servlet>
         <servlet-name>DeleteUserServlet</servlet-name>
         <servlet-class>controller.DeleteUserServlet</servlet-class>
@@ -28,10 +37,32 @@
         <servlet-name>DeleteUserServlet</servlet-name>
         <url-pattern>/Operator/DeleteUserServlet</url-pattern>
     </servlet-mapping>
+    
+    <!-- Survey Configuration Servlet -->
+    <servlet>
+        <servlet-name>SurveyConfigController</servlet-name>
+        <servlet-class>controller.reportSummary.SurveyConfigController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SurveyConfigController</servlet-name>
+        <url-pattern>/survey-config/*</url-pattern>
+    </servlet-mapping>
+    
+    <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+    <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>5.0.0</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <!-- Welcome Files -->
     <welcome-file-list>
         <welcome-file>homePage.html</welcome-file>
     </welcome-file-list>
 
+<<<<<<< HEAD
     
 
 =======
@@ -54,3 +85,6 @@
     </servlet-mapping>
 >>>>>>> origin/Test
 </web-app>
+=======
+</web-app>
+>>>>>>> merge_code
