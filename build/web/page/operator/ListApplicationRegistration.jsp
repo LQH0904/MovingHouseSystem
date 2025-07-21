@@ -100,61 +100,64 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach var="item" items="${applications}">
-                                                    <tr>
-                                                        <td><span class="badge bg-light text-dark id-badge">${item.application_id}</span></td>
-                                                        <td><strong class="user-name">${item.username}</strong></td>
-                                                        <td>
-                                                            <c:choose>
-                                                                <c:when test="${item.role_id == 4}">
-                                                                    <span class="type-transport">
-                                                                        <i class="bi bi-truck"></i> Vận Chuyển
-                                                                    </span>
-                                                                </c:when>
-                                                                <c:when test="${item.role_id == 5}">
-                                                                    <span class="type-storage">
-                                                                        <i class="bi bi-building"></i> Kho Bãi
-                                                                    </span>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <span class="text-muted">
-                                                                        <i class="bi bi-question-circle"></i> Unknown
-                                                                    </span>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                        </td>
-                                                        <td>
-                                                            <c:choose>
-                                                                <c:when test="${item.status_id == 1}">
-                                                                    <span class="badge bg-warning text-dark status-badge">
-                                                                        <i class="bi bi-hourglass-split"></i> Đang chờ 
-                                                                    </span>
-                                                                </c:when>
-                                                                <c:when test="${item.status_id == 2}">
-                                                                    <span class="badge bg-success status-badge">
-                                                                        <i class="bi bi-check-circle"></i> Đã duyệt
-                                                                    </span>
-                                                                </c:when>
-                                                                <c:when test="${item.status_id == 3}">
-                                                                    <span class="badge bg-danger status-badge">
-                                                                        <i class="bi bi-x-circle"></i> Từ chối 
-                                                                    </span>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <span class="badge bg-secondary status-badge">
-                                                                        <i class="bi bi-question-circle"></i> Unknown
-                                                                    </span>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                        </td>
-                                                        <td>
-                                                            <a href="${pageContext.request.contextPath}/appli-detail?id=${item.application_id}" class="btn btn-sm btn-outline-primary action-btn">
-                                                                <i class="bi bi-eye me-1"></i> Chi Tiết 
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </tbody>
+    <c:forEach var="item" items="${applications}">
+        <tr>
+            <td><span class="badge bg-light text-dark id-badge">${item.application_id}</span></td>
+            <td><strong class="user-name">${item.username}</strong></td>
+            <td>
+                <c:choose>
+                    <c:when test="${item.role_id == 4}">
+                        <span class="type-transport">
+                            <i class="bi bi-truck"></i> Vận Chuyển
+                        </span>
+                    </c:when>
+                    <c:when test="${item.role_id == 5}">
+                        <span class="type-storage">
+                            <i class="bi bi-building"></i> Kho Bãi
+                        </span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="text-muted">
+                            <i class="bi bi-question-circle"></i> Unknown
+                        </span>
+                    </c:otherwise>
+                </c:choose>
+            </td>
+            <td>
+                <c:choose>
+                    <c:when test="${item.status_id == 1}">
+                        <span class="badge bg-warning text-dark status-badge">
+                            <i class="bi bi-hourglass-split"></i> Đang chờ
+                        </span>
+                    </c:when>
+                    <c:when test="${item.status_id == 2}">
+                        <span class="badge bg-success status-badge">
+                            <i class="bi bi-check-circle"></i> Đã duyệt
+                        </span>
+                    </c:when>
+                    <c:when test="${item.status_id == 3}">
+                        <span class="badge bg-danger status-badge">
+                            <i class="bi bi-x-circle"></i> Từ chối
+                        </span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="badge bg-secondary status-badge">
+                            <i class="bi bi-question-circle"></i> Unknown
+                        </span>
+                    </c:otherwise>
+                </c:choose>
+            </td>
+            <td>
+                <!-- Sửa link để truyền cả application_id và role_id -->
+                <a href="${pageContext.request.contextPath}/application-detail?id=${item.application_id}&type=${item.role_id}" 
+                   class="btn btn-sm btn-outline-primary action-btn">
+                    <i class="bi bi-eye me-1"></i> Chi Tiết
+                </a>
+            </td>
+        </tr>
+    </c:forEach>
+</tbody>
+
                                         </table>
                                     </div>
                                 </c:otherwise>
