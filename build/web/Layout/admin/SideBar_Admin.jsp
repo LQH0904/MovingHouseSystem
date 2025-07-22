@@ -43,41 +43,12 @@
                     
                     
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/admin/session-logs" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
-                            <span class="link">Khiếu Nại</span>
+                            <span class="link">Hoạt Động</span>
                         </a>
                     </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
-                            <span class="link">Duyệt Đơn</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="#" class="nav-link">
-                            <i class="bx bx-folder-open icon"></i>
-                            <span class="link">Files</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
-                            <i class="bx bx-folder-open icon"></i>
-                            <span class="link">Chính sách</span>
-                            <i class="bx bx-chevron-down" style="margin-left:auto;"></i>
-                        </a>
-                        <ul class="sub-menu" id="policy-submenu" style="display:none; padding-left: 25px;">
-                            <li><a href="${pageContext.request.contextPath}/operation-procedure">Quy trình hoạt động</a></li>
-                            <li><a href="${pageContext.request.contextPath}/operation-policy">Chính sách hoạt động</a></li>
-                            <li><a href="${pageContext.request.contextPath}/config-fee">Cấu hình phí</a></li>
-                        </ul>
-                    </li>
-                    <li class="list">
-                        <a href="#" class="nav-link">
-                            <i class="bx bx-cog icon"></i>
-                            <span class="link">Settings</span>
-                        </a>
-                    </li>
+                    
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/logout" class="nav-link">
                             <i class="bx bx-log-out icon"></i>
@@ -89,25 +60,6 @@
             </div>
         </div>
 
-        <script>
-            function toggleSubmenu(event) {
-                event.preventDefault();
-                const listItem = event.currentTarget.parentElement;
-                const submenu = listItem.querySelector('.submenu');
-                const arrow = listItem.querySelector('.arrow');
-                
-                // Toggle active class
-                listItem.classList.toggle('active');
-                
-                // Rotate arrow
-                if (listItem.classList.contains('active')) {
-                    arrow.style.transform = 'rotate(180deg)';
-                    submenu.style.maxHeight = submenu.scrollHeight + 'px';
-                } else {
-                    arrow.style.transform = 'rotate(0deg)';
-                    submenu.style.maxHeight = '0px';
-                }
-            }
-        </script>
+        
     </body>
 </html>

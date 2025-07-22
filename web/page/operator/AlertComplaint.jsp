@@ -109,11 +109,11 @@
                                           <td>${item.email}</td>
                                           <td>
                                               <c:choose>
-                                                  <c:when test="${item.unitType == 'Transport'}">
+                                                  <c:when test="${item.unitType == 'transport'}">
                                                       <span class="type-badge type-transport">Vận chuyển</span>
                                                   </c:when>
-                                                  <c:when test="${item.unitType == 'Storage'}">
-                                                      <span class="type-badge type-warehouse">Kho</span>
+                                                  <c:when test="${item.unitType == 'storage'}">
+                                                      <span class="type-badge type-warehouse">Kho bãi</span>
                                                   </c:when>
                                                   <c:otherwise>
                                                       <span class="type-badge neutral">Khác (${item.unitType})</span>
