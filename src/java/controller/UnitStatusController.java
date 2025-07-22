@@ -1,10 +1,10 @@
 package controller;
 
 import dao.StorageUnitDetailDAO;
+import dao.TransportUnitDetailDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
 
 @WebServlet("/operator/application-status")
@@ -40,9 +40,9 @@ public class UnitStatusController extends HttpServlet {
         if (type.equals("storage")) {
             success = storageUnitDAO.updateApprovalStatus(unitId, newRegistrationStatus, newUserStatus);
         } else if (type.equals("transport")) {
-            // Bạn cần có thêm `TransportUnitDAO` với method tương tự để xử lý loại này
-            // TransportUnitDAO transportDAO = new TransportUnitDAO();
-            // success = transportDAO.updateApprovalStatus(unitId, newRegistrationStatus, newUserStatus);
+            TransportUnitDetailDAO transportDAO = new TransportUnitDetailDAO();
+success = transportDAO.updateApprovalStatus(unitId, newRegistrationStatus, newUserStatus);
+
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Loại đơn vị không hợp lệ.");
             return;

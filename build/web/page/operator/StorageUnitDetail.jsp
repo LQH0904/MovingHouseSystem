@@ -782,7 +782,65 @@
             </div>
         </div>
 
-
+     <script>
+    
+    
+    function closeModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    function openImageModal(src, title) {
+        document.getElementById('modalImage').src = src;
+        document.getElementById('imageTitle').textContent = title;
+        // Thay đổi từ 'block' thành 'flex' để center modal
+        document.getElementById('imageModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeImageModal() {
+        document.getElementById('imageModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Đóng modal khi click bên ngoài
+    window.onclick = function(event) {
+        const confirmModal = document.getElementById('confirmModal');
+        const imageModal = document.getElementById('imageModal');
+        
+        if (event.target === confirmModal) {
+            closeModal();
+        }
+        if (event.target === imageModal) {
+            closeImageModal();
+        }
+    }
+    
+    // Đóng modal bằng phím ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+            closeImageModal();
+        }
+    });
+    
+    // Animation khi load trang
+    document.addEventListener('DOMContentLoaded', function() {
+        const items = document.querySelectorAll('.detail-item, .image-item, .stat-card');
+        items.forEach((item, index) => {
+            setTimeout(() => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 100);
+        });
+    });
+</script>
 
         
     </body>

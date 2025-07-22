@@ -113,57 +113,44 @@ public class TransportUnitDetailDAO {
     
     /**
      * Cập nhật trạng thái đăng ký
-     */
-    public boolean updateRegistrationStatus(int transportUnitId, String status) {
-        String sql = "UPDATE TransportUnits SET registration_status = ?, updated_at = CURRENT_TIMESTAMP WHERE transport_unit_id = ?";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, status);
-            ps.setInt(2, transportUnitId);
-            
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    public boolean updateApprovalStatus(int transportUnitId, String registrationStatus, String userStatus) {
-    String sql1 = "UPDATE TransportUnits SET registration_status = ?, updated_at = CURRENT_TIMESTAMP WHERE transport_unit_id = ?";
-    String sql2 = "UPDATE Users SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?";
-    
+     */   
+    /**
+ * Cập nhật trạng thái duyệt đơn vị vận chuyển
+ */
+public boolean updateApprovalStatus(int transportUnitId, String newRegistrationStatus, String newUserStatus) {
+    String updateTransportSql = "UPDATE TransportUnits SET registration_status = ? WHERE transport_unit_id = ?";
+    String updateUserSql = "UPDATE Users SET status = ?, updated_at = GETDATE() WHERE user_id = ?";
+
     try (Connection conn = DBConnection.getConnection()) {
-        conn.setAutoCommit(false); // bắt đầu transaction
+        conn.setAutoCommit(false); // Bắt đầu transaction
 
         try (
-            PreparedStatement ps1 = conn.prepareStatement(sql1);
-            PreparedStatement ps2 = conn.prepareStatement(sql2)
+            PreparedStatement psTransport = conn.prepareStatement(updateTransportSql);
+            PreparedStatement psUser = conn.prepareStatement(updateUserSql)
         ) {
-            ps1.setString(1, registrationStatus);
-            ps1.setInt(2, transportUnitId);
-            ps1.executeUpdate();
+            // Update bảng TransportUnits
+            psTransport.setString(1, newRegistrationStatus);
+            psTransport.setInt(2, transportUnitId);
+            psTransport.executeUpdate();
 
-            ps2.setString(1, userStatus);
-            ps2.setInt(2, transportUnitId);
-            ps2.executeUpdate();
+            // Update bảng Users
+            psUser.setString(1, newUserStatus);
+            psUser.setInt(2, transportUnitId); // transport_unit_id chính là user_id
+            psUser.executeUpdate();
 
-            conn.commit(); // nếu cả 2 thành công
+            conn.commit();
             return true;
         } catch (SQLException e) {
-            conn.rollback(); // nếu có lỗi, rollback
+            conn.rollback();
             e.printStackTrace();
-            return false;
-        } finally {
-            conn.setAutoCommit(true);
         }
     } catch (SQLException e) {
         e.printStackTrace();
-        return false;
     }
+
+    return false;
 }
-    
+
     
 
 }

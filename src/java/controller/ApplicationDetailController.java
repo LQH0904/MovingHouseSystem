@@ -35,13 +35,24 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
     String registrationStatus = action.equals("approve") ? "approved" : "rejected";
     String userStatus = action.equals("approve") ? "active" : "inactive";
 
-    StorageUnitDetailDAO dao = new StorageUnitDetailDAO();
-    boolean success = dao.updateApprovalStatus(id, registrationStatus, userStatus);
+    boolean success = false;
 
-    // Sau khi xử lý thành công thì chuyển về list
-    response.sendRedirect(request.getContextPath() + "/operator/listApplication");
+    if (type == 5) { // storage
+        StorageUnitDetailDAO storageDAO = new StorageUnitDetailDAO();
+        success = storageDAO.updateApprovalStatus(id, registrationStatus, userStatus);
+    } else if (type == 4) { // transport
+        TransportUnitDetailDAO transportDAO = new TransportUnitDetailDAO();
+        success = transportDAO.updateApprovalStatus(id, registrationStatus, userStatus);
+    }
+
+    if (success) {
+        response.sendRedirect(request.getContextPath() + "/operator/listApplication");
+    } else {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cập nhật trạng thái thất bại.");
+    }
     return;
 }
+
 
 
 
