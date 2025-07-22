@@ -27,7 +27,7 @@ public class MailUtil {
             MimeMessage message = new MimeMessage(session);
 
             // Đặt người gửi với tên hiển thị hỗ trợ UTF-8
-            message.setFrom(new InternetAddress(FROM_EMAIL, "Hệ thống cảnh báo", "UTF-8"));
+            message.setFrom(new InternetAddress(FROM_EMAIL, "Hệ Thống Dịch Vụ Chuyển Nhà - Moving House", "UTF-8"));
 
             // Đặt người nhận
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
