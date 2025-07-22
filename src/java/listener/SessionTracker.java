@@ -19,12 +19,16 @@ public class SessionTracker implements HttpSessionListener {
     }
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
-        HttpSession session = se.getSession();
-        UserSessionInfo info = (UserSessionInfo) session.getAttribute("sessionInfo");
-        if (info != null) {
-            info.setLogoutTime(LocalDateTime.now());
-            sessionLogs.add(info);
-        }
+public void sessionDestroyed(HttpSessionEvent se) {
+    HttpSession session = se.getSession();
+    UserSessionInfo info = (UserSessionInfo) session.getAttribute("sessionInfo");
+    if (info != null) {
+        // Clone object để tránh bị trùng bản ghi do cùng object reference
+        UserSessionInfo clonedInfo = new UserSessionInfo(info.getUsername(), info.getLoginTime());
+        clonedInfo.setLogoutTime(LocalDateTime.now());
+
+        sessionLogs.add(clonedInfo);
     }
+}
+
 }
