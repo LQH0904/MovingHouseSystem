@@ -10,18 +10,7 @@ import java.util.List;
 
 public class UnitRegistrationDAO {
     
-    public void updateUnitRegistrationStatus(int userId, String registrationStatus, String userStatus) {
-        String sql = "UPDATE Users SET registration_status = ?, status = ?, update_at = GETDATE() WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, registrationStatus);
-            ps.setString(2, userStatus);
-            ps.setInt(3, userId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace(); // Hoặc log ra file
-        }
-    }
+    
 
     public List<UnitInfo> getAllUnits() {
         List<UnitInfo> units = new ArrayList<>();

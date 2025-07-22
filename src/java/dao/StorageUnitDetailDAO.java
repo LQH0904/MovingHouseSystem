@@ -116,21 +116,62 @@ public class StorageUnitDetailDAO {
     }
     
     /**
-     * Cập nhật trạng thái đăng ký
-     */
-    public boolean updateRegistrationStatus(int storageUnitId, String status) {
-        String sql = "UPDATE StorageUnits SET registration_status = ?, updated_at = CURRENT_TIMESTAMP WHERE storage_unit_id = ?";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, status);
-            ps.setInt(2, storageUnitId);
-            
-            return ps.executeUpdate() > 0;
+ * Cập nhật trạng thái phê duyệt của đơn vị lưu trữ
+ */
+public boolean updateApprovalStatus(int storageUnitId, String newRegistrationStatus, String newUserStatus) {
+    String updateStorageSql = "UPDATE StorageUnits SET registration_status = ? WHERE storage_unit_id = ?";
+    String updateUserSql = "UPDATE Users SET status = ?, updated_at = GETDATE() WHERE user_id = ?";
+    
+    try (Connection conn = DBConnection.getConnection()) {
+        conn.setAutoCommit(false); // Bắt đầu transaction
+
+        try (
+            PreparedStatement psStorage = conn.prepareStatement(updateStorageSql);
+            PreparedStatement psUser = conn.prepareStatement(updateUserSql)
+        ) {
+            // Update bảng StorageUnits
+            psStorage.setString(1, newRegistrationStatus);
+            psStorage.setInt(2, storageUnitId);
+            psStorage.executeUpdate();
+
+            // Update bảng Users
+            psUser.setString(1, newUserStatus);
+            psUser.setInt(2, storageUnitId); // Vì storage_unit_id chính là user_id
+            psUser.executeUpdate();
+
+            conn.commit();
+            return true;
         } catch (SQLException e) {
+            conn.rollback();
             e.printStackTrace();
-            return false;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public static void main(String[] args) {
+        StorageUnitDetailDAO dao = new StorageUnitDetailDAO();
+
+        int testStorageUnitId = 6; // 👈 Thay bằng ID thật trong CSDL để test
+
+//        // Test từ chối đơn vị
+//        boolean rejected = dao.updateApprovalStatus(testStorageUnitId, "rejected", "inactive");
+//        if (rejected) {
+//            System.out.println("❌ Đã từ chối đơn vị thành công.");
+//        } else {
+//            System.out.println("⚠️ Từ chối đơn vị thất bại.");
+//        }
+
+        // Test phê duyệt đơn vị
+        boolean approved = dao.updateApprovalStatus(testStorageUnitId, "approved", "active");
+        if (approved) {
+            System.out.println("✅ Đã phê duyệt đơn vị thành công.");
+        } else {
+            System.out.println("⚠️ Phê duyệt đơn vị thất bại.");
         }
     }
+
+    
 }

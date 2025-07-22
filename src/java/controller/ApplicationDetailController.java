@@ -31,17 +31,19 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
         int type = Integer.parseInt(typeParam);
 
         // Xử lý approve / reject
-        if (action != null && (action.equals("approve") || action.equals("reject"))) {
-            String registrationStatus = action.equals("approve") ? "approved" : "rejected";
-            String userStatus = action.equals("approve") ? "active" : "inactive";
+       if (action != null && (action.equals("approve") || action.equals("reject"))) {
+    String registrationStatus = action.equals("approve") ? "approved" : "rejected";
+    String userStatus = action.equals("approve") ? "active" : "inactive";
 
-            UnitRegistrationDAO dao = new UnitRegistrationDAO();
-            dao.updateUnitRegistrationStatus(id, registrationStatus, userStatus);
+    StorageUnitDetailDAO dao = new StorageUnitDetailDAO();
+    boolean success = dao.updateApprovalStatus(id, registrationStatus, userStatus);
 
-            // Chuyển hướng lại trang chi tiết
-            response.sendRedirect(request.getContextPath() + "/application-detail?id=" + id + "&type=" + type);
-            return;
-        }
+    // Sau khi xử lý thành công thì chuyển về list
+    response.sendRedirect(request.getContextPath() + "/operator/listApplication");
+    return;
+}
+
+
 
         // Hiển thị chi tiết
         if (type == 5) {
