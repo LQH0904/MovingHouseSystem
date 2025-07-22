@@ -7,21 +7,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
         <title>Sidebar Menu | Side Navigation Bar</title> 
-        <link 
-            href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" 
-            rel="stylesheet" 
-            /> 
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css"> 
     </head> 
-    <body> 
-
-        <!-- Boxicons CSS -->
-        <link
-            href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
-            rel="stylesheet"
-            />
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
-    </head>
     <body>
 
         <!-- Sidebar -->
@@ -35,7 +23,33 @@
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
-                    
+                    <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 2)}">
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/analyz" class="nav-link">
+                                <i class="bx bx-pie-chart-alt-2 icon"></i>
+                                <span class="link">Phân tích Báo cáo</span>
+                            </a>
+                        </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/sendNotification" class="nav-link">
+                                <i class="bx bx-message-rounded icon"></i>
+                                <span class="link">Gửi Thông báo</span>
+                            </a>
+                        </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/notifications" class="nav-link">
+                                <i class="bx bx-bell icon"></i>
+                                <span class="link">Thông báo</span>
+                            </a>
+                        </li>
+                        <li class="list">
+                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
+                                <i class="bx bx-export icon"></i>
+                                <span class="link">Xuất dữ liệu</span>
+                            </a>
+                        </li>
+                    </c:if>
+
                     <!-- Menu có submenu -->
                     <li class="list has-submenu">
                         <a href="#" class="nav-link" onclick="toggleSubmenu(event)">
@@ -64,31 +78,20 @@
                             </li>
                         </ul>
                     </li>
-                    
+
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
-                            <i class="bx bx-bell icon"></i>
+                            <i class="bx bx-calendar-alt icon"></i>
                             <span class="link">Đơn Hàng</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/invRURL" class="nav-link">
-                            <i class="bx bx-message-rounded icon"></i>
-                            <span class="link">Báo Cáo Tồn Kho</span>
                         </a>
                     </li>
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
-                            <span class="link">Khiếu Nại</span>
+                            <span class="link">Danh sách khiếu nại</span>
                         </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
-                            <span class="link">Duyệt Đơn</span>
-                        </a>
-                    </li>
+                   
+                            
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
@@ -107,18 +110,6 @@
                             <li><a href="${pageContext.request.contextPath}/config-fee">Cấu hình phí</a></li>
                         </ul>
                     </li>
-                    <li class="list">
-                        <a href="#" class="nav-link">
-                            <i class="bx bx-cog icon"></i>
-                            <span class="link">Settings</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="${pageContext.request.contextPath}/logout" class="nav-link">
-                            <i class="bx bx-log-out icon"></i>
-                            <span class="link">Logout</span>
-                        </a>
-                    </li>
                 </ul>
 
             </div>
@@ -130,10 +121,10 @@
                 const listItem = event.currentTarget.parentElement;
                 const submenu = listItem.querySelector('.submenu');
                 const arrow = listItem.querySelector('.arrow');
-                
+
                 // Toggle active class
                 listItem.classList.toggle('active');
-                
+
                 // Rotate arrow
                 if (listItem.classList.contains('active')) {
                     arrow.style.transform = 'rotate(180deg)';

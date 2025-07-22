@@ -201,3 +201,8 @@ nav.open ~ .overlay {
   left: 260px;
   pointer-events: auto;
 }
+
+ol,
+ul {
+  padding-left: 0.5rem !important;
+}

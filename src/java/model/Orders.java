@@ -4,24 +4,39 @@
  */
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Orders {
 
+    @JsonProperty("order_id")
     private int orderId;
+    @JsonProperty("customer_id")
     private int customerId;
+    @JsonProperty("customer_name")
     private String customerName; 
+    @JsonProperty("transport_unit_id")
     private Integer transportUnitId;
+    @JsonProperty("transport_unit_name")
     private String transportUnitName; 
+    @JsonProperty("storage_unit_id")
     private Integer storageUnitId;
+    @JsonProperty("storage_unit_name")
     private String storageUnitName;
+    @JsonProperty("order_status")
     private String orderStatus;
+    @JsonProperty("created_at")
     private Timestamp createdAt;
+    @JsonProperty("updated_at")
     private Timestamp updatedAt;
+    @JsonProperty("delivery_schedule")
     private Timestamp deliverySchedule;
+    @JsonProperty("total_fee")
     private BigDecimal totalFee;
+    @JsonProperty("accepted_at")
     private Timestamp acceptedAt;
+    @JsonProperty("delivered_at")
     private Timestamp deliveredAt;
 
     // Getters and Setters

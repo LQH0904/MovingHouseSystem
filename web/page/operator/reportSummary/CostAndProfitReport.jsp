@@ -1,6 +1,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
 String redirectURL = null;
@@ -9,6 +10,11 @@ if (session.getAttribute("acc") == null) {
     response.sendRedirect(request.getContextPath() + redirectURL);
     return;
 }
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId();
+String currentUsername = userAccount.getUsername();
+int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -864,6 +870,7 @@ if (session.getAttribute("acc") == null) {
                     </button>
                 </a> 
             </div>
+            <% if (currentUserRoleId != 3) { %> <!-- Ẩn nút nếu user là Staff (role_id = 3) -->
             <a href="http://localhost:9999/HouseMovingSystem/sendNotification">
                 <button class="continue-application">
                     <div>
@@ -880,6 +887,7 @@ if (session.getAttribute("acc") == null) {
                     Tạo thông báo
                 </button>
             </a>
+            <% } %>
 
         </div>
 

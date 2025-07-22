@@ -3,32 +3,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-
-        <!-- Bootstrap 4 CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- Font Awesome -->
+        <title>Header</title>
+        <!-- Bootstrap 5 CSS (đồng bộ với Order.jsp) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap Icons (để hiển thị icon bi-person-circle, bi-box-arrow-right) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <!-- Font Awesome (giữ lại cho các icon khác nếu cần) -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
-        <style>
-            .hori-selector {
-                display: inline-block;
-                position: absolute;
-                height: 100%;
-                top: 0;
-                left: 0;
-                background-color: rgba(255, 255, 255, 0.6); 
-                border-top-left-radius: 15px;
-                border-top-right-radius: 15px;
-                margin-top: 10px;
-                transition-duration: 0.6s;
-                transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                z-index: 0; 
-            }
-
-        </style>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-mainbg">
@@ -36,37 +18,26 @@
                 <a class="navbar-brand navbar-logo" href="${pageContext.request.contextPath}/homeOperator">
                     <img src="${pageContext.request.contextPath}/img/logo.jpg" alt="Logo" style="width: 254px; height: 64px; border-radius: 15px;" />
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                        <div class="hori-selector"></div>
-                        <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 2)}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/analyz"><i class="bi bi-bar-chart-fill"></i>Phân tích Báo cáo</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/sendNotification"><i class="bi bi-send-fill"></i>Gửi Thông báo</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/notifications"><i class="bi bi-bell-fill"></i>Thông báo</a>
-                            </li>
-                        </c:if>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <div class="hori-selector"></div>                      
                         <li class="nav-item">
-                            <a class="nav-link" href="javascript:void(0);"><i class="bi bi-person-circle"></i>Tài Khoản</a>
+                            <a class="nav-link" href="javascript:void(0);"><i class="bi bi-person-circle"></i> Tài Khoản</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/logout"><i class="bi bi-box-arrow-right"></i>Đăng Xuất</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/logout"><i class="bi bi-box-arrow-right"></i> Đăng Xuất</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <!-- jQuery + Bootstrap JS (đặt trước custom script) -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- jQuery và Bootstrap 5 JS (đồng bộ với Order.jsp) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
             $(document).ready(function () {
@@ -122,11 +93,8 @@
                     $('#navbarSupportedContent ul li:first').addClass('active'); 
                 }
                 updateHoriSelector();
-                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-bs-toggle="tooltip"]').tooltip();
             });
         </script>
-
-        <script src="${pageContext.request.contextPath}/js/Header.js"></script> 
-
     </body>
 </html>

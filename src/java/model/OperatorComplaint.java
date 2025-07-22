@@ -12,7 +12,7 @@ public class OperatorComplaint {
     private String priority;
     private Timestamp createdAt;
     private Timestamp resolvedAt;
-    private Integer assignedTo; // Đã thêm trường này
+    private Integer assignedTo;
     private String assignedToUsername;
 
     public int getIssueId() {
@@ -79,11 +79,11 @@ public class OperatorComplaint {
         this.resolvedAt = resolvedAt;
     }
 
-    public Integer getAssignedTo() { // Getter cho assignedTo
+    public Integer getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(Integer assignedTo) { // Setter cho assignedTo
+    public void setAssignedTo(Integer assignedTo) {
         this.assignedTo = assignedTo;
     }
 
@@ -106,7 +106,7 @@ public class OperatorComplaint {
                 + ", priority='" + priority + '\''
                 + ", createdAt=" + createdAt
                 + ", resolvedAt=" + resolvedAt
-                + ", assignedTo=" + assignedTo // Đã thêm vào toString
+                + ", assignedTo=" + assignedTo
                 + ", assignedToUsername='" + assignedToUsername + '\''
                 + '}';
     }
