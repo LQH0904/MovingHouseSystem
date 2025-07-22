@@ -84,10 +84,14 @@ public class StorageUnitDetailDAO {
             WHERE s.storage_unit_id = ? AND u.role_id = 5
         """;
         
+        
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, storageUnitId);
+            
+            // ✅ Đếm truy vấn SQL tại đây
+        QueryCounter.increaseQueryCount();
             
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
