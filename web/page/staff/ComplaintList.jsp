@@ -2,10 +2,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="model.UserAdmin"%>
+<%@ page import="model.Users" %>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
+    // Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -22,14 +36,25 @@
     </head>
     <body class="bg-light">
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
             <div class="div1">
-                <jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
-                <jsp:include page="/Layout/operator/Header.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
                 </div>
-                <div class="div3 p-4">
-                    <h3 class="mb-4 text-primary border-bottom pb-2">Danh sách khiếu nại</h3>
+            <% } %>
+
+            <% if (currentUserRoleId == 3) { %>
+            <div class="div1">
+                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
+                </div>
+            <% }%>  
+            <div class="div3 p-4">
+                <h3 class="mb-4 text-primary border-bottom pb-2">Danh sách khiếu nại</h3>
 
                 <c:if test="${not empty updateMessage}">
                     <div class="alert alert-${updateMessageType} alert-dismissible fade show" role="alert">
@@ -105,10 +130,22 @@
                                             <td>${complaint.status}</td>
                                             <td>${complaint.priority}</td>
                                             <td><fmt:formatDate value="${complaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
+                                            <% if (currentUserRoleId == 3) { %>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/ComplaintServlet?action=view&issueId=${complaint.issueId}"
-                                                   class="btn btn-sm btn-info">Chi tiết / Phản hồi</a>
+                                                <c:choose>
+                                                    <c:when test="${complaint.status == 'escalated'}">
+                                                        Điều hành viên
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a href="${pageContext.request.contextPath}/ComplaintServlet?action=view&issueId=${complaint.issueId}"
+                                                           class="btn btn-sm btn-info">Chi tiết / Phản hồi</a>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
+                                            <% } %>
+                                            <% if (currentUserRoleId == 2) { %>
+                                            <td>Nhân viên làm</td>
+                                            <% }%>
                                         </tr>
                                     </c:forEach>
                                 </c:when>

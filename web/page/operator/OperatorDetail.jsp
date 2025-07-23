@@ -19,22 +19,31 @@
             }
             .parent {
                 display: grid;
-                grid-template-columns: 250px 1fr;
-                grid-template-rows: auto 1fr;
-                min-height: 100vh;
+                height: 100vh; /* Đảm bảo parent chiếm toàn bộ chiều cao viewport */
+                grid-template-columns: 250px auto;
+                grid-template-rows: 70px auto;
+                grid-column-gap: 13px;
+                grid-row-gap: 9px;
             }
+
             .div1 {
-                grid-column: 1;
-                grid-row: 1 / span 2;
+                grid-area: 2 / 1 / 3 / 2; /* Sidebar */
+                background: #e3f2fd;
+                /* Không cần position: fixed; ở đây */
             }
             .div2 {
-                grid-column: 2;
-                grid-row: 1;
+                grid-area: 1 / 1 / 2 / 3; /* Header ngang full width */
+                /* Không cần position: fixed; ở đây */
             }
             .div3 {
-                grid-column: 2;
-                grid-row: 2;
-                padding: 20px;
+                grid-area: 2 / 2 / 3 / 3; /* Content */
+                border: 0px solid rgb(62, 49, 49);
+                box-shadow: 0 4px 16px rgba(169, 125, 125, 0.433);
+                border-top-left-radius: 10px;
+                background-color: white;
+
+                /* Thêm thuộc tính này để chỉ div3 có thể cuộn */
+                overflow-y: auto; /* hoặc scroll */
             }
             .container {
                 background-color: white;
@@ -97,7 +106,7 @@
     </head>
     <body>
         <div class="parent">
-           <div class="div1">
+            <div class="div1">
                 <jsp:include page="/Layout/operator/SideBar.jsp" />
             </div>
             <div class="div2">
