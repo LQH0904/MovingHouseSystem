@@ -13,14 +13,29 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/replyComplaint.css">
+        <style>
+            /* Thêm style mới cho character counter */
+            .char-counter {
+                font-size: 0.8rem;
+                text-align: right;
+                margin-top: 0.25rem;
+                color: #6c757d;
+            }
+            .char-counter.warning {
+                color: #ffc107;
+            }
+            .char-counter.danger {
+                color: #dc3545;
+            }
+        </style>
     </head>
     <body class="bg-light">
         <div class="parent">
             <div class="div1">
-                <jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
-                <jsp:include page="/Layout/operator/Header.jsp"></jsp:include>
+                <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
                 <div class="div3 p-4">
                     <div class="container mt-4">
@@ -72,7 +87,8 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Nội dung phản hồi:</label>
-                                <textarea name="replyContent" class="form-control" rows="4" required></textarea>
+                                <textarea name="replyContent" class="form-control" rows="4" maxlength="265" required></textarea>
+                                <div class="char-counter" id="charCounter">0/265 ký tự</div>
                             </div>
                             <button type="submit" class="btn btn-success">Gửi phản hồi</button>
                             <a href="${pageContext.request.contextPath}/ComplaintServlet" class="btn btn-secondary">Quay lại danh sách</a>
@@ -135,6 +151,45 @@
                     }, false);
                 });
             })();
+
+            // Thêm script mới để đếm ký tự
+            document.addEventListener('DOMContentLoaded', function () {
+                const textarea = document.querySelector('textarea[name="replyContent"]');
+                const charCounter = document.getElementById('charCounter');
+
+                textarea.addEventListener('input', function () {
+                    const currentLength = this.value.length;
+                    const maxLength = 265;
+                    charCounter.textContent = `${currentLength}/${maxLength} ký tự`;
+
+                    // Đổi màu khi gần đạt giới hạn
+                    if (currentLength > maxLength * 0.8) {
+                        charCounter.className = 'char-counter warning';
+                    } else if (currentLength > maxLength) {
+                        charCounter.className = 'char-counter danger';
+                    } else {
+                        charCounter.className = 'char-counter';
+                    }
+
+                    // Giới hạn ký tự
+                    if (currentLength > maxLength) {
+                        this.value = this.value.substring(0, maxLength);
+                        charCounter.textContent = `${maxLength}/${maxLength} ký tự (đã đạt giới hạn)`;
+                        charCounter.className = 'char-counter danger';
+                    }
+                });
+
+                // Validate khi submit form
+                const form = document.querySelector('.needs-validation');
+                form.addEventListener('submit', function (e) {
+                    const replyContent = textarea.value;
+                    if (replyContent.length > 265) {
+                        e.preventDefault();
+                        alert('Nội dung phản hồi không được vượt quá 265 ký tự');
+                        textarea.focus();
+                    }
+                });
+            });
         </script>
     </body>
 </html>

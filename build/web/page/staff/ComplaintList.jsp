@@ -23,10 +23,10 @@
     <body class="bg-light">
         <div class="parent">
             <div class="div1">
-                <jsp:include page="/Layout/operator/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
-                <jsp:include page="/Layout/operator/Header.jsp"></jsp:include>
+                <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
                 <div class="div3 p-4">
                     <h3 class="mb-4 text-primary border-bottom pb-2">Danh sách khiếu nại</h3>

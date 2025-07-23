@@ -72,40 +72,75 @@ public class ProfileController extends HttpServlet {
     private void updateBasicInfo(HttpServletRequest request, HttpServletResponse response, int userId)
             throws ServletException, IOException {
 
-        UserProfile profile = new UserProfile();
-        UserProfile profile1 = profileDAO.getUserProfileByUserId(userId);
-        profile.setUserId(userId);
-        profile.setFirstName(request.getParameter("firstName"));
-        profile.setLastName(request.getParameter("lastName"));
-        profile.setEmail(request.getParameter("email"));
-        profile.setPhoneNumber(request.getParameter("phoneNumber"));
-        profile.setDateOfBirth(java.sql.Date.valueOf(request.getParameter("dateOfBirth")));
-        profile.setGender(request.getParameter("gender"));
-        profile.setCountry(request.getParameter("country"));
-        profile.setCity(request.getParameter("city"));
-        profile.setDistrict(request.getParameter("district"));
-        profile.setStreet(request.getParameter("street"));
-        profile.setPostalCode(request.getParameter("postalCode"));
-        profile.setAvatarUrl(profile1.getAvatarUrl());
-        profile.setCustomThemeColor(profile1.getCustomThemeColor());
-        profile.setFacebookLink(profile1.getFacebookLink());
-        profile.setGoogleLink(profile.getGoogleLink());
-        profile.setLanguagePreference(profile1.getLanguagePreference());
-        profile.setNewPasswordHash(profile1.getNewPasswordHash());
-        profile.setOldPasswordHash(profile1.getOldPasswordHash());
-        profile.setTwitterLink(profile1.getTwitterLink());
-        profile.setThemePreference(profile1.getThemePreference());
-        profile.setUpdatedAt(new Date());
+        // Lấy thông tin từ form
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+        String phoneNumber = request.getParameter("phoneNumber");
+        String dateOfBirthStr = request.getParameter("dateOfBirth");
+        String gender = request.getParameter("gender");
+        String country = request.getParameter("country");
+        String city = request.getParameter("city");
+        String district = request.getParameter("district");
+        String street = request.getParameter("street");
+        String postalCode = request.getParameter("postalCode");
 
-        boolean success = profileDAO.updateUserProfile(profile);
-
-        if (success) {
-            request.setAttribute("message", "Cập nhật thông tin thành công!");
-        } else {
-            request.setAttribute("error", "Có lỗi xảy ra khi cập nhật thông tin");
+        if (firstName == null || firstName.trim().isEmpty()
+                || lastName == null || lastName.trim().isEmpty()) {
+            request.setAttribute("error", "Vui lòng điền đầy đủ họ và tên");
+            complete = true;
+            doGet(request, response);
+            return;
         }
-        complete = true;
 
+        try {
+            UserProfile profile = new UserProfile();
+            UserProfile profile1 = profileDAO.getUserProfileByUserId(userId);
+            profile.setUserId(userId);
+            profile.setFirstName(firstName);
+            profile.setLastName(lastName);
+            profile.setEmail(email);
+            profile.setPhoneNumber(phoneNumber);
+
+            // Xử lý ngày sinh
+            if (dateOfBirthStr != null && !dateOfBirthStr.isEmpty()) {
+                profile.setDateOfBirth(java.sql.Date.valueOf(dateOfBirthStr));
+            } else {
+                profile.setDateOfBirth(profile1.getDateOfBirth());
+            }
+
+            profile.setGender(gender);
+            profile.setCountry(country);
+            profile.setCity(city);
+            profile.setDistrict(district);
+            profile.setStreet(street);
+            profile.setPostalCode(postalCode);
+            profile.setAvatarUrl(profile1.getAvatarUrl());
+            profile.setCustomThemeColor(profile1.getCustomThemeColor());
+            profile.setFacebookLink(profile1.getFacebookLink());
+            profile.setGoogleLink(profile1.getGoogleLink());
+            profile.setLanguagePreference(profile1.getLanguagePreference());
+            profile.setNewPasswordHash(profile1.getNewPasswordHash());
+            profile.setOldPasswordHash(profile1.getOldPasswordHash());
+            profile.setTwitterLink(profile1.getTwitterLink());
+            profile.setThemePreference(profile1.getThemePreference());
+            profile.setUpdatedAt(new Date());
+
+            boolean success = profileDAO.updateUserProfile(profile);
+
+            if (success) {
+                request.setAttribute("successMessage", "Cập nhật thông tin thành công!");
+                // Cập nhật lại thông tin profile trong session nếu cần
+                UserProfile updatedProfile = profileDAO.getUserProfileByUserId(userId);
+                request.setAttribute("profile", updatedProfile);
+            } else {
+                request.setAttribute("error", "Có lỗi xảy ra khi cập nhật thông tin");
+            }
+        } catch (Exception e) {
+            request.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
+        }
+
+        complete = true;
         doGet(request, response);
     }
 
@@ -115,10 +150,19 @@ public class ProfileController extends HttpServlet {
         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
 
+        // Kiểm tra validation
+        if (oldPassword == null || oldPassword.trim().isEmpty()
+                || newPassword == null || newPassword.trim().isEmpty()) {
+            request.setAttribute("error", "Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới");
+            complete = true;
+            doGet(request, response);
+            return;
+        }
+
         boolean success = profileDAO.updateUserPassword(userId, oldPassword, newPassword);
 
         if (success) {
-            request.setAttribute("message", "Cập nhật mật khẩu thành công!");
+            request.setAttribute("successMessage", "Cập nhật mật khẩu thành công!");
         } else {
             request.setAttribute("error", "Mật khẩu cũ không đúng hoặc có lỗi khi cập nhật.");
         }
@@ -129,19 +173,27 @@ public class ProfileController extends HttpServlet {
     private void updateTheme(HttpServletRequest request, HttpServletResponse response, int userId)
             throws ServletException, IOException {
 
-        UserProfile profile = new UserProfile();
-        profile.setUserId(userId);
-        profile.setThemePreference(request.getParameter("theme"));
-        profile.setLanguagePreference(request.getParameter("language"));
-        profile.setCustomThemeColor(request.getParameter("customColor"));
-        profile.setUpdatedAt(new Date());
+        String theme = request.getParameter("theme");
+        String language = request.getParameter("language");
+        String customColor = request.getParameter("customColor");
 
-        boolean success = profileDAO.updateUserProfile(profile);
+        try {
+            UserProfile profile = new UserProfile();
+            profile.setUserId(userId);
+            profile.setThemePreference(theme);
+            profile.setLanguagePreference(language);
+            profile.setCustomThemeColor(customColor);
+            profile.setUpdatedAt(new Date());
 
-        if (success) {
-            request.setAttribute("message", "Cập nhật giao diện thành công!");
-        } else {
-            request.setAttribute("error", "Có lỗi xảy ra khi cập nhật giao diện");
+            boolean success = profileDAO.updateUserProfile(profile);
+
+            if (success) {
+                request.setAttribute("successMessage", "Cập nhật giao diện thành công!");
+            } else {
+                request.setAttribute("error", "Có lỗi xảy ra khi cập nhật giao diện");
+            }
+        } catch (Exception e) {
+            request.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
         }
 
         doGet(request, response);
@@ -153,17 +205,32 @@ public class ProfileController extends HttpServlet {
         // In a real app, you would handle file upload here
         String avatarUrl = request.getParameter("avatarUrl");
 
-        UserProfile profile = new UserProfile();
-        profile.setUserId(userId);
-        profile.setAvatarUrl(avatarUrl);
-        profile.setUpdatedAt(new Date());
+        // Kiểm tra validation
+        if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
+            request.setAttribute("error", "Vui lòng chọn ảnh đại diện");
+            complete = true;
+            doGet(request, response);
+            return;
+        }
 
-        boolean success = profileDAO.updateUserProfile(profile);
+        try {
+            UserProfile profile = new UserProfile();
+            profile.setUserId(userId);
+            profile.setAvatarUrl(avatarUrl);
+            profile.setUpdatedAt(new Date());
 
-        if (success) {
-            request.setAttribute("message", "Cập nhật ảnh đại diện thành công!");
-        } else {
-            request.setAttribute("error", "Có lỗi xảy ra khi cập nhật ảnh đại diện");
+            boolean success = profileDAO.updateUserProfile(profile);
+
+            if (success) {
+                request.setAttribute("successMessage", "Cập nhật ảnh đại diện thành công!");
+                // Cập nhật lại thông tin profile trong session nếu cần
+                UserProfile updatedProfile = profileDAO.getUserProfileByUserId(userId);
+                request.setAttribute("profile", updatedProfile);
+            } else {
+                request.setAttribute("error", "Có lỗi xảy ra khi cập nhật ảnh đại diện");
+            }
+        } catch (Exception e) {
+            request.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
         }
 
         doGet(request, response);

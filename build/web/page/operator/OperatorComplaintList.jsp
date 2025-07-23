@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Danh sách Khiếu nại</title>
+        <title>Danh sách khiếu nại chuyển cấp</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
@@ -20,7 +20,6 @@
                 background-color: #f5f7fa;
                 color: #333;
                 line-height: 1.6;
-                padding: 20px;
             }
             h1 {
                 color: #2c3e50;
@@ -233,13 +232,13 @@
     <body>
         <div class="parent">
             <div class="div1">
-                <jsp:include page="/Layout/operator/SideBar.jsp" />
+                <jsp:include page="../../Layout/operator/SideBar.jsp" />
             </div>
             <div class="div2">
-                <jsp:include page="/Layout/operator/Header.jsp" />
+                <jsp:include page="../../Layout/operator/Header.jsp" />
             </div>
             <div class="div3">
-                <h1>Danh sách Khiếu nại</h1>
+                <h1>Danh sách khiếu nại chuyển cấp</h1>
 
                 <c:if test="${not empty successMessage}">
                     <p class="success-message">${successMessage}</p>
@@ -290,7 +289,7 @@
                         </div>
 
                         <div class="filter-actions">
-                            <button type="submit">Lọc</button>
+                            <button type="submit">Tìm KIếm</button>
                         </div>
                     </div>
                 </form>

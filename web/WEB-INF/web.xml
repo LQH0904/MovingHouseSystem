@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 <web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee                               https://jakarta.ee/xml/ns/jakartaee/web-app_4_0.xsd">
-=======
+
 <web-app version="4.0" 
          xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -10,7 +9,6 @@
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
     
     <!-- User Management Servlets -->
->>>>>>> merge_code
     <servlet>
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>controller.UserListServlet</servlet-class>
@@ -62,10 +60,7 @@
         <welcome-file>homePage.html</welcome-file>
     </welcome-file-list>
 
-<<<<<<< HEAD
-    
 
-=======
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
         <servlet-name>RegistrationListController</servlet-name>
@@ -83,8 +78,7 @@
         <servlet-name>ApplicationDetail</servlet-name>
         <url-pattern>/applicationdetail</url-pattern>
     </servlet-mapping>
->>>>>>> origin/Test
 </web-app>
-=======
+
 </web-app>
->>>>>>> merge_code
+</web-app>

@@ -86,7 +86,7 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" class="nav-link">
+                        <a href="http://localhost:9999/HouseMovingSystem/operatorComplaintList" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Danh sách khiếu nại</span>
                         </a>

@@ -19,13 +19,13 @@
                 height: 100%;
                 top: 0;
                 left: 0;
-                background-color: rgba(255, 255, 255, 0.6); 
+                background-color: rgba(255, 255, 255, 0.6);
                 border-top-left-radius: 15px;
                 border-top-right-radius: 15px;
                 margin-top: 10px;
                 transition-duration: 0.6s;
                 transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                z-index: 0; 
+                z-index: 0;
             }
 
         </style>
@@ -43,8 +43,11 @@
                     <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                         <div class="hori-selector"></div>                      
                         <li class="nav-item">
-                            <a class="nav-link" href="javascript:void(0);"><i class="bi bi-person-circle"></i>Tài Khoản</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/profile">
+                                <i class="bi bi-person-circle"></i> Tài Khoản
+                            </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="${pageContext.request.contextPath}/logout"><i class="bi bi-box-arrow-right"></i>Đăng Xuất</a>
                         </li>
@@ -108,7 +111,7 @@
                     $('#navbarSupportedContent ul li').removeClass('active');
                     target.parent().addClass('active');
                 } else {
-                    $('#navbarSupportedContent ul li:first').addClass('active'); 
+                    $('#navbarSupportedContent ul li:first').addClass('active');
                 }
                 updateHoriSelector();
                 $('[data-toggle="tooltip"]').tooltip();

@@ -200,18 +200,5 @@ nav.open ~ .overlay {
   opacity: 1;
   left: 260px;
   pointer-events: auto;
-<<<<<<< HEAD
-<<<<<<< HEAD
-}
-=======
-}
 
->>>>>>> origin/Test
-=======
 }
-
-ol,
-ul {
-  padding-left: 0.5rem !important;
-}
->>>>>>> merge_code
