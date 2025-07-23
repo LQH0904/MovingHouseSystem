@@ -30,24 +30,7 @@
                     </li>
 
                     <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 3)}">
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/analyz" class="nav-link">
-                                <i class="bx bx-pie-chart-alt-2 icon"></i>
-                                <span class="link">Phân tích Báo cáo</span>
-                            </a>
-                        </li>
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/sendNotification" class="nav-link">
-                                <i class="bx bx-message-rounded icon"></i>
-                                <span class="link">Gửi Thông báo</span>
-                            </a>
-                        </li>
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/notifications" class="nav-link">
-                                <i class="bx bx-bell icon"></i>
-                                <span class="link">Thông báo</span>
-                            </a>
-                        </li>
+                        
                         <li class="list">
                             <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
                                 <i class="bx bx-export icon"></i>
@@ -92,12 +75,6 @@
                         <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Khiếu Nại</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="${pageContext.request.contextPath}/operator/listApplication" class="nav-link">
-                            <i class="bx bx-heart icon"></i>
-                            <span class="link">Duyệt Đơn</span>
                         </a>
                     </li>
                     <li class="list">

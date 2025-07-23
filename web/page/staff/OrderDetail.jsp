@@ -54,11 +54,17 @@
                     <div class="page-header">
                         <div class="container">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-12 d-flex justify-content-between align-items-center">
                                     <h1 class="page-title">
                                         <i class="fas fa-receipt me-2"></i>
                                         Chi tiết đơn hàng
-                                    </h1>                                    
+                                    </h1>
+                                    <!-- New button added in the header area -->
+                                    <a href="${pageContext.request.contextPath}/order/detail/item/${orderDetail.orderId}" class="item-button management-btn">
+                                        <i class="fas fa-cog"></i>
+                                        Thông tin đồ vật
+                                    </a>
+                                    
                                 </div>
                             </div>
                         </div>

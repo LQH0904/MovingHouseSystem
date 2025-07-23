@@ -7,7 +7,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
         <title>Sidebar Menu | Side Navigation Bar</title> 
-        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css"> 
     </head> 
     <body>
@@ -34,12 +34,6 @@
                             <a href="${pageContext.request.contextPath}/sendNotification" class="nav-link">
                                 <i class="bx bx-message-rounded icon"></i>
                                 <span class="link">Gửi Thông báo</span>
-                            </a>
-                        </li>
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/notifications" class="nav-link">
-                                <i class="bx bx-bell icon"></i>
-                                <span class="link">Thông báo</span>
                             </a>
                         </li>
                         <li class="list">
@@ -88,14 +82,14 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/operatorComplaintList" class="nav-link">
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
-                            <span class="link">Danh sách khiếu nại</span>
+                            <span class="link">Khiếu nại</span>
                         </a>
                    
                             
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
-                            <i class="bx bx-folder-open icon"></i>
-                            <span class="link">mẫu survey</span>
+                            <i class="bx bx-clipboard icon"></i>
+                            <span class="link">Mẫu P.khảo sát</span>
                         </a>
                     </li>
                     <li class="list">
@@ -109,6 +103,12 @@
                             <li><a href="${pageContext.request.contextPath}/operation-policy">Chính sách hoạt động</a></li>
                             <li><a href="${pageContext.request.contextPath}/config-fee">Cấu hình phí</a></li>
                         </ul>
+                    </li>
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
+                            <i class="bx bx-check-circle icon"></i>
+                            <span class="link">Duyệt đơn</span>
+                        </a>
                     </li>
                 </ul>
 
