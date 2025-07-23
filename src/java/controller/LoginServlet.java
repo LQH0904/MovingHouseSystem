@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import listener.SessionTracker;
 import model.PasswordUtils;
 import model.SystemLog;
+import model.UserSessionInfo;
 
 /**
  *
@@ -35,7 +36,7 @@ public class LoginServlet extends HttpServlet {
             Users user = (Users) session.getAttribute("acc");
             switch (user.getRoleId()) {
                 case 1: // Admin
-                    response.sendRedirect(request.getContextPath() + "/LogViewerServlet");
+                    response.sendRedirect(request.getContextPath() + "/admin/system-performance");
                     break;
                 case 2: // Operator
                     response.sendRedirect(request.getContextPath() + "/homeOperator");
@@ -44,10 +45,10 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/homeStaff");
                     break;
                 case 4: // Transport Unit
-                    response.sendRedirect(request.getContextPath() + "/transport/dashboard");
+                    response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 5: // Storage Unit
-                    response.sendRedirect(request.getContextPath() + "/storage/dashboard");
+                    response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 6: // Customer
                     response.sendRedirect(request.getContextPath() + "/customer/dashboard");
@@ -147,7 +148,7 @@ public class LoginServlet extends HttpServlet {
         // Chuyển hướng dựa trên vai trò
         switch (user.getRoleId()) {
             case 1: // Admin
-                response.sendRedirect(request.getContextPath() + "/LogViewerServlet");
+                response.sendRedirect(request.getContextPath() + "/admin/system-performance");
                 break;
             case 2: // Operator
                 response.sendRedirect(request.getContextPath() + "/homeOperator");

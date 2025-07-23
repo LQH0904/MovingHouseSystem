@@ -62,7 +62,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                     </div>
                 </c:if>
-
+                <% if (currentUserRoleId == 3) { %>
                 <form action="${pageContext.request.contextPath}/ComplaintServlet" method="get" class="mb-4">
                     <div class="row g-3">
                         <div class="col-md-2">
@@ -105,6 +105,7 @@
                         </div>
                     </div>
                 </form>
+                <% } %>        
 
                 <div class="table-responsive">
                     <table class="table table-hover table-striped">
@@ -144,7 +145,7 @@
                                             </td>
                                             <% } %>
                                             <% if (currentUserRoleId == 2) { %>
-                                            <td>Nhân viên làm</td>
+                                            <td>Nhân viên</td>
                                             <% }%>
                                         </tr>
                                     </c:forEach>
