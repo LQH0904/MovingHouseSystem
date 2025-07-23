@@ -11,8 +11,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import listener.SessionTracker;
 import model.PasswordUtils;
 import model.SystemLog;
 
@@ -135,6 +137,13 @@ public class LoginServlet extends HttpServlet {
         log.setAction("Login");
         log.setDetails(user.getUsername() + "Đăng nhập");
         aO.createSystemLog(log);
+        
+        //Duy : check log login user
+        UserSessionInfo sessionInfo = new UserSessionInfo(user.getUsername(), LocalDateTime.now());
+        newSession.setAttribute("sessionInfo", sessionInfo);
+        // ✅ Ghi log luôn khi login
+        SessionTracker.sessionLogs.add(sessionInfo);
+
         // Chuyển hướng dựa trên vai trò
         switch (user.getRoleId()) {
             case 1: // Admin
