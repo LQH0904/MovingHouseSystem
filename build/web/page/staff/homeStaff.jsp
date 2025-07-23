@@ -19,6 +19,7 @@
     Users userAccount = (Users) session.getAttribute("acc");
     int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
     String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html>
@@ -33,12 +34,23 @@
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
+            <div class="div1">
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
+                </div>
+            <% } %>
+
+            <% if (currentUserRoleId == 3) { %>
             <div class="div1">
                 <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
+            <% }%>
 
                 <div class="div3">
                     <div class="content-part">

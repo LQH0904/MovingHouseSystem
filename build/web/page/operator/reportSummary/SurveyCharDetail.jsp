@@ -7,7 +7,22 @@
 <%@page import="model.CustomerSurvey"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
 
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -528,32 +543,43 @@
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
             <div class="div1">
                 <jsp:include page="../../../Layout/operator/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../../Layout/operator/Header.jsp"></jsp:include>
                 </div>
-                <div class="div3">
-                    <div style="padding: 20px;">
-                        <h2 style="text-align: center; color: #1e293b; margin-bottom: 15px;">
-                            📋 Chi Tiết Khảo Sát Khách Hàng
-                        </h2>
+            <% } %>
 
-                        <!-- Bộ lọc thời gian -->
-                        <div class="filter-section">
-                            <div class="filter-header">
-                                <div class="filter-icon">🔍</div>
-                                <h3 class="filter-title">Bộ lọc dữ liệu khảo sát</h3>
-                            </div>
-                            <form method="get" action="SurveyCharDetailController" class="filter-form">
-                                <!-- Filter thời gian -->
-                                <div class="filter-group">
-                                    <label for="fromMonth">
-                                        📅 Từ tháng:
-                                    </label>
-                                    <input type="month" id="fromMonth" name="fromMonth" 
-                                           value="${fromMonth}" placeholder="YYYY-MM">
+            <% if (currentUserRoleId == 3) { %>
+            <div class="div1">
+                <jsp:include page="../../../Layout/staff/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../../Layout/staff/Header.jsp"></jsp:include>
+                </div>
+            <% }%>  
+            <div class="div3">
+                <div style="padding: 20px;">
+                    <h2 style="text-align: center; color: #1e293b; margin-bottom: 15px;">
+                        📋 Chi Tiết Khảo Sát Khách Hàng
+                    </h2>
+
+                    <!-- Bộ lọc thời gian -->
+                    <div class="filter-section">
+                        <div class="filter-header">
+                            <div class="filter-icon">🔍</div>
+                            <h3 class="filter-title">Bộ lọc dữ liệu khảo sát</h3>
+                        </div>
+                        <form method="get" action="SurveyCharDetailController" class="filter-form">
+                            <!-- Filter thời gian -->
+                            <div class="filter-group">
+                                <label for="fromMonth">
+                                    📅 Từ tháng:
+                                </label>
+                                <input type="month" id="fromMonth" name="fromMonth" 
+                                       value="${fromMonth}" placeholder="YYYY-MM">
                             </div>
                             <div class="filter-group">
                                 <label for="toMonth">
@@ -623,35 +649,37 @@
                     </div>
 
                     <%-- Hiển thị thông báo lỗi nếu có --%>
-                    <% if (request.getAttribute("errorMessage") != null) { %>
+                    <% if (request.getAttribute("errorMessage") != null) {%>
                     <div class="error-message">
-                        <%= request.getAttribute("errorMessage") %>
+                        <%= request.getAttribute("errorMessage")%>
                     </div>
                     <% } %>
 
                     <%-- Thống kê --%>
-                    <% if (request.getAttribute("totalSurveys") != null) { %>
+                    <% if (request.getAttribute("totalSurveys") != null) {%>
                     <div class="survey-stats">
                         <div class="stats-text">
-                            Tổng số khảo sát: <%= request.getAttribute("totalSurveys") %> | 
-                            Trang <%= request.getAttribute("currentPage") %> / <%= request.getAttribute("totalPages") %>
+                            Tổng số khảo sát: <%= request.getAttribute("totalSurveys")%> | 
+                            Trang <%= request.getAttribute("currentPage")%> / <%= request.getAttribute("totalPages")%>
                         </div>
                     </div>
                     <% } %>
 
                     <%-- Danh sách khảo sát --%>
                     <%
-                        @SuppressWarnings("unchecked")
-                        List<CustomerSurvey> surveys = (List<CustomerSurvey>) request.getAttribute("surveys");
+                        @SuppressWarnings(
                         
+                        "unchecked")
+                        List<CustomerSurvey> surveys = (List<CustomerSurvey>) request.getAttribute("surveys");
+
                         if (surveys != null && !surveys.isEmpty()) {
                     %>
                     <div class="survey-grid">
-                        <% for (CustomerSurvey survey : surveys) { %>
+                        <% for (CustomerSurvey survey : surveys) {%>
                         <div class="survey-card">
                             <div class="card-header">
-                                <h3>Khảo sát #<%= survey.getSurveyId() %> (ID người khảo sát: <%= survey.getUserId() %>)</h3>
-                                <div class="survey-date">📅 <%= survey.getSurveyDate().substring(0, 16).replace("T", " ") %></div>
+                                <h3>Khảo sát #<%= survey.getSurveyId()%> (ID người khảo sát: <%= survey.getUserId()%>)</h3>
+                                <div class="survey-date">📅 <%= survey.getSurveyDate().substring(0, 16).replace("T", " ")%></div>
                             </div>
 
                             <div class="card-body">
@@ -661,19 +689,19 @@
                                     <div class="rating-grid">
                                         <div class="rating-item">
                                             <span>Hài lòng chung:</span>
-                                            <span class="rating-value"><%= survey.getOverall_satisfaction() %>/5</span>
+                                            <span class="rating-value"><%= survey.getOverall_satisfaction()%>/5</span>
                                         </div>
                                         <div class="rating-item">
                                             <span>Điểm giới thiệu:</span>
-                                            <span class="rating-value"><%= survey.getRecommend_score() %>/10</span>
+                                            <span class="rating-value"><%= survey.getRecommend_score()%>/10</span>
                                         </div>
                                         <div class="rating-item">
                                             <span>Chăm sóc vận chuyển:</span>
-                                            <span class="rating-value"><%= survey.getTransport_care() %>/5</span>
+                                            <span class="rating-value"><%= survey.getTransport_care()%>/5</span>
                                         </div>
                                         <div class="rating-item">
                                             <span>Tư vấn chuyên nghiệp:</span>
-                                            <span class="rating-value"><%= survey.getConsultant_professionalism() %>/5</span>
+                                            <span class="rating-value"><%= survey.getConsultant_professionalism()%>/5</span>
                                         </div>
                                     </div>
                                 </div>
@@ -683,22 +711,22 @@
                                     <h4>Đánh giá chất lượng</h4>
                                     <div class="info-grid">
                                         <div class="info-item">
-                                            <strong>Mong đợi:</strong> <%= survey.getExpectation() != null ? survey.getExpectation() : "N/A" %>
+                                            <strong>Mong đợi:</strong> <%= survey.getExpectation() != null ? survey.getExpectation() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Đóng gói:</strong> <%= survey.getPacking_quality() != null ? survey.getPacking_quality() : "N/A" %>
+                                            <strong>Đóng gói:</strong> <%= survey.getPacking_quality() != null ? survey.getPacking_quality() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Tình trạng hàng:</strong> <%= survey.getItem_condition() != null ? survey.getItem_condition() : "N/A" %>
+                                            <strong>Tình trạng hàng:</strong> <%= survey.getItem_condition() != null ? survey.getItem_condition() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Đúng giờ:</strong> <%= survey.getDelivery_timeliness() != null ? survey.getDelivery_timeliness() : "N/A" %>
+                                            <strong>Đúng giờ:</strong> <%= survey.getDelivery_timeliness() != null ? survey.getDelivery_timeliness() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Đặt hàng:</strong> <%= survey.getBooking_process() != null ? survey.getBooking_process() : "N/A" %>
+                                            <strong>Đặt hàng:</strong> <%= survey.getBooking_process() != null ? survey.getBooking_process() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Phản hồi:</strong> <%= survey.getResponse_time() != null ? survey.getResponse_time() : "N/A" %>
+                                            <strong>Phản hồi:</strong> <%= survey.getResponse_time() != null ? survey.getResponse_time() : "N/A"%>
                                         </div>
                                     </div>
                                 </div>
@@ -708,26 +736,26 @@
                                     <h4>Thông tin khách hàng</h4>
                                     <div class="info-grid">
                                         <div class="info-item">
-                                            <strong>Độ tuổi:</strong> <%= survey.getAge_group() != null ? survey.getAge_group() : "N/A" %>
+                                            <strong>Độ tuổi:</strong> <%= survey.getAge_group() != null ? survey.getAge_group() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Khu vực:</strong> <%= survey.getArea() != null ? survey.getArea() : "N/A" %>
+                                            <strong>Khu vực:</strong> <%= survey.getArea() != null ? survey.getArea() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Loại nhà:</strong> <%= survey.getHousing_type() != null ? survey.getHousing_type() : "N/A" %>
+                                            <strong>Loại nhà:</strong> <%= survey.getHousing_type() != null ? survey.getHousing_type() : "N/A"%>
                                         </div>
                                         <div class="info-item">
-                                            <strong>Tần suất:</strong> <%= survey.getUsage_frequency() != null ? survey.getUsage_frequency() : "N/A" %>
+                                            <strong>Tần suất:</strong> <%= survey.getUsage_frequency() != null ? survey.getUsage_frequency() : "N/A"%>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Phản hồi -->
-                                <% if (survey.getFeedback() != null && !survey.getFeedback().trim().isEmpty()) { %>
+                                <% if (survey.getFeedback() != null && !survey.getFeedback().trim().isEmpty()) {%>
                                 <div class="feedback-section">
                                     <h4>Phản hồi của khách hàng</h4>
                                     <div class="feedback-text">
-                                        <%= survey.getFeedback() %>
+                                        <%= survey.getFeedback()%>
                                     </div>
                                 </div>
                                 <% } %>
@@ -742,43 +770,43 @@
                         Integer totalPages = (Integer) request.getAttribute("totalPages");
                         String fromMonth = (String) request.getAttribute("fromMonth");
                         String toMonth = (String) request.getAttribute("toMonth");
-                            
+
                         if (totalPages != null && totalPages > 1) {
                     %>
                     <div class="pagination">
                         <%-- Nút Previous --%>
-                        <% if (currentPage > 1) { %>
-                        <a href="SurveyCharDetailController?page=<%= currentPage - 1 %><%= (fromMonth != null ? "&fromMonth=" + fromMonth : "") %><%= (toMonth != null ? "&toMonth=" + toMonth : "") %>" 
+                        <% if (currentPage > 1) {%>
+                        <a href="SurveyCharDetailController?page=<%= currentPage - 1%><%= (fromMonth != null ? "&fromMonth=" + fromMonth : "")%><%= (toMonth != null ? "&toMonth=" + toMonth : "")%>" 
                            class="page-btn">← Trước</a>
                         <% } else { %>
                         <button class="page-btn" disabled>← Trước</button>
                         <% } %>
 
                         <%-- Hiển thị các trang --%>
-                        <% 
+                        <%
                             int startPage = Math.max(1, currentPage - 2);
                             int endPage = Math.min(totalPages, currentPage + 2);
-                                    
-                            for (int i = startPage; i <= endPage; i++) { 
+
+                            for (int i = startPage; i <= endPage; i++) {
                         %>
-                        <% if (i == currentPage) { %>
-                        <button class="page-btn active"><%= i %></button>
-                        <% } else { %>
-                        <a href="SurveyCharDetailController?page=<%= i %><%= (fromMonth != null ? "&fromMonth=" + fromMonth : "") %><%= (toMonth != null ? "&toMonth=" + toMonth : "") %>" 
-                           class="page-btn"><%= i %></a>
+                        <% if (i == currentPage) {%>
+                        <button class="page-btn active"><%= i%></button>
+                        <% } else {%>
+                        <a href="SurveyCharDetailController?page=<%= i%><%= (fromMonth != null ? "&fromMonth=" + fromMonth : "")%><%= (toMonth != null ? "&toMonth=" + toMonth : "")%>" 
+                           class="page-btn"><%= i%></a>
                         <% } %>
                         <% } %>
 
                         <%-- Nút Next --%>
-                        <% if (currentPage < totalPages) { %>
-                        <a href="SurveyCharDetailController?page=<%= currentPage + 1 %><%= (fromMonth != null ? "&fromMonth=" + fromMonth : "") %><%= (toMonth != null ? "&toMonth=" + toMonth : "") %>" 
+                        <% if (currentPage < totalPages) {%>
+                        <a href="SurveyCharDetailController?page=<%= currentPage + 1%><%= (fromMonth != null ? "&fromMonth=" + fromMonth : "")%><%= (toMonth != null ? "&toMonth=" + toMonth : "")%>" 
                            class="page-btn">Sau →</a>
                         <% } else { %>
                         <button class="page-btn" disabled>Sau →</button>
-                        <% } %>
+                        <% }%>
 
                         <div class="page-info">
-                            Trang <%= currentPage %> / <%= totalPages %>
+                            Trang <%= currentPage%> / <%= totalPages%>
                         </div>
                     </div>
                     <% } %>
@@ -788,7 +816,7 @@
                         <h3>📭 Không có dữ liệu khảo sát</h3>
                         <p>Không tìm thấy dữ liệu khảo sát trong khoảng thời gian được chọn.</p>
                     </div>
-                    <% } %>
+                    <% }%>
                 </div>
                 <div class="butt">
                     <a href="http://localhost:9999/HouseMovingSystem/SurveyCustomerCharController?action=page">

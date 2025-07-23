@@ -1,17 +1,25 @@
 package controller;
 
+import dao.ComplaintDAO;
 import dao.OperatorComplaintDAO;
-import model.OperatorComplaint;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Complaint;
+import model.IssueReply;
+import model.UserComplaint;
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Users;
 
 @WebServlet(name = "OperatorReplyComplaintServlet", urlPatterns = {"/OperatorReplyComplaintServlet"})
 public class OperatorReplyComplaintServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(OperatorReplyComplaintServlet.class.getName());
     private OperatorComplaintDAO operatorComplaintDAO;
 
     @Override
@@ -22,102 +30,127 @@ public class OperatorReplyComplaintServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-
-        String issueIdParam = request.getParameter("issueId");
-
-        if (issueIdParam != null && !issueIdParam.isEmpty()) {
-            try {
-                int issueId = Integer.parseInt(issueIdParam);
-                OperatorComplaint complaint = operatorComplaintDAO.getComplaintById(issueId);
-
-                if (complaint != null) {
-                    request.setAttribute("currentComplaint", complaint);
-                    request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
-                } else {
-                    request.setAttribute("errorMessage", "Không tìm thấy khiếu nại với ID: " + issueId);
-                    request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
-                }
-            } catch (NumberFormatException e) {
-                request.setAttribute("errorMessage", "ID khiếu nại không hợp lệ.");
-                request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
+        request.setCharacterEncoding("UTF-8");
+ComplaintDAO aO = new ComplaintDAO();
+        HttpSession session = request.getSession();
+        try {
+            String issueIdParam = request.getParameter("issueId");
+            if (issueIdParam == null || issueIdParam.isEmpty()) {
+                session.setAttribute("errorMessage", "Thiếu thông tin ID khiếu nại");
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+                return;
             }
-        } else {
-            request.setAttribute("errorMessage", "Thiếu ID khiếu nại.");
+
+            int issueId = Integer.parseInt(issueIdParam);
+            Complaint complaint = operatorComplaintDAO.getComplaintById(issueId);
+            
+            if (complaint == null) {
+                session.setAttribute("errorMessage", "Không tìm thấy khiếu nại với ID: " + issueId);
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+                return;
+            }
+
+            List<IssueReply> replyHistory = aO.getRepliesByIssueId(issueId);
+            List<UserComplaint> operators = operatorComplaintDAO.getOperators();
+
+            request.setAttribute("complaint", complaint);
+            request.setAttribute("replyHistory", replyHistory);
+            request.setAttribute("operators", operators);
+
+            // Transfer session messages to request
+            transferSessionMessagesToRequest(session, request);
+
             request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARNING, "Invalid complaint ID format", e);
+            session.setAttribute("errorMessage", "ID khiếu nại không hợp lệ");
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error processing request", e);
+            session.setAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
+        HttpSession session = request.getSession();
         String issueIdParam = request.getParameter("issueId");
-        String status = request.getParameter("status");
-        String priority = request.getParameter("priority");
-        String assignedToParam = request.getParameter("assignedTo"); // Có thể là ID operator hoặc "unassigned"
+        String redirectUrl = request.getContextPath() + "/OperatorReplyComplaintServlet?issueId=" + issueIdParam;
 
-        int issueId;
         try {
-            issueId = Integer.parseInt(issueIdParam);
-        } catch (NumberFormatException e) {
-            response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=error&message=ID_khong_hop_le");
-            return;
-        }
-
-        Integer assignedTo = null;
-        if (assignedToParam != null && !assignedToParam.isEmpty() && !assignedToParam.equals("unassigned")) {
-            try {
-                assignedTo = Integer.parseInt(assignedToParam);
-            } catch (NumberFormatException e) {
-                // Xử lý lỗi nếu assignedTo không phải là số hợp lệ
-                System.err.println("OperatorReplyComplaintServlet: Định dạng ID operator được gán không hợp lệ: " + assignedToParam);
-                response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=error&message=ID_operator_khong_hop_le");
+            Users u = (Users)session.getAttribute("acc");
+            Integer staffId = u.getUserId();
+            if (staffId == null) {
+                session.setAttribute("errorMessage", "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.");
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
                 return;
             }
-        }
 
-        boolean success = false;
-        String updateStatusMessage = "";
+            if (issueIdParam == null || issueIdParam.isEmpty()) {
+                session.setAttribute("errorMessage", "Thiếu thông tin ID khiếu nại");
+                response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
+                return;
+            }
 
-        // Kiểm tra logic tương tự như bạn có trong ComplaintServlet
-        // Ví dụ: Nếu chuyển trạng thái thành "resolved" hoặc "closed", có thể yêu cầu replyContent không trống
-        String replyContent = request.getParameter("replyContent"); // Lấy giá trị, nhưng hiện tại không lưu vào DB
+            int issueId = Integer.parseInt(issueIdParam);
+            String replyContent = request.getParameter("replyContent");
+            String status = request.getParameter("status");
+            String priority = request.getParameter("priority");
+            String assignedToStr = request.getParameter("assignedTo");
 
-        if ("resolved".equalsIgnoreCase(status) || "closed".equalsIgnoreCase(status)) {
             if (replyContent == null || replyContent.trim().isEmpty()) {
-                request.setAttribute("errorMessage", "Vui lòng nhập nội dung phản hồi khi giải quyết/đóng khiếu nại.");
-                try {
-                    request.setAttribute("currentComplaint", operatorComplaintDAO.getComplaintById(issueId));
-                } catch (Exception ex) {
-                    System.err.println("Error re-fetching complaint in doPost: " + ex.getMessage());
-                }
-                request.getRequestDispatcher("/page/operator/OperatorReplyComplaint.jsp").forward(request, response);
+                session.setAttribute("errorMessage", "Nội dung phản hồi không được để trống");
+                response.sendRedirect(redirectUrl);
                 return;
             }
+
+            // Create and save reply
+            IssueReply reply = new IssueReply();
+            reply.setIssueId(issueId);
+            reply.setReplierId(staffId);
+            reply.setContent(replyContent.trim());
+
+            // Parse assignedTo
+            Integer assignedTo = (assignedToStr != null && !assignedToStr.isEmpty()) 
+                    ? Integer.parseInt(assignedToStr) : null;
+
+            // Save to database
+            operatorComplaintDAO.addReply(reply);
+            operatorComplaintDAO.updateComplaintStatusPriorityAssigned(issueId, status, priority, assignedTo);
+
+            session.setAttribute("successMessage", "Gửi phản hồi thành công!");
+
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARNING, "Invalid number format", e);
+            session.setAttribute("errorMessage", "Dữ liệu đầu vào không hợp lệ");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error processing reply", e);
+            session.setAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
         }
 
-        // Gọi phương thức DAO mới để cập nhật
-        success = operatorComplaintDAO.updateOperatorComplaint(issueId, status, priority, assignedTo);
+        response.sendRedirect(redirectUrl);
+    }
 
-        if (success) {
-            if ("resolved".equalsIgnoreCase(status)) {
-                updateStatusMessage = "success";
-            } else if ("closed".equalsIgnoreCase(status)) {
-                updateStatusMessage = "success";
-            } else if (assignedTo != null) {
-                updateStatusMessage = "success_assigned"; // Tùy chỉnh thông báo nếu chỉ gán
-            } else {
-                updateStatusMessage = "success"; // Thông báo chung cho các cập nhật khác
-            }
-            response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=" + updateStatusMessage);
-        } else {
-            response.sendRedirect(request.getContextPath() + "/operatorComplaintList?updateStatus=error&message=cap_nhat_that_bai");
+    private void transferSessionMessagesToRequest(HttpSession session, HttpServletRequest request) {
+        String successMessage = (String) session.getAttribute("successMessage");
+        String errorMessage = (String) session.getAttribute("errorMessage");
+
+        if (successMessage != null) {
+            request.setAttribute("successMessage", successMessage);
+            session.removeAttribute("successMessage");
+        }
+        if (errorMessage != null) {
+            request.setAttribute("errorMessage", errorMessage);
+            session.removeAttribute("errorMessage");
         }
     }
 }

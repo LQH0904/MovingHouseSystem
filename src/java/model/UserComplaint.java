@@ -1,6 +1,7 @@
-package model; // Đã đổi package thành model
+package model;
 
-public class UserComplaint { // Đã đổi tên class
+public class UserComplaint {
+
     private int userId;
     private String username;
 

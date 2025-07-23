@@ -8,73 +8,17 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <style>
-            body {
-                font-family: 'Poppins', sans-serif;
-                background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
-                min-height: 100vh;
-                margin: 0;
-                overflow-x: hidden;
-            }
-            .parent {
-                display: flex;
-                flex-wrap: wrap;
-                position: relative;
-            }
-            .div1 {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                z-index: 1000;
-            }
-            .div2 {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 1001;
-            }
-            .div3.main-content {
-                margin-left: 250px; /* Adjust based on sidebar width */
-                margin-top: 70px; /* Adjust based on header height */
-                padding: 20px;
-                max-height: calc(100vh - 70px);
-                overflow-y: auto;
-                width: calc(100% - 250px);
-                animation: fadeIn 0.8s ease-in-out;
-            }
-            .container-fluid {
-                background: #ffffff;
-                padding: 20px;
-                border-radius: 20px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-                margin-bottom: 40px;
-                width: 100%;
-                transition: transform 0.3s ease;
-            }
-            .container-fluid:hover {
-                transform: translateY(-5px);
-            }
-            h2 {
+        <style>         
+             h2 {
                 color: #007bff;
                 font-weight: 600;
-                margin-bottom: 30px;
                 text-align: center;
                 text-transform: uppercase;
                 letter-spacing: 1px;
             }
-            .filter-form {
-                background: #f8f9fa;
-                padding: 20px;
-                border-radius: 10px;
-                margin-bottom: 30px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
             .filter-form .form-control {
                 border: 2px solid #e0e7ff;
                 border-radius: 10px;
-                padding: 12px;
                 transition: border-color 0.3s, box-shadow 0.3s;
             }
             .filter-form .form-control:focus {
@@ -230,18 +174,18 @@
         <div class="parent">
             <!-- Sidebar trái -->
             <div class="div1">
-                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
             </div>
 
             <!-- Header phía trên -->
             <div class="div2">
-                <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
+                <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
             </div>
 
             <!-- Nội dung chính -->
             <div class="div3 main-content">
                 <div class="container-fluid">
-                    <h2>Tổng quan đơn hàng</h2>
+                    <h2>Đơn hàng</h2>
 
                     <!-- Form lọc -->
                     <form class="filter-form" action="${pageContext.request.contextPath}/orderList" method="get">
