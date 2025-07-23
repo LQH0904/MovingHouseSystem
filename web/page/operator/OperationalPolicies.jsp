@@ -19,14 +19,15 @@
                 <h2 class="section-title">Chính sách vận hành</h2>
 
                 <div class="action-buttons">
-                    <a href="add-policy" class="add-btn">Thêm Chính sách</a>
+                    <a href="${pageContext.request.contextPath}/add-policy" class="add-btn">Thêm Chính sách</a>
                     <form method="post" action="export-policies-to-excel" style="display:inline;">
                         <button type="submit" class="excel-btn">Tải Excel</button>
                     </form>
 
                 </div>
 
-                <table class="center-table" border="1">
+                <table class="center-table">
+
                     <tr>
                         <th class="center-text">STT</th>
                         <th>Tiêu đề</th>
@@ -42,7 +43,8 @@
                         <td class="center-text"><%= policy.getPolicyNumber() %></td>
                         <td><%= policy.getPolicyTitle() %></td>
                         <td><pre class="description-text"><%= policy.getPolicyContent() %></pre></td>
-                        <td class="action-cell"><a href="edit-policy?id=<%= policy.getId() %>" class="edit-btn">Sửa</a>
+                        <td class="action-cell"><a href="${pageContext.request.contextPath}/edit-policy?id=<%= policy.getId() %>" class="edit-btn">Sửa</a>
+
 </td>
                     </tr>
                     <%

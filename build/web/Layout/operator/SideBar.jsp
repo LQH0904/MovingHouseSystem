@@ -90,14 +90,28 @@
                             <i class="bx bx-pie-chart-alt-2 icon"></i>
                             <span class="link">Danh sách khiếu nại</span>
                         </a>
-                   
-                            
+
+
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">mẫu survey</span>
                         </a>
                     </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/operator/faq-review" class="nav-link">
+                            <i class="bx bx-question-mark icon"></i>
+                            <span class="link">Câu hỏi thường gặp</span>
+                        </a>
+                    </li>
+                    <li class="list">
+    <a href="${pageContext.request.contextPath}/update-bank" class="nav-link">
+        <i class="bx bx-bank icon"></i>
+        <span class="link">Cấu hình thanh toán ngân hàng/span>
+    </a>
+</li>
+
+
                     <li class="list">
                         <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
                             <i class="bx bx-folder-open icon"></i>
@@ -136,14 +150,14 @@
             }
         </script>
         <script>
-    function toggleSubMenu(id) {
-        const submenu = document.getElementById(id);
-        if (submenu.style.display === "none") {
-            submenu.style.display = "block";
-        } else {
-            submenu.style.display = "none";
-        }
-    }
-</script>
+            function toggleSubMenu(id) {
+                const submenu = document.getElementById(id);
+                if (submenu.style.display === "none") {
+                    submenu.style.display = "block";
+                } else {
+                    submenu.style.display = "none";
+                }
+            }
+        </script>
     </body>
 </html>

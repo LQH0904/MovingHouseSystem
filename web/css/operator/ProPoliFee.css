@@ -94,3 +94,81 @@ td.action-cell {
 .edit-btn:hover {
     background-color: #0056b3;
 }
+/* Bảng hiển thị đẹp, hiện đại */
+/* Bảng không có border cứng */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* khoảng cách giữa các dòng */
+    margin: 20px 0;
+    background-color: transparent;
+}
+
+/* Dòng tiêu đề */
+thead th {
+    background-color: #3498db;
+    color: white;
+    font-weight: 500;
+    padding: 12px 16px;
+    text-align: left;
+    border: none;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Dòng dữ liệu */
+tbody tr {
+    background-color: #ffffff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Cột dữ liệu */
+tbody td {
+    padding: 14px 16px;
+    border: none;
+    vertical-align: middle;
+}
+
+/* Hover dòng */
+tbody tr:hover {
+    background-color: #f1f9ff;
+    transition: background-color 0.2s ease;
+}
+
+/* Căn giữa các cột cố định */
+td.center-text, th.center-text {
+    text-align: center;
+}
+
+/* Liên kết */
+a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Phân trang nhẹ nhàng */
+.pagination a,
+.pagination span {
+    padding: 8px 14px;
+    background-color: #fff;
+    border-radius: 5px;
+    color: #3498db;
+    border: 1px solid transparent;
+}
+.pagination a:hover {
+    background-color: #eef6fb;
+    border-color: #3498db;
+}
+.pagination .active-page {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+

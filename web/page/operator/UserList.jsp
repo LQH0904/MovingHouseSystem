@@ -38,7 +38,7 @@
                     </button>
                 </div>
 
-                <table class="user-list-table" border="1">
+                <table class="user-list-table" >
                     <thead>
                         <tr>
                             <th>STT</th>
@@ -63,14 +63,14 @@
                                     </c:choose>
                                 </td>
                                 <td>
-  <c:if test="${user.role.roleId != 1}">
-    <form method="post" action="DetailUserServlet" style="display:inline;">
-        <input type="hidden" name="id" value="${user.userId}" />
-        <button type="submit" class="detail-btn">Chi tiết</button>
-    </form>
-    <button class="delete-btn" onclick="showConfirmDelete('${user.userId}', '${user.username}', '${user.email}', '${user.role.roleName}')">Xóa</button>
-  </c:if>
-</td>
+                                    <c:if test="${user.role.roleId != 1}">
+                                        <form method="post" action="DetailUserServlet" style="display:inline;">
+                                            <input type="hidden" name="id" value="${user.userId}" />
+                                            <button type="submit" class="detail-btn">Chi tiết</button>
+                                        </form>
+                                        <button class="delete-btn" onclick="showConfirmDelete('${user.userId}', '${user.username}', '${user.email}', '${user.role.roleName}')">Xóa</button>
+                                    </c:if>
+                                </td>
 
 
                             </tr>

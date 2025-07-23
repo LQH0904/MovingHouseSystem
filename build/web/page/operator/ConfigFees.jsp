@@ -27,7 +27,7 @@
                     </form>
                 </div>
 
-                <table class="center-table" border="1">
+                <table  >
                     <tr>
                         <th class="center-text">STT</th>
                         <th>Loại phí</th>

@@ -71,6 +71,13 @@
                     </a>
                 </li>
                 <li class="list">
+    <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
+        <i class="bx bx-cog icon"></i>
+        <span class="link">FAQ</span>
+    </a>
+</li>
+
+                <li class="list">
                     <a href="${pageContext.request.contextPath}/logout" class="nav-link">
                         <i class="bx bx-log-out icon"></i>
                         <span class="link">Logout</span>
