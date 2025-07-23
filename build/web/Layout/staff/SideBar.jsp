@@ -65,6 +65,14 @@
                     </a>
                 </li>
                 <li class="list">
+    <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
+        <i class="bx bx-gift icon"></i>
+        <span class="link">Gợi ý khuyến mãi</span>
+    </a>
+</li>
+
+
+                <li class="list">
                     <a href="#" class="nav-link">
                         <i class="bx bx-cog icon"></i>
                         <span class="link">Settings</span>

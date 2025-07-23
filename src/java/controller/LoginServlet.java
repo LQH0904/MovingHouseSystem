@@ -33,7 +33,7 @@ public class LoginServlet extends HttpServlet {
             Users user = (Users) session.getAttribute("acc");
             switch (user.getRoleId()) {
                 case 1: // Admin
-                    response.sendRedirect(request.getContextPath() + "/LogViewerServlet");
+                    response.sendRedirect(request.getContextPath() + "/admin/handle-security");
                     break;
                 case 2: // Operator
                     response.sendRedirect(request.getContextPath() + "/homeOperator");

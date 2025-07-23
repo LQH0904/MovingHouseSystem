@@ -105,11 +105,18 @@
                         </a>
                     </li>
                     <li class="list">
-    <a href="${pageContext.request.contextPath}/update-bank" class="nav-link">
-        <i class="bx bx-bank icon"></i>
-        <span class="link">Cấu hình thanh toán ngân hàng/span>
-    </a>
-</li>
+                        <a href="${pageContext.request.contextPath}/update-bank" class="nav-link">
+                            <i class="bx bx-bank icon"></i>
+                            <span class="link">Cấu hình thanh toán ngân hàng/span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/promotion-review" class="nav-link">
+                            <i class="bx bx-gift icon"></i>
+                            <span class="link">Xét duyệt khuyến mãi</span>
+                        </a>
+                    </li>
+
 
 
                     <li class="list">

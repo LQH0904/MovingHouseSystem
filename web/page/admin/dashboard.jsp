@@ -43,8 +43,9 @@
             <h2 class="section-title">Chức năng chính</h2>
             <div class="function-list nav-links">
                 <ul>
-                    <li><a href="#">Quản lý Đơn hàng (Chưa triển khai)</a></li>
-                    <li><a href="#">Quản lý Người dùng (Chưa triển khai)</a></li>
+                    <li><a href="http://localhost:9999/HouseMovingSystem/admin/handle-security">Quản lý Đơn hàng (Chưa triển khai)</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/handle-security">Quản lý cảnh báo bảo mật</a>
+</li>
                     <li><a href="#">Quản lý Khách hàng (Chưa triển khai)</a></li>
                 </ul>
             </div>

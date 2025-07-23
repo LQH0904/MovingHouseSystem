@@ -4,6 +4,9 @@
     <head>
         <title>Cấu hình ngân hàng</title>
         <style>
+            <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 background-color: #f4f6f9;
@@ -83,6 +86,10 @@
         </style>
     </head>
     <body>
+        <div class="parent">
+            <div class="div1"><jsp:include page="/Layout/operator/SideBar.jsp"/></div>
+            <div class="div2"><jsp:include page="/Layout/operator/Header.jsp"/></div>
+            <div class="div3">
         <div class="container">
             <div class="form-box">
                 <h2>Cấu hình thông tin thanh toán</h2>
@@ -136,6 +143,6 @@
 </a>
 
             </div>
-        </div>
+        </div></div></div></div></div>
     </body>
 </html>
