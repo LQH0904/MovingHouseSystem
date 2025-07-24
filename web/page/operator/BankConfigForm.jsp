@@ -3,87 +3,142 @@
 <html>
     <head>
         <title>Cấu hình ngân hàng</title>
-        <style>
-            <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f4f6f9;
-                margin: 0;
-                padding: 0;
-            }
+        <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+    }
 
-            .container {
-                width: 100%;
-                height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
+    .container {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 50px 20px;
+    }
 
-            .form-box {
-                background: white;
-                padding: 30px 40px;
-                border-radius: 10px;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-                width: 400px;
-            }
+    .form-box {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 500px;
+        animation: fadeIn 0.4s ease-in-out;
+    }
 
-            h2 {
-                text-align: center;
-                margin-bottom: 25px;
-                color: #2c3e50;
-            }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-            label {
-                display: block;
-                margin: 10px 0 5px;
-                font-weight: 500;
-            }
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 24px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+    }
 
-            input[type="text"],
-            select {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                font-size: 14px;
-                transition: border-color 0.3s ease;
-            }
+    label {
+        display: block;
+        margin: 14px 0 6px;
+        font-weight: 600;
+        color: #333;
+    }
 
-            input[type="text"]:focus,
-            select:focus {
-                border-color: #3498db;
-                outline: none;
-            }
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
 
-            button {
-                width: 100%;
-                padding: 10px;
-                margin-top: 20px;
-                border: none;
-                background-color: #3498db;
-                color: white;
-                font-size: 15px;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
+    input[type="text"]:focus,
+    select:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 5px rgba(52,152,219,0.3);
+    }
 
-            button:hover {
-                background-color: #2980b9;
-            }
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 20px;
+        border: none;
+        background-color: #3498db;
+        color: white;
+        font-size: 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-            .qr-btn {
-                background-color: #27ae60;
-                margin-top: 10px;
-            }
+    button:hover {
+        background-color: #2980b9;
+    }
 
-            .qr-btn:hover {
-                background-color: #1e8449;
-            }
-        </style>
+    .qr-btn {
+        background-color: #27ae60;
+        margin-top: 12px;
+    }
+
+    .qr-btn:hover {
+        background-color: #1e8449;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+    }
+
+    table th,
+    table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    table th {
+        background-color: #f7f9fa;
+        font-weight: 600;
+        color: #333;
+    }
+
+    table tr:hover {
+        background-color: #f2f2f2;
+    }
+
+    .form-box h3 {
+        margin-top: 40px;
+        font-size: 18px;
+        color: #2c3e50;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+    }
+
+    a.delete-link {
+        color: #e74c3c;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    a.delete-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
     </head>
     <body>
         <div class="parent">

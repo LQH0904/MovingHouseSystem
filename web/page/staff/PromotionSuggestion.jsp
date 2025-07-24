@@ -9,6 +9,121 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/PromotionSuggestion.css">
+    
+    <style>
+    /* Chỉ styling trong .div3 */
+    .div3 {
+        padding: 20px;
+        background-color: #f8f9fc;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .div3 h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 10px;
+    }
+
+    .div3 .btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-bottom: 15px;
+        transition: background-color 0.2s ease;
+    }
+
+    .div3 .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .div3 .user-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .div3 .user-list-table th,
+    .div3 .user-list-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    .div3 .user-list-table th {
+        background-color: #f1f3f6;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .div3 .user-list-table tbody tr:hover {
+        background-color: #f5f9ff;
+    }
+
+    /* Form Section */
+    .div3 #suggestionForm {
+        display: none;
+        margin-top: 25px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .div3 #suggestionForm label {
+        display: block;
+        margin-top: 15px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .div3 #suggestionForm input[type="text"],
+    .div3 #suggestionForm textarea,
+    .div3 #suggestionForm input[type="date"] {
+        width: 100%;
+        padding: 8px 12px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    }
+
+    .div3 #suggestionForm input:focus,
+    .div3 #suggestionForm textarea:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    .div3 .submit-btn {
+        margin-top: 20px;
+        width: 100%;
+        background-color: #28a745;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .div3 .submit-btn:hover {
+        background-color: #218838;
+    }
+
+    .div3 .no-data {
+        text-align: center;
+        color: gray;
+        padding: 15px 0;
+    }
+</style>
+
 </head>
 <body>
     <div class="parent">
@@ -57,7 +172,7 @@
             </table>
 
             <!-- Form toggle -->
-            <div class="form-section" id="suggestionForm">
+            <div class="form-section" id="suggestionForm" style="display: none;">
                 <form method="post" action="submit-promotion">
                     <label for="title">Tên khuyến mãi</label>
                     <input type="text" id="title" name="title" required>

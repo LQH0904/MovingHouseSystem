@@ -50,8 +50,14 @@
                                 <td>${user.username}</td>
                                 <td>${user.email}</td>
                                 <td>${user.role.roleName}</td>
-                                <td>${user.status}</td>
                                 <td>
+                                    <c:choose>
+                                        <c:when test="${user.status == 'active'}">Đang hoạt động</c:when>
+                                        <c:otherwise>Ngưng hoạt động</c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    
                                     <button class="delete-btn"
                                             onclick="showConfirmDelete('${user.userId}', '${user.username}', '${user.email}', '${user.role.roleName}')">
                                         Xóa
@@ -61,28 +67,28 @@
                         </c:forEach>
                     </tbody>
                 </table>
-<!-- Phân trang -->
-<div style="text-align: center; margin-top: 20px;">
-    <c:if test="${totalPages > 1}">
-        <span>Trang ${currentPage} / ${totalPages}</span><br><br>
+                <!-- Phân trang -->
+                <div style="text-align: center; margin-top: 20px;">
+                    <c:if test="${totalPages > 1}">
+                        <span>Trang ${currentPage} / ${totalPages}</span><br><br>
 
-        <div class="pagination-container">
-            <c:if test="${currentPage > 1}">
-                <a href="${pageContext.request.contextPath}/CustomerListServlet?page=${currentPage - 1}&keyword=${param.keyword}" class="page-link">&laquo;</a>
-            </c:if>
+                        <div class="pagination-container">
+                            <c:if test="${currentPage > 1}">
+                                <a href="${pageContext.request.contextPath}/CustomerListServlet?page=${currentPage - 1}&keyword=${param.keyword}" class="page-link">&laquo;</a>
+                            </c:if>
 
-            <c:forEach begin="1" end="${totalPages}" var="i">
-                <a href="${pageContext.request.contextPath}/CustomerListServlet?page=${i}&keyword=${param.keyword}" class="page-link ${i == currentPage ? 'active' : ''}">
-                    ${i}
-                </a>
-            </c:forEach>
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <a href="${pageContext.request.contextPath}/CustomerListServlet?page=${i}&keyword=${param.keyword}" class="page-link ${i == currentPage ? 'active' : ''}">
+                                    ${i}
+                                </a>
+                            </c:forEach>
 
-            <c:if test="${currentPage < totalPages}">
-                <a href="${pageContext.request.contextPath}/CustomerListServlet?page=${currentPage + 1}&keyword=${param.keyword}" class="page-link">&raquo;</a>
-            </c:if>
-        </div>
-    </c:if>
-</div>
+                            <c:if test="${currentPage < totalPages}">
+                                <a href="${pageContext.request.contextPath}/CustomerListServlet?page=${currentPage + 1}&keyword=${param.keyword}" class="page-link">&raquo;</a>
+                            </c:if>
+                        </div>
+                    </c:if>
+                </div>
 
 
 

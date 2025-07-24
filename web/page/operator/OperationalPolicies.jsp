@@ -40,16 +40,17 @@
                             for (OperationPolicy policy : policyList) {
                     %>
                     <tr>
-                        <td class="center-text"><%= policy.getPolicyNumber() %></td>
-                        <td><%= policy.getPolicyTitle() %></td>
-                        <td><pre class="description-text"><%= policy.getPolicyContent() %></pre></td>
-                        <td class="action-cell"><a href="${pageContext.request.contextPath}/edit-policy?id=<%= policy.getId() %>" class="edit-btn">Sửa</a>
+                        <td class="center-text"><%= policy.getPolicyNumber()%></td>
+                        <td><%= policy.getPolicyTitle()%></td>
+                        <td><pre class="description-text"><%= policy.getPolicyContent()%></pre></td>
+                        <td class="action-cell">
+                            <a href="edit-policy?id=<%= policy.getId()%>" class="edit-btn">Sửa</a>
 
-</td>
+                        </td>
                     </tr>
                     <%
-                            }
-                        } else {
+                        }
+                    } else {
                     %>
                     <tr><td colspan="4">Không có dữ liệu.</td></tr>
                     <%
