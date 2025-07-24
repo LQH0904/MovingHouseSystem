@@ -110,6 +110,12 @@
                             <span class="link">Duyệt đơn</span>
                         </a>
                     </li>
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/operator/alert-complaint" class="nav-link">
+                            <i class="bx bx-error icon"></i>
+                            <span class="link">Cảnh báo</span>
+                        </a>
+                    </li>
                 </ul>
 
             </div>
