@@ -8,7 +8,6 @@
         <title>Unit Registration List</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ListApplication.css">
-        <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     </head>
     <body class="bg-light">
