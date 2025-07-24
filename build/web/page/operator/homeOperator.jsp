@@ -203,7 +203,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <a href="http://localhost:9999/HouseMovingSystem/ComplaintServlet" style="padding: 7%;">Xem thêm</a>
+                        <a href="http://localhost:9999/HouseMovingSystem/operatorComplaintList" style="padding: 7%;">Xem thêm</a>
                     </div>
                 </dix>
 
