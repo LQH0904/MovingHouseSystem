@@ -17,84 +17,92 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
     </head>
     <body>
-        
+
         <!-- Sidebar -->
         <div class="sidebar">
-        <div class="sidebar-content">
-            <ul class="lists">
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/CustomerListServlet" class="nav-link">
-                        <i class="bx bx-home-alt icon"></i>
-                        <span class="link">Người dùng</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/repURL" class="nav-link">
-                        <i class="bx bx-bar-chart-alt-2 icon"></i>
-                        <span class="link">Báo Cáo Doanh Thu</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
-                        <i class="bx bx-bell icon"></i>
-                        <span class="link">Đơn Hàng</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/inventoryReport" class="nav-link">
-                        <i class="bx bx-message-rounded icon"></i>
-                        <span class="link">Báo Cáo Tồn Kho</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
-                        <i class="bx bx-pie-chart-alt-2 icon"></i>
-                        <span class="link">Khiếu Nại</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/operator/listApplication" class="nav-link">
-                        <i class="bx bx-heart icon"></i>
-                        <span class="link">Duyệt Đơn</span>
-                    </a>
-                </li>
-                <li class="list">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-folder-open icon"></i>
-                        <span class="link">Files</span>
-                    </a>
-                </li>
-                <li class="list">
-    <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
-        <i class="bx bx-gift icon"></i>
-        <span class="link">Gợi ý khuyến mãi</span>
+            <div class="sidebar-content">
+                <ul class="lists">
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/CustomerListServlet" class="nav-link">
+                            <i class="bx bx-home-alt icon"></i>
+                            <span class="link">Người dùng</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/repURL" class="nav-link">
+                            <i class="bx bx-bar-chart-alt-2 icon"></i>
+                            <span class="link">Báo Cáo Doanh Thu</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/orderList" class="nav-link">
+                            <i class="bx bx-bell icon"></i>
+                            <span class="link">Đơn Hàng</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/inventoryReport" class="nav-link">
+                            <i class="bx bx-message-rounded icon"></i>
+                            <span class="link">Báo Cáo Tồn Kho</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/ComplaintServlet" class="nav-link">
+                            <i class="bx bx-pie-chart-alt-2 icon"></i>
+                            <span class="link">Khiếu Nại</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/operator/listApplication" class="nav-link">
+                            <i class="bx bx-heart icon"></i>
+                            <span class="link">Duyệt Đơn</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="#" class="nav-link">
+                            <i class="bx bx-folder-open icon"></i>
+                            <span class="link">Files</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
+                            <i class="bx bx-gift icon"></i>
+                            <span class="link">Gợi ý khuyến mãi</span>
+                        </a>
+                    </li>
+
+
+                    <li class="list">
+                        <a href="#" class="nav-link">
+                            <i class="bx bx-cog icon"></i>
+                            <span class="link">Settings</span>
+                        </a>
+                    </li>
+                    <li class="list">
+    <a href="${pageContext.request.contextPath}/staff/leave" class="nav-link">
+        <i class="bx bx-calendar icon"></i>
+        <span class="link">Đơn nghỉ phép</span>
     </a>
 </li>
 
 
-                <li class="list">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-cog icon"></i>
-                        <span class="link">Settings</span>
-                    </a>
-                </li>
-                <li class="list">
-    <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
-        <i class="bx bx-cog icon"></i>
-        <span class="link">FAQ</span>
-    </a>
-</li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
+                            <i class="bx bx-cog icon"></i>
+                            <span class="link">FAQ</span>
+                        </a>
+                    </li>
 
-                <li class="list">
-                    <a href="${pageContext.request.contextPath}/logout" class="nav-link">
-                        <i class="bx bx-log-out icon"></i>
-                        <span class="link">Logout</span>
-                    </a>
-                </li>
-            </ul>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/logout" class="nav-link">
+                            <i class="bx bx-log-out icon"></i>
+                            <span class="link">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
-</body>
+        <script src="${pageContext.request.contextPath}/js/SideBar.js"></script>
+    </body>
 </html>
