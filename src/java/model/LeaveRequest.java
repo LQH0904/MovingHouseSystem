@@ -15,6 +15,16 @@ public class LeaveRequest {
     private Integer operatorId;
     private Date createdAt;
     private Date updatedAt;
+    private int numberOfDaysOff;
+
+public int getNumberOfDaysOff() {
+    return numberOfDaysOff;
+}
+
+public void setNumberOfDaysOff(int numberOfDaysOff) {
+    this.numberOfDaysOff = numberOfDaysOff;
+}
+
 
     // Constructors
     public LeaveRequest() {

@@ -117,6 +117,13 @@
                             <span class="link">Xét duyệt khuyến mãi</span>
                         </a>
                     </li>
+                    <li class="list">
+    <a href="${pageContext.request.contextPath}/operator/leave-requests" class="nav-link">
+        <i class="bx bx-calendar-check icon"></i>
+        <span class="link">Xét duyệt đơn nghỉ</span>
+    </a>
+</li>
+
 
 
 

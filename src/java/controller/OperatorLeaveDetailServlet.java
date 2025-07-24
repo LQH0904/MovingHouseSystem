@@ -1,68 +1,79 @@
 package controller;
 
 import dao.LeaveRequestDAO;
-import dao.StaffLeaveBalanceDAO;
 import model.LeaveRequest;
-import model.StaffLeaveBalance;
+import model.Users;
+import utils.DBConnection;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 
-@WebServlet("/operator/leave/detail")
+@WebServlet("/operator/review-leave-request")
 public class OperatorLeaveDetailServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            Connection conn = (Connection) getServletContext().getAttribute("DBConnection");
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
 
-            int requestId = Integer.parseInt(request.getParameter("id"));
-            LeaveRequestDAO leaveDAO = new LeaveRequestDAO(conn);
-            LeaveRequest leaveRequest = leaveDAO.getLeaveRequestById(requestId);
+        int requestId = Integer.parseInt(req.getParameter("id"));
 
-            StaffLeaveBalanceDAO balanceDAO = new StaffLeaveBalanceDAO(conn);
-            StaffLeaveBalance balance = balanceDAO.getLeaveBalance(leaveRequest.getStaffId());
+        try (Connection conn = DBConnection.getConnection()) {
+            LeaveRequestDAO dao = new LeaveRequestDAO(conn);
+            LeaveRequest request = dao.getLeaveRequestById(requestId);
 
-            request.setAttribute("request", leaveRequest);
-            request.setAttribute("balance", balance);
-            request.getRequestDispatcher("/webpages/page/operator/leave_detail.jsp").forward(request, response);
+            if (request == null) {
+                req.setAttribute("errorMessage", "Không tìm thấy đơn xin nghỉ.");
+                req.getRequestDispatcher("/error.jsp").forward(req, resp);
+                return;
+            }
+
+            req.setAttribute("leaveRequest", request);
+            req.getRequestDispatcher("/page/operator/LeaveReviewDetail.jsp").forward(req, resp);
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(500);
+            req.setAttribute("errorMessage", e.getMessage());
+            req.getRequestDispatcher("/error.jsp").forward(req, resp);
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            Connection conn = (Connection) getServletContext().getAttribute("DBConnection");
+    @Override
+    
 
-            int requestId = Integer.parseInt(request.getParameter("requestId"));
-            String status = request.getParameter("status");
-            String reply = request.getParameter("reply");
+        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
 
-            int operatorId = (int) request.getSession().getAttribute("user_id");
+        Users operator = (Users) session.getAttribute("acc");
+        int requestId = Integer.parseInt(req.getParameter("requestId"));
+        String status = req.getParameter("status"); // approved / rejected
+        String reply = req.getParameter("reply");
 
-            LeaveRequestDAO leaveDAO = new LeaveRequestDAO(conn);
-            LeaveRequest leaveRequest = leaveDAO.getLeaveRequestById(requestId);
+        try (Connection conn = DBConnection.getConnection()) {
+            LeaveRequestDAO dao = new LeaveRequestDAO(conn);
+            boolean success = dao.updateLeaveRequestStatus(requestId, status, reply, operator.getUserId());
 
-            boolean updated = leaveDAO.updateLeaveRequestStatus(requestId, status, reply, operatorId);
-
-            if (updated && "approved".equals(status)) {
-                long days = (leaveRequest.getEndDate().getTime() - leaveRequest.getStartDate().getTime()) / (1000 * 60 * 60 * 24) + 1;
-                StaffLeaveBalanceDAO balanceDAO = new StaffLeaveBalanceDAO(conn);
-                balanceDAO.updateRemainingDays(leaveRequest.getStaffId(), (int) days);
+            if (success) {
+                resp.sendRedirect(req.getContextPath() + "/operator/leave-requests");
+            } else {
+                req.setAttribute("errorMessage", "Cập nhật thất bại.");
+                req.getRequestDispatcher("/page/staff/error.jsp").forward(req, resp);
             }
-
-            response.sendRedirect(request.getContextPath() + "/operator/leave");
-
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(500);
+            req.setAttribute("errorMessage", e.getMessage());
+            req.getRequestDispatcher("/page/staff/error.jsp").forward(req, resp);
         }
     }
 }
