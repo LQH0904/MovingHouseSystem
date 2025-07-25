@@ -11,6 +11,20 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/LeaveRequestListServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/OperatorLeaveDetailServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/model/LeaveRequest.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/staff/error.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/SubmitLeaveRequestServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/staff/LeaveRequest.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/Layout/operator/SideBar.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/dao/LeaveRequestDAO.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/Layout/staff/SideBar.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/staff/OrderDetail.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/OperatorLeaveReviewServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/operator/LeaveRequestReview.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/operator/LeaveReviewDetail.jsp</file>
+        </group>
     </open-files>
 </project-private>
