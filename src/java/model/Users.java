@@ -12,7 +12,8 @@ public class Users {
     private Date createdAt;
     private Date updatedAt;
     private String status; 
-    
+    private Role role;
+
     public Users() {
     }
 
@@ -27,7 +28,13 @@ public class Users {
         this.status = status;
     }
 
+public Role getRole() {
+        return role;
+    }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
     public int getUserId() {
         return userId;
     }

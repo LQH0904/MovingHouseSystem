@@ -1,0 +1,80 @@
+/* Container chính */
+.faq-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+/* Tiêu đề */
+.faq-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+/* Thẻ câu hỏi */
+.faq-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.faq-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Văn bản */
+.faq-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    color: #34495e;
+}
+
+.faq-card p strong {
+    color: #2c3e50;
+}
+
+/* Textarea */
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    resize: vertical;
+    min-height: 100px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* Nút lưu */
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}

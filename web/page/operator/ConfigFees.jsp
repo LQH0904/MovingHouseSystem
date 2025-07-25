@@ -11,6 +11,9 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/ProPoliFee.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/UserList.css">
+        <style>
+            
+        </style>
     </head>
     <body>
         <div class="parent">
@@ -27,7 +30,7 @@
                     </form>
                 </div>
 
-                <table class="center-table" border="1">
+                <table  >
                     <tr>
                         <th class="center-text">STT</th>
                         <th>Loại phí</th>

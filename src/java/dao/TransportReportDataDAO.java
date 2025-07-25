@@ -6,7 +6,7 @@ package dao;
 
 import utils.DBContext;
 import model.TransportReport;
-import model.TransportUnit;
+//import model.TransportUnit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.TransportUnit;
 
 public class TransportReportDataDAO extends DBContext {
     

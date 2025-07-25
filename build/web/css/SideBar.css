@@ -206,3 +206,31 @@ ol,
 ul {
   padding-left: 0.5rem !important;
 }
+.sub-menu {
+  display: none; /* Mặc định ẩn, sẽ bật bằng JS */
+  padding-left: 25px;
+  margin-top: 5px;
+  list-style-type: none;
+  background-color: #f9f9f9; /* màu nền nhẹ */
+  border-left: 2px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.sub-menu li {
+  margin: 8px 0;
+}
+
+.sub-menu li a {
+  text-decoration: none;
+  font-size: 15px;
+  color: #505050;
+  display: block;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sub-menu li a:hover {
+  background-color: #e6f0ff;
+  color: #0066cc;
+}

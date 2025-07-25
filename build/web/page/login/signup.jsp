@@ -125,6 +125,41 @@
                     font-size: 0.9rem;
                 }
             }
+            .modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #fff;
+                padding: 30px;
+                border-radius: 10px;
+                max-height: 80vh;
+                overflow-y: auto;
+                z-index: 1000;
+                width: 90%;
+                max-width: 600px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            }
+
+            .modal-close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 1.5rem;
+                color: #333;
+                cursor: pointer;
+            }
+
+            .policy-item .title {
+                font-weight: bold;
+                margin-top: 15px;
+            }
+
+            .policy-item .content {
+                white-space: pre-wrap;
+                margin-top: 5px;
+            }
         </style>
     </head>
     <body>
@@ -142,9 +177,9 @@
             </ul>
             <h2 class="signup-header">Đăng ký tài khoản Khách hàng</h2>
             <% String error = (String) request.getAttribute("error"); %>
-            <% if (error != null) { %>
-            <div class="alert alert-danger"><%= error %></div>
-            <% } %>
+            <% if (error != null) {%>
+            <div class="alert alert-danger"><%= error%></div>
+            <% }%>
             <form action="signup" method="post" id="signupForm" novalidate>
                 <div class="mb-3">
                     <label for="username" class="form-label">Tên đăng nhập</label>
@@ -170,6 +205,22 @@
                         <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label>
+                        <input type="checkbox" id="agreeCheck" onchange="toggleButton()"> Tôi đồng ý với 
+                        <a href="javascript:void(0)" onclick="showModal()" style="color: #007bff; text-decoration: underline;">các chính sách</a>
+                        của nhà phát triển.
+                    </label>
+
+
+                    <!-- Modal -->
+                    <div class="overlay" id="overlay" onclick="hideModal()"></div>
+                    <div class="modal" id="policyModal">
+                        <span class="modal-close" onclick="hideModal()">×</span>
+                        <div id="modalContent">
+                        </div>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary w-100" id="submitBtn">Đăng ký</button>
             </form>
             <div class="login-link">
@@ -180,59 +231,101 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function () {
-                const $submitBtn = $('#submitBtn');
-                const originalBtnText = $submitBtn.text();
+                            $(document).ready(function () {
+                                const $submitBtn = $('#submitBtn');
+                                const originalBtnText = $submitBtn.text();
 
-                $('#signupForm').on('submit', function (e) {
-                    let isValid = true;
-                    $('.error-message').hide().text('');
-                    $('.form-control').removeClass('is-invalid');
+                                $('#signupForm').on('submit', function (e) {
+                                    let isValid = true;
+                                    $('.error-message').hide().text('');
+                                    $('.form-control').removeClass('is-invalid');
 
-                    // Validate username
-                    const $username = $('#username');
-                    if (!$username.val()) {
-                        $('#username_error').text('Vui lòng nhập tên đăng nhập.').show();
-                        $username.addClass('is-invalid');
-                        isValid = false;
-                    } else if ($username.val().length < 3 || $username.val().length > 20) {
-                        $('#username_error').text('Tên đăng nhập phải từ 3 đến 20 ký tự.').show();
-                        $username.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate username
+                                    const $username = $('#username');
+                                    if (!$username.val()) {
+                                        $('#username_error').text('Vui lòng nhập tên đăng nhập.').show();
+                                        $username.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if ($username.val().length < 3 || $username.val().length > 20) {
+                                        $('#username_error').text('Tên đăng nhập phải từ 3 đến 20 ký tự.').show();
+                                        $username.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate email
-                    const $email = $('#email');
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!$email.val()) {
-                        $('#email_error').text('Vui lòng nhập email.').show();
-                        $email.addClass('is-invalid');
-                        isValid = false;
-                    } else if (!emailRegex.test($email.val())) {
-                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
-                        $email.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate email
+                                    const $email = $('#email');
+                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    if (!$email.val()) {
+                                        $('#email_error').text('Vui lòng nhập email.').show();
+                                        $email.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if (!emailRegex.test($email.val())) {
+                                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
+                                        $email.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate password
-                    const $password = $('#password');
-                    if (!$password.val()) {
-                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
-                        $password.addClass('is-invalid');
-                        isValid = false;
-                    } else if ($password.val().length < 6) {
-                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
-                        $password.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate password
+                                    const $password = $('#password');
+                                    if (!$password.val()) {
+                                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
+                                        $password.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if ($password.val().length < 6) {
+                                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
+                                        $password.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    if (!isValid) {
-                        e.preventDefault();
-                    } else {
-                        $submitBtn.text('Đang xử lý...').prop('disabled', true);
-                    }
-                });
-            });
+                                    if (!isValid) {
+                                        e.preventDefault();
+                                    } else {
+                                        $submitBtn.text('Đang xử lý...').prop('disabled', true);
+                                    }
+                                });
+                            });
+
+
+
+                            function toggleButton() {
+                                const checkbox = document.getElementById("agreeCheck");
+                                const button = document.getElementById("confirmBtn");
+                                if (button) {
+                                    button.disabled = !checkbox.checked;
+                                }
+                            }
+                            const contextPath = '${pageContext.request.contextPath}';
+
+                            function showModal() {
+                                document.getElementById("overlay").style.display = "block";
+                                document.getElementById("policyModal").style.display = "block";
+                                fetch(contextPath + '/get-policy-data')
+
+                                        .then(response => {
+                                            if (!response.ok)
+                                                throw new Error("Lỗi khi tải dữ liệu");
+                                            return response.text();
+                                        })
+                                        .then(html => {
+                                            document.getElementById("modalContent").innerHTML = html;
+                                        })
+                                        .catch(error => {
+                                            document.getElementById("modalContent").innerHTML = "<p class='text-danger'>Không thể tải chính sách. Vui lòng thử lại sau.</p>";
+                                            console.error(error);
+                                        });
+                            }
+
+                            function hideModal() {
+                                document.getElementById("overlay").style.display = "none";
+                                document.getElementById("policyModal").style.display = "none";
+                            }
+                            document.getElementById("submitBtn").disabled = true; // Khóa nút ban đầu
+
+                            function toggleButton() {
+                                const checkbox = document.getElementById("agreeCheck");
+                                const button = document.getElementById("submitBtn");
+                                button.disabled = !checkbox.checked;
+                            }
         </script>
     </body>
 </html>
