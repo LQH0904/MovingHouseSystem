@@ -23,7 +23,7 @@
             <div class="sidebar-content">
                 <ul class="lists">
                     <li class="list">
-                        <a href="${pageContext.request.contextPath}/UserListServlet" class="nav-link">
+                        <a href="${pageContext.request.contextPath}/CustomerListServlet" class="nav-link">
                             <i class="bx bx-home-alt icon"></i>
                             <span class="link">Người dùng</span>
                         </a>
@@ -81,6 +81,12 @@
                         <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="nav-link">
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Thử phiếu khảo sát</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
+                            <i class="bx bx-gift icon"></i>
+                            <span class="link">Gợi ý khuyến mãi</span>
                         </a>
                     </li>
                 </ul>
