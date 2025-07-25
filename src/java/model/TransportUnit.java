@@ -1,29 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
+import java.sql.Timestamp;
+
 public class TransportUnit {
     private int transportUnitId;
     private String companyName;
     private String contactInfo;
     private String registrationStatus;
-    private String createdAt;
+    private Timestamp createdAt;
     private String location;
     private int vehicleCount;
-    private double capacity;
-    private int loader;
+    private int capacity;
+    private String loader;
     private String businessCertificate;
+    private String insurance;
 
+    // Constructor
     public TransportUnit() {
     }
 
-    public TransportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus, String createdAt, String location, int vehicleCount, double capacity, int loader, String businessCertificate) {
+    public TransportUnit(int transportUnitId, String companyName, String contactInfo, String registrationStatus,
+                         Timestamp createdAt, String location, int vehicleCount, int capacity,
+                         String loader, String businessCertificate, String insurance) {
         this.transportUnitId = transportUnitId;
         this.companyName = companyName;
         this.contactInfo = contactInfo;
@@ -34,8 +32,10 @@ public class TransportUnit {
         this.capacity = capacity;
         this.loader = loader;
         this.businessCertificate = businessCertificate;
+        this.insurance = insurance;
     }
 
+    // Getters and Setters
     public int getTransportUnitId() {
         return transportUnitId;
     }
@@ -68,11 +68,11 @@ public class TransportUnit {
         this.registrationStatus = registrationStatus;
     }
 
-    public String getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -92,19 +92,19 @@ public class TransportUnit {
         this.vehicleCount = vehicleCount;
     }
 
-    public double getCapacity() {
+    public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(double capacity) {
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 
-    public int getLoader() {
+    public String getLoader() {
         return loader;
     }
 
-    public void setLoader(int loader) {
+    public void setLoader(String loader) {
         this.loader = loader;
     }
 
@@ -116,10 +116,11 @@ public class TransportUnit {
         this.businessCertificate = businessCertificate;
     }
 
-    @Override
-    public String toString() {
-        return "TransportUnit{" + "transportUnitId=" + transportUnitId + ", companyName=" + companyName + ", contactInfo=" + contactInfo + ", registrationStatus=" + registrationStatus + ", createdAt=" + createdAt + ", location=" + location + ", vehicleCount=" + vehicleCount + ", capacity=" + capacity + ", loader=" + loader + ", businessCertificate=" + businessCertificate + '}';
+    public String getInsurance() {
+        return insurance;
     }
-    
-    
+
+    public void setInsurance(String insurance) {
+        this.insurance = insurance;
+    }
 }

@@ -44,27 +44,28 @@ public class OperationPolicyDAO {
         }
     }
 
-    public List<OperationPolicy> getAllPolicies() {
-        List<OperationPolicy> list = new ArrayList<>();
-        String sql = "SELECT * FROM OperationPolicies ORDER BY policy_number";
-        try (Connection conn = DBConnection.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
+public List<OperationPolicy> getAllPolicies() {
+    List<OperationPolicy> list = new ArrayList<>();
+    String sql = "SELECT * FROM OperationPolicies ORDER BY policy_number";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql); 
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                OperationPolicy policy = new OperationPolicy(
-                    rs.getInt("id"),
-                    rs.getInt("policy_number"),
-                    rs.getString("policy_title"),
-                    rs.getString("policy_content")  
-                );
-                list.add(policy);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            OperationPolicy policy = new OperationPolicy(
+                rs.getInt("id"),
+                rs.getInt("policy_number"),
+                rs.getString("title"),         // ✅ sửa lại
+                rs.getString("description")    // ✅ sửa lại
+            );
+            list.add(policy);
         }
-        return list;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
     
     
     

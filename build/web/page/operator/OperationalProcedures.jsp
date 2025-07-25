@@ -29,7 +29,8 @@
 
                 </div>
 
-                <table class="center-table" border="1">
+                <table class="center-table">
+
                     <tr>
                         <th class="center-text">STT</th>
                         <th>Tiêu đề</th>
