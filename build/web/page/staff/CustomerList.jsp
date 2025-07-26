@@ -26,10 +26,10 @@
                         <button type="submit" class="search-btn">Tìm</button>
                     </form>
 
-                    <button class="add-user-btn"
+<!--                    <button class="add-user-btn"
                             onclick="window.location.href = '${pageContext.request.contextPath}/page/staff/AddCustomer.jsp'">
                         Thêm Khách Hàng
-                    </button>
+                    </button>-->
                 </div>
 
                 <table class="user-list-table">
