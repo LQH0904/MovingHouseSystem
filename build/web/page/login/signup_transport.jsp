@@ -125,6 +125,42 @@
                     font-size: 0.9rem;
                 }
             }
+            
+                        .modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #fff;
+                padding: 30px;
+                border-radius: 10px;
+                max-height: 80vh;
+                overflow-y: auto;
+                z-index: 1000;
+                width: 90%;
+                max-width: 600px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            }
+
+            .modal-close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 1.5rem;
+                color: #333;
+                cursor: pointer;
+            }
+
+            .policy-item .title {
+                font-weight: bold;
+                margin-top: 15px;
+            }
+
+            .policy-item .content {
+                white-space: pre-wrap;
+                margin-top: 5px;
+            }
         </style>
     </head>
     <body>
@@ -222,6 +258,22 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>
+                        <input type="checkbox" id="agreeCheck" onchange="toggleButton()"> Tôi đồng ý với 
+                        <a href="javascript:void(0)" onclick="showModal()" style="color: #007bff; text-decoration: underline;">các chính sách</a>
+                        của nhà phát triển.
+                    </label>
+
+
+                    <!-- Modal -->
+                    <div class="overlay" id="overlay" onclick="hideModal()"></div>
+                    <div class="modal" id="policyModal">
+                        <span class="modal-close" onclick="hideModal()">×</span>
+                        <div id="modalContent">
+                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100" id="submitBtn">Đăng ký</button>
@@ -369,6 +421,46 @@
                     }
                 });
             });
+            
+             function toggleButton() {
+                                const checkbox = document.getElementById("agreeCheck");
+                                const button = document.getElementById("confirmBtn");
+                                if (button) {
+                                    button.disabled = !checkbox.checked;
+                                }
+                            }
+                            const contextPath = '${pageContext.request.contextPath}';
+
+                            function showModal() {
+                                document.getElementById("overlay").style.display = "block";
+                                document.getElementById("policyModal").style.display = "block";
+                                fetch(contextPath + '/get-policy-data')
+
+                                        .then(response => {
+                                            if (!response.ok)
+                                                throw new Error("Lỗi khi tải dữ liệu");
+                                            return response.text();
+                                        })
+                                        .then(html => {
+                                            document.getElementById("modalContent").innerHTML = html;
+                                        })
+                                        .catch(error => {
+                                            document.getElementById("modalContent").innerHTML = "<p class='text-danger'>Không thể tải chính sách. Vui lòng thử lại sau.</p>";
+                                            console.error(error);
+                                        });
+                            }
+
+                            function hideModal() {
+                                document.getElementById("overlay").style.display = "none";
+                                document.getElementById("policyModal").style.display = "none";
+                            }
+                            document.getElementById("submitBtn").disabled = true; // Khóa nút ban đầu
+
+                            function toggleButton() {
+                                const checkbox = document.getElementById("agreeCheck");
+                                const button = document.getElementById("submitBtn");
+                                button.disabled = !checkbox.checked;
+                            }
         </script>
     </body>
 </html>

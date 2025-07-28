@@ -107,10 +107,10 @@
     <body>
         <div class="parent">
             <div class="div1">
-                <jsp:include page="../../Layout/operator/SideBar.jsp" />
+                <jsp:include page="/Layout/operator/SideBar.jsp" />
             </div>
             <div class="div2">
-                <jsp:include page="../../Layout/operator/Header.jsp" />
+                <jsp:include page="/Layout/operator/Header.jsp" />
             </div>
             <div class="div3">
                 <div class="container">

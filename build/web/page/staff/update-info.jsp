@@ -87,7 +87,7 @@
             }
 
             .form-actions {
-                display: flex;
+display: flex;
                 justify-content: flex-end;
                 gap: 1rem;
                 margin-top: 2rem;
@@ -169,7 +169,7 @@
                             <div class="form-group">
                                 <label for="lastName">Tên</label>
                                 <input type="text" id="lastName" name="lastName" value="${profile.lastName}" required>
-                            </div>
+</div>
                         </div>
 
                         <div class="form-group">
@@ -222,7 +222,7 @@
                                 <input type="text" id="street" name="street" value="${profile.street}">
                             </div>
                             <div class="form-group">
-                                <label for="postalCode">Mã bưu điện</label>
+<label for="postalCode">Mã bưu điện</label>
                                 <input type="text" id="postalCode" name="postalCode" value="${profile.postalCode}">
                             </div>
                         </div>
@@ -242,3 +242,4 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
+

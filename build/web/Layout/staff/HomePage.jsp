@@ -16,8 +16,4 @@
             <div class="div3"> </div>
         </div>
     </body>
-<<<<<<< HEAD:build/web/Layout/staff/HomePage.jsp
 </html>
-=======
-</html>
->>>>>>> origin/Test:build/web/Layout/HomePage.jsp

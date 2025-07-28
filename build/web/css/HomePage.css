@@ -25,6 +25,4 @@
 
     /* Thêm thuộc tính này để chỉ div3 có thể cuộn */
     overflow-y: auto; /* hoặc scroll */
-
-  grid-area: 2 / 2 / 3 / 3; /* Content */
 }

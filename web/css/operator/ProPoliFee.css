@@ -1,56 +1,40 @@
-/* Căn giữa tiêu đề */
+/* --- Phần tiêu đề --- */
 .section-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 auto 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+    display: block; /* hoặc inline-block nếu đã có text-align center ở cha */
     text-align: center;
-    margin-bottom: 20px;
 }
 
-/* Bảng căn giữa */
-.center-table {
-    width: 90%;
-    margin: 0 auto;
-    border-collapse: collapse;
-}
 
-/* Tiêu đề bảng */
-.center-table th,
-.center-table td {
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-}
-
-/* Căn giữa STT và Hành động */
-.center-text {
-    text-align: center;
-    vertical-align: middle;
-}
-
-.description-text {
-    white-space: pre-wrap;
-    text-align: left;
-    padding-left: 10px;
-    margin: 0;
-}
-
+/* --- Khu vực nút thao tác --- */
 .action-buttons {
-    width: 90%;
-    margin: 0 auto 20px auto;
+    width: 95%;
+    margin: 0 auto 20px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .add-btn,
 .excel-btn {
     padding: 10px 20px;
     font-size: 15px;
+    font-weight: 500;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
 }
 
 .add-btn {
     background-color: #28a745;
-    color: white;
-    text-decoration: none;
+    color: #fff;
 }
 
 .add-btn:hover {
@@ -59,38 +43,110 @@
 
 .excel-btn {
     background-color: #ffc107;
-    color: black;
+    color: #212529;
 }
 
 .excel-btn:hover {
     background-color: #e0a800;
 }
 
+/* --- Bảng hiển thị dữ liệu --- */
+table {
+    width: 95%;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+thead tr {
+    background-color: #3498db;
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+}
+
+thead th {
+    padding: 14px 16px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+}
+
+tbody tr {
+    background-color: #fff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    transition: background-color 0.25s ease;
+}
+
+tbody tr:hover {
+    background-color: #f5fbff;
+}
+
+tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border: none;
+    font-size: 14px;
+}
+
+td.description-text {
+    white-space: pre-wrap;
+    color: #333;
+}
+
+/* --- Căn giữa cho STT và Hành động --- */
+td.center-text, th.center-text {
+    text-align: center;
+}
+
+/* --- Cột hành động --- */
 td.action-cell {
     text-align: center;
-    vertical-align: middle;
-    padding: 0; 
 }
 
 .edit-btn {
     background-color: #007bff;
     color: white;
-    padding: 4px 10px;         
-    line-height: 1.2;          
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
+    padding: 6px 14px;
     font-size: 14px;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 auto;            
-}
-
-.edit-btn:hover {
-    background-color: #0056b3;
+    border: none;
+    border-radius: 5px;
     text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
 }
 
 .edit-btn:hover {
     background-color: #0056b3;
+}
+
+/* --- Phân trang (nếu có dùng) --- */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 0 4px;
+    border-radius: 5px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #3498db;
+    border: 1px solid transparent;
+    transition: 0.2s ease;
+}
+
+.pagination a:hover {
+    background-color: #eef6fb;
+    border-color: #3498db;
+}
+
+.pagination .active-page {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
 }

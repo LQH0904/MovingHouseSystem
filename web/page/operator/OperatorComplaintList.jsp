@@ -1,10 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Danh sách khiếu nại chuyển cấp</title>
+        <title>Danh sách Khiếu nại chuyển cấp cao</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
@@ -232,13 +248,13 @@
     <body>
         <div class="parent">
             <div class="div1">
-                <jsp:include page="../../Layout/operator/SideBar.jsp" />
+                <jsp:include page="/Layout/operator/SideBar.jsp" />
             </div>
             <div class="div2">
-                <jsp:include page="../../Layout/operator/Header.jsp" />
+                <jsp:include page="/Layout/operator/Header.jsp" />
             </div>
             <div class="div3">
-                <h1>Danh sách khiếu nại chuyển cấp</h1>
+                <h1>Danh sách Khiếu nại chuyển cấp cao</h1>
 
                 <c:if test="${not empty successMessage}">
                     <p class="success-message">${successMessage}</p>
@@ -289,7 +305,7 @@
                         </div>
 
                         <div class="filter-actions">
-                            <button type="submit">Tìm KIếm</button>
+                            <button type="submit">Lọc</button>
                         </div>
                     </div>
                 </form>

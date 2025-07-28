@@ -80,7 +80,7 @@
                 display: flex;
                 gap: 1rem;
                 margin-top: 2rem;
-                justify-content: flex-end;
+justify-content: flex-end;
             }
 
             .password-btn {
@@ -193,7 +193,7 @@
     <body class="bg-light">
         <div class="parent">
             <div class="div1">
-                <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
+<jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
@@ -241,7 +241,7 @@
                             </label>
                             <input type="password" id="confirmPassword" name="confirmPassword" required>
                             <div class="empty-field-error" id="confirmPasswordError">Vui lòng xác nhận mật khẩu mới</div>
-                            <div id="passwordMatch" style="margin-top: 0.5rem; font-size: 0.85rem;"></div>
+<div id="passwordMatch" style="margin-top: 0.5rem; font-size: 0.85rem;"></div>
                         </div>
 
                         <div class="password-actions">
@@ -302,7 +302,7 @@
                 } else if (strength < 80) {
                     passwordMeter.style.backgroundColor = '#ffbe0b';
                 } else {
-                    passwordMeter.style.backgroundColor = '#06d6a0';
+passwordMeter.style.backgroundColor = '#06d6a0';
                 }
 
                 checkPasswordsMatch();
@@ -365,8 +365,7 @@
                             </div>
                         </div>
                     `;
-
-                    document.body.insertAdjacentHTML('beforeend', toastHTML);
+document.body.insertAdjacentHTML('beforeend', toastHTML);
 
                     setTimeout(() => {
                         const toast = document.querySelector('.toast');

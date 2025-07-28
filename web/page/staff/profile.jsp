@@ -86,8 +86,7 @@
                 display: flex;
                 align-items: center;
             }
-
-            .section-title::before {
+.section-title::before {
                 content: "";
                 display: inline-block;
                 width: 6px;
@@ -165,9 +164,9 @@
                     </c:if>
 
                     <div class="profile-header">
-                        <img src="${pageContext.request.contextPath}/images/default-avatar.jpg" alt="Avatar" class="profile-avatar">
+                        <img src="https://i.pinimg.com/originals/b8/5e/cf/b85ecfd8cff510945f6659786312ba28.gif" alt="Avatar" class="profile-avatar">
                         <div class="profile-info">
-                            <h1 class="profile-name">${profile.firstName} ${profile.lastName}</h1>
+<h1 class="profile-name">${profile.firstName} ${profile.lastName}</h1>
                             <p class="profile-email">
                                 <i class="bi bi-envelope me-2"></i>${profile.email}
                             </p>
@@ -219,7 +218,7 @@
                         <div class="profile-detail">
                             <span class="detail-label">Thành phố:</span>
                             <span class="detail-value">${profile.city}</span>
-                        </div>
+</div>
                         <div class="profile-detail">
                             <span class="detail-label">Quận/Huyện:</span>
                             <span class="detail-value">${profile.district}</span>
