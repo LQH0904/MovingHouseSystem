@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 6: // Customer
-                    response.sendRedirect(request.getContextPath() + "/notifications");
+                    response.sendRedirect(request.getContextPath() + "/customer/dashboard");
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/orderList");

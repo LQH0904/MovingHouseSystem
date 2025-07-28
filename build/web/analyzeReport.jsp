@@ -158,12 +158,24 @@
                 opacity: 0.5;
             }
             @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
             @keyframes slideIn {
-                from { opacity: 0; transform: translateX(-20px); }
-                to { opacity: 1; transform: translateX(0); }
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
             }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -394,24 +406,24 @@
                 }
 
                 $('#pagination').append(
-                    '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">' +
-                    '<a class="page-link" href="#" onclick="loadReports(' + (currentPage - 1) + ')">Trước</a>' +
-                    '</li>'
-                );
+                        '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="loadReports(' + (currentPage - 1) + ')">Trước</a>' +
+                        '</li>'
+                        );
 
                 for (var i = 1; i <= totalPages; i++) {
                     $('#pagination').append(
-                        '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
-                        '<a class="page-link" href="#" onclick="loadReports(' + i + ')">' + i + '</a>' +
-                        '</li>'
-                    );
+                            '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
+                            '<a class="page-link" href="#" onclick="loadReports(' + i + ')">' + i + '</a>' +
+                            '</li>'
+                            );
                 }
 
                 $('#pagination').append(
-                    '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">' +
-                    '<a class="page-link" href="#" onclick="loadReports(' + (currentPage + 1) + ')">Sau</a>' +
-                    '</li>'
-                );
+                        '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="loadReports(' + (currentPage + 1) + ')">Sau</a>' +
+                        '</li>'
+                        );
 
                 console.log('Pagination HTML:', $('#pagination').html());
             }

@@ -20,7 +20,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Danh sách Khiếu nại</title>
+        <title>Danh sách Khiếu nại chuyển cấp cao</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
@@ -254,7 +254,7 @@
                 <jsp:include page="/Layout/operator/Header.jsp" />
             </div>
             <div class="div3">
-                <h1>Danh sách Khiếu nại</h1>
+                <h1>Danh sách Khiếu nại chuyển cấp cao</h1>
 
                 <c:if test="${not empty successMessage}">
                     <p class="success-message">${successMessage}</p>
