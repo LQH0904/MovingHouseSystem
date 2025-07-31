@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.SystemLogDAO;
 import dao.UserDAO;
 import model.Users;
 import jakarta.servlet.ServletException;
@@ -16,9 +17,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.PasswordUtils;
+import model.SystemLog;
 
 @WebServlet(name = "ConfirmPassServlet", urlPatterns = {"/confirmpass"})
 public class ConfirmPassServlet extends HttpServlet {
+
     private static final Logger LOGGER = Logger.getLogger(ConfirmPassServlet.class.getName());
 
     @Override
@@ -88,6 +91,14 @@ public class ConfirmPassServlet extends HttpServlet {
         boolean updated = dao.updatePassByEmail(hashedPassword, email, roleId);
 
         if (updated) {
+            //Create Log
+            SystemLogDAO aO = new SystemLogDAO();
+            SystemLog log = new SystemLog();
+            log.setUserId(user.getUserId());
+            log.setUsername(user.getUsername());
+            log.setAction("ChangePass");
+            log.setDetails(user.getUsername() + " Thay đổi mật khẩu");
+            aO.createSystemLog(log);
             session.removeAttribute("resetUsername");
             session.removeAttribute("resetRoleId");
             request.setAttribute("mess", "Thay đổi mật khẩu thành công!");

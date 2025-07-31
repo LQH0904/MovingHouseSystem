@@ -100,4 +100,28 @@ public class HomePageDAO extends DBContext {
         }
         return result;
     }
+
+    /**
+     * Lấy roleId theo roleName
+     *
+     * @return Map với key là roleName, value là roleId
+     */
+    public Map<String, Integer> getRoleIds() {
+        Map<String, Integer> result = new HashMap<>();
+        String sql = "SELECT role_id, role_name FROM Roles";
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                String roleName = rs.getString("role_name");
+                int roleId = rs.getInt("role_id");
+                result.put(roleName, roleId);
+            }
+            rs.close();
+            state.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
 }

@@ -1,7 +1,7 @@
 // 3. Updated transportReport.java model
 package model;
 
-public class transportReport {
+public class TransportReport {
     private int reportId;
     private int transportUnitId;
     private int reportYear;
@@ -18,10 +18,10 @@ public class transportReport {
     // ADDED: Company name field
     private String companyName;
 
-    public transportReport() {
+    public TransportReport() {
     }
 
-    public transportReport(int reportId, int transportUnitId, int reportYear, int reportMonth, 
+    public TransportReport(int reportId, int transportUnitId, int reportYear, int reportMonth, 
                           int totalShipments, double totalRevenue, double plannedRevenue, double totalWeight, 
                           int onTimeCount, int cancelCount, int delayCount, String createdAt) {
         this.reportId = reportId;

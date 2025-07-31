@@ -1,0 +1,26 @@
+.user-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.user-list-table th,
+.user-list-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.user-list-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+.btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #0056b3;
+}

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="model.Users" %>
 <%
 // Kiểm tra session
 String redirectURL = null;
@@ -9,6 +10,11 @@ if (session.getAttribute("acc") == null) {
     response.sendRedirect(request.getContextPath() + redirectURL);
     return;
 }
+// Lấy thông tin user từ session
+Users userAccount = (Users) session.getAttribute("acc");
+int currentUserId = userAccount.getUserId();
+String currentUsername = userAccount.getUsername();
+int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -668,7 +674,7 @@ if (session.getAttribute("acc") == null) {
                         <input type="hidden" name="service" value="filterCostAndProfit">
                         <div class="filter-row">
                             <div class="filter-group">
-                                
+
                                 <label class="filter-label">Đơn vị kho:</label>
                                 <select name="storageUnitId" class="filter-input">
                                     <option value="">-- Tất cả kho --</option>
@@ -812,9 +818,9 @@ if (session.getAttribute("acc") == null) {
                 <div class="charts-grid">
                     <!-- 5. Biểu đồ Tần Suất Nhập/Xuất Kho Theo Kho (POLAR AREA) -->
                     <div class="chart-container">
-                        <h3 class="chart-title">📈 Tần Suất Nhập/Xuất Kho Theo Kho</h3>
+                        <h3 class="chart-title">Thời gian lưu kho trung bình theo tháng</h3>
                         <div class="chart-wrapper">
-                            <canvas id="frequencyChart"></canvas>
+                            <canvas id="LineCharDate"></canvas>
                         </div>
                     </div>
 
@@ -864,7 +870,8 @@ if (session.getAttribute("acc") == null) {
                     </button>
                 </a> 
             </div>
-            <a href="#">
+            <% if (currentUserRoleId != 3) { %> <!-- Ẩn nút nếu user là Staff (role_id = 3) -->
+            <a href="http://localhost:9999/HouseMovingSystem/sendNotification">
                 <button class="continue-application">
                     <div>
                         <div class="pencil"></div>
@@ -877,9 +884,10 @@ if (session.getAttribute("acc") == null) {
                             <div class="paper"></div>
                         </div>
                     </div>
-                    tạo thông báo
+                    Tạo thông báo
                 </button>
             </a>
+            <% } %>
 
         </div>
 
@@ -1137,726 +1145,863 @@ if (session.getAttribute("acc") == null) {
                     labels: sortedMonths.map(month => {
                     const [year, monthNum] = month.split('-');
                     return `\${monthNum}/\${year}`;
-                                }),
-                                        datasets: datasets
-                                },
-                                options: {
-                                responsive: true,
-                                        maintainAspectRatio: false,
-                                        plugins: {
-                                        legend: {
-                                        position: 'top',
-                                                labels: {
-                                                usePointStyle: true,
-                                                        padding: 15
-                                                }
-                                        },
-                                                tooltip: {
-                                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                        titleColor: 'white',
-                                                        bodyColor: 'white',
-                                                        callbacks: {
-                                                        label: function(context) {
-                                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
-                                                        }
-                                                        }
-                                                }
-                                        },
-                                        scales: {
-                                        x: {
-                                        title: {
-                                        display: true,
-                                                text: 'Thời gian'
-                                        },
-                                                grid: {
-                                                color: 'rgba(0, 0, 0, 0.1)'
-                                                }
-                                        },
-                                                y: {
-                                                beginAtZero: true,
-                                                        title: {
-                                                        display: true,
-                                                                text: 'Chi phí lưu kho (VNĐ/m²)'
-                                                        },
-                                                        ticks: {
-                                                        callback: function(value) {
-                                                        return value.toLocaleString();
-                                                        }
-                                                        },
-                                                        grid: {
-                                                        color: 'rgba(0, 0, 0, 0.1)'
-                                                        }
-                                                }
-                                        }
-                                }
-                        });
-                        }
-
-                        // 2. Biểu đồ Chi phí Bảo Trì Theo Kho
-                        function createMaintenanceCostChart() {
-                        const ctx = document.getElementById('maintenanceCostChart').getContext('2d');
-                        const warehouseData = groupDataByWarehouse();
-                        const warehouseNames = Object.keys(warehouseData);
-                        const sortedMonths = getAllUniqueMonths();
-                        if (warehouseNames.length === 0) {
-                        ctx.fillText('Không có dữ liệu', 250, 200);
-                        return;
-                        }
-
-                        const datasets = [];
-                        const colors = generateColors(warehouseNames.length);
-                        warehouseNames.forEach((name, index) => {
-                        const warehouseMonthlyData = warehouseData[name];
-                        // Tạo mảng dữ liệu theo thứ tự tháng đã sắp xếp
-                        const data = sortedMonths.map(month => {
-                        const monthData = warehouseMonthlyData.find(item => item.month === month);
-                        return monthData ? monthData.maintenanceCost : 0;
-                        });
-                        datasets.push({
-                        label: name,
-                                data: data,
-                                borderColor: colors[index].replace('0.8', '1'),
-                                backgroundColor: colors[index].replace('0.8', '0.1'),
-                                borderWidth: 3,
-                                fill: false,
-                                tension: 0.4,
-                                pointBackgroundColor: colors[index].replace('0.8', '1'),
-                                pointBorderColor: 'white',
-                                pointBorderWidth: 2,
-                                pointRadius: 6
-                        });
-                        });
-                        new Chart(ctx, {
-                        type: 'line',
-                                data: {
-                                labels: sortedMonths.map(month => {
-                                const [year, monthNum] = month.split('-');
-                                return `\${monthNum}/\${year}`;
-                                            }),
-                                                    datasets: datasets
+                    }),
+                            datasets: datasets
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'top',
+                                    labels: {
+                                    usePointStyle: true,
+                                            padding: 15
+                                    }
+                            },
+                                    tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            callbacks: {
+                                            label: function(context) {
+                                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
+                                            }
+                                            }
+                                    }
+                            },
+                            scales: {
+                            x: {
+                            title: {
+                            display: true,
+                                    text: 'Thời gian'
+                            },
+                                    grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                            },
+                                    y: {
+                                    beginAtZero: true,
+                                            title: {
+                                            display: true,
+                                                    text: 'Chi phí lưu kho (VNĐ/m²)'
                                             },
-                                            options: {
-                                            responsive: true,
-                                                    maintainAspectRatio: false,
-                                                    plugins: {
-                                                    legend: {
-                                                    position: 'top',
-                                                            labels: {
-                                                            usePointStyle: true,
-                                                                    padding: 15
-                                                            }
-                                                    },
-                                                            tooltip: {
-                                                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                                    titleColor: 'white',
-                                                                    bodyColor: 'white',
-                                                                    callbacks: {
-                                                                    label: function(context) {
-                                                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
-                                                                    }
-                                                                    }
-                                                            }
-                                                    },
-                                                    scales: {
-                                                    x: {
-                                                    title: {
-                                                    display: true,
-                                                            text: 'Thời gian'
-                                                    },
-                                                            grid: {
-                                                            color: 'rgba(0, 0, 0, 0.1)'
-                                                            }
-                                                    },
-                                                            y: {
-                                                            beginAtZero: true,
-                                                                    title: {
-                                                                    display: true,
-                                                                            text: 'Chi phí bảo trì (VNĐ/m²)'
-                                                                    },
-                                                                    ticks: {
-                                                                    callback: function(value) {
-                                                                    return value.toLocaleString();
-                                                                    }
-                                                                    },
-                                                                    grid: {
-                                                                    color: 'rgba(0, 0, 0, 0.1)'
-                                                                    }
-                                                            }
+                                            ticks: {
+                                            callback: function(value) {
+                                            return value.toLocaleString();
+                                            }
+                                            },
+                                            grid: {
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                            }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // 2. Biểu đồ Chi phí Bảo Trì Theo Kho
+            function createMaintenanceCostChart() {
+            const ctx = document.getElementById('maintenanceCostChart').getContext('2d');
+            const warehouseData = groupDataByWarehouse();
+            const warehouseNames = Object.keys(warehouseData);
+            const sortedMonths = getAllUniqueMonths();
+            if (warehouseNames.length === 0) {
+            ctx.fillText('Không có dữ liệu', 250, 200);
+            return;
+            }
+
+            const datasets = [];
+            const colors = generateColors(warehouseNames.length);
+            warehouseNames.forEach((name, index) => {
+            const warehouseMonthlyData = warehouseData[name];
+            // Tạo mảng dữ liệu theo thứ tự tháng đã sắp xếp
+            const data = sortedMonths.map(month => {
+            const monthData = warehouseMonthlyData.find(item => item.month === month);
+            return monthData ? monthData.maintenanceCost : 0;
+            });
+            datasets.push({
+            label: name,
+                    data: data,
+                    borderColor: colors[index].replace('0.8', '1'),
+                    backgroundColor: colors[index].replace('0.8', '0.1'),
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: colors[index].replace('0.8', '1'),
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+            });
+            });
+            new Chart(ctx, {
+            type: 'line',
+                    data: {
+                    labels: sortedMonths.map(month => {
+                    const [year, monthNum] = month.split('-');
+                    return `\${monthNum}/\${year}`;
+                    }),
+                            datasets: datasets
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'top',
+                                    labels: {
+                                    usePointStyle: true,
+                                            padding: 15
+                                    }
+                            },
+                                    tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            callbacks: {
+                                            label: function(context) {
+                                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
+                                            }
+                                            }
+                                    }
+                            },
+                            scales: {
+                            x: {
+                            title: {
+                            display: true,
+                                    text: 'Thời gian'
+                            },
+                                    grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                            },
+                                    y: {
+                                    beginAtZero: true,
+                                            title: {
+                                            display: true,
+                                                    text: 'Chi phí bảo trì (VNĐ/m²)'
+                                            },
+                                            ticks: {
+                                            callback: function(value) {
+                                            return value.toLocaleString();
+                                            }
+                                            },
+                                            grid: {
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                            }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // 3. Biểu đồ Lợi nhuận Theo Kho
+            function createProfitChart() {
+            const ctx = document.getElementById('profitChart').getContext('2d');
+            const warehouseData = groupDataByWarehouse();
+            const warehouseNames = Object.keys(warehouseData);
+            const sortedMonths = getAllUniqueMonths();
+            if (warehouseNames.length === 0) {
+            ctx.fillText('Không có dữ liệu', 250, 200);
+            return;
+            }
+
+            const datasets = [];
+            const colors = generateColors(warehouseNames.length);
+            warehouseNames.forEach((name, index) => {
+            const warehouseMonthlyData = warehouseData[name];
+            // Tạo mảng dữ liệu theo thứ tự tháng đã sắp xếp
+            const data = sortedMonths.map(month => {
+            const monthData = warehouseMonthlyData.find(item => item.month === month);
+            return monthData ? monthData.profit : 0;
+            });
+            datasets.push({
+            label: name,
+                    data: data,
+                    borderColor: colors[index].replace('0.8', '1'),
+                    backgroundColor: colors[index].replace('0.8', '0.1'),
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: colors[index].replace('0.8', '1'),
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+            });
+            });
+            new Chart(ctx, {
+            type: 'line',
+                    data: {
+                    labels: sortedMonths.map(month => {
+                    const [year, monthNum] = month.split('-');
+                    return `\${monthNum}/\${year}`;
+                    }),
+                            datasets: datasets
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'top',
+                                    labels: {
+                                    usePointStyle: true,
+                                            padding: 15
+                                    }
+                            },
+                                    tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            callbacks: {
+                                            label: function(context) {
+                                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
+                                            }
+                                            }
+                                    }
+                            },
+                            scales: {
+                            x: {
+                            title: {
+                            display: true,
+                                    text: 'Thời gian'
+                            },
+                                    grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                            },
+                                    y: {
+                                    beginAtZero: true,
+                                            title: {
+                                            display: true,
+                                                    text: 'Lợi nhuận (VNĐ)'
+                                            },
+                                            ticks: {
+                                            callback: function(value) {
+                                            return (value / 1000000).toFixed(0) + 'M';
+                                            }
+                                            },
+                                            grid: {
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                            }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // 4. Biểu đồ Chi phí Nhân Sự Theo Kho
+            function createPersonnelCostChart() {
+            const ctx = document.getElementById('personnelCostChart').getContext('2d');
+            const warehouseNames = Object.keys(warehousePersonnelCosts);
+            const personnelCosts = Object.values(warehousePersonnelCosts);
+            if (warehouseNames.length === 0) {
+            ctx.fillText('Không có dữ liệu', 250, 200);
+            return;
+            }
+
+            // Tạo màu sắc động
+            const colors = generateColors(warehouseNames.length);
+            new Chart(ctx, {
+            type: 'doughnut',
+                    data: {
+                    labels: warehouseNames,
+                            datasets: [{
+                            data: personnelCosts,
+                                    backgroundColor: colors,
+                                    borderColor: colors.map(color => color.replace('0.8', '1')),
+                                    borderWidth: 2,
+                                    hoverOffset: 10
+                            }]
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'bottom',
+                                    labels: {
+                                    usePointStyle: true,
+                                            padding: 20,
+                                            font: {
+                                            size: 12
+                                            }
+                                    }
+                            },
+                                    tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            callbacks: {
+                                            label: function(context) {
+                                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                            return context.label + ': ' + context.parsed.toLocaleString() + ' VNĐ (' + percentage + '%)';
+                                            }
+                                            }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // ========== Tạo biểu đồ HIỆU SUẤT HOẠT ĐỘNG ==========
+
+
+            // 6. Biểu đồ Tỷ Lệ Đơn Hàng Trả Lại Theo Kho
+            function createReturnRateChart() {
+            const ctx = document.getElementById('returnRateChart').getContext('2d');
+            if (returnRateData.length === 0) {
+            ctx.fillText('Không có dữ liệu', 250, 200);
+            return;
+            }
+
+            const warehouseNames = returnRateData.map(item => item.warehouseName);
+            const returnRates = returnRateData.map(item => item.returnRate);
+            const colors = generateColors(warehouseNames.length);
+            new Chart(ctx, {
+            type: 'pie',
+                    data: {
+                    labels: warehouseNames,
+                            datasets: [{
+                            data: returnRates,
+                                    backgroundColor: colors,
+                                    borderColor: colors.map(color => color.replace('0.8', '1')),
+                                    borderWidth: 2,
+                                    hoverOffset: 15
+                            }]
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'bottom',
+                                    labels: {
+                                    usePointStyle: true,
+                                            padding: 15,
+                                            font: {
+                                            size: 12
+                                            }
+                                    }
+                            },
+                                    tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            callbacks: {
+                                            label: function(context) {
+                                            const data = returnRateData[context.dataIndex];
+                                            return context.label + ': ' +
+                                                    data.totalReturned + ' đơn (' +
+                                                    context.raw.toFixed(1) + '%)';
+                                            }
+                                            }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // 7. Biểu đồ Tỷ Lệ Sử Dụng Không Gian Lưu Trữ
+            function createSpaceUtilizationChart() {
+            const ctx = document.getElementById('spaceUtilizationChart').getContext('2d');
+            if (spaceUtilizationData.length === 0) {
+            ctx.fillText('Không có dữ liệu', 250, 200);
+            return;
+            }
+
+            const warehouseNames = spaceUtilizationData.map(item => item.warehouseName);
+            const avgUtilization = spaceUtilizationData.map(item => item.avgUtilizationRate);
+            const maxUtilization = spaceUtilizationData.map(item => item.maxUtilizationRate);
+            const minUtilization = spaceUtilizationData.map(item => item.minUtilizationRate);
+            const colors = generateColors(warehouseNames.length);
+            new Chart(ctx, {
+            type: 'bar',
+                    data: {
+                    labels: warehouseNames,
+                            datasets: [
+                            {
+                            label: 'Tỷ lệ sử dụng trung bình',
+                                    data: avgUtilization,
+                                    backgroundColor: colors.map(color => color.replace('0.8', '0.6')),
+                                    borderColor: colors,
+                                    borderWidth: 2,
+                                    borderRadius: 5
+                            },
+                            {
+                            label: 'Tỷ lệ sử dụng tối đa',
+                                    data: maxUtilization,
+                                    backgroundColor: colors.map(color => color.replace('0.8', '0.3')),
+                                    borderColor: colors.map(color => color.replace('0.8', '0.7')),
+                                    borderWidth: 2,
+                                    borderRadius: 5
+                            },
+                            {
+                            label: 'Tỷ lệ sử dụng tối thiểu',
+                                    data: minUtilization,
+                                    backgroundColor: colors.map(color => color.replace('0.8', '0.2')),
+                                    borderColor: colors.map(color => color.replace('0.8', '0.5')),
+                                    borderWidth: 2,
+                                    borderRadius: 5
+                            }
+                            ]
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'top',
+                                    labels: {
+                                    usePointStyle: true,
+                                            padding: 15
+                                    }
+                            },
+                                    tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            callbacks: {
+                                            label: function(context) {
+                                            const data = spaceUtilizationData[context.dataIndex];
+                                            return context.dataset.label + ': ' +
+                                                    context.parsed.y.toFixed(1) + '% (' +
+                                                    data.avgUsedArea.toFixed(0) + '/' +
+                                                    data.avgTotalArea.toFixed(0) + ' m²)';
+                                            }
+                                            }
+                                    }
+                            },
+                            scales: {
+                            x: {
+                            title: {
+                            display: true,
+                                    text: 'Kho bãi'
+                            },
+                                    grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                            },
+                                    y: {
+                                    beginAtZero: true,
+                                            max: 100,
+                                            title: {
+                                            display: true,
+                                                    text: 'Tỷ lệ sử dụng (%)'
+                                            },
+                                            ticks: {
+                                            callback: function(value) {
+                                            return value + '%';
+                                            }
+                                            },
+                                            grid: {
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                            }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // 8. Biểu đồ Hoạt động Nhập/Xuất Theo Tháng (Doughnut Chart)
+            function createMonthlyActivityChart() {
+            const ctx = document.getElementById('monthlyActivityChart').getContext('2d');
+            // Tính tổng nhập và xuất kho từ dữ liệu
+            let totalInbound = 0;
+            let totalOutbound = 0;
+            monthlyActivityData.forEach(data => {
+            totalInbound += data.monthlyInbound || 0;
+            totalOutbound += data.monthlyOutbound || 0;
+            });
+            new Chart(ctx, {
+            type: 'doughnut',
+                    data: {
+                    labels: ['Tổng nhập kho', 'Tổng xuất kho'],
+                            datasets: [{
+                            data: [totalInbound, totalOutbound],
+                                    backgroundColor: [
+                                            'rgba(39, 174, 96, 0.8)',
+                                            'rgba(231, 76, 60, 0.8)'
+                                    ],
+                                    borderWidth: 3,
+                                    borderColor: '#fff'
+                            }]
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            legend: {
+                            position: 'bottom',
+                                    labels: {
+                                    padding: 20,
+                                            usePointStyle: true,
+                                            font: {
+                                            size: 14
+                                            }
+                                    }
+                            },
+                                    tooltip: {
+                                    callbacks: {
+                                    label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + new Intl.NumberFormat('vi-VN').format(context.parsed) + ' (' + percentage + '%)';
+                                    }
+                                    }
+                                    }
+                            }
+                    }
+            });
+            }
+
+            // 5. Biểu đồ Thời gian lưu kho trung bình (CÓ HỖ TRỢ LỌC)
+            function createAverageStorageDurationChart() {
+            const ctx = document.getElementById('LineCharDate').getContext('2d');
+            // Lấy dữ liệu từ JSP - ưu tiên dữ liệu đã lọc
+            const averageStorageDurationData = [
+            <c:choose>
+                <c:when test="${not empty filteredAverageStorageDurationData}">
+                    <c:forEach var="item" items="${filteredAverageStorageDurationData}" varStatus="status">
+            {
+            warehouseName: "${item[0]}",
+                    year: ${item[1]},
+                    month: ${item[2]},
+                    averageStorageDuration: ${item[3]}
+            }<c:if test="${!status.last}">,</c:if>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="item" items="${averageStorageDurationData}" varStatus="status">
+            {
+            warehouseName: "${item[0]}",
+                    year: ${item[1]},
+                    month: ${item[2]},
+                    averageStorageDuration: ${item[3]}
+            }<c:if test="${!status.last}">,</c:if>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+            ];
+            // Debug log
+            console.log('Average Storage Duration Data:', averageStorageDurationData);
+            // Kiểm tra nếu không có dữ liệu
+            if (averageStorageDurationData.length === 0) {
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#666";
+            ctx.textAlign = "center";
+            ctx.fillText('Không có dữ liệu thời gian lưu kho', 250, 200);
+            return;
+            }
+
+            // Xử lý dữ liệu để nhóm theo kho
+            const warehouseData = {};
+            const allMonths = new Set();
+            averageStorageDurationData.forEach(item => {
+            const monthKey = `\${item.year}-\${String(item.month).padStart(2, '0')}`;
+            allMonths.add(monthKey);
+            if (!warehouseData[item.warehouseName]) {
+            warehouseData[item.warehouseName] = {};
+            }
+            warehouseData[item.warehouseName][monthKey] = item.averageStorageDuration;
+            });
+            // Sắp xếp các tháng theo thứ tự thời gian
+            const sortedMonths = Array.from(allMonths).sort();
+            // Tạo datasets cho từng kho
+            const datasets = [];
+            const colors = [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#E74C3C', '#2ECC71',
+                    '#3498DB', '#F39C12'
+            ];
+            let colorIndex = 0;
+            Object.keys(warehouseData).forEach(warehouseName => {
+            const data = sortedMonths.map(month =>
+                    warehouseData[warehouseName][month] || null
+                    );
+            datasets.push({
+            label: warehouseName,
+                    data: data,
+                    borderColor: colors[colorIndex % colors.length],
+                    backgroundColor: colors[colorIndex % colors.length] + '20',
+                    borderWidth: 3,
+                    stepped: 'middle',
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: colors[colorIndex % colors.length],
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    spanGaps: false
+            });
+            colorIndex++;
+            });
+            // Xóa biểu đồ cũ nếu có
+            if (window.averageStorageDurationChart) {
+            window.averageStorageDurationChart.destroy();
+            }
+
+            // Tạo biểu đồ mới
+            window.averageStorageDurationChart = new Chart(ctx, {
+            type: 'line',
+                    data: {
+                    labels: sortedMonths.map(month => {
+                    const [year, monthNum] = month.split('-');
+                    return `\${monthNum}/\${year}`;
+                    }),
+                            datasets: datasets
+                    },
+                    options: {
+                    responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                            title: {
+                            display: false // Title đã có trong HTML
+                            },
+                                    legend: {
+                                    display: true,
+                                            position: 'top',
+                                            labels: {
+                                            usePointStyle: true,
+                                                    padding: 15,
+                                                    font: {
+                                                    size: 12
                                                     }
                                             }
-                                    });
+                                    },
+                                    tooltip: {
+                                    mode: 'index',
+                                            intersect: false,
+                                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: 'white',
+                                            bodyColor: 'white',
+                                            titleFont: {
+                                            size: 14,
+                                                    weight: 'bold'
+                                            },
+                                            bodyFont: {
+                                            size: 12
+                                            },
+                                            callbacks: {
+                                            label: function(context) {
+                                            const value = context.parsed.y;
+                                            if (value !== null && value !== undefined) {
+                                            return `${context.dataset.label}: \${value} ngày`;
+                                            }
+                                            return null;
+                                            }
+                                            }
                                     }
-
-                                    // 3. Biểu đồ Lợi nhuận Theo Kho
-                                    function createProfitChart() {
-                                    const ctx = document.getElementById('profitChart').getContext('2d');
-                                    const warehouseData = groupDataByWarehouse();
-                                    const warehouseNames = Object.keys(warehouseData);
-                                    const sortedMonths = getAllUniqueMonths();
-                                    if (warehouseNames.length === 0) {
-                                    ctx.fillText('Không có dữ liệu', 250, 200);
-                                    return;
+                            },
+                            scales: {
+                            x: {
+                            display: true,
+                                    title: {
+                                    display: true,
+                                            text: 'Tháng/Năm',
+                                            font: {
+                                            size: 14,
+                                                    weight: 'bold'
+                                            }
+                                    },
+                                    grid: {
+                                    display: true,
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                    },
+                                    ticks: {
+                                    font: {
+                                    size: 11
+                                    },
+                                            maxRotation: 45
                                     }
+                            },
+                                    y: {
+                                    display: true,
+                                            title: {
+                                            display: true,
+                                                    text: 'Thời gian lưu trữ (ngày)',
+                                                    font: {
+                                                    size: 14,
+                                                            weight: 'bold'
+                                                    }
+                                            },
+                                            grid: {
+                                            display: true,
+                                                    color: 'rgba(0, 0, 0, 0.1)'
+                                            },
+                                            ticks: {
+                                            font: {
+                                            size: 11
+                                            },
+                                                    callback: function(value) {
+                                                    return value + ' ngày';
+                                                    }
+                                            },
+                                            beginAtZero: true
+                                    }
+                            },
+                            interaction: {
+                            mode: 'index',
+                                    intersect: false,
+                            },
+                            hover: {
+                            mode: 'index',
+                                    intersect: false
+                            },
+                            elements: {
+                            line: {
+                            borderJoinStyle: 'round'
+                            }
+                            },
+                            animation: {
+                            duration: 1000,
+                                    easing: 'easeInOutQuart'
+                            }
+                    }
+            });
+            }
 
-                                    const datasets = [];
-                                    const colors = generateColors(warehouseNames.length);
-                                    warehouseNames.forEach((name, index) => {
-                                    const warehouseMonthlyData = warehouseData[name];
-                                    // Tạo mảng dữ liệu theo thứ tự tháng đã sắp xếp
-                                    const data = sortedMonths.map(month => {
-                                    const monthData = warehouseMonthlyData.find(item => item.month === month);
-                                    return monthData ? monthData.profit : 0;
-                                    });
-                                    datasets.push({
-                                    label: name,
-                                            data: data,
-                                            borderColor: colors[index].replace('0.8', '1'),
-                                            backgroundColor: colors[index].replace('0.8', '0.1'),
-                                            borderWidth: 3,
-                                            fill: true,
-                                            tension: 0.4,
-                                            pointBackgroundColor: colors[index].replace('0.8', '1'),
-                                            pointBorderColor: 'white',
-                                            pointBorderWidth: 2,
-                                            pointRadius: 6
-                                    });
-                                    });
-                                    new Chart(ctx, {
-                                    type: 'line',
-                                            data: {
-                                            labels: sortedMonths.map(month => {
-                                            const [year, monthNum] = month.split('-');
-                                            return `\${monthNum}/\${year}`;
-                                                        }),
-                                                                datasets: datasets
-                                                        },
-                                                        options: {
-                                                        responsive: true,
-                                                                maintainAspectRatio: false,
-                                                                plugins: {
-                                                                legend: {
-                                                                position: 'top',
-                                                                        labels: {
-                                                                        usePointStyle: true,
-                                                                                padding: 15
-                                                                        }
-                                                                },
-                                                                        tooltip: {
-                                                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                                                titleColor: 'white',
-                                                                                bodyColor: 'white',
-                                                                                callbacks: {
-                                                                                label: function(context) {
-                                                                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
-                                                                                }
-                                                                                }
-                                                                        }
-                                                                },
-                                                                scales: {
-                                                                x: {
-                                                                title: {
-                                                                display: true,
-                                                                        text: 'Thời gian'
-                                                                },
-                                                                        grid: {
-                                                                        color: 'rgba(0, 0, 0, 0.1)'
-                                                                        }
-                                                                },
-                                                                        y: {
-                                                                        beginAtZero: true,
-                                                                                title: {
-                                                                                display: true,
-                                                                                        text: 'Lợi nhuận (VNĐ)'
-                                                                                },
-                                                                                ticks: {
-                                                                                callback: function(value) {
-                                                                                return (value / 1000000).toFixed(0) + 'M';
-                                                                                }
-                                                                                },
-                                                                                grid: {
-                                                                                color: 'rgba(0, 0, 0, 0.1)'
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                });
-                                                }
+// ========== CẬP NHẬT hàm khởi tạo chính ==========
 
-                                                // 4. Biểu đồ Chi phí Nhân Sự Theo Kho
-                                                function createPersonnelCostChart() {
-                                                const ctx = document.getElementById('personnelCostChart').getContext('2d');
-                                                const warehouseNames = Object.keys(warehousePersonnelCosts);
-                                                const personnelCosts = Object.values(warehousePersonnelCosts);
-                                                if (warehouseNames.length === 0) {
-                                                ctx.fillText('Không có dữ liệu', 250, 200);
-                                                return;
-                                                }
+// THÊM vào phần khởi tạo biểu đồ hiệu suất hoạt động (trong document.addEventListener):
 
-                                                // Tạo màu sắc động
-                                                const colors = generateColors(warehouseNames.length);
-                                                new Chart(ctx, {
-                                                type: 'doughnut',
-                                                        data: {
-                                                        labels: warehouseNames,
-                                                                datasets: [{
-                                                                data: personnelCosts,
-                                                                        backgroundColor: colors,
-                                                                        borderColor: colors.map(color => color.replace('0.8', '1')),
-                                                                        borderWidth: 2,
-                                                                        hoverOffset: 10
-                                                                }]
-                                                        },
-                                                        options: {
-                                                        responsive: true,
-                                                                maintainAspectRatio: false,
-                                                                plugins: {
-                                                                legend: {
-                                                                position: 'bottom',
-                                                                        labels: {
-                                                                        usePointStyle: true,
-                                                                                padding: 20,
-                                                                                font: {
-                                                                                size: 12
-                                                                                }
-                                                                        }
-                                                                },
-                                                                        tooltip: {
-                                                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                                                titleColor: 'white',
-                                                                                bodyColor: 'white',
-                                                                                callbacks: {
-                                                                                label: function(context) {
-                                                                                const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
-                                                                                const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                                                                return context.label + ': ' + context.parsed.toLocaleString() + ' VNĐ (' + percentage + '%)';
-                                                                                }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                });
-                                                }
+            try {
+            createAverageStorageDurationChart();
+            console.log('✓ Average Storage Duration chart created with filtering support');
+            } catch (e) {
+            console.error('Lỗi tạo average storage duration chart:', e);
+            }
 
-                                                // ========== Tạo biểu đồ HIỆU SUẤT HOẠT ĐỘNG ==========
 
-                                                // 5. Biểu đồ Tần Suất Nhập/Xuất Kho Theo Kho (POLAR AREA)
-                                                function createFrequencyChart() {
-                                                const ctx = document.getElementById('frequencyChart').getContext('2d');
-                                                if (inOutFrequencyData.length === 0) {
-                                                ctx.fillText('Không có dữ liệu', 250, 200);
-                                                return;
-                                                }
+            // ========== Các hàm tiện ích ==========
 
-                                                // Nhóm dữ liệu theo kho và tính tổng tần suất
-                                                const warehouseFrequencyTotals = {};
-                                                inOutFrequencyData.forEach(item => {
-                                                if (!warehouseFrequencyTotals[item.warehouseName]) {
-                                                warehouseFrequencyTotals[item.warehouseName] = {
-                                                totalInboundFreq: 0,
-                                                        totalOutboundFreq: 0,
-                                                        monthCount: 0
-                                                };
-                                                }
-                                                warehouseFrequencyTotals[item.warehouseName].totalInboundFreq += item.inboundFrequency;
-                                                warehouseFrequencyTotals[item.warehouseName].totalOutboundFreq += item.outboundFrequency;
-                                                warehouseFrequencyTotals[item.warehouseName].monthCount++;
-                                                });
-                                                // Tính tần suất trung bình và chuẩn bị dữ liệu cho Polar Area
-                                                const warehouseNames = Object.keys(warehouseFrequencyTotals);
-                                                const avgFrequencyData = warehouseNames.map(name => {
-                                                const data = warehouseFrequencyTotals[name];
-                                                // Tính trung bình tần suất nhập + xuất
-                                                return ((data.totalInboundFreq + data.totalOutboundFreq) / data.monthCount).toFixed(2);
-                                                });
-                                                const colors = generateColors(warehouseNames.length);
-                                                new Chart(ctx, {
-                                                type: 'polarArea',
-                                                        data: {
-                                                        labels: warehouseNames,
-                                                                datasets: [{
-                                                                data: avgFrequencyData,
-                                                                        backgroundColor: colors,
-                                                                        borderColor: colors.map(color => color.replace('0.8', '1')),
-                                                                        borderWidth: 2
-                                                                }]
-                                                        },
-                                                        options: {
-                                                        responsive: true,
-                                                                maintainAspectRatio: false,
-                                                                plugins: {
-                                                                legend: {
-                                                                position: 'bottom',
-                                                                        labels: {
-                                                                        usePointStyle: true,
-                                                                                padding: 15,
-                                                                                font: {
-                                                                                size: 12
-                                                                                }
-                                                                        }
-                                                                },
-                                                                        tooltip: {
-                                                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                                                titleColor: 'white',
-                                                                                bodyColor: 'white',
-                                                                                callbacks: {
-                                                                                label: function(context) {
-                                                                                return context.label + ': ' +
-                                                                                        parseFloat(context.raw).toFixed(2) + ' lần/tháng (trung bình)';
-                                                                                }
-                                                                                }
-                                                                        }
-                                                                },
-                                                                scales: {
-                                                                r: {
-                                                                beginAtZero: true,
-                                                                        title: {
-                                                                        display: true,
-                                                                                text: 'Tần suất trung bình (lần/ngày)'
-                                                                        },
-                                                                        ticks: {
-                                                                        callback: function(value) {
-                                                                        return value.toFixed(1);
-                                                                        }
-                                                                        }
-                                                                }
-                                                                }
-                                                        }
-                                                });
-                                                }
+            // Hàm xóa bộ lọc chi phí và lợi nhuận
+            function clearCostProfitFilters() {
+            window.location.href = 'StorageReportController?service=viewCostAndProfit';
+            }
 
-                                                // 6. Biểu đồ Tỷ Lệ Đơn Hàng Trả Lại Theo Kho
-                                                function createReturnRateChart() {
-                                                const ctx = document.getElementById('returnRateChart').getContext('2d');
-                                                if (returnRateData.length === 0) {
-                                                ctx.fillText('Không có dữ liệu', 250, 200);
-                                                return;
-                                                }
+            // Hàm xóa bộ lọc hiệu suất hoạt động
+            function clearPerformanceFilters() {
+            // Xóa các giá trị trong form performance
+            document.querySelector('select[name="performanceStorageUnitId"]').value = '';
+            document.querySelector('input[name="performanceFromMonth"]').value = '';
+            document.querySelector('input[name="performanceToMonth"]').value = '';
+            // Submit form để reload data
+            document.getElementById('performanceFilterForm').submit();
+            }
 
-                                                const warehouseNames = returnRateData.map(item => item.warehouseName);
-                                                const returnRates = returnRateData.map(item => item.returnRate);
-                                                const colors = generateColors(warehouseNames.length);
-                                                new Chart(ctx, {
-                                                type: 'pie',
-                                                        data: {
-                                                        labels: warehouseNames,
-                                                                datasets: [{
-                                                                data: returnRates,
-                                                                        backgroundColor: colors,
-                                                                        borderColor: colors.map(color => color.replace('0.8', '1')),
-                                                                        borderWidth: 2,
-                                                                        hoverOffset: 15
-                                                                }]
-                                                        },
-                                                        options: {
-                                                        responsive: true,
-                                                                maintainAspectRatio: false,
-                                                                plugins: {
-                                                                legend: {
-                                                                position: 'bottom',
-                                                                        labels: {
-                                                                        usePointStyle: true,
-                                                                                padding: 15,
-                                                                                font: {
-                                                                                size: 12
-                                                                                }
-                                                                        }
-                                                                },
-                                                                        tooltip: {
-                                                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                                                titleColor: 'white',
-                                                                                bodyColor: 'white',
-                                                                                callbacks: {
-                                                                                label: function(context) {
-                                                                                const data = returnRateData[context.dataIndex];
-                                                                                return context.label + ': ' +
-                                                                                        data.totalReturned + ' đơn (' +
-                                                                                        context.raw.toFixed(1) + '%)';
-                                                                                }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                });
-                                                }
+            // ========== Khởi tạo ==========
 
-                                                // 7. Biểu đồ Tỷ Lệ Sử Dụng Không Gian Lưu Trữ
-                                                function createSpaceUtilizationChart() {
-                                                const ctx = document.getElementById('spaceUtilizationChart').getContext('2d');
-                                                if (spaceUtilizationData.length === 0) {
-                                                ctx.fillText('Không có dữ liệu', 250, 200);
-                                                return;
-                                                }
+            // Khởi tạo biểu đồ khi trang load
+            document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, khởi tạo biểu đồ...');
+            // Kiểm tra Chart.js đã load chưa
+            if (typeof Chart === 'undefined') {
+            console.error('Chart.js chưa được load');
+            return;
+            }
 
-                                                const warehouseNames = spaceUtilizationData.map(item => item.warehouseName);
-                                                const avgUtilization = spaceUtilizationData.map(item => item.avgUtilizationRate);
-                                                const maxUtilization = spaceUtilizationData.map(item => item.maxUtilizationRate);
-                                                const minUtilization = spaceUtilizationData.map(item => item.minUtilizationRate);
-                                                const colors = generateColors(warehouseNames.length);
-                                                new Chart(ctx, {
-                                                type: 'bar',
-                                                        data: {
-                                                        labels: warehouseNames,
-                                                                datasets: [
-                                                                {
-                                                                label: 'Tỷ lệ sử dụng trung bình',
-                                                                        data: avgUtilization,
-                                                                        backgroundColor: colors.map(color => color.replace('0.8', '0.6')),
-                                                                        borderColor: colors,
-                                                                        borderWidth: 2,
-                                                                        borderRadius: 5
-                                                                },
-                                                                {
-                                                                label: 'Tỷ lệ sử dụng tối đa',
-                                                                        data: maxUtilization,
-                                                                        backgroundColor: colors.map(color => color.replace('0.8', '0.3')),
-                                                                        borderColor: colors.map(color => color.replace('0.8', '0.7')),
-                                                                        borderWidth: 2,
-                                                                        borderRadius: 5
-                                                                },
-                                                                {
-                                                                label: 'Tỷ lệ sử dụng tối thiểu',
-                                                                        data: minUtilization,
-                                                                        backgroundColor: colors.map(color => color.replace('0.8', '0.2')),
-                                                                        borderColor: colors.map(color => color.replace('0.8', '0.5')),
-                                                                        borderWidth: 2,
-                                                                        borderRadius: 5
-                                                                }
-                                                                ]
-                                                        },
-                                                        options: {
-                                                        responsive: true,
-                                                                maintainAspectRatio: false,
-                                                                plugins: {
-                                                                legend: {
-                                                                position: 'top',
-                                                                        labels: {
-                                                                        usePointStyle: true,
-                                                                                padding: 15
-                                                                        }
-                                                                },
-                                                                        tooltip: {
-                                                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                                                                titleColor: 'white',
-                                                                                bodyColor: 'white',
-                                                                                callbacks: {
-                                                                                label: function(context) {
-                                                                                const data = spaceUtilizationData[context.dataIndex];
-                                                                                return context.dataset.label + ': ' +
-                                                                                        context.parsed.y.toFixed(1) + '% (' +
-                                                                                        data.avgUsedArea.toFixed(0) + '/' +
-                                                                                        data.avgTotalArea.toFixed(0) + ' m²)';
-                                                                                }
-                                                                                }
-                                                                        }
-                                                                },
-                                                                scales: {
-                                                                x: {
-                                                                title: {
-                                                                display: true,
-                                                                        text: 'Kho bãi'
-                                                                },
-                                                                        grid: {
-                                                                        color: 'rgba(0, 0, 0, 0.1)'
-                                                                        }
-                                                                },
-                                                                        y: {
-                                                                        beginAtZero: true,
-                                                                                max: 100,
-                                                                                title: {
-                                                                                display: true,
-                                                                                        text: 'Tỷ lệ sử dụng (%)'
-                                                                                },
-                                                                                ticks: {
-                                                                                callback: function(value) {
-                                                                                return value + '%';
-                                                                                }
-                                                                                },
-                                                                                grid: {
-                                                                                color: 'rgba(0, 0, 0, 0.1)'
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                });
-                                                }
+            // Tạo biểu đồ chi phí và lợi nhuận
+            try {
+            createStorageCostChart();
+            console.log('✓ Storage Cost chart created');
+            } catch (e) {
+            console.error('Lỗi tạo storage cost chart:', e);
+            }
 
-                                                // 8. Biểu đồ Hoạt động Nhập/Xuất Theo Tháng (Doughnut Chart)
-                                                function createMonthlyActivityChart() {
-                                                const ctx = document.getElementById('monthlyActivityChart').getContext('2d');
-                                                // Tính tổng nhập và xuất kho từ dữ liệu
-                                                let totalInbound = 0;
-                                                let totalOutbound = 0;
-                                                monthlyActivityData.forEach(data => {
-                                                totalInbound += data.monthlyInbound || 0;
-                                                totalOutbound += data.monthlyOutbound || 0;
-                                                });
-                                                new Chart(ctx, {
-                                                type: 'doughnut',
-                                                        data: {
-                                                        labels: ['Tổng nhập kho', 'Tổng xuất kho'],
-                                                                datasets: [{
-                                                                data: [totalInbound, totalOutbound],
-                                                                        backgroundColor: [
-                                                                                'rgba(39, 174, 96, 0.8)',
-                                                                                'rgba(231, 76, 60, 0.8)'
-                                                                        ],
-                                                                        borderWidth: 3,
-                                                                        borderColor: '#fff'
-                                                                }]
-                                                        },
-                                                        options: {
-                                                        responsive: true,
-                                                                maintainAspectRatio: false,
-                                                                plugins: {
-                                                                legend: {
-                                                                position: 'bottom',
-                                                                        labels: {
-                                                                        padding: 20,
-                                                                                usePointStyle: true,
-                                                                                font: {
-                                                                                size: 14
-                                                                                }
-                                                                        }
-                                                                },
-                                                                        tooltip: {
-                                                                        callbacks: {
-                                                                        label: function(context) {
-                                                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                                                        return context.label + ': ' + new Intl.NumberFormat('vi-VN').format(context.parsed) + ' (' + percentage + '%)';
-                                                                        }
-                                                                        }
-                                                                        }
-                                                                }
-                                                        }
-                                                });
-                                                }
+            try {
+            createMaintenanceCostChart();
+            console.log('✓ Maintenance Cost chart created');
+            } catch (e) {
+            console.error('Lỗi tạo maintenance cost chart:', e);
+            }
 
-                                                // ========== Các hàm tiện ích ==========
+            try {
+            createProfitChart();
+            console.log('✓ Profit chart created');
+            } catch (e) {
+            console.error('Lỗi tạo profit chart:', e);
+            }
 
-                                                // Hàm xóa bộ lọc chi phí và lợi nhuận
-                                                function clearCostProfitFilters() {
-                                                window.location.href = 'StorageReportController?service=viewCostAndProfit';
-                                                }
+            try {
+            createPersonnelCostChart();
+            console.log('✓ Personnel Cost chart created');
+            } catch (e) {
+            console.error('Lỗi tạo personnel cost chart:', e);
+            }
 
-                                                // Hàm xóa bộ lọc hiệu suất hoạt động
-                                                function clearPerformanceFilters() {
-                                                // Xóa các giá trị trong form performance
-                                                document.querySelector('select[name="performanceStorageUnitId"]').value = '';
-                                                document.querySelector('input[name="performanceFromMonth"]').value = '';
-                                                document.querySelector('input[name="performanceToMonth"]').value = '';
-                                                // Submit form để reload data
-                                                document.getElementById('performanceFilterForm').submit();
-                                                }
+            // Tạo biểu đồ hiệu suất hoạt động
+            try {
+            createFrequencyChart();
+            console.log('✓ Frequency chart created (Polar Area)');
+            } catch (e) {
+            console.error('Lỗi tạo frequency chart:', e);
+            }
 
-                                                // ========== Khởi tạo ==========
+            try {
+            createReturnRateChart();
+            console.log('✓ Return Rate chart created');
+            } catch (e) {
+            console.error('Lỗi tạo return rate chart:', e);
+            }
 
-                                                // Khởi tạo biểu đồ khi trang load
-                                                document.addEventListener('DOMContentLoaded', function() {
-                                                console.log('DOM loaded, khởi tạo biểu đồ...');
-                                                // Kiểm tra Chart.js đã load chưa
-                                                if (typeof Chart === 'undefined') {
-                                                console.error('Chart.js chưa được load');
-                                                return;
-                                                }
+            try {
+            createSpaceUtilizationChart();
+            console.log('✓ Space Utilization chart created');
+            } catch (e) {
+            console.error('Lỗi tạo space utilization chart:', e);
+            }
 
-                                                // Tạo biểu đồ chi phí và lợi nhuận
-                                                try {
-                                                createStorageCostChart();
-                                                console.log('✓ Storage Cost chart created');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo storage cost chart:', e);
-                                                }
-
-                                                try {
-                                                createMaintenanceCostChart();
-                                                console.log('✓ Maintenance Cost chart created');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo maintenance cost chart:', e);
-                                                }
-
-                                                try {
-                                                createProfitChart();
-                                                console.log('✓ Profit chart created');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo profit chart:', e);
-                                                }
-
-                                                try {
-                                                createPersonnelCostChart();
-                                                console.log('✓ Personnel Cost chart created');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo personnel cost chart:', e);
-                                                }
-
-                                                // Tạo biểu đồ hiệu suất hoạt động
-                                                try {
-                                                createFrequencyChart();
-                                                console.log('✓ Frequency chart created (Polar Area)');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo frequency chart:', e);
-                                                }
-
-                                                try {
-                                                createReturnRateChart();
-                                                console.log('✓ Return Rate chart created');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo return rate chart:', e);
-                                                }
-
-                                                try {
-                                                createSpaceUtilizationChart();
-                                                console.log('✓ Space Utilization chart created');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo space utilization chart:', e);
-                                                }
-
-                                                try {
-                                                createMonthlyActivityChart();
-                                                console.log('✓ Monthly Activity chart created (Pie)');
-                                                } catch (e) {
-                                                console.error('Lỗi tạo monthly activity chart:', e);
-                                                }
-                                                });
-                                                // Thêm hiệu ứng hover cho các thẻ thống kê
-                                                document.querySelectorAll('.stat-card').forEach(card => {
-                                                card.addEventListener('mouseenter', function() {
-                                                this.style.transform = 'translateY(-8px)';
-                                                this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                                                });
-                                                card.addEventListener('mouseleave', function() {
-                                                this.style.transform = 'translateY(-5px)';
-                                                this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
-                                                });
-                                                });
-                                                // Thêm hiệu ứng loading cho form submit
-                                                document.querySelectorAll('form').forEach(form => {
-                                                form.addEventListener('submit', function() {
-                                                const btns = this.querySelectorAll('.filter-btn, .performance-filter-btn');
-                                                btns.forEach(btn => {
-                                                if (btn.type === 'submit') {
-                                                btn.innerHTML = '<div style="width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px;"></div>Đang tải...';
-                                                btn.disabled = true;
-                                                }
-                                                });
-                                                });
-                                                });
-                                                // CSS animation for loading spinner
-                                                const style = document.createElement('style');
-                                                style.textContent = `
+            try {
+            createMonthlyActivityChart();
+            console.log('✓ Monthly Activity chart created (Pie)');
+            } catch (e) {
+            console.error('Lỗi tạo monthly activity chart:', e);
+            }
+            });
+            // Thêm hiệu ứng hover cho các thẻ thống kê
+            document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px)';
+            this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+            });
+            card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+            });
+            });
+            // Thêm hiệu ứng loading cho form submit
+            document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+            const btns = this.querySelectorAll('.filter-btn, .performance-filter-btn');
+            btns.forEach(btn => {
+            if (btn.type === 'submit') {
+            btn.innerHTML = '<div style="width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px;"></div>Đang tải...';
+            btn.disabled = true;
+            }
+            });
+            });
+            });
+            // CSS animation for loading spinner
+            const style = document.createElement('style');
+            style.textContent = `
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
                 }
             `;
-                                                document.head.appendChild(style);
-                                                // Responsive chart resize
-                                                window.addEventListener('resize', function() {
-                                                Chart.helpers.each(Chart.instances, function(instance) {
-                                                instance.resize();
-                                                });
-                                                });
-
+            document.head.appendChild(style);
+            // Responsive chart resize
+            window.addEventListener('resize', function() {
+            Chart.helpers.each(Chart.instances, function(instance) {
+            instance.resize();
+            });
+            });
         </script>
+
+
+
     </body>
 </html> 

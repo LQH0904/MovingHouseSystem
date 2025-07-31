@@ -38,10 +38,13 @@ public class homeOperator extends HttpServlet {
             Map<String, Integer> issueStats = userDAO.getIssueCountByStatus();
             request.setAttribute("issueStats", issueStats);
 
+            // THÊM DÒNG NÀY - Lấy roleIds
+            Map<String, Integer> roleIds = userDAO.getRoleIds();
+
             // Lấy 5 user đầu tiên
             Map<String, String> topUsers = userDAO.getTop5UsersWithStatus();
             request.setAttribute("topUsers", topUsers);
-
+            request.setAttribute("roleIds", roleIds); // lấy roleID
             request.setAttribute("totalUsers", totalUsers);
             request.setAttribute("usersByRole", usersByRole);
 
@@ -50,6 +53,7 @@ public class homeOperator extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace(); // In lỗi ra console để debug
             request.setAttribute("totalUsers", 0);
+            request.setAttribute("roleIds", new HashMap<>());  // lấy roleID
             request.setAttribute("usersByRole", new HashMap<>()); // Thêm dòng này
             request.setAttribute("topUsers", new HashMap<>());
             request.setAttribute("issueStats", new HashMap<>());

@@ -29,10 +29,9 @@
 .header {
     background: linear-gradient(135deg, #2c3e50 0%, #4a6741 100%);
     color: white;
-    padding: 30px;
+    padding: 20px;
     text-align: center;
     position: relative;
-    margin-top: 20px;
 }
 
 .header::before {
@@ -61,7 +60,7 @@
 }
 
 .filters {
-    padding: 25px 30px;
+    padding: 15px 15px;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-bottom: 3px solid #dee2e6;
 }
@@ -143,7 +142,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
     gap: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .chart-container {
@@ -191,7 +190,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .stat-card {

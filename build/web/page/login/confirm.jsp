@@ -78,6 +78,9 @@
             .resend-link a:hover {
                 text-decoration: underline;
             }
+            .alert {
+                font-size: 0.85rem;
+            }
             @keyframes fadeIn {
                 from {
                     opacity: 0;
@@ -97,16 +100,16 @@
         </style>
     </head>
     <body>
-        <div class="confirm-container animate__animated animate__fadeIn container mt-5">
-            <h2 class="confirm-header text-center mb-4">Xác nhận tài khoản</h2>
+        <div class="confirm-container animate__animated animate__fadeIn">
+            <h2 class="confirm-header">Xác nhận tài khoản</h2>
 
             <% 
-     String error = (String) request.getAttribute("error"); 
-     if (error == null) {
-         error = request.getParameter("error");
-     }
-     String success = request.getParameter("success");
-     String resent = request.getParameter("resent");
+                String error = (String) request.getAttribute("error"); 
+                if (error == null) {
+                    error = request.getParameter("error");
+                }
+                String success = request.getParameter("success");
+                String resent = request.getParameter("resent");
             %>
 
             <% if (error != null) { %>
@@ -120,8 +123,6 @@
             <div class="alert alert-info">Mã xác nhận đã được gửi lại, vui lòng kiểm tra email.</div>
             <% } %>
 
-
-
             <form action="signup" method="post" id="confirmForm" novalidate>
                 <input type="hidden" name="action" value="confirm">
                 <div class="mb-3">
@@ -134,7 +135,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary w-100" id="submitBtn">Xác nhận</button>
             </form>
-            <div class="resend-link mt-3 text-center">
+            <div class="resend-link mt-3">
                 Chưa nhận được mã? <a href="signup?action=resend">Gửi lại mã</a>
             </div>
         </div>

@@ -44,21 +44,24 @@ public class EditPolicyServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        OperationPolicyDAO dao = new OperationPolicyDAO();
-        OperationPolicy p = dao.getById(id);
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    System.out.println(">> ✅ Đã vào EditPolicyServlet với id = " + request.getParameter("id")); // Thêm dòng này
 
-        if (p != null) {
-            request.setAttribute("id", p.getId());
-            request.setAttribute("policyTitle", p.getPolicyTitle());
-            request.setAttribute("policyContent", p.getPolicyContent());
-            request.getRequestDispatcher("/page/operator/EditOperationPolicy.jsp").forward(request, response);
-        } else {
-            response.sendRedirect("operation-policy");
-        }
+    int id = Integer.parseInt(request.getParameter("id"));
+    OperationPolicyDAO dao = new OperationPolicyDAO();
+    OperationPolicy p = dao.getById(id);
+
+    if (p != null) {
+        request.setAttribute("id", p.getId());
+        request.setAttribute("policyTitle", p.getPolicyTitle());
+        request.setAttribute("policyContent", p.getPolicyContent());
+        request.getRequestDispatcher("/page/operator/EditOperationPolicy.jsp").forward(request, response);
+    } else {
+        response.sendRedirect("operation-policy");
     }
+}
+
 
     /**
      * Handles the HTTP <code>POST</code> method.

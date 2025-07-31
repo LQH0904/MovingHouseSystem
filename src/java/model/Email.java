@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
@@ -17,10 +18,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
- * 
+ *
  */
 public class Email {
 
@@ -116,6 +119,76 @@ public class Email {
                 + "        </tr>\n"
                 + "    </table>\n"
                 + "\n"
+                + "</body>\n"
+                + "</html>";
+    }
+
+    public void sendEmailWithAttachment(String subject, String message, String to, File attachment) throws Exception {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(eFrom, ePass);
+            }
+        };
+
+        Session session = Session.getInstance(props, auth);
+        MimeMessage mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(eFrom));
+        mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        mimeMessage.setSubject(subject, "UTF-8");
+
+        MimeMultipart multipart = new MimeMultipart();
+        MimeBodyPart textPart = new MimeBodyPart();
+        textPart.setContent(message, "text/html; charset=UTF-8");
+        multipart.addBodyPart(textPart);
+
+        MimeBodyPart attachmentPart = new MimeBodyPart();
+        attachmentPart.attachFile(attachment);
+        multipart.addBodyPart(attachmentPart);
+
+        mimeMessage.setContent(multipart);
+        Transport.send(mimeMessage);
+        System.out.println("Send email with attachment successfully to " + to);
+    }
+
+    public String subjectExportData(String tableName) {
+        return "Exported " + tableName + " Data";
+    }
+
+    public String messageExportData(String tableName, String format) {
+        return "<!DOCTYPE html>\n"
+                + "<html lang=\"en\">\n"
+                + "<head>\n"
+                + "    <meta charset=\"UTF-8\">\n"
+                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                + "    <title>Exported Data</title>\n"
+                + "</head>\n"
+                + "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\">\n"
+                + "    <table style=\"width: 100%; max-width: 600px; margin: 20px auto; background-color: #ffffff; border-collapse: collapse;\">\n"
+                + "        <tr>\n"
+                + "            <td style=\"padding: 20px; text-align: center; background-color: #4CAF50; color: #ffffff; font-size: 24px;\">\n"
+                + "                Exported " + tableName + " Data\n"
+                + "            </td>\n"
+                + "        </tr>\n"
+                + "        <tr>\n"
+                + "            <td style=\"padding: 20px;\">\n"
+                + "                <p>Hello,</p>\n"
+                + "                <p>Attached is the exported " + tableName + " data in " + format + " format.</p>\n"
+                + "                <p>Thank you for using our system!</p>\n"
+                + "            </td>\n"
+                + "        </tr>\n"
+                + "        <tr>\n"
+                + "            <td style=\"padding: 20px; text-align: center; background-color: #4CAF50; color: #ffffff;\">\n"
+                + "                © 2025 Moving House\n"
+                + "            </td>\n"
+                + "        </tr>\n"
+                + "    </table>\n"
                 + "</body>\n"
                 + "</html>";
     }

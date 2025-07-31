@@ -1,0 +1,425 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+    padding: 2rem 1rem;
+}
+
+/* Main Container */
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Typography */
+h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+h2::before {
+    content: '🔍'; /* Icon for the title */
+    margin-right: 0.5rem;
+    font-size: 1.8rem;
+}
+
+/* Log Detail Items */
+.log-detail-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    animation: slideInRight 0.4s ease-out;
+    animation-fill-mode: both;
+}
+
+/* Animation delays for each item */
+.log-detail-item:nth-child(1) { animation-delay: 0.1s; }
+.log-detail-item:nth-child(2) { animation-delay: 0.15s; }
+.log-detail-item:nth-child(3) { animation-delay: 0.2s; }
+.log-detail-item:nth-child(4) { animation-delay: 0.25s; }
+.log-detail-item:nth-child(5) { animation-delay: 0.3s; }
+.log-detail-item:nth-child(6) { animation-delay: 0.35s; }
+.log-detail-item:nth-child(7) { animation-delay: 0.4s; }
+.log-detail-item:nth-child(8) { animation-delay: 0.45s; }
+.log-detail-item:nth-child(9) { animation-delay: 0.5s; }
+
+.log-detail-item:hover {
+    background: rgba(227, 242, 253, 0.8);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+/* Log Detail Labels */
+.log-detail-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 2rem; /* Space for icon */
+}
+
+.log-detail-label::before {
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+}
+
+/* Icons for specific labels using dedicated classes */
+.log-id-label::before, .change-id-label::before { content: '🆔'; }
+.user-label::before, .changed-by-label::before { content: '👤'; }
+.action-label::before { content: '⚡'; }
+.timestamp-label::before { content: '🕒'; }
+.details-label::before { content: '📝'; }
+.table-label::before { content: '🗃️'; }
+.record-id-label::before { content: '📄'; }
+.column-label::before { content: '📊'; }
+.old-value-label::before { content: '🔙'; }
+.new-value-label::before { content: '🔄'; }
+.type-label::before { content: '📋'; }
+
+
+/* Log Detail Values */
+.log-detail-value {
+    color: #333;
+    font-size: 1rem;
+    word-wrap: break-word;
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+}
+
+/* Specific styling for values using dedicated item classes */
+.log-id-item .log-detail-value,
+.change-id-item .log-detail-value {
+    font-weight: 600;
+    color: #667eea;
+    font-family: 'Courier New', monospace;
+}
+
+.timestamp-item .log-detail-value {
+    font-family: 'Courier New', monospace;
+    color: #6c757d;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.action-item .log-detail-value,
+.type-item .log-detail-value {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    min-width: 100px;
+}
+
+/* Action/Type specific colors using dedicated value classes */
+.action-value-login, .type-value-login { background: linear-gradient(135deg, #28a745, #20c997); }
+.action-value-logout, .type-value-logout { background: linear-gradient(135deg, #dc3545, #c82333); }
+.action-value-insert, .type-value-insert { background: linear-gradient(135deg, #007bff, #0056b3); }
+.action-value-update, .type-value-update { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; }
+.action-value-delete, .type-value-delete { background: linear-gradient(135deg, #dc3545, #c82333); }
+
+/* Pre-formatted text styling */
+pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    max-height: 300px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid #dee2e6;
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    line-height: 1.4;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* User information styling */
+.user-item .log-detail-value,
+.changed-by-item .log-detail-value {
+    font-weight: 500;
+    color: #495057;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+/* Table and Record information */
+.table-item .log-detail-value {
+    font-weight: 600;
+    color: #6f42c1;
+    background: rgba(111, 66, 193, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid rgba(111, 66, 193, 0.2);
+}
+
+.record-id-item .log-detail-value {
+    font-family: 'Courier New', monospace;
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+.column-item .log-detail-value {
+    font-weight: 500;
+    color: #20c997;
+}
+
+/* No data message */
+.no-data-message {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    color: #721c24;
+    font-size: 1.1rem;
+    margin: 2rem 0;
+    border: 2px solid #f1b0b7;
+    text-align: center;
+}
+
+.no-data-message::before {
+    content: '⚠️';
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* Centered Link Container */
+.centered-link {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.back-button::before {
+    content: '←';
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.back-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.back-button:hover::after {
+    left: 100%;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+    
+    .container {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+    
+    .log-detail-item {
+        grid-template-columns: 1fr; /* Stack label and value */
+        gap: 1rem;
+        padding: 1.2rem;
+    }
+    
+    .log-detail-label {
+        padding-left: 2rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .log-detail-value {
+        font-size: 0.95rem;
+    }
+    
+    pre {
+        font-size: 0.8rem;
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+    }
+    
+    .log-detail-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .log-detail-label {
+        font-size: 0.85rem;
+        padding-left: 1.5rem;
+    }
+    
+    .log-detail-label::before {
+        font-size: 1rem;
+    }
+    
+    .log-detail-value {
+        font-size: 0.9rem;
+    }
+    
+    .back-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scrollbar styling for pre elements */
+pre::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Special highlighting for important values */
+.log-detail-value.error,
+.log-detail-value.failed {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.log-detail-value.success,
+.log-detail-value.completed {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+}

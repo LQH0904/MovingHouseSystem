@@ -1,8 +1,9 @@
 package controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dao.UserDAO;
 import model.Users;
-import model.StorageUnit;
 import model.Email;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,11 +13,13 @@ import java.io.IOException;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.PasswordUtils;
 import jakarta.servlet.http.Part;
+import model.StorageUnit1;
 import utils.DBConnection;
 
 @WebServlet(name = "SignUpStorage", urlPatterns = {"/signup_storage"})
@@ -26,6 +29,22 @@ public class SignUpStorage extends HttpServlet {
     private static final int CODE_LENGTH = 6;
     private static final long CODE_EXPIRY_MS = 10 * 60 * 1000;
     private static final Logger LOGGER = Logger.getLogger(SignUpStorage.class.getName());
+    private Cloudinary cloudinary;
+
+    @Override
+    public void init() throws ServletException {
+        // Khởi tạo Cloudinary với cloud_name cho unsigned preset
+        try {
+            cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", "dnqm0cyxh",
+                    "secure", true
+            ));
+            LOGGER.info("Khởi tạo Cloudinary thành công với cloud_name: dnqm0cyxh");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khởi tạo Cloudinary: " + e.getMessage(), e);
+            throw new ServletException("Không thể khởi tạo Cloudinary", e);
+        }
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,123 +65,272 @@ public class SignUpStorage extends HttpServlet {
         String warehouseName = request.getParameter("warehouse_name");
         String phoneNumber = request.getParameter("phone_number");
         String location = request.getParameter("location");
-        String areaStr = request.getParameter("area");
-        double area = Double.parseDouble(areaStr);
+        String area = request.getParameter("area");
         String employeeStr = request.getParameter("employee");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        Part filePart = request.getPart("business_certificate");
+        Part businessCertificatePart = request.getPart("business_certificate");
+        Part floorPlanPart = request.getPart("floor_plan");
+        Part insurancePart = request.getPart("insurance");
 
         Email emailUtil = new Email();
+        LOGGER.info("Bắt đầu xử lý đăng ký với warehouseName: " + warehouseName + ", email: " + email);
 
-        // Validate inputs
+        // Xác thực đầu vào
         if (!emailUtil.isValidEmail(email)) {
+            LOGGER.warning("Email không hợp lệ: " + email);
             request.setAttribute("error", "Email không hợp lệ");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
         if (warehouseName == null || warehouseName.trim().length() < 3 || warehouseName.length() > 150) {
+            LOGGER.warning("Tên kho bãi không hợp lệ: " + warehouseName);
             request.setAttribute("error", "Tên kho bãi phải từ 3 đến 150 ký tự");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
         if (phoneNumber == null || !phoneNumber.matches("^[0-9]{10,15}$")) {
+            LOGGER.warning("Số điện thoại không hợp lệ: " + phoneNumber);
             request.setAttribute("error", "Số điện thoại không hợp lệ (10-15 chữ số)");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
         if (location != null && (location.length() < 5 || location.length() > 255)) {
+            LOGGER.warning("Địa điểm không hợp lệ: " + location);
             request.setAttribute("error", "Địa điểm phải từ 5 đến 255 ký tự");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
-        /*if (area != null && (area.length() > 200 || !area.matches("^\\d+(\\.\\d{1,2})?$"))) {
+        if (area != null && (area.length() > 200 || !area.matches("^\\d+(\\.\\d{1,2})?$"))) {
+            LOGGER.warning("Diện tích không hợp lệ: " + area);
             request.setAttribute("error", "Diện tích không hợp lệ (tối đa 200 ký tự, định dạng số với tối đa 2 chữ số thập phân)");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
-        }*/
+        }
         int employee;
         try {
             employee = Integer.parseInt(employeeStr);
             if (employee < 0) {
+                LOGGER.warning("Số nhân viên không hợp lệ: " + employeeStr);
                 request.setAttribute("error", "Số nhân viên không hợp lệ");
                 request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
                 return;
             }
         } catch (NumberFormatException e) {
+            LOGGER.warning("Số nhân viên không hợp lệ: " + employeeStr);
             request.setAttribute("error", "Số nhân viên không hợp lệ");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
         if (password == null || password.length() < 6) {
+            LOGGER.warning("Mật khẩu không hợp lệ: dài dưới 6 ký tự");
             request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
-        if (filePart == null || filePart.getSize() == 0) {
+        if (businessCertificatePart == null || businessCertificatePart.getSize() == 0) {
+            LOGGER.warning("Không có file giấy phép kinh doanh");
             request.setAttribute("error", "Vui lòng chọn file giấy phép kinh doanh");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
-        String fileName = filePart.getSubmittedFileName();
-        if (!fileName.matches(".*\\.(jpg|jpeg|png)$")) {
+        String businessFileName = businessCertificatePart.getSubmittedFileName();
+        if (!businessFileName.matches(".*\\.(jpg|jpeg|png)$")) {
+            LOGGER.warning("File giấy phép kinh doanh không đúng định dạng: " + businessFileName);
             request.setAttribute("error", "File giấy phép phải có định dạng .jpg, .jpeg hoặc .png");
+            request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+            return;
+        }
+        if (floorPlanPart == null || floorPlanPart.getSize() == 0) {
+            LOGGER.warning("Không có file mặt bằng kho");
+            request.setAttribute("error", "Vui lòng chọn file ảnh mặt bằng kho");
+            request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+            return;
+        }
+        String floorPlanFileName = floorPlanPart.getSubmittedFileName();
+        if (!floorPlanFileName.matches(".*\\.(jpg|jpeg|png)$")) {
+            LOGGER.warning("File mặt bằng kho không đúng định dạng: " + floorPlanFileName);
+            request.setAttribute("error", "File mặt bằng kho phải có định dạng .jpg, .jpeg hoặc .png");
+            request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+            return;
+        }
+        if (insurancePart == null || insurancePart.getSize() == 0) {
+            LOGGER.warning("Không có file giấy tờ bảo hiểm");
+            request.setAttribute("error", "Vui lòng chọn file giấy tờ bảo hiểm");
+            request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+            return;
+        }
+        String insuranceFileName = insurancePart.getSubmittedFileName();
+        if (!insuranceFileName.matches(".*\\.(jpg|jpeg|png)$")) {
+            LOGGER.warning("File giấy tờ bảo hiểm không đúng định dạng: " + insuranceFileName);
+            request.setAttribute("error", "File giấy tờ bảo hiểm phải có định dạng .jpg, .jpeg hoặc .png");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
 
         UserDAO dao = UserDAO.INSTANCE;
         try {
+            LOGGER.info("Kiểm tra trùng lặp email và warehouseName...");
             String duplicate = dao.checkDuplicate(email, warehouseName, 5);
             if ("email_exists".equals(duplicate)) {
+                LOGGER.warning("Email đã được sử dụng: " + email);
                 request.setAttribute("error", "Email đã được sử dụng cho vai trò kho bãi");
                 request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
                 return;
             }
             if ("username_exists".equals(duplicate)) {
+                LOGGER.warning("Tên kho bãi đã được sử dụng: " + warehouseName);
                 request.setAttribute("error", "Tên kho bãi đã được sử dụng");
                 request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
                 return;
             }
+            LOGGER.info("Kiểm tra trùng lặp thành công");
         } catch (RuntimeException e) {
-            LOGGER.log(Level.SEVERE, "Error checking duplicates: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Lỗi kiểm tra trùng lặp: " + e.getMessage(), e);
             request.setAttribute("error", "Lỗi kiểm tra trùng lặp: " + e.getMessage());
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
 
-        // Lưu file tạm thời vào thư mục /temp
-        String tempPath = getServletContext().getRealPath("/temp");
-        File tempDir = new File(tempPath);
-        if (!tempDir.exists()) {
-            boolean created = tempDir.mkdirs();
-            if (!created) {
-                LOGGER.severe("Failed to create temporary directory: " + tempPath);
-                request.setAttribute("error", "Lỗi hệ thống: Không thể tạo thư mục tạm");
+        // Tải file lên Cloudinary
+        String businessCertificateUrl, floorPlanUrl, insuranceUrl;
+        try {
+            // Tạo thư mục tạm thời
+            LOGGER.info("Kiểm tra thư mục tạm...");
+            String tempPath = getServletContext().getRealPath("/temp");
+            File tempDir = new File(tempPath);
+            if (!tempDir.exists()) {
+                LOGGER.info("Thư mục tạm không tồn tại, đang tạo: " + tempPath);
+                if (!tempDir.mkdirs()) {
+                    LOGGER.severe("Không thể tạo thư mục tạm: " + tempPath);
+                    request.setAttribute("error", "Lỗi hệ thống: Không thể tạo thư mục tạm");
+                    request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+                    return;
+                }
+                LOGGER.info("Tạo thư mục tạm thành công: " + tempPath);
+            }
+            if (!tempDir.canWrite()) {
+                LOGGER.severe("Thư mục tạm không thể ghi: " + tempPath);
+                request.setAttribute("error", "Lỗi hệ thống: Thư mục tạm không thể ghi");
                 request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
                 return;
             }
-            LOGGER.info("Created temporary directory: " + created);
-        }
-        if (!tempDir.canWrite()) {
-            LOGGER.severe("Temporary directory is not writable: " + tempPath);
-            request.setAttribute("error", "Lỗi hệ thống: Không thể lưu trữ file tạm");
+            LOGGER.info("Thư mục tạm sẵn sàng: " + tempPath);
+
+            // Tạo tên file tạm thời
+            String tempBusinessFileName = "temp_business_certificate_" + System.currentTimeMillis() + "_" + businessFileName;
+            String tempBusinessFilePath = tempPath + File.separator + tempBusinessFileName;
+            String tempFloorPlanFileName = "temp_floor_plan_" + System.currentTimeMillis() + "_" + floorPlanFileName;
+            String tempFloorPlanFilePath = tempPath + File.separator + tempFloorPlanFileName;
+            String tempInsuranceFileName = "temp_insurance_" + System.currentTimeMillis() + "_" + insuranceFileName;
+            String tempInsuranceFilePath = tempPath + File.separator + tempInsuranceFileName;
+
+            // Lưu file tạm thời và kiểm tra
+            File businessFile = new File(tempBusinessFilePath);
+            File floorPlanFile = new File(tempFloorPlanFilePath);
+            File insuranceFile = new File(tempInsuranceFilePath);
+            try {
+                LOGGER.info("Lưu file tạm: " + tempBusinessFilePath + ", " + tempFloorPlanFilePath + ", " + tempInsuranceFilePath);
+                businessCertificatePart.write(tempBusinessFilePath);
+                floorPlanPart.write(tempFloorPlanFilePath);
+                insurancePart.write(tempInsuranceFilePath);
+
+                // Kiểm tra xem file có được lưu thành công không
+                if (!businessFile.exists() || businessFile.length() == 0) {
+                    throw new IOException("Không thể lưu file giấy phép kinh doanh: " + tempBusinessFilePath);
+                }
+                if (!floorPlanFile.exists() || floorPlanFile.length() == 0) {
+                    throw new IOException("Không thể lưu file mặt bằng kho: " + tempFloorPlanFilePath);
+                }
+                if (!insuranceFile.exists() || insuranceFile.length() == 0) {
+                    throw new IOException("Không thể lưu file giấy tờ bảo hiểm: " + tempInsuranceFilePath);
+                }
+                LOGGER.info("Lưu file tạm thành công: " + tempBusinessFilePath + ", " + tempFloorPlanFilePath + ", " + tempInsuranceFilePath);
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Lỗi lưu file tạm: " + e.getMessage(), e);
+                request.setAttribute("error", "Lỗi lưu file tạm: " + e.getMessage());
+                request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+                return;
+            }
+
+            //  Cloudinary sử dụng upload_preset unsigned
+            try {
+                LOGGER.info("Bắt đầu tải file lên Cloudinary với upload_preset: upload-image123");
+                Map<String, Object> businessUploadResult = cloudinary.uploader().unsignedUpload(businessFile, "upload-image123",
+                        ObjectUtils.asMap(
+                                "public_id", "business_certificate_" + warehouseName + "_" + System.currentTimeMillis(),
+                                "resource_type", "image",
+                                "folder", "upldemo"
+                        ));
+                businessCertificateUrl = (String) businessUploadResult.get("secure_url");
+                if (businessCertificateUrl == null || businessCertificateUrl.isEmpty()) {
+                    LOGGER.severe("Không nhận được secure_url từ Cloudinary cho giấy phép kinh doanh");
+                    throw new IOException("Không nhận được URL từ Cloudinary cho giấy phép kinh doanh");
+                }
+                LOGGER.info("Tải giấy phép kinh doanh thành công: " + businessCertificateUrl);
+
+                Map<String, Object> floorPlanUploadResult = cloudinary.uploader().unsignedUpload(floorPlanFile, "upload-image123",
+                        ObjectUtils.asMap(
+                                "public_id", "floor_plan_" + warehouseName + "_" + System.currentTimeMillis(),
+                                "resource_type", "image",
+                                "folder", "upldemo"
+                        ));
+                floorPlanUrl = (String) floorPlanUploadResult.get("secure_url");
+                if (floorPlanUrl == null || floorPlanUrl.isEmpty()) {
+                    LOGGER.severe("Không nhận được secure_url từ Cloudinary cho mặt bằng kho");
+                    throw new IOException("Không nhận được URL từ Cloudinary cho mặt bằng kho");
+                }
+                LOGGER.info("Tải mặt bằng kho thành công: " + floorPlanUrl);
+
+                Map<String, Object> insuranceUploadResult = cloudinary.uploader().unsignedUpload(insuranceFile, "upload-image123",
+                        ObjectUtils.asMap(
+                                "public_id", "insurance_" + warehouseName + "_" + System.currentTimeMillis(),
+                                "resource_type", "image",
+                                "folder", "upldemo"
+                        ));
+                insuranceUrl = (String) insuranceUploadResult.get("secure_url");
+                if (insuranceUrl == null || insuranceUrl.isEmpty()) {
+                    LOGGER.severe("Không nhận được secure_url từ Cloudinary cho giấy tờ bảo hiểm");
+                    throw new IOException("Không nhận được URL từ Cloudinary cho giấy tờ bảo hiểm");
+                }
+                LOGGER.info("Tải giấy tờ bảo hiểm thành công: " + insuranceUrl);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Lỗi tải file lên Cloudinary: " + e.getMessage(), e);
+                request.setAttribute("error", "Lỗi tải file lên Cloudinary: " + e.getMessage());
+                // Xóa file tạm trước khi trả về lỗi
+                if (businessFile.exists() && !businessFile.delete()) {
+                    LOGGER.warning("Không thể xóa file tạm: " + tempBusinessFilePath);
+                }
+                if (floorPlanFile.exists() && !floorPlanFile.delete()) {
+                    LOGGER.warning("Không thể xóa file tạm: " + tempFloorPlanFilePath);
+                }
+                if (insuranceFile.exists() && !insuranceFile.delete()) {
+                    LOGGER.warning("Không thể xóa file tạm: " + tempInsuranceFilePath);
+                }
+                request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
+                return;
+            }
+
+            // Xóa file tạm thời
+            if (businessFile.exists() && !businessFile.delete()) {
+                LOGGER.warning("Không thể xóa file tạm: " + tempBusinessFilePath);
+            }
+            if (floorPlanFile.exists() && !floorPlanFile.delete()) {
+                LOGGER.warning("Không thể xóa file tạm: " + tempFloorPlanFilePath);
+            }
+            if (insuranceFile.exists() && !insuranceFile.delete()) {
+                LOGGER.warning("Không thể xóa file tạm: " + tempInsuranceFilePath);
+            }
+            LOGGER.info("Xóa file tạm thành công");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi xử lý tải ảnh: " + e.getMessage(), e);
+            request.setAttribute("error", "Lỗi xử lý tải ảnh: " + e.getMessage());
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             return;
         }
-        String tempFileName = "temp_business_certificate_" + System.currentTimeMillis() + "_" + fileName;
-        String tempFilePath = tempPath + File.separator + tempFileName;
 
-        try {
-            filePart.write(tempFilePath);
-            LOGGER.info("Temporary file saved at: " + tempFilePath);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "IOException saving temporary file: " + e.getMessage(), e);
-            request.setAttribute("error", "Lỗi lưu file tạm: " + e.getMessage());
-            request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
-            return;
-        }
-
+        // Tạo đối tượng Users và StorageUnit
+        LOGGER.info("Tạo đối tượng Users và StorageUnit...");
         String hashedPassword = PasswordUtils.hashPassword(password);
         String code = generateVerificationCode();
         long expiryTime = System.currentTimeMillis() + CODE_EXPIRY_MS;
@@ -174,19 +342,21 @@ public class SignUpStorage extends HttpServlet {
         user.setRoleId(5);
         user.setStatus("pending");
 
-        StorageUnit storageUnit = new StorageUnit();
+        StorageUnit1 storageUnit = new StorageUnit1();
         storageUnit.setWarehouseName(warehouseName);
         storageUnit.setPhoneNumber(phoneNumber);
-        storageUnit.setBusinessCertificate("/img/" + tempFileName.replace("temp_", ""));
+        storageUnit.setBusinessCertificate(businessCertificateUrl);
+        storageUnit.setFloorPlan(floorPlanUrl);
+        storageUnit.setInsurance(insuranceUrl);
         storageUnit.setLocation(location);
         storageUnit.setArea(area);
         storageUnit.setEmployee(employee);
         storageUnit.setRegistrationStatus("pending");
 
-        // Lưu thông tin tạm vào session
+        // Lưu vào session
+        LOGGER.info("Lưu thông tin vào session...");
         session.setAttribute("pendingUser", user);
         session.setAttribute("pendingStorageUnit", storageUnit);
-        session.setAttribute("tempFilePath", tempFilePath);
         session.setAttribute("verificationCode", code);
         session.setAttribute("codeExpiry", expiryTime);
 
@@ -194,11 +364,12 @@ public class SignUpStorage extends HttpServlet {
         String message = buildEmailContent(warehouseName, code);
 
         try {
+            LOGGER.info("Gửi email xác nhận đến: " + email);
             emailUtil.sendEmail(subject, message, email);
+            LOGGER.info("Chuyển hướng đến trang xác nhận");
             response.sendRedirect(request.getContextPath() + "/signup_storage?action=confirm");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error sending email: " + e.getMessage(), e);
-            new File(tempFilePath).delete();
+            LOGGER.log(Level.SEVERE, "Lỗi gửi email: " + e.getMessage(), e);
             request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
         }
@@ -211,11 +382,10 @@ public class SignUpStorage extends HttpServlet {
         String storedCode = (String) session.getAttribute("verificationCode");
         Long expiryTime = (Long) session.getAttribute("codeExpiry");
         Users user = (Users) session.getAttribute("pendingUser");
-        StorageUnit storageUnit = (StorageUnit) session.getAttribute("pendingStorageUnit");
-        String tempFilePath = (String) session.getAttribute("tempFilePath");
+        StorageUnit1 storageUnit = (StorageUnit1) session.getAttribute("pendingStorageUnit");
 
-        if (storedCode == null || expiryTime == null || user == null || storageUnit == null || tempFilePath == null) {
-            new File(tempFilePath).delete();
+        if (storedCode == null || expiryTime == null || user == null || storageUnit == null) {
+            LOGGER.warning("Phiên xác nhận đã hết hạn");
             session.invalidate();
             request.setAttribute("error", "Phiên xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
@@ -223,7 +393,7 @@ public class SignUpStorage extends HttpServlet {
         }
 
         if (System.currentTimeMillis() > expiryTime) {
-            new File(tempFilePath).delete();
+            LOGGER.warning("Mã xác nhận đã hết hạn");
             session.invalidate();
             request.setAttribute("error", "Mã xác nhận đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
@@ -231,62 +401,45 @@ public class SignUpStorage extends HttpServlet {
         }
 
         if (!storedCode.equals(inputCode)) {
+            LOGGER.warning("Mã xác nhận không đúng: " + inputCode);
             request.setAttribute("error", "Mã xác nhận không đúng");
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
             return;
         }
 
-        // Di chuyển file từ /temp sang /img
-        String uploadPath = getServletContext().getRealPath("/img");
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-        String finalFileName = storageUnit.getBusinessCertificate().substring("/img/".length());
-        String finalFilePath = uploadPath + File.separator + finalFileName;
-        File tempFile = new File(tempFilePath);
-        File finalFile = new File(finalFilePath);
-
-        try {
-            if (!tempFile.renameTo(finalFile)) {
-                throw new IOException("Không thể di chuyển file từ " + tempFilePath + " sang " + finalFilePath);
-            }
-            LOGGER.info("File moved to: " + finalFilePath);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error moving file: " + e.getMessage(), e);
-            tempFile.delete();
-            session.invalidate();
-            request.setAttribute("error", "Lỗi di chuyển file: " + e.getMessage());
-            request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
-            return;
-        }
-
-        // Lưu dữ liệu vào cơ sở dữ liệu
+        // Lưu vào cơ sở dữ liệu
         UserDAO dao = UserDAO.INSTANCE;
         Connection conn = null;
         int userId = 0;
         try {
+            LOGGER.info("Kết nối cơ sở dữ liệu...");
             conn = DBConnection.getConnection();
             if (conn == null) {
                 throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
             }
             conn.setAutoCommit(false);
 
+            LOGGER.info("Lưu tài khoản người dùng...");
             userId = dao.signupAccount2(user);
             if (userId == 0) {
                 throw new SQLException("Không thể lưu tài khoản người dùng");
             }
 
+            LOGGER.info("Kiểm tra StorageUnit trước khi lưu: warehouseName=" + storageUnit.getWarehouseName()
+                    + ", businessCertificate=" + storageUnit.getBusinessCertificate()
+                    + ", floorPlan=" + storageUnit.getFloorPlan()
+                    + ", insurance=" + storageUnit.getInsurance());
             if (!dao.saveStorageUnit(storageUnit, userId)) {
                 throw new SQLException("Không thể lưu thông tin Storage Unit");
             }
 
             conn.commit();
+            LOGGER.info("Lưu dữ liệu thành công, userId: " + userId);
             session.invalidate();
             request.setAttribute("success", "Xác nhận tài khoản thành công! Vui lòng chờ admin duyệt.");
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "SQLException in confirm process: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Lỗi SQLException trong quá trình xác nhận: Message=" + e.getMessage(), e);
             if (conn != null) {
                 try {
                     conn.rollback();
@@ -294,20 +447,35 @@ public class SignUpStorage extends HttpServlet {
                         dao.deleteUser(userId);
                     }
                 } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error rolling back transaction: " + ex.getMessage(), ex);
+                    LOGGER.log(Level.SEVERE, "Lỗi rollback giao dịch: " + ex.getMessage(), ex);
                 }
             }
-            finalFile.delete();
             session.invalidate();
-            request.setAttribute("error", "Đăng ký thất bại: " + (e.getSQLState().equals("23000") ? "Tên kho bãi đã được sử dụng" : e.getMessage()));
+            request.setAttribute("error", "Đăng ký thất bại: " + e.getMessage());
+            request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi dữ liệu không hợp lệ trong StorageUnit: " + e.getMessage(), e);
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    if (userId != 0) {
+                        dao.deleteUser(userId);
+                    }
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "Lỗi rollback giao dịch: " + ex.getMessage(), ex);
+                }
+            }
+            session.invalidate();
+            request.setAttribute("error", "Đăng ký thất bại: " + e.getMessage());
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
         } finally {
             if (conn != null) {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
+                    LOGGER.info("Đóng kết nối cơ sở dữ liệu");
                 } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error closing connection: " + ex.getMessage(), ex);
+                    LOGGER.log(Level.SEVERE, "Lỗi đóng kết nối: " + ex.getMessage(), ex);
                 }
             }
         }
@@ -317,11 +485,10 @@ public class SignUpStorage extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("pendingUser");
-        StorageUnit storageUnit = (StorageUnit) session.getAttribute("pendingStorageUnit");
-        String tempFilePath = (String) session.getAttribute("tempFilePath");
+        StorageUnit1 storageUnit = (StorageUnit1) session.getAttribute("pendingStorageUnit");
 
-        if (user == null || storageUnit == null || tempFilePath == null) {
-            new File(tempFilePath).delete();
+        if (user == null || storageUnit == null) {
+            LOGGER.warning("Phiên đăng ký đã hết hạn");
             session.invalidate();
             request.setAttribute("error", "Phiên đăng ký đã hết hạn, vui lòng đăng ký lại");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
@@ -332,17 +499,19 @@ public class SignUpStorage extends HttpServlet {
         long expiryTime = System.currentTimeMillis() + CODE_EXPIRY_MS;
         session.setAttribute("verificationCode", code);
         session.setAttribute("codeExpiry", expiryTime);
+        LOGGER.info("Tạo mã xác nhận mới: " + code);
 
         Email emailUtil = new Email();
         String subject = "Xác nhận đăng ký Đơn vị Kho bãi";
         String message = buildEmailContent(storageUnit.getWarehouseName(), code);
 
         try {
+            LOGGER.info("Gửi lại email xác nhận đến: " + user.getEmail());
             emailUtil.sendEmail(subject, message, user.getEmail());
             request.setAttribute("success", "Mã xác nhận đã được gửi lại!");
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error resending email: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Lỗi gửi lại email: " + e.getMessage(), e);
             request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
             request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
         }
@@ -382,12 +551,14 @@ public class SignUpStorage extends HttpServlet {
         try {
             String action = request.getParameter("action");
             if ("confirm".equals(action)) {
+                LOGGER.info("Chuyển hướng đến trang xác nhận");
                 request.getRequestDispatcher("/page/login/confirm_storage.jsp").forward(request, response);
             } else {
+                LOGGER.info("Chuyển hướng đến trang đăng ký");
                 request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error in doGet: " + ex.getMessage(), ex);
+            LOGGER.log(Level.SEVERE, "Lỗi trong doGet: " + ex.getMessage(), ex);
             request.setAttribute("error", "Lỗi hệ thống");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
         }
@@ -397,9 +568,10 @@ public class SignUpStorage extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            LOGGER.info("Xử lý yêu cầu POST...");
             processRequest(request, response);
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error in doPost: " + ex.getMessage(), ex);
+            LOGGER.log(Level.SEVERE, "Lỗi trong doPost: " + ex.getMessage(), ex);
             request.setAttribute("error", "Lỗi hệ thống");
             request.getRequestDispatcher("/page/login/signup_storage.jsp").forward(request, response);
         }

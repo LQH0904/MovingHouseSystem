@@ -1,0 +1,166 @@
+/* Reset và font chung */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container chính */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Tiêu đề */
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+/* Thông báo */
+p[style*="color: green"] {
+    background-color: #dff0d8;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #3c763d;
+    color: #3c763d !important;
+    margin-bottom: 20px;
+}
+
+p[style*="color: red"] {
+    background-color: #f2dede;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #a94442;
+    color: #a94442 !important;
+    margin-bottom: 20px;
+}
+
+/* Chi tiết khiếu nại */
+.complaint-details {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    border: 1px solid #e1e4e8;
+}
+
+.complaint-details p {
+    margin: 10px 0;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e1e4e8;
+}
+
+.complaint-details p:last-child {
+    border-bottom: none;
+}
+
+.complaint-details strong {
+    color: #2c3e50;
+    min-width: 150px;
+    display: inline-block;
+}
+
+/* Nút chức năng */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Bảng lịch sử phản hồi */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+table th {
+    background-color: #3498db;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+table tr:hover {
+    background-color: #e3f2fd;
+}
+
+/* Thông báo không có dữ liệu */
+em {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* Đường kẻ ngang */
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #e1e4e8;
+    margin: 30px 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .complaint-details p {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .complaint-details strong {
+        margin-bottom: 5px;
+    }
+    
+    button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}

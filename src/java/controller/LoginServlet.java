@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.SystemLogDAO;
 import dao.UserDAO;
 import model.Users;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import listener.SessionTracker;
 import model.PasswordUtils;
+import model.SystemLog;
 import model.UserSessionInfo;
 
 /**
@@ -34,7 +36,7 @@ public class LoginServlet extends HttpServlet {
             Users user = (Users) session.getAttribute("acc");
             switch (user.getRoleId()) {
                 case 1: // Admin
-                    response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                    response.sendRedirect(request.getContextPath() + "/admin/system-performance");
                     break;
                 case 2: // Operator
                     response.sendRedirect(request.getContextPath() + "/homeOperator");
@@ -43,13 +45,13 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/homeStaff");
                     break;
                 case 4: // Transport Unit
-                    response.sendRedirect(request.getContextPath() + "/transport/dashboard");
+                    response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 5: // Storage Unit
-                    response.sendRedirect(request.getContextPath() + "/storage/dashboard");
+                    response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 6: // Customer
-                    response.sendRedirect(request.getContextPath() + "/customer/dashboard");
+                    response.sendRedirect(request.getContextPath() + "/transport");
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/orderList");
@@ -64,7 +66,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
+        
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String roleIdStr = request.getParameter("role_id");
@@ -128,6 +130,14 @@ public class LoginServlet extends HttpServlet {
         newSession.setAttribute("acc", user);
         newSession.setAttribute("username", user.getUsername());
         newSession.setAttribute("email", user.getEmail());
+        //Create Log
+        SystemLogDAO aO = new SystemLogDAO();
+        SystemLog log = new SystemLog();
+        log.setUserId(user.getUserId());
+        log.setUsername(user.getUsername());
+        log.setAction("Login");
+        log.setDetails(user.getUsername() + "Đăng nhập");
+        aO.createSystemLog(log);
         
         //Duy : check log login user
         UserSessionInfo sessionInfo = new UserSessionInfo(user.getUsername(), LocalDateTime.now());
@@ -138,7 +148,7 @@ public class LoginServlet extends HttpServlet {
         // Chuyển hướng dựa trên vai trò
         switch (user.getRoleId()) {
             case 1: // Admin
-                response.sendRedirect(request.getContextPath() + "/admin/registrations");
+                response.sendRedirect(request.getContextPath() + "/admin/system-performance");
                 break;
             case 2: // Operator
                 response.sendRedirect(request.getContextPath() + "/homeOperator");
@@ -147,13 +157,13 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/homeStaff");
                 break;
             case 4: // Transport Unit
-                response.sendRedirect(request.getContextPath() + "/transport/dashboard");
+                response.sendRedirect(request.getContextPath() + "/notifications");
                 break;
             case 5: // Storage Unit
-                response.sendRedirect(request.getContextPath() + "/storage/dashboard");
+                response.sendRedirect(request.getContextPath() + "/notifications");
                 break;
             case 6: // Customer
-                response.sendRedirect(request.getContextPath() + "/customer/dashboard");
+                response.sendRedirect(request.getContextPath() + "/transport");
                 break;
             default:
                 response.sendRedirect(request.getContextPath() + "/orderList");
