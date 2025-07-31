@@ -13,9 +13,9 @@ import java.sql.SQLException;
  * @author Admin
  */
 public class DBConnection {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=systemhouse4;encrypt=true;trustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=systemhouse1;encrypt=true;trustServerCertificate=true";
     private static final String USERNAME = "sa"; 
-    private static final String PASSWORD = "123"; 
+    private static final String PASSWORD = "sa"; 
     
     static {
         try {
