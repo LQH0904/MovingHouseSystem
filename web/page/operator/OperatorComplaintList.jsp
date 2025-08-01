@@ -449,9 +449,7 @@
                             <th>Mô tả</th>
                             <th>Trạng thái</th>
                             <th>Mức độ ưu tiên</th>
-                            <th>Người phụ trách</th>
                             <th>Ngày tạo</th>
-                            <th>Ngày giải quyết</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -472,9 +470,7 @@
                                     </c:choose>
                                 </td>
                                 <td class="priority-${complaint.priority.toLowerCase()}">${complaint.priority}</td>
-                                <td>${complaint.assignedToUsername != null ? complaint.assignedToUsername : 'Chưa giao'}</td>
                                 <td>${complaint.createdAt}</td>
-                                <td>${complaint.resolvedAt}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/OperatorDetailServlet?issueId=${complaint.issueId}">
                                         Phản hồi

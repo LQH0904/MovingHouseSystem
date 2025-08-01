@@ -33,9 +33,9 @@ public class ViewReplyDetailServlet extends HttpServlet {
             return;
         }
 
-        List<IssueReply> reply = complaintDAO.getRepliesByIssueId(replyId);  // cần tạo trong ComplaintDAO
+        List<IssueReply> reply = complaintDAO.getRepliesByIssueId(replyId);
 
-        if (reply == null) {
+        if (reply == null || reply.isEmpty()) {
             request.setAttribute("errorMessage", "Không tìm thấy phản hồi.");
         } else {
             request.setAttribute("reply", reply);

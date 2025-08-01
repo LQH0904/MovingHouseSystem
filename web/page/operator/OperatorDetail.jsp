@@ -198,11 +198,7 @@
                                         </tbody>
                                     </table>
                                 </c:when>
-                                <c:otherwise>
-                                    <div class="no-history">
-                                        <p><em>Chưa có phản hồi nào.</em></p>
-                                    </div>
-                                </c:otherwise>
+                                
                             </c:choose>
                         </div>
                     </div>
