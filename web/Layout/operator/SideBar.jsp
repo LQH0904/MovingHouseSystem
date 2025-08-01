@@ -24,26 +24,6 @@
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
-                    <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 2)}">
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/analyz" class="nav-link">
-                                <i class="bx bx-pie-chart-alt-2 icon"></i>
-                                <span class="link">Phân tích Báo cáo</span>
-                            </a>
-                        </li>
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/sendNotification" class="nav-link">
-                                <i class="bx bx-message-rounded icon"></i>
-                                <span class="link">Gửi Thông báo</span>
-                            </a>
-                        </li>
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
-                                <i class="bx bx-export icon"></i>
-                                <span class="link">Xuất dữ liệu</span>
-                            </a>
-                        </li>
-                    </c:if>
 
                     <!-- Menu có submenu -->
                     <li class="list has-submenu">
@@ -96,19 +76,19 @@
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/operator/faq-review" class="nav-link">
                             <i class="bx bx-question-mark icon"></i>
-                            <span class="link">Câu hỏi thường gặp</span>
+                            <span class="link">Thắc mắc phổ biến</span>
                         </a>
                     </li>
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/update-bank" class="nav-link">
-                            <i class="bx bx-bank icon"></i>
-                            <span class="link">Cấu hình thanh toán QR</span>
+                            <i class="bx bx-qr-scan icon"></i>
+                            <span class="link">Cấu hình QR</span>
                         </a>
                     </li>
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/promotion-review" class="nav-link">
                             <i class="bx bx-gift icon"></i>
-                            <span class="link">Xét duyệt khuyến mãi</span>
+                            <span class="link">Duyệt khuyến mãi</span>
                         </a>
                     </li>
                     <li class="list">
@@ -132,18 +112,6 @@
                             <li><a href="${pageContext.request.contextPath}/operation-policy">Chính sách hoạt động</a></li>
                             <li><a href="${pageContext.request.contextPath}/config-fee">Cấu hình phí</a></li>
                         </ul>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operator/listApplication" class="nav-link">
-                            <i class="bx bx-check-circle icon"></i>
-                            <span class="link">Duyệt đơn</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/operator/alert-complaint" class="nav-link">
-                            <i class="bx bx-error icon"></i>
-                            <span class="link">Cảnh báo</span>
-                        </a>
                     </li>
                 </ul>
 
