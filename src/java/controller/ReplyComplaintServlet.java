@@ -2,6 +2,7 @@ package controller;
 
 import dao.ComplaintDAO;
 import dao.IssueReplyDAO;
+import dao.UserDAO;
 import model.Complaint;
 import model.IssueReply;
 import model.Users;
@@ -12,17 +13,21 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import model.Email;
+import model.User;
 
 @WebServlet(name = "ReplyComplaintServlet", urlPatterns = {"/replyComplaint"})
 public class ReplyComplaintServlet extends HttpServlet {
 
     private ComplaintDAO complaintDAO;
     private IssueReplyDAO replyDAO;
+    private UserDAO userDAO;
 
     @Override
     public void init() throws ServletException {
         complaintDAO = new ComplaintDAO();
         replyDAO = new IssueReplyDAO();
+        userDAO = new UserDAO();
     }
 
     @Override
@@ -32,7 +37,6 @@ public class ReplyComplaintServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // Vérifier si l'utilisateur est connecté
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("acc") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
@@ -67,7 +71,6 @@ public class ReplyComplaintServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // Vérification de la session
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("acc") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
@@ -85,7 +88,6 @@ public class ReplyComplaintServlet extends HttpServlet {
         String newStatus = request.getParameter("status");
         String newPriority = request.getParameter("priority");
 
-        // Validation des paramètres
         if (issueIdParam == null || replyContent == null || replyContent.trim().isEmpty()
                 || newStatus == null || newPriority == null) {
             response.sendRedirect(request.getContextPath() + "/ComplaintServlet?updateStatus=error&message=thieu_du_lieu");
@@ -94,15 +96,25 @@ public class ReplyComplaintServlet extends HttpServlet {
 
         try {
             int issueId = Integer.parseInt(issueIdParam);
+            Complaint c = complaintDAO.getComplaintById(issueId);
+            User a = userDAO.getUserById(c.getUserId());
 
-            // Création de la réponse
             IssueReply reply = new IssueReply();
             reply.setIssueId(issueId);
             reply.setReplierId(user.getUserId());
             reply.setContent(replyContent.trim());
             reply.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
-            // Enregistrement en base de données
+            Email emailUtil = new Email();
+            if (!newStatus.equals("escalated")) {
+                try {
+                    emailUtil.sendEmail("Phàn hồi khiếu nại", emailUtil.messageReplyToCustomer(newStatus, replyContent), a.getEmail());
+                } catch (Exception e) {
+                    request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
+                    request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
+                }
+            }
+
             boolean success = replyDAO.addReply(reply);
             boolean updateSuccess = complaintDAO.updateComplaintStatusAndPriority(issueId, newStatus, newPriority);
 

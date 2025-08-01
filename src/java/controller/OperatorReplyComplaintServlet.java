@@ -2,6 +2,7 @@ package controller;
 
 import dao.ComplaintDAO;
 import dao.OperatorComplaintDAO;
+import dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,16 +16,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Email;
+import model.User;
 import model.Users;
 
 @WebServlet(name = "OperatorReplyComplaintServlet", urlPatterns = {"/OperatorReplyComplaintServlet"})
 public class OperatorReplyComplaintServlet extends HttpServlet {
+
     private static final Logger logger = Logger.getLogger(OperatorReplyComplaintServlet.class.getName());
     private OperatorComplaintDAO operatorComplaintDAO;
+    private UserDAO userDAO;
 
     @Override
     public void init() throws ServletException {
         operatorComplaintDAO = new OperatorComplaintDAO();
+        userDAO = new UserDAO();
     }
 
     @Override
@@ -33,7 +39,7 @@ public class OperatorReplyComplaintServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
-ComplaintDAO aO = new ComplaintDAO();
+        ComplaintDAO aO = new ComplaintDAO();
         HttpSession session = request.getSession();
         try {
             String issueIdParam = request.getParameter("issueId");
@@ -45,7 +51,7 @@ ComplaintDAO aO = new ComplaintDAO();
 
             int issueId = Integer.parseInt(issueIdParam);
             Complaint complaint = operatorComplaintDAO.getComplaintById(issueId);
-            
+
             if (complaint == null) {
                 session.setAttribute("errorMessage", "Không tìm thấy khiếu nại với ID: " + issueId);
                 response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
@@ -84,10 +90,12 @@ ComplaintDAO aO = new ComplaintDAO();
 
         HttpSession session = request.getSession();
         String issueIdParam = request.getParameter("issueId");
+
+        System.out.println(" oke" + issueIdParam);
         String redirectUrl = request.getContextPath() + "/OperatorReplyComplaintServlet?issueId=" + issueIdParam;
 
         try {
-            Users u = (Users)session.getAttribute("acc");
+            Users u = (Users) session.getAttribute("acc");
             Integer staffId = u.getUserId();
             if (staffId == null) {
                 session.setAttribute("errorMessage", "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.");
@@ -100,8 +108,11 @@ ComplaintDAO aO = new ComplaintDAO();
                 response.sendRedirect(request.getContextPath() + "/operatorComplaintList");
                 return;
             }
-
             int issueId = Integer.parseInt(issueIdParam);
+            
+            Complaint c = operatorComplaintDAO.getComplaintById(issueId);
+            User a = userDAO.getUserById(c.getUserId());
+
             String replyContent = request.getParameter("replyContent");
             String status = request.getParameter("status");
             String priority = request.getParameter("priority");
@@ -120,9 +131,17 @@ ComplaintDAO aO = new ComplaintDAO();
             reply.setContent(replyContent.trim());
 
             // Parse assignedTo
-            Integer assignedTo = (assignedToStr != null && !assignedToStr.isEmpty()) 
+            Integer assignedTo = (assignedToStr != null && !assignedToStr.isEmpty())
                     ? Integer.parseInt(assignedToStr) : null;
 
+            Email emailUtil = new Email();
+            try {
+                System.out.println("OKEBBB " + u.getEmail());
+                emailUtil.sendEmail("Phàn hồi khiếu nại", emailUtil.messageReplyToCustomer(status, replyContent), a.getEmail());
+            } catch (Exception e) {
+                request.setAttribute("error", "Gửi email thất bại, vui lòng thử lại");
+                request.getRequestDispatcher("/page/login/signup.jsp").forward(request, response);
+            }
             // Save to database
             operatorComplaintDAO.addReply(reply);
             operatorComplaintDAO.updateComplaintStatusPriorityAssigned(issueId, status, priority, assignedTo);

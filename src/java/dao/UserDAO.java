@@ -43,6 +43,10 @@ public class UserDAO {
         return false;
     }
 
+    public static void main(String[] args) {
+        UserDAO u = new UserDAO();
+        System.out.println(u.getUserById(27).getEmail());
+    }
     /**
      * Kiểm tra thông tin đăng nhập theo email và mật khẩu.
      *

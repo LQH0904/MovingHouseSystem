@@ -20,7 +20,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Danh sách Khiếu nại chuyển cấp cao</title>
+        <title>Danh sách Khiếu nại</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
@@ -254,7 +254,7 @@
                 <jsp:include page="/Layout/operator/Header.jsp" />
             </div>
             <div class="div3">
-                <h1>Danh sách Khiếu nại chuyển cấp cao</h1>
+                <h1>Danh sách Khiếu nại</h1>
 
                 <c:if test="${not empty successMessage}">
                     <p class="success-message">${successMessage}</p>
@@ -318,9 +318,7 @@
                             <th>Mô tả</th>
                             <th>Trạng thái</th>
                             <th>Mức độ ưu tiên</th>
-                            <th>Người phụ trách</th>
                             <th>Ngày tạo</th>
-                            <th>Ngày giải quyết</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -341,9 +339,7 @@
                                     </c:choose>
                                 </td>
                                 <td class="priority-${complaint.priority.toLowerCase()}">${complaint.priority}</td>
-                                <td>${complaint.assignedToUsername != null ? complaint.assignedToUsername : 'Chưa giao'}</td>
                                 <td>${complaint.createdAt}</td>
-                                <td>${complaint.resolvedAt}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/OperatorDetailServlet?issueId=${complaint.issueId}">
                                         Phản hồi

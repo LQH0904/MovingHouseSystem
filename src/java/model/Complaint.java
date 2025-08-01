@@ -12,9 +12,13 @@ public class Complaint {
     private String priority;
     private Timestamp createdAt;
     private Timestamp resolvedAt;
+    private boolean hasReply;
+    private String responderName;
+    private String messageForIssue;
 
-    public Complaint(int issueId, int userId, String username, String description, String status, String priority,
-            Timestamp createdAt, Timestamp resolvedAt) {
+    public Complaint(int issueId, int userId, String username, String description,
+            String status, String priority, Timestamp createdAt,
+            Timestamp resolvedAt, boolean hasReply, String responderName) {
         this.issueId = issueId;
         this.userId = userId;
         this.username = username;
@@ -23,6 +27,8 @@ public class Complaint {
         this.priority = priority;
         this.createdAt = createdAt;
         this.resolvedAt = resolvedAt;
+        this.hasReply = hasReply;
+        this.responderName = responderName;
     }
 
     public Complaint() {
@@ -90,5 +96,29 @@ public class Complaint {
 
     public void setResolvedAt(Timestamp resolvedAt) {
         this.resolvedAt = resolvedAt;
+    }
+
+    public boolean isHasReply() {
+        return hasReply;
+    }
+
+    public void setHasReply(boolean hasReply) {
+        this.hasReply = hasReply;
+    }
+
+    public String getResponderName() {
+        return responderName;
+    }
+
+    public void setResponderName(String responderName) {
+        this.responderName = responderName;
+    }
+
+    public String getMessageForIssue() {
+        return messageForIssue;
+    }
+
+    public void setMessageForIssue(String messageForIssue) {
+        this.messageForIssue = messageForIssue;
     }
 }

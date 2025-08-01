@@ -39,6 +39,7 @@
                                         <th>#No</th>
                                         <th>Id người phản hồi</th>
                                         <th>Nội dung phản hồi</th>
+                                        <th>Thông tin khách hàng phản hồi</th>
                                         <th>Thời gian phản hồi</th>
                                     </tr>
                                 </thead>
@@ -48,6 +49,12 @@
                                             <td>${i.replyId}</td>
                                             <td>${i.replierId}</td>
                                             <td>${i.replyContent}</td>
+                                            <td>
+                                                ${i.message_for_issue}
+                                                <c:if test="${i.customerId != 0}">
+                                                    <br><small>Khách hàng ID: ${i.customerId}</small>
+                                                </c:if>
+                                            </td>
                                             <td><fmt:formatDate value="${i.repliedAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
                                         </tr>
                                     </c:forEach>

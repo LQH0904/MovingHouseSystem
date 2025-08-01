@@ -89,6 +89,20 @@
                             <span class="link">Gợi ý khuyến mãi</span>
                         </a>
                     </li>
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/staff-leave" class="nav-link">
+                            <i class="bx bx-calendar-check icon"></i>
+                            <span class="link">Đơn nghỉ phép</span>
+                        </a>
+                    </li>
+
+
+                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
+                            <i class="bx bx-cog icon"></i>
+                            <span class="link">FAQ</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

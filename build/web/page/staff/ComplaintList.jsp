@@ -15,11 +15,11 @@
         return;
     }
 
-// Lấy thông tin user từ session
+    // Lấy thông tin user từ session
     Users userAccount = (Users) session.getAttribute("acc");
-    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
-    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
-    int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
+    int currentUserId = userAccount.getUserId();
+    String currentUsername = userAccount.getUsername();
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -31,7 +31,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
-
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/complaintList.css">
     </head>
     <body class="bg-light">
@@ -105,7 +104,8 @@
                         </div>
                     </div>
                 </form>
-                <% } %>        
+                <% }
+                %>        
 
                 <div class="table-responsive">
                     <table class="table table-hover table-striped">
@@ -116,6 +116,7 @@
                                 <th>Mô tả</th>
                                 <th>Trạng thái</th>
                                 <th>Ưu tiên</th>
+                                <th>Người phản hồi</th>
                                 <th>Ngày tạo</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -127,59 +128,101 @@
                                         <tr>
                                             <td>${complaint.issueId}</td>
                                             <td>${complaint.username}</td>
-                                            <td>${complaint.description}</td>
-                                            <td>${complaint.status}</td>
-                                            <td>${complaint.priority}</td>
-                                            <td><fmt:formatDate value="${complaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
-                                            <% if (currentUserRoleId == 3) { %>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${complaint.status == 'escalated'}">
-                                                        Điều hành viên
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <a href="${pageContext.request.contextPath}/ComplaintServlet?action=view&issueId=${complaint.issueId}"
-                                                           class="btn btn-sm btn-info">Chi tiết / Phản hồi</a>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                            <td class="text-truncate" style="max-width: 200px;" title="${complaint.description}">
+                                                ${complaint.description}
                                             </td>
-                                            <% } %>
-                                            <% if (currentUserRoleId == 2) { %>
-                                            <td>Nhân viên</td>
-                                            <% }%>
-                                        </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="7" class="text-center">Không tìm thấy khiếu nại nào.</td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </tbody>
-                    </table>
-                </div>
+                                            <td>
+                                                <span class="badge
+                                                      ${complaint.status == 'open' ? 'bg-secondary' : 
+                                                        complaint.status == 'in_progress' ? 'bg-primary' : 
+                                                        complaint.status == 'resolved' ? 'bg-success' : 
+                                                        'bg-warning text-dark'}">
+                                                          ${complaint.status}
+                                                      </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge
+                                                          ${complaint.priority == 'low' ? 'bg-info' : 
+                                                            complaint.priority == 'normal' ? 'bg-primary' : 'bg-danger'}">
+                                                              ${complaint.priority}
+                                                          </span>
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${not empty complaint.responderName}">
+                                                                ${complaint.responderName}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span class="text-muted">Chưa có</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td><fmt:formatDate value="${complaint.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
+                                                    <% if (currentUserRoleId == 3) { %>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${complaint.status == 'escalated'}">
+                                                                <span class="badge bg-warning text-dark">Điều hành viên</span>
+                                                            </c:when>
+                                                            <c:when test="${not empty complaint.responderName}">
+                                                                <a href="${pageContext.request.contextPath}/ViewReplyDetailServlet?issueId=${complaint.issueId}"
+                                                                   class="btn btn-sm btn-info">
+                                                                    <i class="bi bi-clock-history"></i> Lịch sử phản hồi
+                                                                </a>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a href="${pageContext.request.contextPath}/ComplaintServlet?action=view&issueId=${complaint.issueId}"
+                                                                   class="btn btn-sm btn-primary">
+                                                                    <i class="bi bi-chat-left-text"></i> Chi tiết / Phản hồi
+                                                                </a>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <% } %>
+                                                    <% if (currentUserRoleId == 2) { %>
+                                                    <td>Nhân viên</td>
+                                                    <% }%>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted py-4">Không tìm thấy khiếu nại nào phù hợp với tiêu chí tìm kiếm.</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </div>
 
-                <div class="d-flex justify-content-center mt-3">
-                    <ul class="pagination">
-                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                            <a class="page-link" 
-                               href="${pageContext.request.contextPath}/ComplaintServlet?page=${currentPage - 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}&startDate=${startDate}&endDate=${endDate}&minId=${param.minId}&maxId=${param.maxId}">&laquo;</a>
-                        </li>
-                        <c:forEach var="i" begin="1" end="${totalPages}">
-                            <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                <a class="page-link" 
-                                   href="${pageContext.request.contextPath}/ComplaintServlet?page=${i}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}&startDate=${startDate}&endDate=${endDate}&minId=${param.minId}&maxId=${param.maxId}">${i}</a>
-                            </li>
-                        </c:forEach>
-                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                            <a class="page-link" 
-                               href="${pageContext.request.contextPath}/ComplaintServlet?page=${currentPage + 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}&startDate=${startDate}&endDate=${endDate}&minId=${param.minId}&maxId=${param.maxId}">&raquo;</a>
-                        </li>
-                    </ul>
+                        <c:if test="${totalPages > 1}">
+                            <div class="d-flex justify-content-center mt-3">
+                                <ul class="pagination">
+                                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                        <a class="page-link" 
+                                           href="${pageContext.request.contextPath}/ComplaintServlet?page=${currentPage - 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}&startDate=${startDate}&endDate=${endDate}&minId=${param.minId}&maxId=${param.maxId}">
+                                            &laquo;
+                                        </a>
+                                    </li>
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                            <a class="page-link" 
+                                               href="${pageContext.request.contextPath}/ComplaintServlet?page=${i}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}&startDate=${startDate}&endDate=${endDate}&minId=${param.minId}&maxId=${param.maxId}">
+                                                ${i}
+                                            </a>
+                                        </li>
+                                    </c:forEach>
+                                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                        <a class="page-link" 
+                                           href="${pageContext.request.contextPath}/ComplaintServlet?page=${currentPage + 1}&search=${searchTerm}&statusFilter=${statusFilter}&priorityFilter=${priorityFilter}&startDate=${startDate}&endDate=${endDate}&minId=${param.minId}&maxId=${param.maxId}">
+                                            &raquo;
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </c:if>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-</html>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+            </body>
+        </html>
