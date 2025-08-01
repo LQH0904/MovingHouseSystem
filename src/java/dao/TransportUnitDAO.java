@@ -1,6 +1,6 @@
 package dao;
 
-import model.TransportUnit;
+import model.TransportUnit4;
 import utils.DBConnection;
 
 import java.sql.Connection;
@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 public class TransportUnitDAO {
 
-    public TransportUnit getByUserId(int userId) throws SQLException {
-        TransportUnit unit = null;
+    public TransportUnit4 getByUserId(int userId) throws SQLException {
+        TransportUnit4 unit = null;
         String sql = "SELECT * FROM TransportUnits WHERE transport_unit_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -21,7 +21,7 @@ public class TransportUnitDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                unit = new TransportUnit(
+                unit = new TransportUnit4(
                     rs.getInt("transport_unit_id"),
                     rs.getString("company_name"),
                     rs.getString("contact_info"),

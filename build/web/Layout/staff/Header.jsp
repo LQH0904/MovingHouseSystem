@@ -43,7 +43,7 @@
                     <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                         <div class="hori-selector"></div>                      
                         <li class="nav-item">
-                            <a class="nav-link" href="javascript:void(0);"><i class="bi bi-person-circle"></i>Tài Khoản</a>
+                            <a class="nav-link" href="http://localhost:9999/HouseMovingSystem/profile"><i class="bi bi-person-circle"></i>Tài Khoản</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="${pageContext.request.contextPath}/logout"><i class="bi bi-box-arrow-right"></i>Đăng Xuất</a>

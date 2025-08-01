@@ -19,6 +19,7 @@
     Users userAccount = (Users) session.getAttribute("acc");
     int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
     String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
 <html>
@@ -33,17 +34,28 @@
     </head>
     <body>
         <div class="parent">
+            <% if (currentUserRoleId == 2) { %>
+            <div class="div1">
+                <jsp:include page="../../Layout/operator/SideBar.jsp"></jsp:include>
+                </div>
+                <div class="div2">
+                <jsp:include page="../../Layout/operator/Header.jsp"></jsp:include>
+                </div>
+            <% } %>
+
+            <% if (currentUserRoleId == 3) { %>
             <div class="div1">
                 <jsp:include page="../../Layout/staff/SideBar.jsp"></jsp:include>
                 </div>
                 <div class="div2">
                 <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
+            <% }%>
 
-                <div class="div3">
-                    <div class="content-part">
-                        <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">Chào mừng 
-                            <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername%></span> đến trang dành cho Nhân viên</div>
+            <div class="div3">
+                <div class="content-part">
+                    <div style="margin: 20px 20px -10px 20px; font-weight: 500; font-family: 'UnifrakturMaguntia', cursive; font-size: 25px;">Chào mừng 
+                        <span style="color: #ff00cf; font-weight: 800;"><%= currentUsername%></span> đến trang dành cho Nhân viên</div>
                     <div class="user">
                         <div>
                             <div class="title_form_1">Về người dùng</div>
@@ -321,11 +333,43 @@
 
                     // SỬA ĐOẠN NÀY - Click event với roleId từ array
                     legendItem.addEventListener('click', () => {
-                        const baseUrl = 'http://localhost:9999/HouseMovingSystem/UserListServlet';
-                        const roleId = roleIds[index]; // Lấy roleId từ array bằng index
-                        const url = `\${baseUrl}?roleId=\${roleId}`;
+                        const roleId = roleIds[index];
 
-                        window.location.href = url;
+                        // Tạo form ẩn và submit ngay lập tức
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = 'http://localhost:9999/HouseMovingSystem/UserListServlet';
+                        form.style.display = 'none'; // Ẩn form
+
+                        // Thêm input hidden cho roleId
+                        const roleInput = document.createElement('input');
+                        roleInput.type = 'hidden';
+                        roleInput.name = 'roleId';
+                        roleInput.value = roleId;
+                        form.appendChild(roleInput);
+
+                        // Thêm input hidden cho page
+                        const pageInput = document.createElement('input');
+                        pageInput.type = 'hidden';
+                        pageInput.name = 'page';
+                        pageInput.value = '1';
+                        form.appendChild(pageInput);
+
+                        // Thêm input hidden rỗng cho searchKeyword để tránh lỗi
+                        const searchInput = document.createElement('input');
+                        searchInput.type = 'hidden';
+                        searchInput.name = 'searchKeyword';
+                        searchInput.value = '';
+                        form.appendChild(searchInput);
+
+                        // Thêm form vào body và submit ngay
+                        document.body.appendChild(form);
+                        form.submit();
+
+                        // Xóa form sau khi submit (tùy chọn)
+                        setTimeout(() => {
+                            document.body.removeChild(form);
+                        }, 100);
                     });
 
                     legendContainer.appendChild(legendItem);

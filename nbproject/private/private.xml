@@ -12,19 +12,13 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/LeaveRequestListServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/OperatorLeaveDetailServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/model/LeaveRequest.java</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/staff/error.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/SubmitLeaveRequestServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/staff/LeaveRequest.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/Layout/operator/SideBar.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/dao/LeaveRequestDAO.java</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/Layout/staff/SideBar.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/staff/OrderDetail.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/src/java/controller/OperatorLeaveReviewServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/operator/LeaveRequestReview.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/cloneit2/MovingHouseSystem/web/page/operator/LeaveReviewDetail.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/web/Layout/operator/SideBar.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/web/Layout/staff/SideBar.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/src/java/controller/ChatbotLogServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/src/java/model/ChatbotLog.java</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/web/page/staff/chatBotLog.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/admin/Desktop/newww/MovingHouseSystem-merge_code/src/java/dao/ChatbotLogDAO.java</file>
         </group>
     </open-files>
 </project-private>

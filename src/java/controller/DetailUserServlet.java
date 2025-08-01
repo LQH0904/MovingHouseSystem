@@ -3,7 +3,7 @@ package controller;
 import dao.TransportUnitDAO;
 import dao.StorageUnitDAO;
 import dao.UserDAO;
-import model.TransportUnit;
+import model.TransportUnit4;
 import model.StorageUnit;
 import model.User;
 
@@ -38,7 +38,7 @@ public class DetailUserServlet extends HttpServlet {
                 request.setAttribute("user", user);
             } else if (roleId == 4) {
                 TransportUnitDAO tDao = new TransportUnitDAO();
-                TransportUnit unit = tDao.getByUserId(userId);
+                TransportUnit4 unit = tDao.getByUserId(userId);
                 request.setAttribute("transportUnit", unit);
             } else if (roleId == 5) {
                 StorageUnitDAO sDao = new StorageUnitDAO();

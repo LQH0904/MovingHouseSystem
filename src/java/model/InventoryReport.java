@@ -1,24 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 
-/**
- *
- * @author admin
- */
 public class InventoryReport {
-
+    @JsonProperty("report_id")
     private int reportId;
+
+    @JsonProperty("storage_unit_id")
     private int storageUnitId;
+
+    @JsonProperty("inventory_details")
     private String inventoryDetails;
+
+    @JsonProperty("created_at")
     private Timestamp createdAt;
+
+    @JsonProperty("updated_at")
     private Timestamp updatedAt;
+
+    @JsonProperty("title")
     private String title;
+
+    @JsonProperty("status")
     private String status;
+
+    @JsonProperty("warehouse_name")
     private String warehouseName;
 
     public int getReportId() {
