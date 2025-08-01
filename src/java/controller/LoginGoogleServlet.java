@@ -49,7 +49,7 @@ public class LoginGoogleServlet extends HttpServlet {
                         response.sendRedirect(request.getContextPath() + "/notifications");
                         break;
                     case 6:
-                        response.sendRedirect(request.getContextPath() + "/notifications");
+                        response.sendRedirect(request.getContextPath() + "/transport");
                         break;
                     default:
                         response.sendRedirect(request.getContextPath() + "/orderList");
@@ -149,7 +149,7 @@ public class LoginGoogleServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 6:
-                    response.sendRedirect(request.getContextPath() + "/notifications");
+                    response.sendRedirect(request.getContextPath() + "/transport");
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/orderList");

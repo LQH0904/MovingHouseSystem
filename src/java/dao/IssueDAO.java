@@ -20,7 +20,7 @@ public class IssueDAO {
             pstmt.setString(3, issue.getDescription());
             pstmt.setString(4, issue.getStatus());
             pstmt.setString(5, issue.getPriority());
-            pstmt.setTimestamp(6, Timestamp.valueOf(issue.getCreatedAt()));
+            pstmt.setTimestamp(6, Timestamp.valueOf(LocalDateTime.MIN));
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -50,9 +50,9 @@ public class IssueDAO {
                     issue.setDescription(rs.getString("description"));
                     issue.setStatus(rs.getString("status"));
                     issue.setPriority(rs.getString("priority"));
-                    issue.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    issue.setCreatedAt(rs.getTimestamp("created_at"));
                     if (rs.getTimestamp("resolved_at") != null) {
-                        issue.setResolvedAt(rs.getTimestamp("resolved_at").toLocalDateTime());
+                        issue.setResolvedAt(rs.getTimestamp("resolved_at"));
                     }
                 }
             }
@@ -75,9 +75,9 @@ public class IssueDAO {
                     issue.setDescription(rs.getString("description"));
                     issue.setStatus(rs.getString("status"));
                     issue.setPriority(rs.getString("priority"));
-                    issue.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    issue.setCreatedAt(rs.getTimestamp("created_at"));
                     if (rs.getTimestamp("resolved_at") != null) {
-                        issue.setResolvedAt(rs.getTimestamp("resolved_at").toLocalDateTime());
+                        issue.setResolvedAt(rs.getTimestamp("resolved_at"));
                     }
                     issues.add(issue);
                 }
@@ -140,9 +140,9 @@ public class IssueDAO {
                     issue.setDescription(rs.getString("description"));
                     issue.setStatus(rs.getString("status"));
                     issue.setPriority(rs.getString("priority"));
-                    issue.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    issue.setCreatedAt(rs.getTimestamp("created_at"));
                     if (rs.getTimestamp("resolved_at") != null) {
-                        issue.setResolvedAt(rs.getTimestamp("resolved_at").toLocalDateTime());
+                        issue.setResolvedAt(rs.getTimestamp("resolved_at"));
                     }
                     issues.add(issue);
                 }

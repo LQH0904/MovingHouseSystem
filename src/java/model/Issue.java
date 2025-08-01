@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Issue {
@@ -10,8 +11,11 @@ public class Issue {
     private String description;
     private String status;
     private String priority;
-    private LocalDateTime createdAt;
-    private LocalDateTime resolvedAt; // ✅ Bổ sung trường này
+    private Timestamp createdAt;
+    private Timestamp resolvedAt; // ✅ Bổ sung trường này
+    private Integer unitId;
+    private String unitType;
+    private String operatorReply;
 
     public Issue() {
     }
@@ -22,7 +26,7 @@ public class Issue {
         this.description = description;
         this.status = "pending";
         this.priority = "medium";
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Timestamp.valueOf(LocalDateTime.MIN);
     }
 
     public int getIssueId() {
@@ -73,19 +77,40 @@ public class Issue {
         this.priority = priority;
     }
 
-    public LocalDateTime getCreatedAt() {
+   public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getResolvedAt() {
+    public Timestamp getResolvedAt() {
         return resolvedAt;
     }
 
-    public void setResolvedAt(LocalDateTime resolvedAt) {
+    public void setResolvedAt(Timestamp resolvedAt) {
         this.resolvedAt = resolvedAt;
     }
+    public void setUnitId(Integer unitId) {
+        this.unitId = unitId;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
+    }
+
+    public String getOperatorReply() {
+        return operatorReply;
+    }
+
+    public void setOperatorReply(String operatorReply) {
+        this.operatorReply = operatorReply;
+    }
 }
+
+

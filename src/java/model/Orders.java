@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,17 +5,16 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Orders {
-
     @JsonProperty("order_id")
     private int orderId;
     @JsonProperty("customer_id")
     private int customerId;
     @JsonProperty("customer_name")
-    private String customerName; 
+    private String customerName;
     @JsonProperty("transport_unit_id")
     private Integer transportUnitId;
     @JsonProperty("transport_unit_name")
-    private String transportUnitName; 
+    private String transportUnitName;
     @JsonProperty("storage_unit_id")
     private Integer storageUnitId;
     @JsonProperty("storage_unit_name")
@@ -38,6 +33,24 @@ public class Orders {
     private Timestamp acceptedAt;
     @JsonProperty("delivered_at")
     private Timestamp deliveredAt;
+    @JsonProperty("description")
+    private String description;
+    @JsonProperty("special_note")
+    private String specialNote;
+    @JsonProperty("service_type")
+    private String serviceType;
+    @JsonProperty("pickup_time_desired")
+    private Timestamp pickupTimeDesired;
+    @JsonProperty("transport_fee")
+    private BigDecimal transportFee;
+    @JsonProperty("service_fee")
+    private BigDecimal serviceFee;
+    @JsonProperty("vat_amount")
+    private BigDecimal vatAmount;
+    @JsonProperty("discount")
+    private BigDecimal discount;
+    @JsonProperty("total_distance_km")
+    private BigDecimal totalDistanceKm;
 
     // Getters and Setters
     public int getOrderId() {
@@ -150,5 +163,78 @@ public class Orders {
 
     public void setDeliveredAt(Timestamp deliveredAt) {
         this.deliveredAt = deliveredAt;
+    }
+
+    // Getter và Setter cho trường mới
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSpecialNote() {
+        return specialNote;
+    }
+
+    public void setSpecialNote(String specialNote) {
+        this.specialNote = specialNote;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public Timestamp getPickupTimeDesired() {
+        return pickupTimeDesired;
+    }
+
+    public void setPickupTimeDesired(Timestamp pickupTimeDesired) {
+        this.pickupTimeDesired = pickupTimeDesired;
+    }
+
+    public BigDecimal getTransportFee() {
+        return transportFee;
+    }
+
+    public void setTransportFee(BigDecimal transportFee) {
+        this.transportFee = transportFee;
+    }
+
+    public BigDecimal getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(BigDecimal serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public BigDecimal getVatAmount() {
+        return vatAmount;
+    }
+
+    public void setVatAmount(BigDecimal vatAmount) {
+        this.vatAmount = vatAmount;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public BigDecimal getTotalDistanceKm() {
+        return totalDistanceKm;
+    }
+
+    public void setTotalDistanceKm(BigDecimal totalDistanceKm) {
+        this.totalDistanceKm = totalDistanceKm;
     }
 }

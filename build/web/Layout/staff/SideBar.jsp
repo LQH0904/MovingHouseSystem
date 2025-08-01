@@ -79,6 +79,7 @@
                     </li>
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="nav-link">
+<<<<<<< HEAD
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Thử phiếu khảo sát</span>
                         </a>
@@ -89,6 +90,10 @@
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Câu hỏi</span>
                             <i class="bx bx-chevron-down" style="margin-left:auto;"></i>
+=======
+                            <i class="bx bx-folder-open icon"></i>
+                            <span class="link">Thử phiếu khảo sát</span>
+>>>>>>> origin/DucVer2
                         </a>
                         <ul class="sub-menu" id="policy-submenu" style="display:none; padding-left: 25px;">
                             <li><a href="${pageContext.request.contextPath}/staff/faq-list">Câu hỏi thường gặp</a></li>
@@ -102,6 +107,7 @@
                             <span class="link">Gợi ý khuyến mãi</span>
                         </a>
                     </li>
+<<<<<<< HEAD
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/staff-leave" class="nav-link">
                             <i class="bx bx-calendar-check icon"></i>
@@ -111,6 +117,8 @@
 
 
                     
+=======
+>>>>>>> origin/DucVer2
                 </ul>
             </div>
         </div>
@@ -136,6 +144,7 @@
                 }
             }
         </script>
+<<<<<<< HEAD
         <script>
             function toggleSubMenu(id) {
                 const submenu = document.getElementById(id);
@@ -146,5 +155,7 @@
                 }
             }
         </script>
+=======
+>>>>>>> origin/DucVer2
     </body>
 </html>
