@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.Users" %>
 <%
-// Kiểm tra session    
+// Session checking code (same as before)
 String redirectURL = null;    
 if (session.getAttribute("acc") == null) {        
     redirectURL = "/login";        
@@ -11,10 +11,9 @@ if (session.getAttribute("acc") == null) {
     return;    
 }
 
-// Lấy thông tin user từ session    
 Users userAccount = (Users) session.getAttribute("acc");    
-int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class    
-String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị    
+int currentUserId = userAccount.getUserId();
+String currentUsername = userAccount.getUsername();
 int currentUserRoleId = userAccount.getRoleId();
 %>
 <!DOCTYPE html>
@@ -26,12 +25,65 @@ int currentUserRoleId = userAccount.getRoleId();
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/staff/TransportProcess.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
         
-        <!-- Leaflet CSS và JS cho bản đồ -->
+        <!-- Leaflet CSS và JS -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         
         <style>
-            /* CSS cho bản đồ */
+            .map-container {
+                margin-top: 15px;
+                position: relative;
+            }
+
+            #map {
+                height: 500px;
+                width: 100%;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .route-info {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-top: 15px;
+                border-left: 4px solid #007bff;
+            }
+
+            .route-step {
+                padding: 8px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .route-step:last-child {
+                border-bottom: none;
+            }
+
+            .route-step i {
+                width: 20px;
+                text-align: center;
+                margin-right: 8px;
+            }
+
+            .external-link {
+                text-align: center;
+                margin-top: 15px;
+                padding: 10px;
+                background-color: #e3f2fd;
+                border-radius: 8px;
+            }
+
+            .external-link a {
+                color: #1976d2;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .external-link a:hover {
+                text-decoration: underline;
+            }
+
             .custom-div-icon {
                 background: none;
                 border: none;
@@ -42,55 +94,9 @@ int currentUserRoleId = userAccount.getRoleId();
                 color: #333;
             }
 
-            .popup-content p {
-                margin-bottom: 4px;
-            }
-
-            .map-info .info-item {
-                padding: 8px;
-                background-color: #f8f9fa;
-                border-radius: 4px;
-                margin-bottom: 8px;
-            }
-
-            .leaflet-popup-content-wrapper {
-                border-radius: 8px;
-            }
-
-            .leaflet-popup-content {
-                margin: 12px 16px;
-            }
-
-            .map-container {
-                position: relative;
-                margin-top: 15px;
-            }
-
-            #map {
-                height: 400px; 
-                width: 100%; 
-                border-radius: 8px;
-                border: 1px solid #dee2e6;
-            }
-
-            .map-loading {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 400px;
-                background-color: #f8f9fa;
-                border-radius: 8px;
-                border: 1px solid #dee2e6;
-            }
-
-            /* Responsive cho mobile */
             @media (max-width: 768px) {
                 #map {
-                    height: 300px;
-                }
-                
-                .map-info .col-md-6 {
-                    margin-bottom: 10px;
+                    height: 400px;
                 }
             }
         </style>
@@ -140,45 +146,25 @@ int currentUserRoleId = userAccount.getRoleId();
                     
                     <!-- Bản đồ -->
                     <div class="card">
-                        <h3 class="mb-4 text-primary"><i class="bi bi-diagram-3-fill me-2"></i>Bản đồ</h3>
+                        <h3 class="mb-4 text-primary"><i class="bi bi-diagram-3-fill me-2"></i>Bản đồ lộ trình</h3>
                         
-                        <!-- Container cho bản đồ -->
                         <div class="map-container">
-                            <div id="map-loading" class="map-loading">
-                                <div class="text-center">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Đang tải bản đồ...</span>
-                                    </div>
-                                    <p class="mt-2 text-muted">Đang tải bản đồ...</p>
-                                </div>
-                            </div>
-                            <div id="map" style="display: none;"></div>
+                            <div id="map"></div>
                         </div>
                         
-                        <!-- Thông tin tọa độ -->
-                        <div class="map-info mt-3" id="map-info" style="display: none;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-item">
-                                        <i class="bi bi-geo-alt-fill text-success"></i>
-                                        <span class="ms-2">Điểm lấy hàng: <strong id="pickup-coords"></strong></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="info-item">
-                                        <i class="bi bi-geo-alt-fill text-danger"></i>
-                                        <span class="ms-2">Điểm giao hàng: <strong id="delivery-coords"></strong></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12">
-                                    <div class="info-item text-center">
-                                        <i class="bi bi-arrow-left-right text-primary"></i>
-                                        <span class="ms-2">Khoảng cách ước tính: <strong id="distance-info">Đang tính toán...</strong></span>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Thông tin lộ trình -->
+                        <div class="route-info" id="route-info" style="display: none;">
+                            <h6><i class="bi bi-route"></i> Thông tin lộ trình</h6>
+                            <div id="route-summary"></div>
+                            <div id="route-instructions"></div>
+                        </div>
+                        
+                        <!-- Link mở OpenStreetMap -->
+                        <div class="external-link">
+                            <a href="${process.mapUrl}" target="_blank">
+                                <i class="bi bi-box-arrow-up-right"></i> 
+                                Xem chi tiết trên OpenStreetMap
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -189,46 +175,41 @@ int currentUserRoleId = userAccount.getRoleId();
         <script src="${pageContext.request.contextPath}/js/staff/TransportProcess.js"></script>
         
         <script>
-            // Khởi tạo bản đồ
+            let map;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeMap();
+            });
+
             function initializeMap() {
-                // Lấy dữ liệu từ server (từ JSP)
+                // Lấy dữ liệu từ JSP
                 const pickupLat = parseFloat('${process.pickupLat}') || null;
                 const pickupLng = parseFloat('${process.pickupLng}') || null;
                 const shippingLat = parseFloat('${process.shippingLat}') || null;
                 const shippingLng = parseFloat('${process.shippingLng}') || null;
                 
-                // Ẩn loading và hiển thị thông báo lỗi nếu không có dữ liệu
-                document.getElementById('map-loading').style.display = 'none';
-                
                 if (!pickupLat || !pickupLng || !shippingLat || !shippingLng) {
-                    document.getElementById('map').style.display = 'block';
                     document.getElementById('map').innerHTML = 
                         '<div class="alert alert-warning text-center p-4">' +
                         '<i class="bi bi-exclamation-triangle-fill"></i> ' +
-                        'Không có dữ liệu tọa độ để hiển thị bản đồ.<br>' +
-                        '<small class="text-muted">Vui lòng kiểm tra dữ liệu pickup_lat, pickup_lng, shipping_lat, shipping_lng</small>' +
+                        'Không có dữ liệu tọa độ để hiển thị bản đồ' +
                         '</div>';
                     return;
                 }
-                
-                // Hiển thị bản đồ và thông tin
-                document.getElementById('map').style.display = 'block';
-                document.getElementById('map-info').style.display = 'block';
-                
-                // Tính toán trung tâm bản đồ
+
+                // Khởi tạo bản đồ
                 const centerLat = (pickupLat + shippingLat) / 2;
                 const centerLng = (pickupLng + shippingLng) / 2;
                 
-                // Khởi tạo bản đồ Leaflet
-                const map = L.map('map').setView([centerLat, centerLng], 12);
+                map = L.map('map').setView([centerLat, centerLng], 12);
                 
-                // Thêm tile layer từ OpenStreetMap
+                // Thêm tile layer
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                     maxZoom: 19
                 }).addTo(map);
                 
-                // Icon tùy chỉnh cho điểm lấy hàng
+                // Tạo icons
                 const pickupIcon = L.divIcon({
                     html: '<i class="bi bi-geo-alt-fill" style="color: #28a745; font-size: 24px;"></i>',
                     iconSize: [24, 24],
@@ -237,7 +218,6 @@ int currentUserRoleId = userAccount.getRoleId();
                     className: 'custom-div-icon'
                 });
                 
-                // Icon tùy chỉnh cho điểm giao hàng
                 const deliveryIcon = L.divIcon({
                     html: '<i class="bi bi-geo-alt-fill" style="color: #dc3545; font-size: 24px;"></i>',
                     iconSize: [24, 24],
@@ -246,7 +226,7 @@ int currentUserRoleId = userAccount.getRoleId();
                     className: 'custom-div-icon'
                 });
                 
-                // Thêm marker cho điểm lấy hàng
+                // Thêm markers
                 const pickupMarker = L.marker([pickupLat, pickupLng], {icon: pickupIcon})
                     .addTo(map)
                     .bindPopup(`
@@ -257,7 +237,6 @@ int currentUserRoleId = userAccount.getRoleId();
                         </div>
                     `);
                 
-                // Thêm marker cho điểm giao hàng
                 const deliveryMarker = L.marker([shippingLat, shippingLng], {icon: deliveryIcon})
                     .addTo(map)
                     .bindPopup(`
@@ -267,62 +246,73 @@ int currentUserRoleId = userAccount.getRoleId();
                             <small class="text-muted">Tọa độ: ` + shippingLat.toFixed(6) + `, ` + shippingLng.toFixed(6) + `</small>
                         </div>
                     `);
+
+                // Lấy lộ trình thực tế
+                getRoute(pickupLat, pickupLng, shippingLat, shippingLng);
                 
-                // Vẽ đường thẳng giữa 2 điểm
-                const routeLine = L.polyline([
-                    [pickupLat, pickupLng],
-                    [shippingLat, shippingLng]
-                ], {
-                    color: '#007bff',
-                    weight: 3,
-                    opacity: 0.7,
-                    dashArray: '10, 5'
-                }).addTo(map);
-                
-                // Fit bản đồ để hiển thị tất cả markers
+                // Fit bounds
                 const group = new L.featureGroup([pickupMarker, deliveryMarker]);
                 map.fitBounds(group.getBounds().pad(0.1));
+            }
+
+            async function getRoute(startLat, startLng, endLat, endLng) {
+                try {
+                    // Sử dụng OSRM API (miễn phí)
+                    const url = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson&steps=true`;
+                    
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.routes && data.routes.length > 0) {
+                        const route = data.routes[0];
+                        const coordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                        
+                        // Vẽ lộ trình
+                        const routeLine = L.polyline(coordinates, {
+                            color: '#007bff',
+                            weight: 4,
+                            opacity: 0.8
+                        }).addTo(map);
+                        
+                        // Hiển thị thông tin lộ trình
+                        displayRouteInfo(route);
+                        
+                        // Fit bounds cho lộ trình
+                        map.fitBounds(routeLine.getBounds().pad(0.05));
+                    }
+                } catch (error) {
+                    console.error('Không thể lấy lộ trình:', error);
+                    // Fallback: vẽ đường thẳng
+                    const routeLine = L.polyline([
+                        [startLat, startLng],
+                        [endLat, endLng]
+                    ], {
+                        color: '#007bff',
+                        weight: 3,
+                        opacity: 0.7,
+                        dashArray: '10, 5'
+                    }).addTo(map);
+                }
+            }
+
+            function displayRouteInfo(route) {
+                const distance = (route.distance / 1000).toFixed(2);
+                const duration = Math.round(route.duration / 60);
                 
-                // Tính khoảng cách
-                const distance = calculateDistance(pickupLat, pickupLng, shippingLat, shippingLng);
-                
-                // Cập nhật thông tin tọa độ và khoảng cách
-                document.getElementById('pickup-coords').textContent = 
-                    pickupLat.toFixed(4) + ', ' + pickupLng.toFixed(4);
-                document.getElementById('delivery-coords').textContent = 
-                    shippingLat.toFixed(4) + ', ' + shippingLng.toFixed(4);
-                document.getElementById('distance-info').textContent = 
-                    distance.toFixed(2) + ' km';
-                
-                // Thêm thông tin khoảng cách vào popup của đường
-                routeLine.bindPopup(`
-                    <div class="popup-content text-center">
-                        <h6><i class="bi bi-arrow-left-right"></i> Thông tin lộ trình</h6>
-                        <p class="mb-1">Khoảng cách (đường chim bay): <strong>` + distance.toFixed(2) + ` km</strong></p>
-                        <small class="text-muted">Đây là khoảng cách ước tính</small>
+                const summaryHtml = `
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong><i class="bi bi-arrow-left-right"></i> Khoảng cách:</strong> ${distance} km
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="bi bi-clock"></i> Thời gian:</strong> ${duration} phút
+                        </div>
                     </div>
-                `);
+                `;
+                
+                document.getElementById('route-summary').innerHTML = summaryHtml;
+                document.getElementById('route-info').style.display = 'block';
             }
-
-            // Hàm tính khoảng cách giữa 2 điểm (công thức Haversine)
-            function calculateDistance(lat1, lon1, lat2, lon2) {
-                const R = 6371; // Bán kính Trái Đất (km)
-                const dLat = (lat2 - lat1) * Math.PI / 180;
-                const dLon = (lon2 - lon1) * Math.PI / 180;
-                const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                          Math.sin(dLon/2) * Math.sin(dLon/2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                return R * c;
-            }
-
-            // Khởi tạo bản đồ khi trang đã load
-            document.addEventListener('DOMContentLoaded', function() {
-                // Delay một chút để đảm bảo DOM đã render hoàn toàn
-                setTimeout(function() {
-                    initializeMap();
-                }, 500);
-            });
         </script>
     </body>
 </html>

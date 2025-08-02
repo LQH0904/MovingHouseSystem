@@ -1,5 +1,6 @@
 package model;
 
+import java.math.BigDecimal;
 
 public class OrderDetailItem {
     private int orderDetailId;
@@ -7,15 +8,36 @@ public class OrderDetailItem {
     private String itemName;
     private String imageUrl;
     private int quantity;
-    private double weightKg;
-    private int lengthCm;
-    private int widthCm;
-    private int heightCm;
+    private BigDecimal weightKg;
+    private Integer lengthCm;
+    private Integer widthCm;
+    private Integer heightCm;
     private String note;
+    private BigDecimal volumeM3;
+    private BigDecimal itemPrice;
 
-    public OrderDetailItem() {
+    // Constructor không tham số
+    public OrderDetailItem() {}
+
+    // Constructor đầy đủ
+    public OrderDetailItem(int orderDetailId, int orderId, String itemName, String imageUrl, int quantity,
+                           BigDecimal weightKg, Integer lengthCm, Integer widthCm, Integer heightCm,
+                           String note, BigDecimal volumeM3, BigDecimal itemPrice) {
+        this.orderDetailId = orderDetailId;
+        this.orderId = orderId;
+        this.itemName = itemName;
+        this.imageUrl = imageUrl;
+        this.quantity = quantity;
+        this.weightKg = weightKg;
+        this.lengthCm = lengthCm;
+        this.widthCm = widthCm;
+        this.heightCm = heightCm;
+        this.note = note;
+        this.volumeM3 = volumeM3;
+        this.itemPrice = itemPrice;
     }
 
+    // Getters và Setters
     public int getOrderDetailId() {
         return orderDetailId;
     }
@@ -56,35 +78,35 @@ public class OrderDetailItem {
         this.quantity = quantity;
     }
 
-    public double getWeightKg() {
+    public BigDecimal getWeightKg() {
         return weightKg;
     }
 
-    public void setWeightKg(double weightKg) {
+    public void setWeightKg(BigDecimal weightKg) {
         this.weightKg = weightKg;
     }
 
-    public int getLengthCm() {
+    public Integer getLengthCm() {
         return lengthCm;
     }
 
-    public void setLengthCm(int lengthCm) {
+    public void setLengthCm(Integer lengthCm) {
         this.lengthCm = lengthCm;
     }
 
-    public int getWidthCm() {
+    public Integer getWidthCm() {
         return widthCm;
     }
 
-    public void setWidthCm(int widthCm) {
+    public void setWidthCm(Integer widthCm) {
         this.widthCm = widthCm;
     }
 
-    public int getHeightCm() {
+    public Integer getHeightCm() {
         return heightCm;
     }
 
-    public void setHeightCm(int heightCm) {
+    public void setHeightCm(Integer heightCm) {
         this.heightCm = heightCm;
     }
 
@@ -95,6 +117,20 @@ public class OrderDetailItem {
     public void setNote(String note) {
         this.note = note;
     }
-    
-    
+
+    public BigDecimal getVolumeM3() {
+        return volumeM3;
+    }
+
+    public void setVolumeM3(BigDecimal volumeM3) {
+        this.volumeM3 = volumeM3;
+    }
+
+    public BigDecimal getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(BigDecimal itemPrice) {
+        this.itemPrice = itemPrice;
+    }
 }

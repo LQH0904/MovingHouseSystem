@@ -155,7 +155,7 @@
                                                         <i class="fas fa-clock"></i>
                                                     </div>
                                                     <div class="info-content">
-                                                        <div class="info-label">Ngày cập nhật</div>
+                                                        <div class="info-label">Ngày xác nhận</div>
                                                         <div class="info-value">${orderDetail.updatedAt}</div>
                                                     </div>
                                                 </div>
@@ -165,7 +165,7 @@
                                                         <i class="fas fa-truck"></i>
                                                     </div>
                                                     <div class="info-content">
-                                                        <div class="info-label">Lịch giao hàng</div>
+                                                        <div class="info-label">Lịch nhận hàng</div>
                                                         <div class="info-value">${orderDetail.deliverySchedule}</div>
                                                     </div>
                                                 </div>
@@ -205,7 +205,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
+<!--                                            <div class="col-md-6">
                                                 <div class="info-item">
                                                     <div class="info-icon icon-success">
                                                         <i class="fas fa-phone"></i>
@@ -215,7 +215,7 @@
                                                         <div class="info-value">${orderDetail.customerPhone}</div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@
                             <div class="col-lg-4">
                                 <div class="info-card">
                                     <div class="card-header-custom">
-                                        <i class="fas fa-shipping-fast me-2"></i>Vận chuyển & Kho
+                                        <i class="fas fa-shipping-fast me-2"></i>Vận chuyển
                                     </div>
                                     <div class="card-body-custom">
                                         <!-- Shipping Information -->
@@ -258,7 +258,7 @@
                                         <hr class="section-divider">
 
                                         <!-- Warehouse Information -->
-                                        <div>
+<!--                                        <div>
                                             <h6 class="section-title text-info">
                                                 <i class="fas fa-warehouse me-2"></i>Thông tin kho hàng
                                             </h6>
@@ -282,7 +282,7 @@
                                                     <div class="info-value">${orderDetail.warehouseName}</div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
 
                                     </div>
                                 </div>
@@ -318,7 +318,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã xác nhận</h6>
-                                                            <small>${orderDetail.acceptedAt}</small>
+                                                            <small>${orderDetail.updatedAt}</small>
                                                         </div>
                                                     </div>
 
@@ -327,8 +327,8 @@
                                                             <i class="fas fa-truck"></i>
                                                         </div>
                                                         <div class="timeline-content">
-                                                            <h6>Đang giao hàng</h6>
-                                                            <small>${orderDetail.deliverySchedule}</small>
+                                                            <h6> Bắt Đầu Giao hàng</h6>
+                                                            <small>${orderDetail.updatedAt}</small>
                                                         </div>
                                                     </div>
 
@@ -363,7 +363,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã xác nhận</h6>
-                                                            <small>${orderDetail.acceptedAt}</small>
+                                                            <small>${orderDetail.updatedAt}</small>
                                                         </div>
                                                     </div>                                                    
 
@@ -447,7 +447,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="timeline-item-horizontal completed">
+<!--                                                    <div class="timeline-item-horizontal completed">
                                                         <div class="timeline-icon">
                                                             <i class="fas fa-check-circle"></i>
                                                         </div>
@@ -455,7 +455,7 @@
                                                             <h6>Đã xác nhận</h6>
                                                             <small></small>
                                                         </div>
-                                                    </div>
+                                                    </div>-->
 
                                                     <div class="timeline-item-horizontal cancelled">
                                                         <div class="timeline-icon">
