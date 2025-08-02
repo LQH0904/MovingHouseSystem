@@ -5,7 +5,6 @@
 package model;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import java.util.Properties;
@@ -16,8 +15,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
+
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
@@ -27,8 +25,8 @@ import javax.mail.internet.MimeMultipart;
  */
 public class Email {
 
-    private final String eFrom = "housemoving70@gmail.com";
-    private final String ePass = "tuis tcfj dbna qzhp";
+    private final String eFrom = "gatrex5ql@gmail.com";
+    private final String ePass = "rsiv fhgp vhbl kyay";
 
     // 
     // check email
@@ -80,12 +78,47 @@ public class Email {
             // Có thể ném exception ra ngoài hoặc handle theo cách khác nếu cần
         }
     }
+    
+        public void sendComplainToUser(String subject, String messgage, String to) {
+        // Properties cho SMTP server Gmail
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        // Xác thực tài khoản gửi mail
+        Authenticator au = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(eFrom, ePass);
+            }
+        };
+
+        Session session = Session.getInstance(props, au);
+
+        try {
+            MimeMessage msg = new MimeMessage(session);
+            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
+            msg.setFrom(new InternetAddress(eFrom));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            msg.setSubject(subject, "UTF-8");
+            msg.setContent(messgage, "text/html; charset=UTF-8");
+
+            Transport.send(msg);
+            System.out.println("Send email successfully to " + to);
+        } catch (Exception e) {
+            System.err.println("Send email failed to " + to);
+            e.printStackTrace();
+            // Có thể ném exception ra ngoài hoặc handle theo cách khác nếu cần
+        }
+    }
 
     // Select subject to send email
     public String subjectForgotPass() {
         return "Support forgot password";
     }
-
+    
     // Select content to send email
     public String messageForgotPass(String name, int code) {
         return "<!DOCTYPE html>\n"
@@ -122,6 +155,44 @@ public class Email {
                 + "</body>\n"
                 + "</html>";
     }
+    
+    public String messageReplyToCustomer(String status, String replyContent) {
+    return "<!DOCTYPE html>\n"
+            + "<html lang=\"vi\">\n"
+            + "<head>\n"
+            + "    <meta charset=\"UTF-8\">\n"
+            + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+            + "    <title>Phản hồi khiếu nại</title>\n"
+            + "</head>\n"
+            + "<body style=\"font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;\">\n"
+            + "    <table style=\"width: 100%; max-width: 600px; margin: 20px auto; background-color: #ffffff; border-collapse: collapse;\">\n"
+            + "        <tr>\n"
+            + "            <td style=\"padding: 20px; text-align: center; background-color: #2196F3; color: #ffffff; font-size: 22px;\">\n"
+            + "                Thông báo phản hồi khiếu nại\n"
+            + "            </td>\n"
+            + "        </tr>\n"
+            + "        <tr>\n"
+            + "            <td style=\"padding: 20px;\">\n"
+            + "                <p><strong>Xin chào bạn!</strong> Đây là dịch vụ vận chuyển <strong>Moving House</strong>.</p>\n"
+            + "                <p>Chúng tôi đã xem xét khiếu nại của bạn và xin gửi đến bạn thông tin phản hồi như sau:</p>\n"
+            + "                <p><strong>Trạng thái đơn:</strong> " + status + "</p>\n"
+            + "                <p><strong>Nội dung phản hồi:</strong></p>\n"
+            + "                <p style=\"background-color: #f1f1f1; padding: 10px; border-left: 4px solid #2196F3;\">" + replyContent + "</p>\n"
+            + "                <p>Nếu bạn có bất kỳ câu hỏi nào, xin vui lòng liên hệ lại với chúng tôi.</p>\n"
+            + "                <p>Trân trọng,<br>Đội ngũ hỗ trợ Moving House</p>\n"
+            + "            </td>\n"
+            + "        </tr>\n"
+            + "        <tr>\n"
+            + "            <td style=\"padding: 15px; text-align: center; background-color: #2196F3; color: #ffffff; font-size: 14px;\">\n"
+            + "                &copy; 2025 Moving House. Mọi quyền được bảo lưu.\n"
+            + "            </td>\n"
+            + "        </tr>\n"
+            + "    </table>\n"
+            + "</body>\n"
+            + "</html>";
+}
+
+    
 
     public void sendEmailWithAttachment(String subject, String message, String to, File attachment) throws Exception {
         Properties props = new Properties();

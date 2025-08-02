@@ -422,14 +422,9 @@ if (session.getAttribute("acc") == null) {
                     <b>Quay lại trang trước</b>
                 </button>
             </a>
-            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/SurveyTestController">
-                <button>
-                    <b>Thử phiếu khảo sát khách hàng</b>
-                </button>
-            </a>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/HistorySurveyTestController">
                 <button>
-                    <b>Lịch sử thử khảo sát</b>
+                    <b>Xem lịch sử khảo sát thử</b>
                 </button>
             </a>
         </div>

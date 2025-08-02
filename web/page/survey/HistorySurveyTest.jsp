@@ -318,7 +318,7 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
         <div class="container">
             <div class="header">
                 <h1>📊 Lịch Sử Thử Phiếu Khảo Sát Khách Hàng</h1>
-                <p>Quản lý và theo dõi phản hồi từ khách hàng về dịch vụ vận chuyển</p>
+                <p>Quản lý, theo dõi và xem lịch sử làm, đào tạo nhân viên</p>
             </div>
 
             <div class="content">
@@ -461,11 +461,7 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
             </div>
         </div>
         <div style="margin-top: 40px; display: flex; justify-content: space-around;">
-            <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/SurveyTestController">
-                <button>
-                    <b>Trở về trang Test phiếu khảo sát</b>
-                </button>
-            </a>
+            
             <% if (currentUserRoleId != 3) { %>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/homeOperator">
                 <button>

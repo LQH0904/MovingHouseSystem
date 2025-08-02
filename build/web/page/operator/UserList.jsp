@@ -63,8 +63,8 @@
                         <button type="submit" class="search-btn">Tìm kiếm</button>
                     </form>
 
-                    <button class="add-user-btn" onclick="window.location.href = '${pageContext.request.contextPath}/page/operator/AddUser.jsp'">
-                        Thêm Người Dùng
+                    <button class="add-user-btn" onclick="window.location.href = 'http://localhost:9999/HouseMovingSystem/operator/listApplication'">
+                        Duyệt đơn vị mới
                     </button>
                 </div>
 

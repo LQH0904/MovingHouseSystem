@@ -158,12 +158,24 @@
                 opacity: 0.5;
             }
             @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
             @keyframes slideIn {
-                from { opacity: 0; transform: translateX(-20px); }
-                to { opacity: 1; transform: translateX(0); }
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
             }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -311,7 +323,7 @@
                     },
                     dataType: 'json',
                     success: function (reportData) {
-                        console.log('Reports Response:', JSON.stringify(reportData, null, 2));
+                        console.log('=== JSON Reports Response:', JSON.stringify(reportData, null, 2));
 
                         $.ajax({
                             url: '${pageContext.request.contextPath}/analyz',
@@ -329,22 +341,34 @@
                                 $('#reportList').empty();
                                 if (reportData.reports && reportData.reports.length > 0) {
                                     $.each(reportData.reports, function (index, report) {
+                                        // Xác định tên đơn vị
                                         var unitName = reportType === 'inventory' ?
-                                            (report.warehouseName || 'Chưa xác định') :
-                                            (report.companyName || 'Chưa xác định');
-                                        var isAnalyzed = !unanalyzedIds.includes(report.reportId);
+                                                (report.warehouse_name || 'Không xác định') :
+                                                (report.company_name || 'Không xác định');
+
+                                        // Xác định ID báo cáo
+                                        var reportId = report.report_id || 'N/A';
+
+                                        // Xác định ngày tạo
+                                        var createdAt = report.created_at ?
+                                                new Date(report.created_at).toLocaleString('vi-VN') : 'Không hợp lệ';
+
+                                        // Kiểm tra trạng thái phân tích
+                                        var isAnalyzed = !unanalyzedIds.includes(report.report_id);
                                         var checkboxDisabled = isAnalyzed ? 'disabled class="disabled-checkbox" title="Báo cáo đã được phân tích"' : '';
                                         var statusText = isAnalyzed ?
-                                            '<span class="text-success"><i class="fas fa-check-circle"></i> Đã phân tích</span>' :
-                                            '<span class="text-warning"><i class="fas fa-exclamation-circle"></i> Chưa phân tích</span>';
-                                        console.log('Report ID:', report.reportId, 'isAnalyzed:', isAnalyzed, 'unitName:', unitName);
+                                                '<span class="text-success"><i class="fas fa-check-circle"></i> Đã phân tích</span>' :
+                                                '<span class="text-warning"><i class="fas fa-exclamation-circle"></i> Chưa phân tích</span>';
+
+                                        console.log('Report ID:', reportId, 'Unit Name:', unitName, 'Created At:', createdAt, 'isAnalyzed:', isAnalyzed);
+
                                         var row = '<tr>' +
-                                            '<td><input type="checkbox" name="reportIds" value="' + report.reportId + '" ' + checkboxDisabled + '></td>' +
-                                            '<td>' + report.reportId + '</td>' +
-                                            '<td>' + unitName + '</td>' +
-                                            '<td>' + new Date(report.createdAt).toLocaleString('vi-VN') + '</td>' +
-                                            '<td>' + statusText + '</td>' +
-                                            '</tr>';
+                                                '<td><input type="checkbox" name="reportIds" value="' + (reportId || 'N/A') + '" ' + checkboxDisabled + '></td>' +
+                                                '<td>' + reportId + '</td>' +
+                                                '<td>' + unitName + '</td>' +
+                                                '<td>' + createdAt + '</td>' +
+                                                '<td>' + statusText + '</td>' +
+                                                '</tr>';
                                         $('#reportList').append(row);
                                     });
                                 } else {
@@ -364,11 +388,12 @@
                     },
                     error: function (xhr, status, error) {
                         console.error('Error fetching reports:', status, error, 'Response:', xhr.responseText);
-                        $('#reportList').html('<tr><td colspan="5">Lỗi khi tải danh sách báo cáo: ' + xhr.responseText + '</td></tr>');
+                        $('#reportList').html('<tr><td colspan="5">Lỗi khi tải danh sách báo cáo: ' + (xhr.responseText || 'Không xác định') + '</td></tr>');
                         $('#pagination').html('<li class="page-item"><span class="page-link">Lỗi tải phân trang</span></li>');
                     }
                 });
             }
+
 
             function renderPagination(totalPages) {
                 console.log('Rendering pagination with', totalPages, 'pages');
@@ -381,24 +406,24 @@
                 }
 
                 $('#pagination').append(
-                    '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">' +
-                    '<a class="page-link" href="#" onclick="loadReports(' + (currentPage - 1) + ')">Trước</a>' +
-                    '</li>'
-                );
+                        '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="loadReports(' + (currentPage - 1) + ')">Trước</a>' +
+                        '</li>'
+                        );
 
                 for (var i = 1; i <= totalPages; i++) {
                     $('#pagination').append(
-                        '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
-                        '<a class="page-link" href="#" onclick="loadReports(' + i + ')">' + i + '</a>' +
-                        '</li>'
-                    );
+                            '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
+                            '<a class="page-link" href="#" onclick="loadReports(' + i + ')">' + i + '</a>' +
+                            '</li>'
+                            );
                 }
 
                 $('#pagination').append(
-                    '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">' +
-                    '<a class="page-link" href="#" onclick="loadReports(' + (currentPage + 1) + ')">Sau</a>' +
-                    '</li>'
-                );
+                        '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="loadReports(' + (currentPage + 1) + ')">Sau</a>' +
+                        '</li>'
+                        );
 
                 console.log('Pagination HTML:', $('#pagination').html());
             }

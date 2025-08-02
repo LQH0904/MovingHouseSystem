@@ -182,7 +182,6 @@
                     <strong>Trạng thái:</strong> 
                     <span class="badge bg-${complaint.status}">
                         <c:choose>
-                            <c:when test="${complaint.status == 'escalated'}">Đã chuyển</c:when>
                             <c:when test="${complaint.status == 'resolved'}">Đã giải quyết</c:when>
                             <c:when test="${complaint.status == 'processing'}">Đang xử lý</c:when>
                             <c:otherwise><c:out value="${complaint.status}"/></c:otherwise>

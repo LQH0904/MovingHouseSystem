@@ -251,6 +251,9 @@
                 font-size: 14px;
                 opacity: 0.9;
                 color: black;
+                background-color: white;
+                padding: 5px;
+                border-radius: 10px;
             }
 
             .storage-table {
@@ -763,6 +766,52 @@
                     gap: 15px;
                 }
             }
+            .bnt2 {
+                align-items: center;
+                appearance: none;
+                background-color: #EEF2FF;
+                border-radius: 8px;
+                border-width: 2px;
+                border-color: #536DFE;
+                box-shadow: rgba(83, 109, 254, 0.2) 0 2px 4px, rgba(83, 109, 254, 0.15) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+                box-sizing: border-box;
+                color: #536DFE;
+                cursor: pointer;
+                display: inline-flex;
+                font-family: "JetBrains Mono", monospace;
+                height: 56px;
+                justify-content: center;
+                line-height: 1;
+                list-style: none;
+                overflow: hidden;
+                padding-left: 24px;
+                padding-right: 24px;
+                position: relative;
+                text-align: center;
+                text-decoration: none;
+                transition: box-shadow 0.15s, transform 0.15s;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+                white-space: nowrap;
+                will-change: box-shadow, transform;
+                font-size: 20px;
+            }
+
+            .bnt2:focus {
+                outline: none;
+                box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(83, 109, 254, 0.4) 0 2px 4px, rgba(83, 109, 254, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            }
+
+            .bnt2:hover {
+                box-shadow: rgba(83, 109, 254, 0.3) 0 4px 8px, rgba(83, 109, 254, 0.2) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+                transform: translateY(-2px);
+            }
+
+            .bnt2:active {
+                box-shadow: #D6D6E7 0 3px 7px inset;
+                transform: translateY(2px);
+            }
         </style>
     </head>
     <body>
@@ -840,7 +889,10 @@
                         <div class="filter-section">
                             <div class="filter-header">
                                 <h3 class="filter-title">🔍 Bộ lọc</h3>
-
+                                <a href="http://localhost:9999/HouseMovingSystem/exportData" style="text-decoration: none;">
+                                    <!-- From Uiverse.io by adamgiebl --> 
+                                    <button class="bnt2" role="button">Xuất dữ liệu</button>
+                            </a>
                             </div>
 
                             <form method="GET" action="StorageReportDetailController" id="filterForm">
@@ -1153,13 +1205,13 @@
                 document.querySelectorAll('.date-display').forEach(function (element) {
                     const dateStr = element.getAttribute('data-date');
                     const dateParts = dateStr.split('-');
-                    const year = parseInt(dateParts[0]);
-                    let month = parseInt(dateParts[1]) + 1; // Cộng thêm 1 tháng
+                    let year = parseInt(dateParts[0]); // ← SỬA: Đổi const thành let
+                    let month = parseInt(dateParts[1]) + 1;
 
                     // Xử lý trường hợp tháng > 12
                     if (month > 12) {
                         month = 1;
-                        year = year + 1;
+                        year = year + 1; // ← FIXED: Bây giờ có thể gán lại
                     }
 
                     // Format tháng với leading zero

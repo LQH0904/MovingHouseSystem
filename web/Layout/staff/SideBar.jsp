@@ -28,16 +28,6 @@
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
-
-                    <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 3)}">
-                        
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
-                                <i class="bx bx-export icon"></i>
-                                <span class="link">Xuất dữ liệu</span>
-                            </a>
-                        </li>
-                    </c:if>
                     <li class="list has-submenu">
                         <a href="#" class="nav-link" onclick="toggleSubmenu(event)">
                             <i class="bx bx-bar-chart-alt-2 icon"></i>
@@ -87,6 +77,12 @@
                         <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
                             <i class="bx bx-gift icon"></i>
                             <span class="link">Gợi ý khuyến mãi</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/staff/order-approve" class="nav-link">
+                            <i class="bx bx-cart-alt icon"></i>
+                            <span class="link">Quản lý đơn hàng</span>
                         </a>
                     </li>
                 </ul>

@@ -434,7 +434,7 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
             </div>
         </div>
         <div style="margin-top: 40px; display: flex; justify-content: space-around;">
-            <% if (currentUserRoleId != 3) { %>
+            <% if (currentUserRoleId == 2) { %>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/customer-survey">
                 <button>
                     <b>Quay lại trang trước</b>
@@ -448,11 +448,13 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
                 </button>
             </a>
             <% } %>
+            <% if (currentUserRoleId == 2) { %>
             <a class="bnt_quaylai" href="http://localhost:9999/HouseMovingSystem/HistorySurveyTestController">
                 <button>
                     <b>Lịch sử thử khảo sát</b>
                 </button>
             </a>
+            <% } %>
         </div>
         <script>
 // Load dữ liệu từ file config
@@ -514,5 +516,39 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
             });
 
         </script>
+        <script>
+// Kiểm tra nếu có thông báo thành công và user có role_id = 6
+<% if (success != null && currentUserRoleId == 6) { %>
+    // Hiển thị countdown
+    let countdown = 5;
+    const countdownElement = document.createElement('div');
+    countdownElement.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        font-weight: bold;
+        text-align: center;
+    `;
+    countdownElement.innerHTML = `Tự động chuyển về trang đặt hàng sau: <span id="countdown">${countdown}</span>s`;
+    document.body.appendChild(countdownElement);
+    
+    // Cập nhật countdown mỗi giây
+    const timer = setInterval(() => {
+        countdown--;
+        document.getElementById('countdown').textContent = countdown;
+        
+        if (countdown <= 0) {
+            clearInterval(timer);
+            window.location.href = 'http://localhost:9999/HouseMovingSystem/transport';
+        }
+    }, 1000);
+<% } %>
+</script>
     </body>
 </html>
