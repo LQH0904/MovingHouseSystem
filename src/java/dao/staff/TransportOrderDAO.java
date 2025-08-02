@@ -156,7 +156,7 @@ public boolean assignNearestUnit(int orderId, int customerId) throws SQLExceptio
             
         }
         
-        // Insert notification
+        // Insert notification (connect to Duc)
                 try (PreparedStatement notificationStmt = conn.prepareStatement(INSERT_NOTIFICATION)) {
                     notificationStmt.setInt(1, customerId);
                     notificationStmt.setInt(2, orderId);
