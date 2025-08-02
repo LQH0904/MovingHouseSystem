@@ -1,5 +1,6 @@
 
 package dao.staff;
+import java.sql.PreparedStatement;
 
 import java.sql.*;
 import java.util.*;
@@ -12,11 +13,14 @@ import utils.DistanceCalculator;
 
 public class TransportOrderDAO {
     
+        private static final String INSERT_NOTIFICATION = "INSERT INTO Notifications (user_id, order_id, message, status, created_at, notification_type) VALUES (?, ?, ?, ?, ?, ?)";
+
+    
     public List<OrderInfo> getPendingOrders() {
     List<OrderInfo> list = new ArrayList<>();
 
     String sql = """
-        SELECT o.order_id, c.full_name, o.created_at, o.updated_at,
+        SELECT o.order_id, c.full_name, o.created_at, o.updated_at,o.customer_id,
                o.delivery_schedule, o.total_distance_km,
                tp.pickup_location, tp.shipping_location
         FROM Orders o
@@ -33,6 +37,7 @@ public class TransportOrderDAO {
 
         while (rs.next()) {
             int orderId = rs.getInt("order_id");
+            int customerId = rs.getInt("customer_id");
             String fullName = rs.getString("full_name");
             String createdAt = rs.getString("created_at");
             String updatedAt = rs.getString("updated_at");
@@ -41,7 +46,7 @@ public class TransportOrderDAO {
             String pickupLocation = rs.getString("pickup_location");
             String shippingLocation = rs.getString("shipping_location");
 
-            OrderInfo order = new OrderInfo(orderId, fullName, createdAt, updatedAt,
+            OrderInfo order = new OrderInfo(orderId, customerId,fullName, createdAt, updatedAt,
                                             deliverySchedule, totalDistanceKm,
                                             pickupLocation, shippingLocation);
 
@@ -99,7 +104,7 @@ public class TransportOrderDAO {
     
     public OrderInfo getOrderInfo(int orderId) {
     String query = """
-        SELECT o.order_id, c.full_name, o.created_at, o.updated_at, o.delivery_schedule,
+        SELECT o.order_id, c.full_name, o.created_at, o.updated_at, o.delivery_schedule,o.customer_id,
                o.total_distance_km, tp.pickup_location, tp.shipping_location
         FROM Orders o
         JOIN Customers c ON o.customer_id = c.customer_id
@@ -114,6 +119,7 @@ public class TransportOrderDAO {
             if (rs.next()) {
                 return new OrderInfo(
                     rs.getInt("order_id"),
+                        rs.getInt("customer_id"),
                     rs.getString("full_name"),
                     rs.getString("created_at"),
                     rs.getString("updated_at"),
@@ -130,13 +136,15 @@ public class TransportOrderDAO {
     return null;
 }
 
-public boolean assignNearestUnit(int orderId) {
+public boolean assignNearestUnit(int orderId, int customerId) throws SQLException {
     String pickupLocation = getPickupLocation(orderId);
     TransportOrder unit = findNearestTransportUnit(pickupLocation);
 
     if (unit == null) return false;
+    
 
     try (Connection conn = DBConnection.getConnection()) {
+         conn.setAutoCommit(false);
         String update = """
             UPDATE Orders SET transport_unit_id = ?, order_status = 'in_progress', updated_at = GETDATE()
             WHERE order_id = ?
@@ -145,8 +153,25 @@ public boolean assignNearestUnit(int orderId) {
             ps.setInt(1, unit.getId());
             ps.setInt(2, orderId);
             ps.executeUpdate();
-            return true;
+            
         }
+        
+        // Insert notification
+                try (PreparedStatement notificationStmt = conn.prepareStatement(INSERT_NOTIFICATION)) {
+                    notificationStmt.setInt(1, customerId);
+                    notificationStmt.setInt(2, orderId);
+                    notificationStmt.setString(3, "Xác nhận đơn hàng "+ orderId +"thành công ! Đơn hàng của bạn đang được thực hiện !");
+                    notificationStmt.setString(4, "sent");
+                    notificationStmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+                    notificationStmt.setString(6, "reminder");
+                    int rowsAffected = notificationStmt.executeUpdate();
+                    if (rowsAffected == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+                conn.commit();
+                return true;
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -190,47 +215,47 @@ private String getPickupLocation(int orderId) {
 //        }
 //    }
 
-    // ✅ Test main
-    public static void main(String[] args) {
-    TransportOrderDAO dao = new TransportOrderDAO();
-    int orderId = 28; // test với đơn hàng có ID này
-
-    // 1. Lấy thông tin đơn hàng
-    System.out.println("=== 🧾 THÔNG TIN ĐƠN HÀNG ===");
-    OrderInfo info = dao.getOrderInfo(orderId);
-    if (info == null) {
-        System.out.println("Không tìm thấy đơn hàng.");
-        return;
-    }
-
-    System.out.println("Order ID: " + info.getOrderId());
-    System.out.println("Khách hàng: " + info.getFullName());
-    System.out.println("Ngày tạo: " + info.getCreatedAt());
-    System.out.println("Lịch giao: " + info.getDeliverySchedule());
-    System.out.println("Khoảng cách (km): " + info.getTotalDistanceKm());
-    System.out.println("Địa chỉ lấy hàng: " + info.getPickupLocation());
-    System.out.println("Địa chỉ giao hàng: " + info.getShippingLocation());
-
-    // 2. Tìm đơn vị gần nhất
-    System.out.println("\n=== 🚛 ĐƠN VỊ GẦN NHẤT ===");
-    TransportOrder unit = dao.findNearestTransportUnit(info.getPickupLocation());
-    if (unit != null) {
-        System.out.println("ID: " + unit.getId());
-        System.out.println("Tên: " + unit.getCompanyName());
-        System.out.println("Địa chỉ: " + unit.getLocation());
-    } else {
-        System.out.println("Không tìm thấy đơn vị phù hợp.");
-        return;
-    }
-
-    // 3. Gán đơn vị vào đơn hàng
-    System.out.println("\n=== ✅ XÉT DUYỆT ĐƠN ===");
-    boolean assigned = dao.assignNearestUnit(orderId);
-    if (assigned) {
-        System.out.println("Đơn hàng đã được xét duyệt và gán đơn vị thành công.");
-    } else {
-        System.out.println("❌ Gán đơn vị thất bại.");
-    }
-}
+//    // ✅ Test main
+//    public static void main(String[] args) {
+//    TransportOrderDAO dao = new TransportOrderDAO();
+//    int orderId = 28; // test với đơn hàng có ID này
+//
+//    // 1. Lấy thông tin đơn hàng
+//    System.out.println("=== 🧾 THÔNG TIN ĐƠN HÀNG ===");
+//    OrderInfo info = dao.getOrderInfo(orderId);
+//    if (info == null) {
+//        System.out.println("Không tìm thấy đơn hàng.");
+//        return;
+//    }
+//
+//    System.out.println("Order ID: " + info.getOrderId());
+//    System.out.println("Khách hàng: " + info.getFullName());
+//    System.out.println("Ngày tạo: " + info.getCreatedAt());
+//    System.out.println("Lịch giao: " + info.getDeliverySchedule());
+//    System.out.println("Khoảng cách (km): " + info.getTotalDistanceKm());
+//    System.out.println("Địa chỉ lấy hàng: " + info.getPickupLocation());
+//    System.out.println("Địa chỉ giao hàng: " + info.getShippingLocation());
+//
+//    // 2. Tìm đơn vị gần nhất
+//    System.out.println("\n=== 🚛 ĐƠN VỊ GẦN NHẤT ===");
+//    TransportOrder unit = dao.findNearestTransportUnit(info.getPickupLocation());
+//    if (unit != null) {
+//        System.out.println("ID: " + unit.getId());
+//        System.out.println("Tên: " + unit.getCompanyName());
+//        System.out.println("Địa chỉ: " + unit.getLocation());
+//    } else {
+//        System.out.println("Không tìm thấy đơn vị phù hợp.");
+//        return;
+//    }
+//
+//    // 3. Gán đơn vị vào đơn hàng
+//    System.out.println("\n=== ✅ XÉT DUYỆT ĐƠN ===");
+//    boolean assigned = dao.assignNearestUnit(orderId);
+//    if (assigned) {
+//        System.out.println("Đơn hàng đã được xét duyệt và gán đơn vị thành công.");
+//    } else {
+//        System.out.println("❌ Gán đơn vị thất bại.");
+//    }
+//}
 
 }
