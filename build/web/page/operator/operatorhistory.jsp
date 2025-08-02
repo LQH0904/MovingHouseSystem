@@ -362,7 +362,7 @@
                     <c:if test="${not empty replyHistory}">
                         <c:forEach var="reply" items="${replyHistory}">
                             <div class="reply-item">
-                                <p><strong>Người phản hồi:</strong> ${reply.replierId}</p>
+                                <p><strong>Người phản hồi:</strong> ${reply.replierName}</p> <!-- Thay replierId bằng replierName -->
                                 <p><strong>Thời gian:</strong> <fmt:formatDate value="${reply.repliedAt}" pattern="dd/MM/yyyy HH:mm:ss" /></p>
                                 <p><strong>Nội dung:</strong> ${reply.replyContent}</p>
                                 <hr>

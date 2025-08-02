@@ -42,35 +42,24 @@ public class OrderApproveController extends HttpServlet {
     }
 
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    int orderId = Integer.parseInt(request.getParameter("orderId"));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        boolean success = dao.assignNearestUnit(orderId);
 
-    // Lấy thông tin đơn hàng để lấy customerId
-    OrderInfo order = dao.getOrderInfo(orderId);
-    int customerId = order.getCustomerId(); // ✅ Lấy customerId
+        if (success) {
+            request.setAttribute("message", "✅ Gán đơn vị vận chuyển thành công!");
+        } else {
+            request.setAttribute("error", "❌ Gán đơn vị vận chuyển thất bại!");
+        }
 
-    boolean success = false;
-    try {
-        success = dao.assignNearestUnit(orderId, customerId);  // ✅ Truyền thêm customerId
-    } catch (Exception e) {
-        e.printStackTrace();
+        // Lấy lại thông tin đơn hàng sau khi gán
+        OrderInfo order = dao.getOrderInfo(orderId);
+        TransportOrder nearestUnit = dao.findNearestTransportUnit(order.getPickupLocation());
+
+        request.setAttribute("order", order);
+        request.setAttribute("nearestUnit", nearestUnit);
+        request.getRequestDispatcher("/page/staff/OrderApproveDetail.jsp").forward(request, response);
     }
-
-    if (success) {
-        request.setAttribute("message", "✅ Gán đơn vị vận chuyển thành công!");
-    } else {
-        request.setAttribute("error", "❌ Gán đơn vị vận chuyển thất bại!");
-    }
-
-    // Lấy lại thông tin đơn hàng sau khi gán (cập nhật trạng thái mới)
-    order = dao.getOrderInfo(orderId);
-    TransportOrder nearestUnit = dao.findNearestTransportUnit(order.getPickupLocation());
-
-    request.setAttribute("order", order);
-    request.setAttribute("nearestUnit", nearestUnit);
-    request.getRequestDispatcher("/page/staff/OrderApproveDetail.jsp").forward(request, response);
-}
-
 
 }

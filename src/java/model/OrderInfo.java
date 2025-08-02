@@ -2,7 +2,6 @@ package model;
 
 public class OrderInfo {
      private int orderId;
-     private int customerId;
     private String fullName;
     private String createdAt;
     private String updatedAt;
@@ -14,9 +13,8 @@ public class OrderInfo {
     public OrderInfo() {
     }
 
-    public OrderInfo(int orderId, int customerId, String fullName, String createdAt, String updatedAt, String deliverySchedule, double totalDistanceKm, String pickupLocation, String shippingLocation) {
+    public OrderInfo(int orderId, String fullName, String createdAt, String updatedAt, String deliverySchedule, double totalDistanceKm, String pickupLocation, String shippingLocation) {
         this.orderId = orderId;
-        this.customerId = customerId;
         this.fullName = fullName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -32,14 +30,6 @@ public class OrderInfo {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
     }
 
     public String getFullName() {
@@ -97,6 +87,6 @@ public class OrderInfo {
     public void setShippingLocation(String shippingLocation) {
         this.shippingLocation = shippingLocation;
     }
-
+    
     
 }

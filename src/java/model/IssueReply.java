@@ -15,6 +15,16 @@ public class IssueReply {
     public IssueReply() {
     }
 
+    private String replierName;  
+
+    public String getReplierName() {
+        return replierName;
+    }
+
+    public void setReplierName(String replierName) {
+        this.replierName = replierName;
+    }
+    
     public IssueReply(int replyId, int issueId, int replierId, String replyContent,
             Timestamp repliedAt, String message_for_issue, int customerId) {
         this.replyId = replyId;

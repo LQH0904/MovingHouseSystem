@@ -296,16 +296,6 @@
                 color: #6B46C1;
                 font-weight: 600;
             }
-            .notification-icon, .logout-icon, .history-icon {
-                font-size: 1.75rem;
-                color: #4A5568;
-                transition: color 0.3s ease, transform 0.2s ease;
-                margin-right: 1.25rem;
-            }
-            .notification-icon:hover, .logout-icon:hover, .history-icon:hover {
-                color: #6B46C1;
-                transform: scale(1.1);
-            }
 
             @media (max-width: 768px) {
                 .grid-cols-2 {
@@ -378,9 +368,6 @@
                 </a>
                 <a href="${pageContext.request.contextPath}/notifications" title="Thông báo" aria-label="Xem thông báo">
                     <i class="fas fa-bell notification-icon"></i>
-                </a>
-                <a href="${pageContext.request.contextPath}/orderHistory" title="Lịch sử đơn hàng" aria-label="Xem lịch sử đơn hàng">
-                    <i class="fas fa-history history-icon"></i>
                 </a>
             </div>
 

@@ -66,14 +66,28 @@
                                 <td>${r.endDate}</td>
                                 <td>${r.reason}</td>
                                 <td>${r.status}</td>
-                                <td>${r.operatorReply != null ? r.operatorReply : "-"}</td>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/operator/review-leave-request?id=${r.requestId}">Chi tiết</a>
-
+                                    <c:choose>
+                                        <c:when test="${not empty r.operatorReply}">
+                                            ${r.operatorReply}
+                                        </c:when>
+                                        <c:otherwise>-</c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${r.status == 'approved'}">
+                                            <span style="color: #ff0000">Đã được xử lý<span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="${pageContext.request.contextPath}/operator/review-leave-request?id=${r.requestId}">Chi tiết</a>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
+
                 </table></div></div>
     </body>
 </html>

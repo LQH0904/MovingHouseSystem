@@ -43,6 +43,7 @@ public class IssueReplyDAO {
         reply.setReplyId(rs.getInt("reply_id"));
         reply.setIssueId(rs.getInt("issue_id"));
         reply.setReplierId(rs.getInt("replier_id"));
+        reply.setReplierName(rs.getString("replier_name"));  
         reply.setReplyContent(rs.getString("reply_content"));
         reply.setRepliedAt(rs.getTimestamp("replied_at"));
         reply.setMessage_for_issue(rs.getString("message_for_issue"));
@@ -55,7 +56,6 @@ public class IssueReplyDAO {
         System.err.println("Database error occurred: " + e.getMessage());
         e.printStackTrace();
     }
-
 
     public boolean addReply(IssueReply reply) {
         String sql = "INSERT INTO IssueReplies (issue_id, sender_id, message, replied_at, message_for_issue) "

@@ -552,13 +552,13 @@
                 cursor: pointer;
                 display: inline-flex;
                 font-family: "JetBrains Mono", monospace;
-                height: 56px;
+                height: 40px;
                 justify-content: center;
                 line-height: 1;
                 list-style: none;
                 overflow: hidden;
-                padding-left: 24px;
-                padding-right: 24px;
+                padding-left: 15px;
+                padding-right: 15px;
                 position: relative;
                 text-align: center;
                 text-decoration: none;
