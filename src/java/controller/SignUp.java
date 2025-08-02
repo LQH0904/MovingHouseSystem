@@ -143,15 +143,19 @@ public class SignUp extends HttpServlet {
 
     UserDAO dao = new UserDAO();
     try {
-        int userId = dao.signupAccount(user); // Now returns user_id
+        if (!dao.signupAccount(user)) {
+            String errorMessage = "Không thể lưu tài khoản người dùng cho email: " + user.getEmail();
+            LOGGER.log(Level.SEVERE, errorMessage);
+            throw new SQLException(errorMessage);
+        }
         session.invalidate();
-        response.sendRedirect(request.getContextPath() + "/signup?action=confirm&success=1&userId=" + userId);
+        response.sendRedirect(request.getContextPath() + "/signup?action=confirm&success=1");
     } catch (SQLException e) {
         String sqlState = e.getSQLState() != null ? e.getSQLState() : "null";
         String errorMessage = "Đăng ký thất bại cho email: " + user.getEmail() + ", SQLState=" + sqlState + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage();
         LOGGER.log(Level.SEVERE, "SQLException in confirm process: " + errorMessage, e);
         session.invalidate();
-        String userMessage = "Đăng ký thất bại: " + (sqlState != null && sqlState.equals("23000") ? "Tên đăng nhập hoặc email đã được sử dụng" : e.getMessage());
+        String userMessage = "Đăng ký thất bại: " + (sqlState.equals("23000") ? "Tên đăng nhập hoặc email đã được sử dụng" : e.getMessage());
         request.setAttribute("error", userMessage);
         request.getRequestDispatcher("/page/login/confirm.jsp").forward(request, response);
     } catch (Exception e) {
