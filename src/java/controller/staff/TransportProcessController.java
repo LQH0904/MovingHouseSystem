@@ -13,45 +13,44 @@ import model.TransportProcess;
 @WebServlet(name = "TransportProcessController", urlPatterns = {"/order/process/*"})
 public class TransportProcessController extends HttpServlet {
 
-     private OrderDAO orderDAO;
-    private TransportProcessDAO transportProcessDAO;
 
-    @Override
-    public void init() {
-        orderDAO = new OrderDAO();
-        transportProcessDAO = new TransportProcessDAO();
+   @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+
+    String pathInfo = request.getPathInfo(); // "/123"
+
+    if (pathInfo == null || pathInfo.equals("/")) {
+        request.setAttribute("error", "Không tìm thấy mã đơn hàng.");
+        request.getRequestDispatcher("/page/staff/TransportProcess.jsp").forward(request, response);
+        return;
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    try {
+        int orderId = Integer.parseInt(pathInfo.substring(1));
 
-        String pathInfo = request.getPathInfo(); // /5
-        if (pathInfo == null || pathInfo.equals("/")) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thiếu ID đơn hàng.");
-            return;
+        TransportProcessDAO dao = new TransportProcessDAO();
+        TransportProcess process = dao.getTransportProcessByOrderId(orderId);
+
+        OrderDAO orderDAO = new OrderDAO(); // bạn cần class này
+        Order order = orderDAO.getOrderById(orderId); // giả sử bạn có hàm này
+
+        if (process == null) {
+            request.setAttribute("error", "Không tìm thấy thông tin vận chuyển cho đơn hàng #" + orderId);
+        } else {
+            request.setAttribute("process", process);
         }
 
-        try {
-            int orderId = Integer.parseInt(pathInfo.substring(1)); // bỏ dấu "/"
-
-            // Lấy thông tin đơn hàng
-            Order order = orderDAO.getOrderById(orderId);
-
-            // Lấy thông tin quy trình vận chuyển
-            TransportProcess tp = transportProcessDAO.getByOrderId(orderId);
-
-            if (order != null) {
-                request.setAttribute("order", order);
-                request.setAttribute("tp", tp); // có thể là null, JSP nên kiểm tra trước khi hiển thị
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/page/staff/TransportProcess.jsp");
-                dispatcher.forward(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy đơn hàng.");
-            }
-
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID không hợp lệ.");
+        if (order != null) {
+            request.setAttribute("order", order);
         }
+
+        request.getRequestDispatcher("/page/staff/TransportProcess.jsp").forward(request, response);
+
+    } catch (NumberFormatException e) {
+        request.setAttribute("error", "Mã đơn hàng không hợp lệ.");
+        request.getRequestDispatcher("/page/staff/TransportProcess.jsp").forward(request, response);
     }
+}
+
 }
