@@ -520,7 +520,7 @@
 // Kiểm tra nếu có thông báo thành công và user có role_id = 6
             <% if (success != null && currentUserRoleId == 6) { %>
             // Hiển thị countdown
-            let countdown = 5;
+            let countdown = 3;
             const countdownElement = document.createElement('div');
             countdownElement.style.cssText = `
         position: fixed;

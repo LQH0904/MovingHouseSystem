@@ -18,6 +18,7 @@
         }
         return new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(timestamp);
     }
+
     private String formatVND(BigDecimal amount) {
         if (amount == null) {
             return "0 VND";
@@ -25,6 +26,7 @@
         java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
         return df.format(amount) + " VND";
     }
+
     private String getStatusIcon(String status) {
         switch (status != null ? status.toLowerCase() : "") {
             case "pending":
@@ -365,72 +367,72 @@
                 }
             }
             .survey-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-}
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
 
-.survey-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
+            .survey-link::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
 
-.survey-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-}
+            .survey-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            }
 
-.survey-link:hover::before {
-    left: 100%;
-}
+            .survey-link:hover::before {
+                left: 100%;
+            }
 
-.survey-link:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+            .survey-link:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-/* Thêm icon sao */
-.survey-link::after {
-    content: '⭐';
-    margin-left: 0.25rem;
-    animation: sparkle 2s ease-in-out infinite;
-}
+            /* Thêm icon sao */
+            .survey-link::after {
+                content: '⭐';
+                margin-left: 0.25rem;
+                animation: sparkle 2s ease-in-out infinite;
+            }
 
-@keyframes sparkle {
-    0%, 100% { 
-        opacity: 1; 
-        transform: scale(1);
-    }
-    50% { 
-        opacity: 0.7; 
-        transform: scale(1.1);
-    }
-}
+            @keyframes sparkle {
+                0%, 100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.7;
+                    transform: scale(1.1);
+                }
+            }
         </style>
         <script>
             function showConfirmModal(orderId) {
                 const modal = document.getElementById('confirmModal');
                 const orderIdSpan = document.getElementById('orderId');
                 orderIdSpan.textContent = orderId;
-                document.getElementById('confirmButton').onclick = function() {
+                document.getElementById('confirmButton').onclick = function () {
                     document.getElementById('form-' + orderId).submit();
                 };
                 modal.style.display = 'flex';
@@ -439,7 +441,7 @@
                 document.getElementById('confirmModal').style.display = 'none';
             }
             // Close modal when clicking outside
-            window.onclick = function(event) {
+            window.onclick = function (event) {
                 const modal = document.getElementById('confirmModal');
                 if (event.target === modal) {
                     closeModal();
@@ -489,7 +491,9 @@
                                 <% if ("in_progress".equals(order.getOrderStatus())) {%>
                                 <form id="form-<%= order.getOrderId()%>" action="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage%>" method="post">
                                     <input type="hidden" name="orderId" value="<%= order.getOrderId()%>">
-                                    <button type="button" class="btn-primary" onclick="showConfirmModal(<%= order.getOrderId()%>)">Đã nhận</button>
+                                    <button type="submit" class="btn-primary" onclick="showQrModal(<%= order.getTotalFee()%>)">Chuyển khoản</button>
+
+                                    <button type="submit" class="btn-primary" onclick="showConfirmModal(<%= order.getOrderId()%>)">Đã nhận</button>
                                 </form>
                                 <% } else if ("delivered".equals(order.getOrderStatus())) { %>
                                 <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="survey-link">Đánh giá chất lượng</a>
@@ -544,16 +548,150 @@
                 <a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
             </div>
             <!-- Confirmation Modal -->
-            <div id="confirmModal" class="modal">
-                <div class="modal-content">
-                    <h3>Xác nhận giao hàng</h3>
-                    <p>Bạn có chắc chắn đã nhận được đơn hàng <span id="orderId"></span> không?</p>
-                    <div class="modal-buttons">
-                        <button id="confirmButton" class="btn-primary">Xác nhận</button>
-                        <button class="btn-secondary" onclick="closeModal()">Hủy</button>
-                    </div>
+            
+        </div>
+        <div id="depositQrModal" class="qr-modal-overlay">
+            <div class="qr-modal-content">
+                <span class="qr-modal-close-btn">&times;</span>
+                <h2>Vui lòng đặt cọc để hoàn tất đơn hàng</h2>
+                <div class="qr-modal-body">
+                    <p id="modalTotalInfo"></p>
+                    <p id="modalDepositInfo" style="font-weight: bold; color: #d9534f;"></p>
+                    <img id="modalQrImage" src="" alt="QR code" style="width: 100%; max-width: 280px; margin: 15px auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
+
+                    <p style="margin-top: 15px; font-style: italic; color: #777;">
+                        Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
+                    </p>
+                    
+
                 </div>
             </div>
         </div>
+        <style>
+            .qr-modal-overlay {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                justify-content: center;
+                align-items: center;
+            }
+            .qr-modal-content {
+                background: white;
+                padding: 20px 30px;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 450px;
+                text-align: center;
+                position: relative;
+            }
+            .qr-modal-close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                color: #888;
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            // ✅ Global utility function
+            function formatVND(n) {
+                return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(n);
+            }
+
+// ✅ Global function được gọi từ HTML onclick
+            function showQrModal(totalFee) {
+                // Ngăn form submit ngay lập tức
+                if (event) {
+                    event.preventDefault();
+                }
+
+                if (isNaN(totalFee) || totalFee <= 0) {
+                    alert("Không lấy được tổng số tiền.");
+                    return;
+                }
+
+                // Tính tiền đặt cọc 30%
+                const deposit = Math.round(totalFee * 0.7); // ✅ Sửa thành 30% thay vì 70%
+
+                // Tạo QR URL
+                const qrUrl = 'https://img.vietqr.io/image/BIDV-3600816496-compact2.png?amount=' + deposit + '&addInfo=Dat%20coc%20truoc%2030%25';
+
+                // Cập nhật thông tin modal
+                document.getElementById('modalTotalInfo').textContent = 'Tổng đơn hàng: ' + formatVND(totalFee);
+                document.getElementById('modalDepositInfo').textContent = 'Bạn cần hoàn thành số tiền còn thiếu 70%: ' + formatVND(deposit);
+                document.getElementById('modalQrImage').src = qrUrl;
+
+                // Lấy modal và hiển thị
+                const modal = document.getElementById('depositQrModal');
+                if (modal) {
+                    modal.style.display = 'flex';
+
+                    // Lấy form hiện tại từ button được click
+                    const currentForm = event ? event.target.closest('form') : null;
+
+                    // Bắt đầu countdown
+                    startCountdown(3, () => {
+                        modal.style.display = 'none';
+                        if (currentForm) {
+                            currentForm.submit();
+                        }
+                    });
+                }
+            }
+
+// ✅ Global countdown function
+            function startCountdown(seconds, callback) {
+                let counter = seconds;
+                const timerElement = document.getElementById('countdownTimer');
+
+                if (timerElement) {
+                    timerElement.textContent = counter;
+                }
+
+                const countdownInterval = setInterval(() => {
+                    counter--;
+                    if (timerElement) {
+                        timerElement.textContent = counter;
+                    }
+
+                    if (counter <= 0) {
+                        clearInterval(countdownInterval);
+                        callback();
+                    }
+                }, 1000);
+
+                return countdownInterval;
+            }
+
+// ✅ DOM ready event listener
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('depositQrModal');
+                const closeModalBtn = document.querySelector('.qr-modal-close-btn');
+
+                // Đóng modal khi click nút X
+                if (closeModalBtn && modal) {
+                    closeModalBtn.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+                }
+
+                // Đóng modal khi click outside
+                if (modal) {
+                    window.addEventListener('click', function (event) {
+                        if (event.target === modal) {
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        </script>
+
     </body>
+
 </html>
