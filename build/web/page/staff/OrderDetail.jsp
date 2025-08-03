@@ -156,7 +156,7 @@
                                                     </div>
                                                     <div class="info-content">
                                                         <div class="info-label">Ngày xác nhận</div>
-                                                        <div class="info-value">${orderDetail.updatedAt}</div>
+                                                        <div class="info-value">${orderDetail.createdAt}</div>
                                                     </div>
                                                 </div>
 
@@ -318,7 +318,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã xác nhận</h6>
-                                                            <small>${orderDetail.updatedAt}</small>
+                                                            <small>${orderDetail.createdAt}</small>
                                                         </div>
                                                     </div>
 
@@ -328,7 +328,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6> Bắt Đầu Giao hàng</h6>
-                                                            <small>${orderDetail.updatedAt}</small>
+                                                            <small>${orderDetail.createdAt}</small>
                                                         </div>
                                                     </div>
 
@@ -363,7 +363,7 @@
                                                         </div>
                                                         <div class="timeline-content">
                                                             <h6>Đã xác nhận</h6>
-                                                            <small>${orderDetail.updatedAt}</small>
+                                                            <small>${orderDetail.createdAt}</small>
                                                         </div>
                                                     </div>                                                    
 
