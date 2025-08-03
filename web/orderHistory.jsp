@@ -10,7 +10,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.math.BigDecimal" %>
-<%@page import="java.sql.Timestamp"%>
+<%@ page import="java.sql.Timestamp" %>
 <%!
     private String formatDate(java.sql.Timestamp timestamp) {
         if (timestamp == null) {
@@ -18,7 +18,6 @@
         }
         return new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(timestamp);
     }
-
     private String formatVND(BigDecimal amount) {
         if (amount == null) {
             return "0 VND";
@@ -26,7 +25,6 @@
         java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
         return df.format(amount) + " VND";
     }
-
     private String getStatusIcon(String status) {
         switch (status != null ? status.toLowerCase() : "") {
             case "pending":
@@ -90,11 +88,14 @@
                 margin: 0;
                 padding: 0;
                 line-height: 1.5;
+                display: flex;
+                min-height: 100vh;
             }
             .container {
                 max-width: 1280px;
                 margin: 0 auto;
                 padding: 1rem;
+                flex-grow: 1;
             }
             h2 {
                 color: #4A5568;
@@ -108,6 +109,39 @@
             h2 i {
                 margin-right: 0.5rem;
                 color: #6B46C1;
+            }
+            .sidebar {
+                width: 250px;
+                background: linear-gradient(to bottom, #B794F4, #C9A7F4);
+                color: white;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                padding-top: 10px;
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+            .sidebar .sidebar-item {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+                color: #fff;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                transition: background-color 0.3s ease;
+            }
+            .sidebar .sidebar-item:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+            .sidebar .sidebar-item.active {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+                padding: 1rem;
+                box-sizing: border-box;
             }
             .section {
                 background-color: #FFFFFF;
@@ -125,8 +159,8 @@
                 overflow: hidden;
             }
             .table thead th {
-                background: linear-gradient(90deg, #6B46C1 0%, #A78BFA 100%);
-                color: white;
+                background: #FFFFFF;
+                color: #000000;
                 font-weight: 600;
                 padding: 10px;
                 text-align: center;
@@ -294,7 +328,7 @@
                 background-color: #FFFFFF;
                 border-radius: 8px;
                 padding: 1.5rem;
-                max-width: 400px;
+                max-width: 600px;
                 width: 90%;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
                 text-align: center;
@@ -315,6 +349,12 @@
                 display: flex;
                 justify-content: center;
                 gap: 1rem;
+            }
+            .total-row {
+                margin-top: 1rem;
+                font-weight: 600;
+                color: #2D3748;
+                text-align: right;
             }
             @keyframes slideIn {
                 from {
@@ -365,65 +405,12 @@
                 .modal-content p {
                     font-size: 0.85rem;
                 }
-            }
-            .survey-link {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                text-decoration: none;
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
-                font-size: 0.875rem;
-                font-weight: 500;
-                transition: all 0.3s ease;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                position: relative;
-                overflow: hidden;
-            }
-
-            .survey-link::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-                transition: left 0.5s;
-            }
-
-            .survey-link:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-                background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-            }
-
-            .survey-link:hover::before {
-                left: 100%;
-            }
-
-            .survey-link:active {
-                transform: translateY(0);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-
-            /* Thêm icon sao */
-            .survey-link::after {
-                content: '⭐';
-                margin-left: 0.25rem;
-                animation: sparkle 2s ease-in-out infinite;
-            }
-
-            @keyframes sparkle {
-                0%, 100% {
-                    opacity: 1;
-                    transform: scale(1);
+                .sidebar {
+                    width: 200px;
                 }
-                50% {
-                    opacity: 0.7;
-                    transform: scale(1.1);
+                .main-content {
+                    margin-left: 200px;
+                    width: calc(100% - 200px);
                 }
             }
         </style>
@@ -440,258 +427,189 @@
             function closeModal() {
                 document.getElementById('confirmModal').style.display = 'none';
             }
-            // Close modal when clicking outside
+            function showOrderDetails(orderId) {
+                fetch('${pageContext.request.contextPath}/orderDetails?orderId=' + orderId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const modal = document.getElementById('orderDetailsModal');
+                        const orderIdSpan = document.getElementById('orderDetailsId');
+                        const contentDiv = document.getElementById('orderDetailsContent');
+                        orderIdSpan.textContent = orderId;
+                        if (!data || data.length === 0) {
+                            contentDiv.innerHTML = '<p class="text-gray-500">Không có chi tiết đơn hàng nào.</p>';
+                        } else {
+                            let totalPrice = 0;
+                            let html = '<table class="table"><thead><tr><th>Tên mặt hàng</th><th>Số lượng</th><th>Khối lượng (kg)</th><th>Thể tích (m³)</th><th>Ghi chú</th><th>Giá</th></tr></thead><tbody>';
+                            data.forEach(detail => {
+                                const quantity = detail.quantity !== null && detail.quantity !== undefined ? detail.quantity : 0;
+                                const weightKg = detail.weightKg !== null && detail.weightKg !== undefined ? Number(detail.weightKg) : '0';
+                                const volumeM3 = detail.volumeM3 !== null && detail.volumeM3 !== undefined ? Number(detail.volumeM3) : '0';
+                                const note = detail.note !== null && detail.note !== undefined ? detail.note : 'N/A';
+                                const itemPrice = detail.itemPrice !== null && detail.itemPrice !== undefined ? Number(detail.itemPrice) : '0';
+                                totalPrice += parseFloat(itemPrice);
+                                html += '<tr>' +
+                                        '<td>' + (detail.itemName || 'N/A') + '</td>' +
+                                        '<td>' + quantity + '</td>' +
+                                        '<td>' + weightKg + '</td>' +
+                                        '<td>' + volumeM3 + '</td>' +
+                                        '<td>' + note + '</td>' +
+                                        '<td>' + itemPrice + ' VND</td>' +
+                                        '</tr>';
+                            });
+                            html += '</tbody></table>';
+                            html += '<div class="total-row">Tổng cộng: ' + totalPrice + ' VND</div>';
+                            contentDiv.innerHTML = html;
+                        }
+                        modal.style.display = 'flex';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching order details:', error);
+                        const contentDiv = document.getElementById('orderDetailsContent');
+                        contentDiv.innerHTML = '<p class="text-red-500">Không thể tải chi tiết đơn hàng: ' + error.message + '</p>';
+                        document.getElementById('orderDetailsModal').style.display = 'flex';
+                    });
+            }
+            function closeDetailsModal() {
+                document.getElementById('orderDetailsModal').style.display = 'none';
+            }
             window.onclick = function (event) {
-                const modal = document.getElementById('confirmModal');
-                if (event.target === modal) {
+                const confirmModal = document.getElementById('confirmModal');
+                const detailsModal = document.getElementById('orderDetailsModal');
+                if (event.target === confirmModal) {
                     closeModal();
+                }
+                if (event.target === detailsModal) {
+                    closeDetailsModal();
                 }
             };
         </script>
     </head>
     <body class="bg-gray-100">
-        <div class="container mx-auto px-4 py-4">
-            <h2><i class="fas fa-history mr-2"></i> Lịch Sử Đơn Hàng</h2>
-            <div class="message success" id="successMessage">${successMessage}</div>
-            <div class="message error" id="errorMessage">${errorMessage}</div>
-            <div class="nav-icons mb-2">
-                <a href="${pageContext.request.contextPath}/logout" title="Đăng xuất" aria-label="Đăng xuất">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-                <a href="${pageContext.request.contextPath}/notifications" title="Thông báo" aria-label="Xem thông báo">
-                    <i class="fas fa-bell"></i>
-                </a>
-            </div>
-            <div class="section">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-hashtag"></i> Mã Đơn Hàng</th>
-                            <th><i class="fas fa-calendar-day"></i> Ngày Tạo</th>
-                            <th><i class="fas fa-truck"></i> Thời Gian Giao</th>
-                            <th><i class="fas fa-circle-notch"></i> Trạng Thái</th>
-                            <th><i class="fas fa-money-bill-wave"></i> Tổng Phí</th>
-                            <th><i class="fas fa-conveyor-belt"></i> Dịch Vụ</th>
-                            <th><i class="fas fa-tools"></i> Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <div class="sidebar">
+            <div class="sidebar-item">Customer</div>
+            <a href="${pageContext.request.contextPath}/transport" class="sidebar-item">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/orderHistory" class="sidebar-item active">Đơn hàng vận chuyển</a>
+            <a href="${pageContext.request.contextPath}/logout" class="sidebar-item">Đăng xuất</a>
+        </div>
+        <div class="main-content">
+            <div class="container mx-auto px-4 py-4">
+                <h2><i class="fas fa-history mr-2"></i> Lịch Sử Đơn Hàng</h2>
+                <div class="message success" id="successMessage">${successMessage}</div>
+                <div class="message error" id="errorMessage">${errorMessage}</div>
+                <div class="nav-icons mb-2">
+                    <a href="${pageContext.request.contextPath}/notifications" title="Thông báo" aria-label="Xem thông báo">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                </div>
+                <div class="section">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> Mã Đơn Hàng</th>
+                                <th><i class="fas fa-calendar-day"></i> Ngày Tạo</th>
+                                <th><i class="fas fa-truck"></i> Thời Gian Giao</th>
+                                <th><i class="fas fa-circle-notch"></i> Trạng Thái</th>
+                                <th><i class="fas fa-money-bill-wave"></i> Tổng Phí</th>
+                                <th><i class="fas fa-conveyor-belt"></i> Dịch Vụ</th>
+                                <th><i class="fas fa-tools"></i> Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                                if (orders != null && !orders.isEmpty()) {
+                                    for (Orders order : orders) {
+                            %>
+                            <tr>
+                                <td><a href="javascript:void(0)" onclick="showOrderDetails(<%= order.getOrderId()%>)" class="text-blue-600 hover:underline"><%= order.getOrderId()%></a></td>
+                                <td><%= formatDate(order.getCreatedAt())%></td>
+                                <td><%= formatDate(order.getDeliverySchedule())%></td>
+                                <td><%= getStatusIcon(order.getOrderStatus())%></td>
+                                <td><%= formatVND(order.getTotalFee())%></td>
+                                <td><%= order.getServiceType() != null ? order.getServiceType() : "N/A"%></td>
+                                <td>
+                                    <% if ("in_progress".equals(order.getOrderStatus())) {%>
+                                    <form id="form-<%= order.getOrderId()%>" action="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage%>" method="post">
+                                        <input type="hidden" name="orderId" value="<%= order.getOrderId()%>">
+                                        <button type="button" class="btn-primary" onclick="showConfirmModal(<%= order.getOrderId()%>)">Đã nhận</button>
+                                    </form>
+                                    <% } else if ("delivered".equals(order.getOrderStatus())) { %>
+                                    <button class="btn-primary" disabled>Đánh giá chất lượng</button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <tr>
+                                <td colspan="7" class="text-center text-gray-500">Không có đơn hàng nào.</td>
+                            </tr>
+                            <%
+                                }
+                            %>
+                        </tbody>
+                    </table>
+                    <div class="pagination">
                         <%
-                            if (orders != null && !orders.isEmpty()) {
-                                for (Orders order : orders) {
+                            if (totalPages > 1) {
+                                if (currentPage > 1) {
                         %>
-                        <tr>
-                            <td><%= order.getOrderId()%></td>
-                            <td><%= formatDate(order.getCreatedAt())%></td>
-                            <td><%= formatDate(order.getDeliverySchedule())%></td>
-                            <td><%= getStatusIcon(order.getOrderStatus())%></td>
-                            <td><%= formatVND(order.getTotalFee())%></td>
-                            <td><%= order.getServiceType() != null ? order.getServiceType() : "N/A"%></td>
-                            <td>
-                                <% if ("in_progress".equals(order.getOrderStatus())) {%>
-                                <form id="form-<%= order.getOrderId()%>" action="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage%>" method="post">
-                                    <input type="hidden" name="orderId" value="<%= order.getOrderId()%>">
-                                    <button type="submit" class="btn-primary" onclick="showQrModal(<%= order.getTotalFee()%>)">Chuyển khoản</button>
-
-                                    
-                                </form>
-                                <% } else if ("delivered".equals(order.getOrderStatus())) { %>
-                                <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="survey-link">Đánh giá chất lượng</a>
-                                <% } %>
-                            </td>
-                        </tr>
+                        <a href="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage - 1%>">Trước</a>
                         <%
-                            }
                         } else {
                         %>
-                        <tr>
-                            <td colspan="7" class="text-center text-gray-500">Không có đơn hàng nào.</td>
-                        </tr>
+                        <a class="disabled">Trước</a>
                         <%
                             }
+                            for (int i = 1; i <= totalPages; i++) {
                         %>
-                    </tbody>
-                </table>
-                <div class="pagination">
-                    <%
-                        if (totalPages > 1) {
-                            // Previous page link
-                            if (currentPage > 1) {
-                    %>
-                    <a href="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage - 1%>">Trước</a>
-                    <%
-                    } else {
-                    %>
-                    <a class="disabled">Trước</a>
-                    <%
-                        }
-                        for (int i = 1; i <= totalPages; i++) {
-                    %>
-                    <a href="${pageContext.request.contextPath}/orderHistory?page=<%= i%>" <%= (i == currentPage) ? "class='active'" : ""%>><%= i%></a>
-                    <%
-                        }
-                        if (currentPage < totalPages) {
-                    %>
-                    <a href="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage + 1%>">Sau</a>
-                    <%
-                    } else {
-                    %>
-                    <a class="disabled">Sau</a>
-                    <%
+                        <a href="${pageContext.request.contextPath}/orderHistory?page=<%= i%>" <%= (i == currentPage) ? "class='active'" : ""%>><%= i%></a>
+                        <%
                             }
-                        }
-                    %>
+                            if (currentPage < totalPages) {
+                        %>
+                        <a href="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage + 1%>">Sau</a>
+                        <%
+                        } else {
+                        %>
+                        <a class="disabled">Sau</a>
+                        <%
+                                }
+                            }
+                        %>
+                    </div>
+                </div>
+                <div class="nav-links">
+                    <a href="${pageContext.request.contextPath}/login"><i class="fas fa-home"></i> Về Trang Chủ</a>
+                    <a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
+                </div>
+                <!-- Confirmation Modal -->
+                <div id="confirmModal" class="modal">
+                    <div class="modal-content">
+                        <h3>Xác nhận giao hàng</h3>
+                        <p>Bạn có chắc chắn đã nhận được đơn hàng <span id="orderId"></span> không?</p>
+                        <div class="modal-buttons">
+                            <button id="confirmButton" class="btn-primary">Xác nhận</button>
+                            <button class="btn-secondary" onclick="closeModal()">Hủy</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Order Details Modal -->
+                <div id="orderDetailsModal" class="modal">
+                    <div class="modal-content">
+                        <h3>Chi tiết đơn hàng <span id="orderDetailsId"></span></h3>
+                        <div id="orderDetailsContent"></div>
+                        <div class="modal-buttons">
+                            <button class="btn-secondary" onclick="closeDetailsModal()">Đóng</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/login"><i class="fas fa-home"></i> Về Trang Chủ</a>
-                <a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
-            </div>
-            <!-- Confirmation Modal -->
-            
         </div>
-        <div id="depositQrModal" class="qr-modal-overlay">
-            <div class="qr-modal-content">
-                <span class="qr-modal-close-btn">&times;</span>
-                <h2>Vui lòng đặt cọc để hoàn tất đơn hàng</h2>
-                <div class="qr-modal-body">
-                    <p id="modalTotalInfo"></p>
-                    <p id="modalDepositInfo" style="font-weight: bold; color: #d9534f;"></p>
-                    <img id="modalQrImage" src="" alt="QR code" style="width: 100%; max-width: 280px; margin: 15px auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
-
-                    <p style="margin-top: 15px; font-style: italic; color: #777;">
-                        Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
-                    </p>
-                    
-
-                </div>
-            </div>
-        </div>
-        <style>
-            .qr-modal-overlay {
-                display: none;
-                position: fixed;
-                z-index: 9999;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.6);
-                justify-content: center;
-                align-items: center;
-            }
-            .qr-modal-content {
-                background: white;
-                padding: 20px 30px;
-                border-radius: 10px;
-                width: 90%;
-                max-width: 450px;
-                text-align: center;
-                position: relative;
-            }
-            .qr-modal-close-btn {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 24px;
-                color: #888;
-                cursor: pointer;
-            }
-        </style>
-        <script>
-            // ✅ Global utility function
-            function formatVND(n) {
-                return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(n);
-            }
-
-// ✅ Global function được gọi từ HTML onclick
-            function showQrModal(totalFee) {
-                // Ngăn form submit ngay lập tức
-                if (event) {
-                    event.preventDefault();
-                }
-
-                if (isNaN(totalFee) || totalFee <= 0) {
-                    alert("Không lấy được tổng số tiền.");
-                    return;
-                }
-
-                // Tính tiền đặt cọc 30%
-                const deposit = Math.round(totalFee * 0.7); // ✅ Sửa thành 30% thay vì 70%
-
-                // Tạo QR URL
-                const qrUrl = 'https://img.vietqr.io/image/BIDV-3600816496-compact2.png?amount=' + deposit + '&addInfo=Dat%20coc%20truoc%2030%25';
-
-                // Cập nhật thông tin modal
-                document.getElementById('modalTotalInfo').textContent = 'Tổng đơn hàng: ' + formatVND(totalFee);
-                document.getElementById('modalDepositInfo').textContent = 'Bạn cần hoàn thành số tiền còn thiếu 70%: ' + formatVND(deposit);
-                document.getElementById('modalQrImage').src = qrUrl;
-
-                // Lấy modal và hiển thị
-                const modal = document.getElementById('depositQrModal');
-                if (modal) {
-                    modal.style.display = 'flex';
-
-                    // Lấy form hiện tại từ button được click
-                    const currentForm = event ? event.target.closest('form') : null;
-
-                    // Bắt đầu countdown
-                    startCountdown(3, () => {
-                        modal.style.display = 'none';
-                        if (currentForm) {
-                            currentForm.submit();
-                        }
-                    });
-                }
-            }
-
-// ✅ Global countdown function
-            function startCountdown(seconds, callback) {
-                let counter = seconds;
-                const timerElement = document.getElementById('countdownTimer');
-
-                if (timerElement) {
-                    timerElement.textContent = counter;
-                }
-
-                const countdownInterval = setInterval(() => {
-                    counter--;
-                    if (timerElement) {
-                        timerElement.textContent = counter;
-                    }
-
-                    if (counter <= 0) {
-                        clearInterval(countdownInterval);
-                        callback();
-                    }
-                }, 1000);
-
-                return countdownInterval;
-            }
-
-// ✅ DOM ready event listener
-            document.addEventListener('DOMContentLoaded', function () {
-                const modal = document.getElementById('depositQrModal');
-                const closeModalBtn = document.querySelector('.qr-modal-close-btn');
-
-                // Đóng modal khi click nút X
-                if (closeModalBtn && modal) {
-                    closeModalBtn.addEventListener('click', () => {
-                        modal.style.display = 'none';
-                    });
-                }
-
-                // Đóng modal khi click outside
-                if (modal) {
-                    window.addEventListener('click', function (event) {
-                        if (event.target === modal) {
-                            modal.style.display = 'none';
-                        }
-                    });
-                }
-            });
-        </script>
-
     </body>
-
 </html>

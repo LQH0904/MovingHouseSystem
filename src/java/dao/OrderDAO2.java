@@ -51,7 +51,7 @@ public class OrderDAO2 {
     private static final String QUERY_ALL_CONFIGURATIONS = "SELECT config_id, config_key, config_value, updated_by, updated_at FROM Configurations";
     private static final String QUERY_ALL_SERVICES = "SELECT id, name, description, base_price, rate_per_km FROM Services";
     private static final String QUERY_SERVICE_BY_NAME = "SELECT id, name, description, base_price, rate_per_km FROM Services WHERE name = ?";
-    private static final String QUERY_ORDER_DETAILS_BY_ORDER_ID = "SELECT order_detail_id, order_id, customer_id, item_name, image_url, quantity, weight_kg, length_cm, width_cm, height_cm, note, volume_m3, item_price FROM OrderDetail WHERE order_id = ?";
+    private static final String QUERY_ORDER_DETAILS_BY_ORDER_ID = "SELECT order_detail_id, order_id, item_name, image_url, quantity, weight_kg, length_cm, width_cm, height_cm, note, volume_m3, item_price FROM OrderDetail WHERE order_id = ?";
     private static final String UPDATE_ORDER_STATUS = "UPDATE Orders SET order_status = ?, delivered_at = ? WHERE order_id = ? AND customer_id = ? AND order_status = ?";
     private static final String INSERT_NOTIFICATION = "INSERT INTO Notifications (user_id, order_id, message, status, created_at, notification_type) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String FALLBACK_TRANSPORT_UNIT_NAME = "Chưa chỉ định";

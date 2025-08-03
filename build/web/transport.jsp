@@ -28,9 +28,9 @@
 
     // Hàm tính giá cho hàng hóa thủ công
     private BigDecimal calculateManualItemPrice(BigDecimal weightKg, BigDecimal volumeM3) {
-        BigDecimal basePrice = new BigDecimal("2000"); // Giá cơ bản cho mỗi mặt hàng
-        BigDecimal pricePerKg = new BigDecimal("500"); // Phí theo kg
-        BigDecimal pricePerM3 = new BigDecimal("1500"); // Phí theo m³
+        BigDecimal basePrice = new BigDecimal("2000");
+        BigDecimal pricePerKg = new BigDecimal("8000");
+        BigDecimal pricePerM3 = new BigDecimal("12000");
         return basePrice.add(weightKg.multiply(pricePerKg)).add(volumeM3.multiply(pricePerM3));
     }
 %>
@@ -383,7 +383,7 @@
                 </h2>
                 <div class="success" id="successMessage">${successMessage}</div>
                 <div class="error" id="errorMessage">${errorMessage}</div>
-                <form id="transportForm" action="transport" method="post" class="filter-form grid grid-cols-2 gap-6 space-y-6">
+                <form id="transportForm" action="transport" method="post" class="filter-form grid grid-cols-2 gap-6 ">
                     <!-- Phần 1: Tuyến Đường và Địa Chỉ (Cột 1) -->
                     <div class="section col-span-1">
                         <div class="section-header flex items-center justify-center">
@@ -445,9 +445,8 @@
                             </select>
                             <div id="serviceDetails" class="mt-3 p-3 bg-gray-100 rounded-lg">
                                 <p>Giá cơ bản: <span id="serviceBasePrice">0</span></p>
-                                <p>Phí theo km: <span id="serviceKmFee">0</span></p>
+                                <p>Phí theo km: <span id="serviceDistance">0</span> km x <span id="serviceRatePerKm">0</span> VND/km = <span id="serviceKmFee">0</span></p>
                                 <p>Tổng phí dịch vụ: <span id="serviceTotalFee">0</span></p>
-                                <p>Khoảng cách: <span id="serviceDistance">0</span> km</p>
                             </div>
                         </div>
                         <div class="mb-6">
@@ -458,16 +457,8 @@
                             <i class="fas fa-info-circle mr-2"></i> Bảng tính tiền
                         </div>
                         <table class="fee-table w-full">
-                            <tr>
-                                <td class="p-3 font-semibold text-gray-700">
-                                    <a href="#addedGoodsSection" class="hover:text-blue-600 hover:underline cursor-pointer">
-                                        Phí tháo giỡ & lắp đặt :
-                                    </a>
-                                </td>
-                                <td class="p-3">
-                                    <span id="transportFee"><%= formatVND(new BigDecimal(request.getAttribute("transportFee") != null ? request.getAttribute("transportFee").toString() : "0"))%></span>
-                                </td>
-                            </tr>                            <tr><td class="p-3 font-semibold text-gray-700">Phí dịch vụ :</td><td class="p-3"><span id="serviceFee"><%= formatVND(new BigDecimal(request.getAttribute("serviceFee") != null ? request.getAttribute("serviceFee").toString() : "0"))%></span></td></tr>
+                            <tr><td class="p-3 font-semibold text-gray-700">Phí tháo dỡ và lắp đặt:</td><td class="p-3"><span id="transportFee"><%= formatVND(new BigDecimal(request.getAttribute("transportFee") != null ? request.getAttribute("transportFee").toString() : "0"))%></span></td></tr>
+                            <tr><td class="p-3 font-semibold text-gray-700">Phí dịch vụ:</td><td class="p-3"><span id="serviceFee"><%= formatVND(new BigDecimal(request.getAttribute("serviceFee") != null ? request.getAttribute("serviceFee").toString() : "0"))%></span></td></tr>
                             <tr><td class="p-3 font-semibold text-gray-700">VAT (10%):</td><td class="p-3"><span id="vatAmount"><%= formatVND(new BigDecimal(request.getAttribute("vatAmount") != null ? request.getAttribute("vatAmount").toString() : "0"))%></span></td></tr>
                             <tr><td class="p-3 font-semibold text-gray-700">Tổng cộng:</td><td class="p-3"><span id="totalFee"><%= formatVND(new BigDecimal(request.getAttribute("totalFee") != null ? request.getAttribute("totalFee").toString() : "0"))%></span></td></tr>
                         </table>
@@ -549,7 +540,6 @@
                         </div>
                     </div>
                     <!-- Phần 6: Hàng hóa đã thêm (Cột 1 và 2) -->
-                   <div id="addedGoodsSection" class="section col-span-2">
                     <div class="section col-span-2">
                         <div class="section-header flex items-center justify-center">
                             <i class="fas fa-check mr-2"></i> Hàng hóa đã thêm
@@ -601,8 +591,7 @@
                             <div>
                                 <p class="text-gray-700 font-medium">Tổng khối lượng: <span id="totalWeight"><%= formatNumber(new BigDecimal(session.getAttribute("totalWeight") != null ? session.getAttribute("totalWeight").toString() : "0"))%> kg</span></p>
                                 <p class="text-gray-700 font-medium">Tổng thể tích: <span id="totalVolume"><%= formatNumber(new BigDecimal(session.getAttribute("totalVolume") != null ? session.getAttribute("totalVolume").toString() : "0"))%> m³</span></p>
-                                <p class="text-gray-700 font-medium">Tổng giá vận chuyển: <span id="totalItemPrice"><%= formatVND(new BigDecimal(session.getAttribute("totalItemPrice") != null ? session.getAttribute("totalItemPrice").toString() : "0"))%></span></p>
-                            </div>
+                                <p class="text-gray-700 font-medium">Phí tháo dỡ và lắp đặt: <a href="#serviceDetails" id="totalItemPriceLink" class="text-blue-600 hover:underline"><span id="totalItemPrice"><%= formatVND(new BigDecimal(session.getAttribute("totalItemPrice") != null ? session.getAttribute("totalItemPrice").toString() : "0"))%></span></a></p>                            </div>
                         </div>
                         <div class="info-box mt-4">
                             Bạn hãy thêm ít nhất 1 hàng hóa trước khi tạo đơn hàng!
@@ -621,6 +610,7 @@
             function formatVND(amount) {
                 return new Big(amount).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND";
             }
+
 
             // Định dạng số thông thường 
             function formatNumber(number) {
@@ -980,18 +970,18 @@
                             var distance = new Big($('#distance_km').val() || 0);
                             var kmFee = ratePerKm.mul(distance).toFixed(2);
                             var serviceFee = basePrice.add(new Big(kmFee)).toFixed(2);
-
                             console.log("Updating service details:", {
                                 basePrice: formatVND(basePrice.toFixed(2)),
+                                ratePerKm: formatVND(ratePerKm.toFixed(2)),
                                 kmFee: formatVND(kmFee),
                                 serviceFee: formatVND(serviceFee),
                                 distance: distance.toFixed(2)
                             });
-
                             $('#serviceBasePrice').text(formatVND(basePrice.toFixed(2)));
+                            $('#serviceRatePerKm').text(formatVND(ratePerKm.toFixed(2)));
                             $('#serviceKmFee').text(formatVND(kmFee));
                             $('#serviceTotalFee').text(formatVND(serviceFee));
-                            $('#serviceDistance').text(distance.toFixed(2) + " km");
+                            $('#serviceDistance').text(distance.toFixed(2));
                             $('#serviceFee').text(formatVND(serviceFee));
                             updateFees();
                         } catch (e) {
@@ -1145,8 +1135,8 @@
                             $('#itemTableBody').find('tr:contains("Không có hàng hóa nào được thêm")').remove();
 
                             var basePrice = new Big(2000);
-                            var pricePerKg = new Big(500);
-                            var pricePerM3 = new Big(1500);
+                            var pricePerKg = new Big(8000);
+                            var pricePerM3 = new Big(12000);
                             var calculatedPrice = basePrice.plus(new Big(weight).times(pricePerKg)).plus(new Big(volume).times(pricePerM3)).times(quantity);
 
                             var $row = $('<tr>');
@@ -1399,6 +1389,12 @@
                                     $('#pickup_autocomplete, #shipping_autocomplete').hide();
                                 }
                             });
+                            $('#totalItemPriceLink').on('click', function (e) {
+                                e.preventDefault();
+                                $('html, body').animate({
+                                    scrollTop: $('#serviceDetails').offset().top
+                                }, 500);
+                            });
 
                             $('#service_type').on('change', function () {
                                 console.log("Service type changed");
@@ -1446,124 +1442,6 @@
                     $('#errorMessage').text('Lỗi khởi tạo bản đồ: ' + e.message);
                     $('#successMessage').text('');
                 }
-            });
-        </script>
-        <!-- ✅ Modal QR -->
-        <div id="depositQrModal" class="qr-modal-overlay">
-            <div class="qr-modal-content">
-                <span class="qr-modal-close-btn">&times;</span>
-                <h2>Vui lòng đặt cọc để hoàn tất đơn hàng</h2>
-                <div class="qr-modal-body">
-                    <p id="modalTotalInfo"></p>
-                    <p id="modalDepositInfo" style="font-weight: bold; color: #d9534f;"></p>
-                    <img id="modalQrImage" src="" alt="QR code" style="width: 100%; max-width: 280px; margin: 15px auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
-
-                    <p style="margin-top: 15px; font-style: italic; color: #777;">
-                        Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
-                    </p>
-                    <h1 id="depositValue" style="color: green; margin-top: 20px;">dsasda</h1>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- ✅ QR Modal CSS -->
-        <style>
-            .qr-modal-overlay {
-                display: none;
-                position: fixed;
-                z-index: 9999;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.6);
-                justify-content: center;
-                align-items: center;
-            }
-            .qr-modal-content {
-                background: white;
-                padding: 20px 30px;
-                border-radius: 10px;
-                width: 90%;
-                max-width: 450px;
-                text-align: center;
-                position: relative;
-            }
-            .qr-modal-close-btn {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 24px;
-                color: #888;
-                cursor: pointer;
-            }
-        </style>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const modal = document.getElementById('depositQrModal');
-                const closeModalBtn = document.querySelector('.qr-modal-close-btn');
-                const submitBtn = document.querySelector('.submit-btn');
-                const form = submitBtn.closest('form');
-                let countdownInterval, autoCloseTimeout;
-
-                function formatVND(n) {
-                    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(n);
-                }
-
-                function showQrModalBeforeSubmit() {
-                    const totalFeeText = document.getElementById('totalFee')?.textContent || "0";
-                    const cleaned = totalFeeText.replace(/[^\d]/g, '');
-                    const totalFee = parseInt(cleaned, 10);
-
-                    if (isNaN(totalFee) || totalFee <= 0) {
-                        alert("Không lấy được tổng số tiền.");
-                        return;
-                    }
-                    function formatVND(amount) {
-                        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
-                    }
-
-                    const deposit = Math.round(totalFee * 0.3);
-                    document.getElementById('depositValue').textContent = "Tiền đặt cọc (30%): " + formatVND(deposit);
-
-                    const a = totalFee - 50000;
-                    const qrUrl = 'https://img.vietqr.io/image/BIDV-3600816496-compact2.png?amount=' + deposit + '&addInfo=Dat%20coc%20truoc%2030%25';
-
-                    document.getElementById('modalTotalInfo').textContent = 'Tổng đơn hàng: ' + formatVND(totalFee);
-                    document.getElementById('modalDepositInfo').textContent = 'Bạn cần đặt cọc trước 30%: ' + formatVND(deposit);
-
-                    document.getElementById('modalQrImage').src = qrUrl;
-
-                    modal.style.display = 'flex';
-                    startCountdown(3, () => {
-                        modal.style.display = 'none';
-                        form.submit(); // ✅ Tự động submit form sau 15s
-                    });
-                }
-
-                function startCountdown(seconds, callback) {
-                    let counter = seconds;
-                    document.getElementById('countdownTimer').textContent = counter;
-                    countdownInterval = setInterval(() => {
-                        counter--;
-                        document.getElementById('countdownTimer').textContent = counter;
-                        if (counter <= 0)
-                            clearInterval(countdownInterval);
-                    }, 1000);
-                    autoCloseTimeout = setTimeout(callback, seconds * 1000);
-                }
-
-                closeModalBtn.addEventListener('click', () => {
-                    modal.style.display = 'none';
-                    clearInterval(countdownInterval);
-                    clearTimeout(autoCloseTimeout);
-                });
-
-                submitBtn.addEventListener('click', function (e) {
-                    e.preventDefault(); // ❌ Ngăn submit ngay
-                    showQrModalBeforeSubmit(); // ✅ Show QR trước khi submit
-                });
             });
         </script>
     </body>
