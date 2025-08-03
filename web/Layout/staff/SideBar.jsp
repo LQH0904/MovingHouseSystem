@@ -74,7 +74,7 @@
                         </a>
                     </li>
                     
-<!--                    <li class="list">
+                    <li class="list">
                         <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Câu hỏi</span>
@@ -85,23 +85,17 @@
                             <li><a href="${pageContext.request.contextPath}/staff/chat-bot-log">Câu hỏi của khách hàng</a></li>
                             
                         </ul>
-                    </li>-->
-<li class="list">
+                    </li>
+<!--<li class="list">
                         <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
                             <i class="bx bx-question-mark icon"></i>
                             <span class="link">Câu hỏi thường gặp</span>
                         </a>
-                    </li>
+                    </li>-->
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/staff-leave" class="nav-link">
                             <i class="bx bx-calendar-check icon"></i>
                             <span class="link">Đơn nghỉ phép</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/staff/order-approve" class="nav-link">
-                            <i class="bx bx-cart-alt icon"></i>
-                            <span class="link">Quản lý đơn hàng</span>
                         </a>
                     </li>
                 </ul>

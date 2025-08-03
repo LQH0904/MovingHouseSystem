@@ -70,7 +70,7 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-clipboard icon"></i>
-                            <span class="link">Mẫu P.khảo sát</span>
+                            <span class="link">Chỉnh sửa khảo sát</span>
                         </a>
                     </li>
                     <li class="list">
@@ -85,7 +85,12 @@
                             <span class="link">Cấu hình QR</span>
                         </a>
                     </li>
-                    
+<!--                    <li class="list">
+                        <a href="${pageContext.request.contextPath}/promotion-review" class="nav-link">
+                            <i class="bx bx-gift icon"></i>
+                            <span class="link">Duyệt khuyến mãi</span>
+                        </a>
+                    </li>-->
                     <li class="list">
     <a href="${pageContext.request.contextPath}/operator/leave-requests" class="nav-link">
         <i class="bx bx-calendar-check icon"></i>

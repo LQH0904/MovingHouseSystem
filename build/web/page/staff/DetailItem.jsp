@@ -152,7 +152,7 @@
                                         <div class="stat-number">
                                             <c:set var="totalVolume" value="0" />
                                             <c:forEach var="item" items="${orderDetails}">
-                                                <c:set var="volume" value="${(item.lengthCm * item.widthCm * item.heightCm) / 1000000}" />
+                                                <c:set var="volume" value="${item.volumeM3}" />
                                                 <c:set var="totalVolume" value="${totalVolume + (volume * item.quantity)}" />
                                             </c:forEach>
                                             <fmt:formatNumber value="${totalVolume}" pattern="#,##0.00"/>
@@ -180,11 +180,11 @@
                                     <thead>
                                         <tr>
                                             <th><i class="fas fa-hashtag"></i> No</th>
-                                            <th><i class="fas fa-image"></i> Hình ảnh</th>
+<!--                                            <th><i class="fas fa-image"></i> Hình ảnh</th>-->
                                             <th><i class="fas fa-tag"></i> Tên đồ vật</th>
                                             <th><i class="fas fa-sort-numeric-up"></i> Số lượng</th>
                                             <th><i class="fas fa-weight"></i> Trọng lượng (kg)</th>
-                                            <th><i class="fas fa-ruler"></i> Kích thước (cm)</th>
+<!--                                            <th><i class="fas fa-ruler"></i> Kích thước (cm)</th>-->
                                             <th><i class="fas fa-cube"></i> Thể tích (m³)</th>
                                             <th><i class="fas fa-sticky-note"></i> Ghi chú</th>
                                         </tr>
@@ -197,7 +197,7 @@
                                                         <td>
                                                             <span class="row-number">${(currentPage - 1) * 5 + status.index + 1}</span>
                                                         </td>
-                                                        <td>
+<!--                                                        <td>
                                                             <div class="image-container">
                                                                 <c:choose>
                                                                     <c:when test="${not empty item.imageUrl}">
@@ -210,7 +210,7 @@
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </div>
-                                                        </td>
+                                                        </td>-->
                                                         <td>
                                                             <div class="item-name">
                                                                 <c:choose>
@@ -236,16 +236,16 @@
                                                                 </small>
                                                             </div>
                                                         </td>
-                                                        <td>
+<!--                                                        <td>
                                                             <div class="dimensions">
                                                                 <span class="dimension-item">D: ${item.lengthCm}</span>
                                                                 <span class="dimension-item">R: ${item.widthCm}</span>
                                                                 <span class="dimension-item">C: ${item.heightCm}</span>
                                                             </div>
-                                                        </td>
+                                                        </td>-->
                                                         <td>
                                                             <div class="volume-info">
-                                                                <c:set var="unitVolume" value="${(item.lengthCm * item.widthCm * item.heightCm) / 1000000}" />
+                                                                <c:set var="unitVolume" value="${(item.volumeM3)}" />
                                                                 <span class="volume-unit">
                                                                     <fmt:formatNumber value="${unitVolume}" pattern="#,##0.000"/>
                                                                 </span>

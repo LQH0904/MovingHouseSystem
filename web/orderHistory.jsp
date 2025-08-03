@@ -493,7 +493,7 @@
                                     <input type="hidden" name="orderId" value="<%= order.getOrderId()%>">
                                     <button type="submit" class="btn-primary" onclick="showQrModal(<%= order.getTotalFee()%>)">Chuyển khoản</button>
 
-                                    <button type="submit" class="btn-primary" onclick="showConfirmModal(<%= order.getOrderId()%>)">Đã nhận</button>
+                                    
                                 </form>
                                 <% } else if ("delivered".equals(order.getOrderStatus())) { %>
                                 <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="survey-link">Đánh giá chất lượng</a>
@@ -548,16 +548,7 @@
                 <a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
             </div>
             <!-- Confirmation Modal -->
-            <div id="confirmModal" class="modal">
-                <div class="modal-content">
-                    <h3>Xác nhận giao hàng</h3>
-                    <p>Bạn có chắc chắn đã nhận được đơn hàng <span id="orderId"></span> không?</p>
-                    <div class="modal-buttons">
-                        <button id="confirmButton" class="btn-primary">Xác nhận</button>
-                        <button class="btn-secondary" onclick="closeModal()">Hủy</button>
-                    </div>
-                </div>
-            </div>
+            
         </div>
         <div id="depositQrModal" class="qr-modal-overlay">
             <div class="qr-modal-content">
@@ -571,7 +562,7 @@
                     <p style="margin-top: 15px; font-style: italic; color: #777;">
                         Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
                     </p>
-                    <h1 id="depositValue" style="color: green; margin-top: 20px;"></h1>
+                    
 
                 </div>
             </div>
@@ -626,14 +617,14 @@
                 }
 
                 // Tính tiền đặt cọc 30%
-                const deposit = Math.round(totalFee * 0.3); // ✅ Sửa thành 30% thay vì 70%
+                const deposit = Math.round(totalFee * 0.7); // ✅ Sửa thành 30% thay vì 70%
 
                 // Tạo QR URL
                 const qrUrl = 'https://img.vietqr.io/image/BIDV-3600816496-compact2.png?amount=' + deposit + '&addInfo=Dat%20coc%20truoc%2030%25';
 
                 // Cập nhật thông tin modal
                 document.getElementById('modalTotalInfo').textContent = 'Tổng đơn hàng: ' + formatVND(totalFee);
-                document.getElementById('modalDepositInfo').textContent = 'Bạn cần đặt cọc trước 30%: ' + formatVND(deposit);
+                document.getElementById('modalDepositInfo').textContent = 'Bạn cần hoàn thành số tiền còn thiếu 70%: ' + formatVND(deposit);
                 document.getElementById('modalQrImage').src = qrUrl;
 
                 // Lấy modal và hiển thị
@@ -645,7 +636,7 @@
                     const currentForm = event ? event.target.closest('form') : null;
 
                     // Bắt đầu countdown
-                    startCountdown(15, () => {
+                    startCountdown(3, () => {
                         modal.style.display = 'none';
                         if (currentForm) {
                             currentForm.submit();

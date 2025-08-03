@@ -10,11 +10,12 @@ public class OrderInfo {
     private double totalDistanceKm;
     private String pickupLocation;
     private String shippingLocation;
+    private String orderStatus;
 
     public OrderInfo() {
     }
 
-    public OrderInfo(int orderId, int customerId, String fullName, String createdAt, String updatedAt, String deliverySchedule, double totalDistanceKm, String pickupLocation, String shippingLocation) {
+    public OrderInfo(int orderId, int customerId, String fullName, String createdAt, String updatedAt, String deliverySchedule, double totalDistanceKm, String pickupLocation, String shippingLocation, String orderStatus) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.fullName = fullName;
@@ -24,8 +25,20 @@ public class OrderInfo {
         this.totalDistanceKm = totalDistanceKm;
         this.pickupLocation = pickupLocation;
         this.shippingLocation = shippingLocation;
+        this.orderStatus = orderStatus;
     }
 
+    
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+    
+    
     public int getOrderId() {
         return orderId;
     }

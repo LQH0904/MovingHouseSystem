@@ -31,6 +31,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import model.TransportOrder;
 
 @WebServlet(name = "TransportServlet", urlPatterns = {"/transport"})
 public class TransportServlet extends HttpServlet {
@@ -405,14 +406,17 @@ public class TransportServlet extends HttpServlet {
                 BigDecimal taxableAmount = transportFee.add(serviceFee);
                 BigDecimal vatAmount = taxableAmount.multiply(VAT_RATE).setScale(2, BigDecimal.ROUND_HALF_UP);
                 BigDecimal totalFee = transportFee.add(serviceFee).add(vatAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
-
+                
+                
                 try (Connection conn = DBConnection.getConnection()) {
                     conn.setAutoCommit(false);
                     try {
                         Orders order = new Orders();
+                        OrderDAO2 order2 =  OrderDAO2.INSTANCE;
                         order.setCustomerId(customerId);
-                        order.setTransportUnitId(null);
-                        order.setOrderStatus("pending");
+                        TransportOrder transport = order2.findNearestTransportUnit(pickupAddress);
+                        order.setTransportUnitId(transport.getId());
+                        order.setOrderStatus("in_progress");
                         order.setCreatedAt(new Timestamp(System.currentTimeMillis()));
                         order.setDeliverySchedule(Timestamp.valueOf(pickupTimeDesired));
                         order.setTotalFee(totalFee);
@@ -430,7 +434,7 @@ public class TransportServlet extends HttpServlet {
                         int orderId;
                         try (PreparedStatement orderStmt = conn.prepareStatement(orderSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                             orderStmt.setInt(1, order.getCustomerId());
-                            orderStmt.setObject(2, order.getTransportUnitId(), java.sql.Types.INTEGER);
+                            orderStmt.setInt(2, order.getTransportUnitId());
                             orderStmt.setString(3, order.getOrderStatus());
                             orderStmt.setTimestamp(4, order.getCreatedAt());
                             orderStmt.setTimestamp(5, order.getDeliverySchedule());
@@ -530,7 +534,7 @@ public class TransportServlet extends HttpServlet {
                         request.setAttribute("serviceFee", serviceFee);
                         request.setAttribute("vatAmount", vatAmount);
                         request.setAttribute("totalFee", totalFee);
-                        request.setAttribute("successMessage", "Đặt hàng thành công! Mã đơn hàng: " + order.getOrderId());
+                        request.setAttribute("successMessage", "Đặt dịch vụ thành công ! Dịch vụ của bạn đang được tiến hành ! Mã dịch vụ : " + order.getOrderId());
 
                         LOGGER.info("Order placed successfully, forwarding to transport.jsp at " + new java.util.Date());
                         request.getRequestDispatcher("/transport.jsp").forward(request, response);

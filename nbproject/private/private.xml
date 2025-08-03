@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/admin/Desktop/rv1/MovingHouseSystem-merge_code/web/transport.jsp</file>
-            <file>file:/C:/Users/admin/Desktop/rv1/MovingHouseSystem-merge_code/src/java/controller/GenerateQrApiServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/rv1/MovingHouseSystem-merge_code/src/java/controller/TransportServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/rv1/MovingHouseSystem-merge_code/src/java/controller/OrderHistoryServlet.java</file>
-            <file>file:/C:/Users/admin/Desktop/rv1/MovingHouseSystem-merge_code/web/orderHistory.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/src/java/dao/ChatbotLogDAO.java</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/web/AskQuestion.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/web/page/staff/ChatbotLogList.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/src/java/dao/FAQQuestionDAO.java</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/src/java/controller/SubmitQuestionServlet.java</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/web/transport.jsp</file>
+            <file>file:/C:/Users/admin/Desktop/rv6/MovingHouseSystem-merge_code/src/java/controller/CustomerSupportServlet.java</file>
         </group>
     </open-files>
 </project-private>

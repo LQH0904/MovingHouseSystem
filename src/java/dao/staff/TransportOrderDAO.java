@@ -13,52 +13,49 @@ import utils.DistanceCalculator;
 
 public class TransportOrderDAO {
     
-        private static final String INSERT_NOTIFICATION = "INSERT INTO Notifications (user_id, order_id, message, status, created_at, notification_type) VALUES (?, ?, ?, ?, ?, ?)";
+     private static final String INSERT_NOTIFICATION = 
+        "INSERT INTO Notifications (user_id, order_id, message, status, created_at, notification_type) VALUES (?, ?, ?, ?, ?, ?)";
 
-    
     public List<OrderInfo> getPendingOrders() {
-    List<OrderInfo> list = new ArrayList<>();
+        List<OrderInfo> list = new ArrayList<>();
 
-    String sql = """
-        SELECT o.order_id, c.full_name, o.created_at, o.updated_at,o.customer_id,
-               o.delivery_schedule, o.total_distance_km,
-               tp.pickup_location, tp.shipping_location
-        FROM Orders o
-        JOIN Customers c ON o.customer_id = c.customer_id
-        JOIN TransportProcess tp ON o.order_id = tp.order_id         
-        WHERE o.order_status = 'pending'
-                 
-        ORDER BY o.created_at DESC
-    """;
+        String sql = """
+            SELECT o.order_id, c.full_name, o.created_at, o.updated_at, o.customer_id,
+                   o.delivery_schedule, o.total_distance_km, o.order_status,
+                   tp.pickup_location, tp.shipping_location
+            FROM Orders o
+            JOIN Customers c ON o.customer_id = c.customer_id
+            JOIN TransportProcess tp ON o.order_id = tp.order_id         
+            WHERE o.order_status = 'pending'
+            ORDER BY o.created_at DESC
+        """;
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-        while (rs.next()) {
-            int orderId = rs.getInt("order_id");
-            int customerId = rs.getInt("customer_id");
-            String fullName = rs.getString("full_name");
-            String createdAt = rs.getString("created_at");
-            String updatedAt = rs.getString("updated_at");
-            String deliverySchedule = rs.getString("delivery_schedule");
-            double totalDistanceKm = rs.getDouble("total_distance_km");
-            String pickupLocation = rs.getString("pickup_location");
-            String shippingLocation = rs.getString("shipping_location");
+            while (rs.next()) {
+                OrderInfo order = new OrderInfo(
+                    rs.getInt("order_id"),
+                    rs.getInt("customer_id"),
+                    rs.getString("full_name"),
+                    rs.getString("created_at"),
+                    rs.getString("updated_at"),
+                    rs.getString("delivery_schedule"),
+                    rs.getDouble("total_distance_km"),
+                    rs.getString("pickup_location"),
+                    rs.getString("shipping_location"),
+                    rs.getString("order_status")
+                );
+                list.add(order);
+            }
 
-            OrderInfo order = new OrderInfo(orderId, customerId,fullName, createdAt, updatedAt,
-                                            deliverySchedule, totalDistanceKm,
-                                            pickupLocation, shippingLocation);
-
-            list.add(order);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-
-    return list;
-}
 
     public TransportOrder findNearestTransportUnit(String pickupLocation) {
         GeoUtils.Coordinate pickupCoord = GeoUtils.getCoordinates(pickupLocation);
@@ -85,8 +82,8 @@ public class TransportOrderDAO {
                 if (unitCoord == null) continue;
 
                 double distance = DistanceCalculator.haversine(
-                        pickupCoord.lat, pickupCoord.lon,
-                        unitCoord.lat, unitCoord.lon
+                    pickupCoord.lat, pickupCoord.lon,
+                    unitCoord.lat, unitCoord.lon
                 );
 
                 if (distance < minDistance) {
@@ -101,96 +98,111 @@ public class TransportOrderDAO {
 
         return nearestUnit;
     }
-    
+
     public OrderInfo getOrderInfo(int orderId) {
-    String query = """
-        SELECT o.order_id, c.full_name, o.created_at, o.updated_at, o.delivery_schedule,o.customer_id,
-               o.total_distance_km, tp.pickup_location, tp.shipping_location
-        FROM Orders o
-        JOIN Customers c ON o.customer_id = c.customer_id
-        JOIN TransportProcess tp ON o.order_id = tp.order_id
-        WHERE o.order_id = ?
-    """;
-
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(query)) {
-        ps.setInt(1, orderId);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return new OrderInfo(
-                    rs.getInt("order_id"),
-                        rs.getInt("customer_id"),
-                    rs.getString("full_name"),
-                    rs.getString("created_at"),
-                    rs.getString("updated_at"),
-                    rs.getString("delivery_schedule"),
-                    rs.getDouble("total_distance_km"),
-                    rs.getString("pickup_location"),
-                    rs.getString("shipping_location")
-                );
-            }
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return null;
-}
-
-public boolean assignNearestUnit(int orderId, int customerId) throws SQLException {
-    String pickupLocation = getPickupLocation(orderId);
-    TransportOrder unit = findNearestTransportUnit(pickupLocation);
-
-    if (unit == null) return false;
-    
-
-    try (Connection conn = DBConnection.getConnection()) {
-         conn.setAutoCommit(false);
-        String update = """
-            UPDATE Orders SET transport_unit_id = ?, order_status = 'in_progress', updated_at = GETDATE()
-            WHERE order_id = ?
+        String query = """
+            SELECT o.order_id, c.full_name, o.created_at, o.updated_at, o.delivery_schedule,
+                   o.customer_id, o.total_distance_km, o.order_status,
+                   tp.pickup_location, tp.shipping_location
+            FROM Orders o
+            JOIN Customers c ON o.customer_id = c.customer_id
+            JOIN TransportProcess tp ON o.order_id = tp.order_id
+            WHERE o.order_id = ?
         """;
-        try (PreparedStatement ps = conn.prepareStatement(update)) {
-            ps.setInt(1, unit.getId());
-            ps.setInt(2, orderId);
-            ps.executeUpdate();
-            
-        }
-        
-        // Insert notification (connect to Duc)
-                try (PreparedStatement notificationStmt = conn.prepareStatement(INSERT_NOTIFICATION)) {
-                    notificationStmt.setInt(1, customerId);
-                    notificationStmt.setInt(2, orderId);
-                    notificationStmt.setString(3, "Xác nhận đơn hàng "+ orderId +"thành công ! Đơn hàng của bạn đang được thực hiện !");
-                    notificationStmt.setString(4, "sent");
-                    notificationStmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-                    notificationStmt.setString(6, "reminder");
-                    int rowsAffected = notificationStmt.executeUpdate();
-                    if (rowsAffected == 0) {
-                        conn.rollback();
-                        return false;
-                    }
-                }
-                conn.commit();
-                return true;
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return false;
-}
 
-private String getPickupLocation(int orderId) {
-    String sql = "SELECT pickup_location FROM TransportProcess WHERE order_id = ?";
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, orderId);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getString("pickup_location");
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new OrderInfo(
+                        rs.getInt("order_id"),
+                        rs.getInt("customer_id"),
+                        rs.getString("full_name"),
+                        rs.getString("created_at"),
+                        rs.getString("updated_at"),
+                        rs.getString("delivery_schedule"),
+                        rs.getDouble("total_distance_km"),
+                        rs.getString("pickup_location"),
+                        rs.getString("shipping_location"),
+                        rs.getString("order_status")
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+
+        return null;
     }
-    return null;
-}
+
+    public boolean assignNearestUnit(int orderId, int customerId)  {
+        String pickupLocation = getPickupLocation(orderId);
+        TransportOrder unit = findNearestTransportUnit(pickupLocation);
+
+        if (unit == null) return false;
+
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            String update = """
+                UPDATE Orders 
+                SET transport_unit_id = ?, order_status = 'in_progress', updated_at = GETDATE()
+                WHERE order_id = ?
+            """;
+
+            try (PreparedStatement ps = conn.prepareStatement(update)) {
+                ps.setInt(1, unit.getId());
+                ps.setInt(2, orderId);
+                ps.executeUpdate();
+            }
+
+            try (PreparedStatement notificationStmt = conn.prepareStatement(INSERT_NOTIFICATION)) {
+                notificationStmt.setInt(1, customerId);
+                notificationStmt.setInt(2, orderId);
+                notificationStmt.setString(3, "Xác nhận đơn hàng " + orderId + " thành công! Đơn hàng của bạn đang được thực hiện!");
+                notificationStmt.setString(4, "sent");
+                notificationStmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+                notificationStmt.setString(6, "reminder");
+
+                int rowsAffected = notificationStmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            conn.commit();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private String getPickupLocation(int orderId) {
+        String sql = "SELECT pickup_location FROM TransportProcess WHERE order_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("pickup_location");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 
 //public static void main(String[] args) {

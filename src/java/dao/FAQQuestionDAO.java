@@ -91,4 +91,19 @@ public void deleteQuestion(int faqId) throws SQLException {
         ps.executeUpdate();
     }
 }
+public String findAnswerByQuestion(String questionText) throws SQLException {
+    // Logic tìm kiếm đơn giản, bạn có thể nâng cấp sau này
+    // Ở đây chúng ta tìm câu hỏi trong FAQ có chứa một vài từ khóa từ câu hỏi của khách
+    String sql = "SELECT TOP 1 reply FROM FAQQuestions WHERE ? LIKE '%' + question + '%' OR question LIKE '%' + ? + '%'";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, questionText);
+        ps.setString(2, questionText);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getString("reply");
+            }
+        }
+    }
+    return null; // Không tìm thấy câu trả lời phù hợp
+}
 }
