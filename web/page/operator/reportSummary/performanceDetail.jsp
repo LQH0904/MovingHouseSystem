@@ -712,19 +712,6 @@
                             </div>
                             <div class="stat-label">Tỷ Lệ Đúng Hạn</div>
                         </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon purple">⚖️</div>
-                            <div class="stat-value">
-                                <c:choose>
-                                    <c:when test="${statistics != null and statistics[3] != null}">
-                                        <fmt:formatNumber value="${statistics[3]/1000}" pattern="#,###.#"/>
-                                    </c:when>
-                                    <c:otherwise>0</c:otherwise>
-                                </c:choose>
-                            </div>
-                            <div class="stat-label">Tổng Khối Lượng (Tấn)</div>
-                        </div>
                     </div>
 
                     <!-- Filter Section -->
