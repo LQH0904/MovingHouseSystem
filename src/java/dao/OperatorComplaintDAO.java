@@ -226,7 +226,7 @@ public class OperatorComplaintDAO {
     }
 
     public void addReply(IssueReply reply) {
-        String sql = "INSERT INTO IssueReplies (issue_id, replier_id, content, created_at) VALUES (?, ?, ?, GETDATE())";
+        String sql = "INSERT INTO IssueReplies (issue_id, sender_id, message, replied_at) VALUES (?, ?, ?, GETDATE())";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, reply.getIssueId());
             stmt.setInt(2, reply.getReplierId());

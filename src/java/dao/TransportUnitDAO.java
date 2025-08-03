@@ -22,21 +22,20 @@ public class TransportUnitDAO {
 
             if (rs.next()) {
                 unit = new TransportUnit4(
-                    rs.getInt("transport_unit_id"),
-                    rs.getString("company_name"),
-                    rs.getString("contact_info"),
-                    rs.getString("registration_status"),
-                    rs.getTimestamp("created_at"),
-                    rs.getString("location"),
-                    rs.getInt("vehicle_count"),
-                    rs.getInt("capacity"),
-                    rs.getString("loader"),
-                    rs.getString("business_certificate"),
-                    rs.getString("insurance")
+                        rs.getInt("transport_unit_id"),
+                        rs.getString("company_name"),
+                        rs.getString("contact_info"),
+                        rs.getString("registration_status"),
+                        rs.getTimestamp("created_at"),
+                        rs.getString("location"),
+                        rs.getInt("vehicle_count"),
+                        rs.getBigDecimal("capacity"),  // SỬA LẠI: Dùng getBigDecimal
+                        rs.getInt("loader"),           // SỬA LẠI: Dùng getInt
+                        rs.getString("business_certificate"),
+                        rs.getString("insurance")
                 );
             }
         }
-
         return unit;
     }
 }

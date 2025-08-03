@@ -9,17 +9,31 @@ public class IssueReply {
     private int replierId;         // ID người trả lời
     private String replyContent;   // Nội dung phản hồi
     private Timestamp repliedAt;   // Thời gian phản hồi
+    private String message_for_issue;
+    private int customerId;        // ID khách hàng
 
-    // --- Constructors ---
     public IssueReply() {
     }
 
-    public IssueReply(int replyId, int issueId, int replierId, String replyContent, Timestamp repliedAt) {
+    private String replierName;  
+
+    public String getReplierName() {
+        return replierName;
+    }
+
+    public void setReplierName(String replierName) {
+        this.replierName = replierName;
+    }
+    
+    public IssueReply(int replyId, int issueId, int replierId, String replyContent,
+            Timestamp repliedAt, String message_for_issue, int customerId) {
         this.replyId = replyId;
         this.issueId = issueId;
         this.replierId = replierId;
         this.replyContent = replyContent;
         this.repliedAt = repliedAt;
+        this.message_for_issue = message_for_issue;
+        this.customerId = customerId;
     }
 
     // --- Getters & Setters ---
@@ -47,8 +61,6 @@ public class IssueReply {
         this.replierId = replierId;
     }
 
-
-
     public String getReplyContent() {
         return replyContent;
     }
@@ -63,6 +75,22 @@ public class IssueReply {
 
     public void setRepliedAt(Timestamp repliedAt) {
         this.repliedAt = repliedAt;
+    }
+
+    public String getMessage_for_issue() {
+        return message_for_issue;
+    }
+
+    public void setMessage_for_issue(String message_for_issue) {
+        this.message_for_issue = message_for_issue;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     // --- Optional compatibility method ---

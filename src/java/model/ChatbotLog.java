@@ -6,28 +6,22 @@ import java.util.Date;
 public class ChatbotLog {
     private int logId;
     private int userId;
-    private String question;
-    private String reply;
-    private String review;
-    private int staffId;
+    private String message;
+    private String response;
     private Date createdAt;
-    private Date updatedAt;
 
     public ChatbotLog() {
     }
 
-    public ChatbotLog(int logId, int userId, String question, String reply, String review,
-                      int staffId, Date createdAt, Date updatedAt) {
+    public ChatbotLog(int logId, int userId, String message, String response, Date createdAt) {
         this.logId = logId;
         this.userId = userId;
-        this.question = question;
-        this.reply = reply;
-        this.review = review;
-        this.staffId = staffId;
+        this.message = message;
+        this.response = response;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
+    // Getters and Setters
     public int getLogId() {
         return logId;
     }
@@ -44,36 +38,20 @@ public class ChatbotLog {
         this.userId = userId;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getMessage() {
+        return message;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public String getReply() {
-        return reply;
+    public String getResponse() {
+        return response;
     }
 
-    public void setReply(String reply) {
-        this.reply = reply;
-    }
-
-    public String getReview() {
-        return review;
-    }
-
-    public void setReview(String review) {
-        this.review = review;
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
+    public void setResponse(String response) {
+        this.response = response;
     }
 
     public Date getCreatedAt() {
@@ -82,13 +60,5 @@ public class ChatbotLog {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

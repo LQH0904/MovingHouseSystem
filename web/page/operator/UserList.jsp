@@ -45,8 +45,8 @@
                 <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
             <% }%>
-                <div class="div3"> 
-                    <h2 class="user-list-title">Danh Sách Người Dùng</h2>
+            <div class="div3"> 
+                <h2 class="user-list-title">Danh Sách Người Dùng</h2>
 
                 <div class="form-container">
                     <form method="post" action="${pageContext.request.contextPath}/UserListServlet" class="role-select-form">
@@ -63,8 +63,8 @@
                         <button type="submit" class="search-btn">Tìm kiếm</button>
                     </form>
 
-                    <button class="add-user-btn" onclick="window.location.href = '${pageContext.request.contextPath}/page/operator/AddUser.jsp'">
-                        Thêm Nhân viên
+                    <button class="add-user-btn" onclick="window.location.href = 'http://localhost:9999/HouseMovingSystem/operator/listApplication'">
+                        Duyệt đơn vị mới
                     </button>
                 </div>
 

@@ -4,31 +4,55 @@
  */
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *
  * @author Admin
  */
 public class CustomerSurvey {
-    private  int surveyId;
+
+    @JsonProperty("survey_id")
+    private int surveyId;
+    @JsonProperty("survey_date")
     private String surveyDate;
-    private  int userId;
-    private  int overall_satisfaction;
-    private  int recommend_score;
-    private  int transport_care;
-    private  int consultant_professionalism;
+    @JsonProperty("user_id")
+    private int userId;
+    @JsonProperty("overall_satisfaction")
+    private int overall_satisfaction;
+    @JsonProperty("recommend_score")
+    private int recommend_score;
+    @JsonProperty("transport_care")
+    private int transport_care;
+    @JsonProperty("consultant_professionalism")
+    private int consultant_professionalism;
+    @JsonProperty("expectation")
     private String expectation;
+    @JsonProperty("packing_quality")
     private String packing_quality;
+    @JsonProperty("item_condition")
     private String item_condition;
+    @JsonProperty("delivery_timeliness")
     private String delivery_timeliness;
+    @JsonProperty("booking_process")
     private String booking_process;
+    @JsonProperty("response_time")
     private String response_time;
+    @JsonProperty("price_transparency")
     private String price_transparency;
+    @JsonProperty("age_group")
     private String age_group;
+    @JsonProperty("area")
     private String area;
+    @JsonProperty("housing_type")
     private String housing_type;
+    @JsonProperty("usage_frequency")
     private String usage_frequency;
+    @JsonProperty("important_factor")
     private String important_factor;
+    @JsonProperty("additional_service")
     private String additional_service;
+    @JsonProperty("feedback")
     private String feedback;
 
     public CustomerSurvey() {
@@ -229,6 +253,5 @@ public class CustomerSurvey {
     @Override
     public String toString() {
         return "CustomerSurvey{" + "surveyId=" + surveyId + ", surveyDate=" + surveyDate + ", userId=" + userId + ", overall_satisfaction=" + overall_satisfaction + ", recommend_score=" + recommend_score + ", transport_care=" + transport_care + ", consultant_professionalism=" + consultant_professionalism + ", expectation=" + expectation + ", packing_quality=" + packing_quality + ", item_condition=" + item_condition + ", delivery_timeliness=" + delivery_timeliness + ", booking_process=" + booking_process + ", response_time=" + response_time + ", price_transparency=" + price_transparency + ", age_group=" + age_group + ", area=" + area + ", housing_type=" + housing_type + ", usage_frequency=" + usage_frequency + ", important_factor=" + important_factor + ", additional_service=" + additional_service + ", feedback=" + feedback + '}';
-    }
-
+    } 
 }

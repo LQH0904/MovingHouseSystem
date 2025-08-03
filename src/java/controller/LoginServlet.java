@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/notifications");
                     break;
                 case 6: // Customer
-                    response.sendRedirect(request.getContextPath() + "/customer/FAQ.jsp");
+                    response.sendRedirect(request.getContextPath() + "/transport");
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/orderList");
@@ -163,7 +163,7 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/notifications");
                 break;
             case 6: // Customer
-                response.sendRedirect(request.getContextPath() + "/page/customer/FAQ.jsp");
+                response.sendRedirect(request.getContextPath() + "/transport");
                 break;
             default:
                 response.sendRedirect(request.getContextPath() + "/orderList");

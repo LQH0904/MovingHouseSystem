@@ -1,6 +1,22 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="model.OperationProcedure"%>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
+%>
 <!DOCTYPE html>
 <html>
 
@@ -34,7 +50,6 @@
         <button type="submit" class="submit-btn">Lưu</button>
     </form>
 </div>
-eeeeeeeeeeeee
             </div>
         </div>
         <script>

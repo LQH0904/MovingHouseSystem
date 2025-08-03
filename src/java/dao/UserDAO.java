@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Date;
 import model.StorageUnit;
 import model.StorageUnit1;
-//import model.TransportUnit;
+import model.TransportUnit;
 import model.TransportUnit1;
 import model.Users;
 
@@ -42,6 +42,8 @@ public class UserDAO {
         }
         return false;
     }
+    
+    
 
     /**
      * Kiểm tra thông tin đăng nhập theo email và mật khẩu.
@@ -123,28 +125,38 @@ public class UserDAO {
      * @param user Đối tượng Users chứa thông tin đăng ký
      * @return true nếu thêm thành công, false nếu thất bại
      */
-    public boolean signupAccount(Users user) {
-        String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try {
-            try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getEmail());
-                ps.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
-                ps.setInt(4, user.getRoleId());
-                ps.setString(5, user.getStatus());
+    public int signupAccount(Users user) throws SQLException {
+    String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                ps.setTimestamp(6, now);
-                ps.setTimestamp(7, null);
+        ps.setString(1, user.getUsername());
+        ps.setString(2, user.getEmail());
+        ps.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
+        ps.setInt(4, user.getRoleId());
+        ps.setString(5, user.getStatus());
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        ps.setTimestamp(6, now);
+        ps.setTimestamp(7, null);
 
-                int rows = ps.executeUpdate();
-                return rows > 0;
+        int rows = ps.executeUpdate();
+        if (rows > 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int userId = rs.getInt(1);
+                    if (user.getRoleId() == 6) {
+                        LOGGER.log(Level.INFO, "User with role_id=6 created for email: " + user.getEmail() + ", user_id: " + userId + ", trigger should create Customer record with customer_id=" + userId);
+                    }
+                    return userId;
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
+        throw new SQLException("Không thể lấy user_id sau khi chèn tài khoản");
+    } catch (SQLException e) {
+        LOGGER.log(Level.SEVERE, "Error signing up account for email: " + user.getEmail() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+        throw e;
     }
+}
 
     /**
      * Lấy thông tin người dùng dựa trên email và role_id.
@@ -234,64 +246,59 @@ public class UserDAO {
     }
 
     public String checkDuplicate(String email, String username, int roleId) {
-        String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?) AND role_id = ?";
-        String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
-        String transportUnitQuery = "SELECT 1 FROM TransportUnits WHERE LOWER(company_name) = LOWER(?)";
-        String roleCheckQuery = "SELECT 1 FROM Roles WHERE role_id = ?";
+    String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?)"; // Kiểm tra toàn bộ email
+    String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
+    String transportUnitQuery = "SELECT 1 FROM TransportUnits WHERE LOWER(company_name) = LOWER(?)";
+    String roleCheckQuery = "SELECT 1 FROM Roles WHERE role_id = ?";
 
-        try (Connection conn = DBConnection.getConnection()) {
-            // Kiểm tra kết nối cơ sở dữ liệu
-            if (conn == null) {
-                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
-            }
-
-            // Kiểm tra roleId hợp lệ
-            try (PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
-                ps.setInt(1, roleId);
-                ResultSet rs = ps.executeQuery();
-                if (!rs.next()) {
-                    LOGGER.log(Level.SEVERE, "Invalid role_id: " + roleId);
-                    throw new SQLException("role_id không hợp lệ: " + roleId);
-                }
-            }
-
-            // Kiểm tra email với role_id
-            try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
-                ps.setString(1, email.toLowerCase());
-                ps.setInt(2, roleId);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    return "email_exists";
-                }
-            }
-
-            // Kiểm tra username
-            if (roleId == 4) {
-                // Với role_id = 4, kiểm tra company_name trong TransportUnits
-                try (PreparedStatement ps = conn.prepareStatement(transportUnitQuery)) {
-                    ps.setString(1, username.toLowerCase());
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next()) {
-                        return "username_exists";
-                    }
-                }
-            } else {
-                // Với các role_id khác, kiểm tra username trong Users
-                try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
-                    ps.setString(1, username.toLowerCase());
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next()) {
-                        return "username_exists";
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error checking duplicate: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
-            throw new RuntimeException("Lỗi kiểm tra trùng lặp: " + e.getMessage(), e);
+    try (Connection conn = DBConnection.getConnection()) {
+        if (conn == null) {
+            throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
         }
 
-        return "none";
+        // Kiểm tra roleId hợp lệ
+        try (PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                LOGGER.log(Level.SEVERE, "Invalid role_id: " + roleId);
+                throw new SQLException("role_id không hợp lệ: " + roleId);
+            }
+        }
+
+        // Kiểm tra email (bất kể role_id)
+        try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
+            ps.setString(1, email.toLowerCase());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return "email_exists";
+            }
+        }
+
+        // Kiểm tra username
+        if (roleId == 4) {
+            try (PreparedStatement ps = conn.prepareStatement(transportUnitQuery)) {
+                ps.setString(1, username.toLowerCase());
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return "username_exists";
+                }
+            }
+        } else {
+            try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
+                ps.setString(1, username.toLowerCase());
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return "username_exists";
+                }
+            }
+        }
+    } catch (SQLException e) {
+        LOGGER.log(Level.SEVERE, "Error checking duplicate: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+        throw new RuntimeException("Lỗi kiểm tra trùng lặp: " + e.getMessage(), e);
     }
+    return "none";
+}
 
     public UserDAO() {
         try {
@@ -422,7 +429,7 @@ public class UserDAO {
         return false;
     }
 
-    public int signupAccount2(Users user) {
+        public int signupAccount2(Users user) {
         String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
@@ -437,7 +444,11 @@ public class UserDAO {
             if (rows > 0) {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
-                        return rs.getInt(1);
+                        int userId = rs.getInt(1);
+                        if (user.getRoleId() == 6) {
+                            LOGGER.log(Level.INFO, "User with role_id=6 created for email: " + user.getEmail() + ", user_id: " + userId + ", trigger should create Customer record with customer_id=" + userId);
+                        }
+                        return userId;
                     }
                 }
             }

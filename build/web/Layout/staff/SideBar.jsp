@@ -28,16 +28,6 @@
                             <span class="link">Người dùng</span>
                         </a>
                     </li>
-
-                    <c:if test="${sessionScope.acc != null && (sessionScope.acc.roleId == 1 || sessionScope.acc.roleId == 3)}">
-                        
-                        <li class="list">
-                            <a href="${pageContext.request.contextPath}/exportData" class="nav-link">
-                                <i class="bx bx-export icon"></i>
-                                <span class="link">Xuất dữ liệu</span>
-                            </a>
-                        </li>
-                    </c:if>
                     <li class="list has-submenu">
                         <a href="#" class="nav-link" onclick="toggleSubmenu(event)">
                             <i class="bx bx-bar-chart-alt-2 icon"></i>
@@ -79,46 +69,41 @@
                     </li>
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="nav-link">
-<<<<<<< HEAD
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Thử phiếu khảo sát</span>
                         </a>
                     </li>
-                   
-                    <li class="list">
+                    
+<!--                    <li class="list">
                         <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Câu hỏi</span>
                             <i class="bx bx-chevron-down" style="margin-left:auto;"></i>
-=======
-                            <i class="bx bx-folder-open icon"></i>
-                            <span class="link">Thử phiếu khảo sát</span>
->>>>>>> origin/DucVer2
                         </a>
                         <ul class="sub-menu" id="policy-submenu" style="display:none; padding-left: 25px;">
                             <li><a href="${pageContext.request.contextPath}/staff/faq-list">Câu hỏi thường gặp</a></li>
                             <li><a href="${pageContext.request.contextPath}/staff/chat-bot-log">Câu hỏi của khách hàng</a></li>
                             
                         </ul>
-                    </li>
-                    <li class="list">
-                        <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
-                            <i class="bx bx-gift icon"></i>
-                            <span class="link">Gợi ý khuyến mãi</span>
+                    </li>-->
+<li class="list">
+                        <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
+                            <i class="bx bx-question-mark icon"></i>
+                            <span class="link">Câu hỏi thường gặp</span>
                         </a>
                     </li>
-<<<<<<< HEAD
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/staff-leave" class="nav-link">
                             <i class="bx bx-calendar-check icon"></i>
                             <span class="link">Đơn nghỉ phép</span>
                         </a>
                     </li>
-
-
-                    
-=======
->>>>>>> origin/DucVer2
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/staff/order-approve" class="nav-link">
+                            <i class="bx bx-cart-alt icon"></i>
+                            <span class="link">Quản lý đơn hàng</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -144,7 +129,6 @@
                 }
             }
         </script>
-<<<<<<< HEAD
         <script>
             function toggleSubMenu(id) {
                 const submenu = document.getElementById(id);
@@ -155,7 +139,5 @@
                 }
             }
         </script>
-=======
->>>>>>> origin/DucVer2
     </body>
 </html>

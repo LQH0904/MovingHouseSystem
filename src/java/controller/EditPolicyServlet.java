@@ -71,35 +71,49 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String policyTitle = request.getParameter("policyTitle");
+    // Trong file controller/EditPolicyServlet.java
+@Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    int id = Integer.parseInt(request.getParameter("id"));
+    String policyTitle = request.getParameter("policyTitle");
 
-        List<String> contents = new ArrayList<>();
-        Enumeration<String> paramNames = request.getParameterNames();
-        while (paramNames.hasMoreElements()) {
-            String name = paramNames.nextElement();
-            if (name.startsWith("content")) {
-                String value = request.getParameter(name).trim();
-                if (!value.isEmpty()) {
-                    contents.add(value);
-                }
+    // Logic lấy nội dung của bạn đã đúng
+    List<String> contents = new ArrayList<>();
+    Enumeration<String> paramNames = request.getParameterNames();
+    while (paramNames.hasMoreElements()) {
+        String name = paramNames.nextElement();
+        if (name.startsWith("content")) {
+            String value = request.getParameter(name).trim();
+            if (!value.isEmpty()) {
+                contents.add(value);
             }
         }
-
-        StringBuilder fullContent = new StringBuilder();
-        for (String c : contents) {
-            fullContent.append(". ").append(c).append("\n");
-        }
-
-        OperationPolicyDAO dao = new OperationPolicyDAO();
-        OperationPolicy updated = new OperationPolicy(id, 0, policyTitle.trim(), fullContent.toString().trim());
-        dao.updatePolicy(updated);
-
-        response.sendRedirect("operation-policy");
     }
+
+    StringBuilder fullContent = new StringBuilder();
+    for (String c : contents) {
+        fullContent.append(". ").append(c).append("\n");
+    }
+
+    OperationPolicyDAO dao = new OperationPolicyDAO();
+    
+    // ✅ THÊM DÒNG NÀY: Lấy policy cũ để có được policy_number
+    OperationPolicy oldPolicy = dao.getById(id);
+
+    // Sử dụng oldPolicy.getPolicyNumber() thay vì số 0
+    OperationPolicy updated = new OperationPolicy(
+            id, 
+            oldPolicy.getPolicyNumber(), // Giữ lại số thứ tự cũ
+            policyTitle.trim(), 
+            fullContent.toString().trim()
+    );
+    
+    // Hàm update của bạn trong DAO không cập nhật policy_number, nên cách này là đúng
+    dao.updatePolicy(updated);
+
+    response.sendRedirect("operation-policy");
+}
 }
 
 /**

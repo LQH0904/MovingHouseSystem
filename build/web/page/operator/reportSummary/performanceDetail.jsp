@@ -183,7 +183,7 @@
             /* Filter Section */
             .filter-section {
                 background: white;
-                padding: 30px;
+                padding: 15px;
                 border-radius: 20px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.08);
                 margin-bottom: 30px;
@@ -192,8 +192,8 @@
             .filter-header {
                 display: flex;
                 align-items: center;
-                margin-bottom: 20px;
-                padding-bottom: 20px;
+                margin-bottom: 5px;
+                padding-bottom: 5px;
                 border-bottom: 2px solid #ecf0f1;
             }
 
@@ -586,6 +586,54 @@
                 display: flex;
                 justify-content: flex-start;
             }
+            /* From Uiverse.io by adamgiebl */
+            .button {
+                align-items: center;
+                appearance: none;
+                background-color: #EEF2FF;
+                border-radius: 8px;
+                border-width: 2px;
+                border-color: #536DFE;
+                box-shadow: rgba(83, 109, 254, 0.2) 0 2px 4px, rgba(83, 109, 254, 0.15) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+                box-sizing: border-box;
+                color: #536DFE;
+                cursor: pointer;
+                display: inline-flex;
+                font-family: "JetBrains Mono", monospace;
+                height: 56px;
+                justify-content: center;
+                line-height: 1;
+                list-style: none;
+                overflow: hidden;
+                padding-left: 24px;
+                padding-right: 24px;
+                position: relative;
+                text-align: center;
+                text-decoration: none;
+                transition: box-shadow 0.15s, transform 0.15s;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+                white-space: nowrap;
+                will-change: box-shadow, transform;
+                font-size: 20px;
+                margin: 0 430%;
+            }
+
+            .button:focus {
+                outline: none;
+                box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(83, 109, 254, 0.4) 0 2px 4px, rgba(83, 109, 254, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            }
+
+            .button:hover {
+                box-shadow: rgba(83, 109, 254, 0.3) 0 4px 8px, rgba(83, 109, 254, 0.2) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+                transform: translateY(-2px);
+            }
+
+            .button:active {
+                box-shadow: #D6D6E7 0 3px 7px inset;
+                transform: translateY(2px);
+            }
         </style>
     </head>
     <body>
@@ -607,12 +655,12 @@
                 <jsp:include page="../../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
             <% }%>
-                <div class="div3">
-                    <div class="performance-container">
-                        <!-- Debug Info (chỉ hiển thị khi cần debug) -->
-                        <div class="debug-info" id="debugInfo">
-                            <h4>🐛 Debug Information:</h4>
-                            <p>Report Data Size: ${reportData != null ? reportData.size() : 'null'}</p>
+            <div class="div3">
+                <div class="performance-container">
+                    <!-- Debug Info (chỉ hiển thị khi cần debug) -->
+                    <div class="debug-info" id="debugInfo">
+                        <h4>🐛 Debug Information:</h4>
+                        <p>Report Data Size: ${reportData != null ? reportData.size() : 'null'}</p>
                         <p>Transport Units Size: ${transportUnits != null ? transportUnits.size() : 'null'}</p>
                         <p>Statistics: ${statistics != null ? 'Available' : 'null'}</p>
                         <p>Request Parameters: transportUnitId=${param.transportUnitId}, year=${param.year}, invRTitle=${param.invRTitle}</p>
@@ -686,6 +734,11 @@
                                 <span>🔍</span>
                                 <span>Bộ lọc tìm kiếm</span>
                             </h3>
+                            <!-- From Uiverse.io by yaasiinaxmed -->
+                            <a href="http://localhost:9999/HouseMovingSystem/exportData" style="text-decoration: none;">
+                                    <!-- From Uiverse.io by adamgiebl --> 
+                                    <button class="button" role="button">Xuất dữ liệu</button>
+                            </a>
                         </div>
 
                         <form method="GET" action="PerformanceTransportReport" class="filter-form">

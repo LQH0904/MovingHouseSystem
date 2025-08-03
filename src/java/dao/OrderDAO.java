@@ -258,10 +258,13 @@ public class OrderDAO {
     public List<CustomerSurvey> getFilteredSurveys(String startDate, String endDate, String keyword) throws SQLException {
         List<CustomerSurvey> surveys = new ArrayList<>();
         StringBuilder query = new StringBuilder(
-                "SELECT survey_id, survey_date, user_id, overall_satisfaction, recommend_score, transport_care, "
-                + "consultant_professionalism, expectation, packing_quality, item_condition, delivery_timeliness, booking_process, "
-                + "response_time, price_transparency, age_group, area, housing_type, usage_frequency, important_factor, "
-                + "additional_service, feedback FROM CustomerSurvey"
+                "SELECT cs.survey_id, cs.survey_date, cs.user_id, cs.overall_satisfaction, cs.recommend_score, cs.transport_care, "
+                + "cs.consultant_professionalism, cs.expectation, cs.packing_quality, cs.item_condition, cs.delivery_timeliness, cs.booking_process, "
+                + "cs.response_time, cs.price_transparency, cs.age_group, cs.area, cs.housing_type, cs.usage_frequency, cs.important_factor, "
+                + "cs.additional_service, cs.feedback "
+                + "FROM CustomerSurvey cs "
+                + "JOIN Users u ON cs.user_id = u.user_id "
+                + "WHERE u.role_id = 6"
         );
 
         List<Object> params = new ArrayList<>();

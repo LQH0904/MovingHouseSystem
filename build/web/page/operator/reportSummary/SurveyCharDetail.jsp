@@ -538,7 +538,54 @@
             .filter-group select option:hover {
                 background: #f1f5f9;
             }
+            /* From Uiverse.io by adamgiebl */
+            .button {
+                align-items: center;
+                appearance: none;
+                background-color: #EEF2FF;
+                border-radius: 8px;
+                border-width: 2px;
+                border-color: #536DFE;
+                box-shadow: rgba(83, 109, 254, 0.2) 0 2px 4px, rgba(83, 109, 254, 0.15) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+                box-sizing: border-box;
+                color: #536DFE;
+                cursor: pointer;
+                display: inline-flex;
+                font-family: "JetBrains Mono", monospace;
+                height: 40px;
+                justify-content: center;
+                line-height: 1;
+                list-style: none;
+                overflow: hidden;
+                padding-left: 15px;
+                padding-right: 15px;
+                position: relative;
+                text-align: center;
+                text-decoration: none;
+                transition: box-shadow 0.15s, transform 0.15s;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+                white-space: nowrap;
+                will-change: box-shadow, transform;
+                font-size: 20px;
+                margin: 1% 0 0 42%;
+            }
 
+            .button:focus {
+                outline: none;
+                box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(83, 109, 254, 0.4) 0 2px 4px, rgba(83, 109, 254, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            }
+
+            .button:hover {
+                box-shadow: rgba(83, 109, 254, 0.3) 0 4px 8px, rgba(83, 109, 254, 0.2) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+                transform: translateY(-2px);
+            }
+
+            .button:active {
+                box-shadow: #D6D6E7 0 3px 7px inset;
+                transform: translateY(2px);
+            }
         </style>
     </head>
     <body>
@@ -646,6 +693,10 @@
                                 </a>
                             </div>
                         </form>
+                        <a href="http://localhost:9999/HouseMovingSystem/exportData" style="text-decoration: none;">
+                            <!-- From Uiverse.io by adamgiebl --> 
+                            <button class="button" role="button">Xuất dữ liệu</button>
+                        </a>
                     </div>
 
                     <%-- Hiển thị thông báo lỗi nếu có --%>
@@ -668,6 +719,7 @@
                     <%-- Danh sách khảo sát --%>
                     <%
                         @SuppressWarnings(
+                                
                         
                         "unchecked")
                         List<CustomerSurvey> surveys = (List<CustomerSurvey>) request.getAttribute("surveys");

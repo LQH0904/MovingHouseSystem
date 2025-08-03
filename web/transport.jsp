@@ -3,7 +3,8 @@
     Created on : Jul 29, 2025, 2:03:57 AM
     Author     : admin
 --%>
-
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> <%-- DÒNG QUAN TRỌNG CẦN THÊM --%>
 <%@page import="model.Users"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="dao.OrderDAO2" %>
@@ -296,6 +297,16 @@
                 color: #6B46C1;
                 font-weight: 600;
             }
+            .notification-icon, .logout-icon, .history-icon {
+                font-size: 1.75rem;
+                color: #4A5568;
+                transition: color 0.3s ease, transform 0.2s ease;
+                margin-right: 1.25rem;
+            }
+            .notification-icon:hover, .logout-icon:hover, .history-icon:hover {
+                color: #6B46C1;
+                transform: scale(1.1);
+            }
 
             @media (max-width: 768px) {
                 .grid-cols-2 {
@@ -353,6 +364,43 @@
                 }
 
             }
+            .qr-modal-overlay {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                justify-content: center;
+                align-items: center;
+            }
+            .qr-modal-content {
+                background-color: #fff;
+                padding: 20px 30px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                width: 90%;
+                max-width: 450px;
+                text-align: center;
+                position: relative;
+            }
+            .qr-modal-close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 28px;
+                font-weight: bold;
+                color: #888;
+                cursor: pointer;
+            }
+            .qr-modal-body p {
+                font-size: 16px;
+                color: #555;
+                margin: 10px 0;
+            }
+
         </style>
     </head>
     <body class="bg-gray-100 h-screen overflow-y-auto">
@@ -368,6 +416,9 @@
                 </a>
                 <a href="${pageContext.request.contextPath}/notifications" title="Thông báo" aria-label="Xem thông báo">
                     <i class="fas fa-bell notification-icon"></i>
+                </a>
+                <a href="${pageContext.request.contextPath}/orderHistory" title="Lịch sử đơn hàng" aria-label="Xem lịch sử đơn hàng">
+                    <i class="fas fa-history history-icon"></i>
                 </a>
             </div>
 
@@ -583,10 +634,15 @@
                             <p class="text-gray-700 font-medium">Tổng giá vận chuyển: <span id="totalItemPrice"><%= formatVND(new BigDecimal(session.getAttribute("totalItemPrice") != null ? session.getAttribute("totalItemPrice").toString() : "0"))%></span></p>
                         </div>
                         <button type="submit" class="submit-btn">Đặt hàng</button>
+
+
+
                     </div>
                     <div class="info-box mt-4">
                         Bạn hãy thêm ít nhất 1 hàng hóa trước khi tạo đơn hàng!
                     </div>
+
+
                 </div>
             </form>
 
@@ -1428,5 +1484,126 @@
                 }
             });
         </script>
+
+        <!-- ✅ Modal QR -->
+        <div id="depositQrModal" class="qr-modal-overlay">
+            <div class="qr-modal-content">
+                <span class="qr-modal-close-btn">&times;</span>
+                <h2>Vui lòng đặt cọc để hoàn tất đơn hàng</h2>
+                <div class="qr-modal-body">
+                    <p id="modalTotalInfo"></p>
+                    <p id="modalDepositInfo" style="font-weight: bold; color: #d9534f;"></p>
+                    <img id="modalQrImage" src="" alt="QR code" style="width: 100%; max-width: 280px; margin: 15px auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
+
+                    <p style="margin-top: 15px; font-style: italic; color: #777;">
+                        Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
+                    </p>
+                    <h1 id="depositValue" style="color: green; margin-top: 20px;">dsasda</h1>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ QR Modal CSS -->
+        <style>
+            .qr-modal-overlay {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                justify-content: center;
+                align-items: center;
+            }
+            .qr-modal-content {
+                background: white;
+                padding: 20px 30px;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 450px;
+                text-align: center;
+                position: relative;
+            }
+            .qr-modal-close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                color: #888;
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('depositQrModal');
+                const closeModalBtn = document.querySelector('.qr-modal-close-btn');
+                const submitBtn = document.querySelector('.submit-btn');
+                const form = submitBtn.closest('form');
+                let countdownInterval, autoCloseTimeout;
+
+                function formatVND(n) {
+                    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(n);
+                }
+
+                function showQrModalBeforeSubmit() {
+                    const totalFeeText = document.getElementById('totalFee')?.textContent || "0";
+                    const cleaned = totalFeeText.replace(/[^\d]/g, '');
+                    const totalFee = parseInt(cleaned, 10);
+
+                    if (isNaN(totalFee) || totalFee <= 0) {
+                        alert("Không lấy được tổng số tiền.");
+                        return;
+                    }
+                    function formatVND(amount) {
+                        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+                    }
+
+                    const deposit = Math.round(totalFee * 0.3);
+                    document.getElementById('depositValue').textContent = "Tiền đặt cọc (30%): " + formatVND(deposit);
+
+                    const a = totalFee - 50000;
+                    const qrUrl = 'https://img.vietqr.io/image/BIDV-3600816496-compact2.png?amount=' + deposit + '&addInfo=Dat%20coc%20truoc%2030%25';
+
+                    document.getElementById('modalTotalInfo').textContent = 'Tổng đơn hàng: ' + formatVND(totalFee);
+                    document.getElementById('modalDepositInfo').textContent = 'Bạn cần đặt cọc trước 30%: ' + formatVND(deposit);
+
+                    document.getElementById('modalQrImage').src = qrUrl;
+
+                    modal.style.display = 'flex';
+                    startCountdown(15, () => {
+                        modal.style.display = 'none';
+                        form.submit(); // ✅ Tự động submit form sau 15s
+                    });
+                }
+
+                function startCountdown(seconds, callback) {
+                    let counter = seconds;
+                    document.getElementById('countdownTimer').textContent = counter;
+                    countdownInterval = setInterval(() => {
+                        counter--;
+                        document.getElementById('countdownTimer').textContent = counter;
+                        if (counter <= 0)
+                            clearInterval(countdownInterval);
+                    }, 1000);
+                    autoCloseTimeout = setTimeout(callback, seconds * 1000);
+                }
+
+                closeModalBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                    clearInterval(countdownInterval);
+                    clearTimeout(autoCloseTimeout);
+                });
+
+                submitBtn.addEventListener('click', function (e) {
+                    e.preventDefault(); // ❌ Ngăn submit ngay
+                    showQrModalBeforeSubmit(); // ✅ Show QR trước khi submit
+                });
+            });
+        </script>
+
+
     </body>
 </html>

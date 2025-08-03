@@ -125,7 +125,13 @@
                                 <div class="list-group">
                                     <c:forEach var="reply" items="${replies}">
                                         <div class="list-group-item">
-                                            <p class="mb-1"><strong>Nội dung:</strong> <c:out value="${reply.replyContent}"/></p>
+                                            <p class="mb-1"><strong>Nội dung người phản hồi :</strong> <c:out value="${reply.replyContent}"/></p>
+                                            <small class="text-muted">
+                                                <fmt:formatDate value="${reply.repliedAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
+                                            </small>
+                                        </div>
+                                             <div class="list-group-item">
+                                            <p class="mb-1"><strong>Nội dung khách hàng :</strong> <c:out value="${reply.message_for_issue}"/></p>
                                             <small class="text-muted">
                                                 <fmt:formatDate value="${reply.repliedAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
                                             </small>
