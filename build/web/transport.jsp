@@ -1527,7 +1527,13 @@
                     document.getElementById('modalQrImage').src = qrUrl;
 
                     modal.style.display = 'flex';
-                    startCountdown(3) {
+                    startCountdown(3, () => {
+                        modal.style.display = 'none';
+                        form.submit(); // ✅ Tự động submit form sau 15s
+                    });
+                }
+
+                function startCountdown(seconds, callback) {
                     let counter = seconds;
                     document.getElementById('countdownTimer').textContent = counter;
                     countdownInterval = setInterval(() => {

@@ -493,7 +493,7 @@
                                     <input type="hidden" name="orderId" value="<%= order.getOrderId()%>">
                                     <button type="submit" class="btn-primary" onclick="showQrModal(<%= order.getTotalFee()%>)">Chuyển khoản</button>
 
-                                    <button type="submit" class="btn-primary" onclick="showConfirmModal(<%= order.getOrderId()%>)">Đã nhận</button>
+                                    
                                 </form>
                                 <% } else if ("delivered".equals(order.getOrderStatus())) { %>
                                 <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="survey-link">Đánh giá chất lượng</a>
