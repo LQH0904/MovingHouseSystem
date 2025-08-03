@@ -8,7 +8,7 @@ package model;
  *
  * @author Admin
  */
-public class TransportUnit {
+public class transportUnit {
     private int transportUnitId;
     private String companyName;
     private String contactInfo;
