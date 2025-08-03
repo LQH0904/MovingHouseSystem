@@ -51,7 +51,7 @@
 <!DOCTYPE html>
 <html lang="vi">
     <head>
-        <title>Đặt Dịch Vụ Vận Chuyển</title>
+        <title>Đặt Hàng Vận Chuyển</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -61,20 +61,20 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
             body {
                 background-color: #EDF2F7;
                 font-family: 'Roboto', sans-serif;
                 margin: 0;
                 padding: 0;
                 line-height: 1.6;
+                display: flex;
             }
             .container {
                 max-width: 1280px;
                 margin: 0 auto;
                 padding: 1.5rem;
+                flex-grow: 1;
             }
-
             h2 {
                 color: #6B46C1;
                 font-weight: 700;
@@ -90,21 +90,13 @@
             h2 i {
                 margin-right: 0.75rem;
             }
-            h2 p {
-                font-size: 1rem;
-                color: #718096;
-                margin-left: 0.75rem;
-                font-weight: 500;
-            }
-
             #map {
-                height: 300px;
+                height: 400px;
                 width: 100%;
                 border-radius: 10px;
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
                 transition: box-shadow 0.3s ease;
             }
-
             .autocomplete-items {
                 position: absolute;
                 border: 1px solid #E2E8F0;
@@ -129,11 +121,11 @@
             .autocomplete-items div:hover {
                 background-color: #F7FAFC;
             }
-
             .filter-form .form-control {
                 border: 2px solid #E2E8F0;
                 border-radius: 10px;
-                padding: 0.75rem;
+                padding: 0.5rem; /* Reduced padding */
+                font-size: 0.85rem; /* Reduced font size */
                 width: 100%;
                 transition: border-color 0.3s ease, box-shadow 0.3s ease;
                 background-color: #F9FAFB;
@@ -146,19 +138,20 @@
             .filter-form label {
                 font-weight: 600;
                 color: #2D3748;
-                margin-bottom: 0.75rem;
+                margin-bottom: 0.5rem;
+                font-size: 0.85rem; /* Reduced font size */
             }
             .filter-form textarea.form-control {
                 resize: vertical;
-                min-height: 80px;
+                min-height: 50px; /* Reduced height */
             }
-
             button, .btn-primary, .btn-secondary, .submit-btn {
-                padding: 0.875rem 1.75rem;
+                padding: 0.625rem 1.25rem; /* Reduced padding */
                 border-radius: 10px;
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
+                font-size: 0.85rem; /* Reduced font size */
                 transition: transform 0.2s ease, box-shadow 0.3s ease;
             }
             .btn-primary {
@@ -190,69 +183,70 @@
             .remove-item {
                 background: #E53E3E;
                 color: white;
-                padding: 0.625rem 1.25rem;
-                border-radius: 8px;
+                padding: 0.375rem 0.75rem; /* Reduced padding */
+                border-radius: 6px;
+                font-size: 0.8rem; /* Reduced font size */
             }
             .remove-item:hover {
                 background: #C53030;
                 transform: translateY(-2px);
             }
-
             .section {
                 background-color: #fff;
                 border-radius: 10px;
-                padding: 1.5rem;
+                padding: 1rem; /* Reduced padding */
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem; /* Reduced margin */
             }
             .section-header {
                 background: linear-gradient(90deg, #6B46C1 0%, #A78BFA 100%);
                 color: white;
-                padding: 1rem;
+                padding: 0.5rem; /* Reduced padding */
                 border-radius: 10px 10px 0 0;
                 font-weight: 700;
-                margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+                margin: -1rem -1rem 1rem -1rem; /* Reduced margin */
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                font-size: 0.9rem; /* Reduced font size */
             }
             .section-header.flex {
                 justify-content: space-between;
             }
             .section-header i {
-                font-size: 1.25rem;
+                font-size: 1rem; /* Adjusted for consistency */
             }
-
             .suggested-items-section {
-                padding-right: 1rem;
+                padding-right: 0.5rem; /* Reduced padding */
             }
             .manual-item-section {
-                padding-left: 1rem;
+                padding-left: 0.5rem; /* Reduced padding */
             }
-
             .table, .fee-table, #itemTable {
                 width: 100%;
                 border-collapse: collapse;
                 background: #F9FAFB;
-                border-radius: 10px;
+                border-radius: 8px;
                 overflow: hidden;
             }
             .table thead th, .fee-table thead th, #itemTable thead th {
-                background: linear-gradient(90deg, #6B46C1 0%, #A78BFA 100%);
-                color: white;
+                background: #fff;
+                color: #2D3748;
                 font-weight: 600;
-                padding: 12px;
+                padding: 8px; /* Reduced padding */
                 text-align: center;
                 text-transform: uppercase;
+                font-size: 0.85rem; /* Reduced font size */
             }
             .table tbody td, .fee-table td, #itemTable tbody td {
                 background: #fff;
-                padding: 12px;
+                padding: 8px; /* Reduced padding */
                 color: #2D3748;
                 border-bottom: 1px solid #E2E8F0;
                 text-align: center;
+                font-size: 0.8rem; /* Reduced font size */
             }
             .table tbody tr:hover, #itemTable tbody tr:hover {
                 background: #EDF2F7;
@@ -262,347 +256,351 @@
                 font-weight: 600;
                 color: #2D3748;
             }
-
             .error {
                 color: #E53E3E;
-                font-size: 0.875rem;
-                margin-top: 0.75rem;
+                font-size: 0.8rem; /* Reduced font size */
+                margin-top: 0.5rem;
                 text-align: center;
             }
             .success {
                 color: #48BB78;
-                font-size: 0.875rem;
-                margin-top: 0.75rem;
+                font-size: 0.8rem; /* Reduced font size */
+                margin-top: 0.5rem;
                 text-align: center;
             }
-
-            .notification-icon, .logout-icon {
-                font-size: 1.75rem;
-                color: #4A5568;
-                transition: color 0.3s ease, transform 0.2s ease;
-                margin-right: 1.25rem;
-            }
-            .notification-icon:hover, .logout-icon:hover {
-                color: #6B46C1;
-                transform: scale(1.1);
-            }
-
             .info-box {
                 background: #FAF5FF;
-                padding: 1.25rem;
-                border-radius: 10px;
-                margin-top: 1.5rem;
+                padding: 0.75rem; /* Reduced padding */
+                border-radius: 8px;
+                margin-top: 1rem; /* Reduced margin */
                 text-align: center;
                 color: #6B46C1;
                 font-weight: 600;
+                font-size: 0.85rem; /* Reduced font size */
             }
-            .notification-icon, .logout-icon, .history-icon {
-                font-size: 1.75rem;
-                color: #4A5568;
-                transition: color 0.3s ease, transform 0.2s ease;
-                margin-right: 1.25rem;
+            .sidebar {
+                width: 250px;
+                background: linear-gradient(to bottom, #B794F4, #C9A7F4);
+                color: white;
+                height: 100vh;
+                position: fixed;
+                padding-top: 10px; /* Reduced padding */
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             }
-            .notification-icon:hover, .logout-icon:hover, .history-icon:hover {
-                color: #6B46C1;
-                transform: scale(1.1);
+            .sidebar .sidebar-item {
+                padding: 6px 12px; /* Reduced padding */
+                font-size: 0.85rem; /* Reduced font size */
+                color: #fff;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
             }
-
+            .sidebar .sidebar-item:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+            .sidebar .sidebar-item.active {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+            }
+            .suggested-items {
+                font-size: 0.85rem; /* Reduced font size */
+                padding: 0.25rem; /* Reduced padding */
+            }
             @media (max-width: 768px) {
                 .grid-cols-2 {
                     grid-template-columns: 1fr;
                 }
                 .section {
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 1rem; /* Reduced margin */
                 }
                 .table thead th, .table tbody td, .fee-table td, #itemTable thead th, #itemTable tbody td {
-                    font-size: 0.85rem;
-                    padding: 10px;
-                }
-                .grid.grid-cols-2 {
-                    grid-template-columns: 1fr;
-                }
-                .suggested-items-section, .manual-item-section {
-                    padding: 0;
+                    font-size: 0.75rem; /* Reduced font size */
+                    padding: 6px; /* Reduced padding */
                 }
                 .button-group {
                     flex-direction: column;
-                    gap: 0.75rem;
+                    gap: 0.5rem;
                 }
                 button, .btn-primary, .btn-secondary, .submit-btn {
                     width: 100%;
-                    padding: 0.75rem;
+                    padding: 0.5rem;
+                    font-size: 0.8rem; /* Reduced font size */
                 }
                 #map {
-                    height: 250px;
+                    height: 300px;
                 }
                 .section-header i {
-                    font-size: 1rem;
+                    font-size: 0.9rem;
                 }
                 .success, .error {
-                    max-width: 600px;
-                    margin: 20px auto;
-                    padding: 16px 20px;
-                    border-radius: 12px;
-                    font-size: 1.1rem;
+                    max-width: 100%;
+                    margin: 0.75rem auto; /* Reduced margin */
+                    padding: 0.5rem; /* Reduced padding */
+                    border-radius: 6px; /* Reduced radius */
+                    font-size: 0.8rem; /* Reduced font size */
                     font-weight: 500;
                     text-align: center;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Reduced shadow */
                     transition: all 0.3s ease;
                 }
-
                 .success {
                     background-color: #e6ffed;
                     color: #207d3c;
                     border: 1px solid #a2f5c1;
                 }
-
                 .error {
                     background-color: #ffecec;
                     color: #c0392b;
                     border: 1px solid #f5a2a2;
                 }
-
+                .sidebar {
+                    width: 200px;
+                }
+                .main-content {
+                    margin-left: 200px;
+                    width: calc(100% - 200px);
+                }
             }
         </style>
     </head>
     <body class="bg-gray-100 h-screen overflow-y-auto">
-        <div class="container mx-auto px-4 py-4 max-w-7xl">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                <i class="fas fa-shopping-cart mr-2"></i> Đặt Dịch Vụ Vận Chuyển
-            </h2>
-            <div class="success" id="successMessage">${successMessage}</div>
-            <div class="error" id="errorMessage">${errorMessage}</div>
-            <div class="mb-4 flex justify-end">
-                <a href="${pageContext.request.contextPath}/logout" title="Đăng xuất" aria-label="Đăng xuất">
-                    <i class="fas fa-sign-out-alt logout-icon"></i>
-                </a>
+        <div class="sidebar">
+            <div class="sidebar-item">Customer</div>
+            <a href="${pageContext.request.contextPath}/transport" class="sidebar-item">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/orderHistory" class="sidebar-item">Đơn hàng vận chuyển</a>
+            <a href="${pageContext.request.contextPath}/logout" class="sidebar-item active">Đăng xuất</a>
+        </div>
+        <div class="main-content">
+            <div class="container mx-auto px-4 py-4 max-w-7xl">
                 <a href="${pageContext.request.contextPath}/notifications" title="Thông báo" aria-label="Xem thông báo">
-                    <i class="fas fa-bell notification-icon"></i>
+                    <i class="fas fa-bell notification-icon" style="font-size: 40px;"></i> 
                 </a>
-                <a href="${pageContext.request.contextPath}/orderHistory" title="Lịch sử đơn hàng" aria-label="Xem lịch sử đơn hàng">
-                    <i class="fas fa-history history-icon"></i>
-                </a>
-            </div>
-
-            <form id="transportForm" action="transport" method="post" class="filter-form grid grid-cols-2 gap-6 space-y-6">
-                <!-- Phần 1: Tuyến Đường và Địa Chỉ (Cột 1) -->
-                <div class="section col-span-2">
-                    <div class="section-header flex items-center justify-center">
-                        <i class="fas fa-map-marker-alt mr-2"></i> Tuyến Đường & Địa Chỉ
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="col-span-1">
-                            <div class="mb-6">
-                                <label id="pickup_address_label" class="block text-gray-700 font-semibold">Địa chỉ lấy hàng:</label>
-                                <input type="text" name="pickup_address" id="pickup_address" value="" required class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Nhập địa chỉ..." aria-labelledby="pickup_address_label">
-                                <input type="hidden" name="pickup_lat" id="pickup_lat">
-                                <input type="hidden" name="pickup_lng" id="pickup_lng">
-                                <div class="button-group mt-3">
-                                    <button type="button" id="selectPickupOnMap" class="btn-primary">Chọn trên bản đồ</button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-shopping-cart mr-2"></i>Dịch Vụ Vận Chuyển
+                </h2>
+                <div class="success" id="successMessage">${successMessage}</div>
+                <div class="error" id="errorMessage">${errorMessage}</div>
+                <form id="transportForm" action="transport" method="post" class="filter-form grid grid-cols-2 gap-6 space-y-6">
+                    <!-- Phần 1: Tuyến Đường và Địa Chỉ (Cột 1) -->
+                    <div class="section col-span-1">
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i> Tuyến Đường & Địa Chỉ
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="col-span-1">
+                                <div class="mb-6">
+                                    <label id="pickup_address_label" class="block text-gray-700 font-semibold">Địa chỉ lấy hàng:</label>
+                                    <input type="text" name="pickup_address" id="pickup_address" value="" required class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Nhập địa chỉ..." aria-labelledby="pickup_address_label">
+                                    <input type="hidden" name="pickup_lat" id="pickup_lat">
+                                    <input type="hidden" name="pickup_lng" id="pickup_lng">
+                                    <div class="button-group mt-3">
+                                        <button type="button" id="selectPickupOnMap" class="btn-primary">Chọn trên bản đồ</button>
+                                    </div>
+                                    <div id="pickup_autocomplete" class="autocomplete-items"></div>
                                 </div>
-                                <div id="pickup_autocomplete" class="autocomplete-items"></div>
-                            </div>
-                            <div class="mb-6">
-                                <label id="shipping_address_label" class="block text-gray-700 font-semibold">Địa chỉ giao hàng:</label>
-                                <input type="text" name="shipping_address" id="shipping_address" value="" required class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Nhập địa chỉ..." aria-labelledby="shipping_address_label">
-                                <input type="hidden" name="shipping_lat" id="shipping_lat">
-                                <input type="hidden" name="shipping_lng" id="shipping_lng">
-                                <div class="button-group mt-3">
-                                    <button type="button" id="selectShippingOnMap" class="btn-primary">Chọn trên bản đồ</button>
+                                <div class="mb-6">
+                                    <label id="shipping_address_label" class="block text-gray-700 font-semibold">Địa chỉ giao hàng:</label>
+                                    <input type="text" name="shipping_address" id="shipping_address" value="" required class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Nhập địa chỉ..." aria-labelledby="shipping_address_label">
+                                    <input type="hidden" name="shipping_lat" id="shipping_lat">
+                                    <input type="hidden" name="shipping_lng" id="shipping_lng">
+                                    <div class="button-group mt-3">
+                                        <button type="button" id="selectShippingOnMap" class="btn-primary">Chọn trên bản đồ</button>
+                                    </div>
+                                    <div id="shipping_autocomplete" class="autocomplete-items"></div>
                                 </div>
-                                <div id="shipping_autocomplete" class="autocomplete-items"></div>
-                            </div>
-                            <div class="mb-6">
-                                <label id="distance_km_label" class="block text-gray-700 font-semibold">Quãng đường dự tính (km):</label>
-                                <input type="text" name="distance_km" id="distance_km" value="${distanceKm != null ? distanceKm : 0}" readonly class="form-control mt-2 p-3 w-full border rounded-lg bg-gray-100" aria-labelledby="distance_km_label">
-                            </div>
-                        </div>
-                        <div class="col-span-1 flex items-center">
-                            <div id="map" class="w-full"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Phần 2: Thông tin dịch vụ và Bảng tính tiền (Cột 2) -->
-                <div class="section col-span-1">
-                    <div class="section-header flex items-center justify-center">
-                        <i class="fas fa-info-circle mr-2"></i> Thông tin dịch vụ
-                    </div>
-                    <div class="mb-6">
-                        <label id="service_type_label" class="block text-gray-700 font-semibold">Loại dịch vụ:</label>
-                        <select name="service_type" id="service_type" required class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="service_type_label">
-                            <option value="">-- Chọn dịch vụ --</option>
-                            <%
-                                OrderDAO2 orderDAO = OrderDAO2.INSTANCE;
-                                List<Service> services = orderDAO.getAllServices();
-                                for (Service service : services) {
-                                    String escapedName = service.getName().replace("\"", "&quot;").replace("'", "&apos;");
-                            %>
-                            <option value="<%= escapedName%>" data-price="<%= service.getBasePrice().setScale(2, BigDecimal.ROUND_HALF_UP)%>" data-rate="<%= service.getRatePerKm() != null ? service.getRatePerKm().setScale(2, BigDecimal.ROUND_HALF_UP) : 0%>">
-                                <%= service.getName()%> (Giá cơ bản: <%= formatVND(service.getBasePrice())%>, Giá/km: <%= formatVND(service.getRatePerKm())%>)
-                            </option>
-                            <%
-                                }
-                            %>
-                        </select>
-                        <div id="serviceDetails" class="mt-3 p-3 bg-gray-100 rounded-lg">
-                            <p>Giá cơ bản: <span id="serviceBasePrice">0</span></p>
-                            <p>Phí theo km: <span id="serviceKmFee">0</span></p>
-                            <p>Tổng phí dịch vụ: <span id="serviceTotalFee">0</span></p>
-                            <p>Khoảng cách: <span id="serviceDistance">0</span> km</p>
-                        </div>
-                    </div>
-                    <div class="mb-6">
-                        <label id="pickup_time_desired_label" class="block text-gray-700 font-semibold">Thời gian lấy hàng mong muốn:</label>
-                        <input type="datetime-local" name="pickup_time_desired" step="1" required class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="pickup_time_desired_label">
-                    </div>
-                    <div class="section-header flex items-center justify-center">
-                        <i class="fas fa-info-circle mr-2"></i> Bảng tính tiền
-                    </div>
-                    <table class="fee-table w-full">
-                        <tr><td class="p-3 font-semibold text-gray-700">Phí vận chuyển:</td><td class="p-3"><span id="transportFee"><%= formatVND(new BigDecimal(request.getAttribute("transportFee") != null ? request.getAttribute("transportFee").toString() : "0"))%></span></td></tr>
-                        <tr><td class="p-3 font-semibold text-gray-700">Phí dịch vụ:</td><td class="p-3"><span id="serviceFee"><%= formatVND(new BigDecimal(request.getAttribute("serviceFee") != null ? request.getAttribute("serviceFee").toString() : "0"))%></span></td></tr>
-                        <tr><td class="p-3 font-semibold text-gray-700">VAT (10%):</td><td class="p-3"><span id="vatAmount"><%= formatVND(new BigDecimal(request.getAttribute("vatAmount") != null ? request.getAttribute("vatAmount").toString() : "0"))%></span></td></tr>
-                        <tr><td class="p-3 font-semibold text-gray-700">Tổng cộng:</td><td class="p-3"><span id="totalFee"><%= formatVND(new BigDecimal(request.getAttribute("totalFee") != null ? request.getAttribute("totalFee").toString() : "0"))%></span></td></tr>
-                    </table>
-                </div>
-
-                <!-- Phần 3: Thông tin hàng hóa (Cột 1) -->
-                <div class="section col-span-1">
-                    <div class="section-header flex items-center justify-center">
-                        <i class="fas fa-box mr-2"></i> Thông tin hàng hóa
-                    </div>
-                    <div class="mb-6">
-                        <label id="description_label" class="block text-gray-700 font-semibold">Mô tả hàng hóa:</label>
-                        <textarea name="description" rows="2" class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Mô tả chi tiết hàng hóa cần vận chuyển(có thể bỏ qua)" aria-labelledby="description_label"></textarea>
-                    </div>
-                    <div class="mb-6">
-                        <label id="special_note_label" class="block text-gray-700 font-semibold">Ghi chú đặc biệt:</label>
-                        <textarea name="special_note" rows="1" class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Nhập hướng dẫn đặc biệt (ví dụ: xử lý cẩn thận, giao vào buổi sáng),(có thể bỏ qua)" aria-labelledby="special_note_label"></textarea>
-                    </div>
-                </div>
-
-                <!-- Phần 4: Hàng hóa đề xuất và Thêm hàng hóa (Cột 2) -->
-                <div class="section col-span-2">
-                    <div class="section-header flex items-center justify-between">
-                        <span class="flex items-center"><i class="fas fa-lightbulb mr-2"></i> Hàng hóa đề xuất</span>
-                        <span class="flex items-center"><i class="fas fa-plus mr-2"></i> Thêm hàng hóa</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="suggested-items-section">
-                            <div class="flex flex-col space-y-3">
-                                <label id="suggestedItems_label" class="block text-gray-700 font-semibold">Hàng hóa đề xuất:</label>
-                                <select id="suggestedItems" class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="suggestedItems_label">
-                                    <option value="">-- Chọn hàng hóa --</option>
-                                    <%
-                                        List<SuggestedItem> suggestedItems = orderDAO.getSuggestedItems();
-                                        for (SuggestedItem item : suggestedItems) {
-                                            String escapedName = item.getName().replace("\"", "&quot;").replace("'", "&apos;");
-                                    %>
-                                    <option value='{"name":"<%= escapedName%>","defaultQuantity":<%= item.getDefaultQuantity()%>,"defaultWeightKg":<%= item.getDefaultWeightKg()%>,"defaultVolumeM3":<%= item.getDefaultVolumeM3()%>,"defaultPrice":<%= item.getDefaultPrice().setScale(2, BigDecimal.ROUND_HALF_UP)%>}'>
-                                        <%= item.getName()%> (Khối lượng: <%= formatNumber(item.getDefaultWeightKg())%>kg, Thể tích: <%= formatNumber(item.getDefaultVolumeM3())%>m³, Giá: <%= formatVND(item.getDefaultPrice())%>)
-                                    </option>
-                                    <%
-                                        }
-                                    %>
-                                </select>
-                                <div class="button-group mt-3">
-                                    <button type="button" id="addSuggestedItem" class="btn-primary">Thêm</button>
+                                <div class="mb-6">
+                                    <label id="distance_km_label" class="block text-gray-700 font-semibold">Quãng đường dự tính (km):</label>
+                                    <input type="text" name="distance_km" id="distance_km" value="${distanceKm != null ? distanceKm : 0}" readonly class="form-control mt-2 p-3 w-full border rounded-lg bg-gray-100" aria-labelledby="distance_km_label">
                                 </div>
                             </div>
+                            <div class="col-span-1 flex items-center">
+                                <div id="map" class="w-full"></div>
+                            </div>
                         </div>
-                        <div class="manual-item-section">
-                            <div class="grid grid-cols-1 gap-6 mb-6">
-                                <div>
-                                    <label id="manual_item_name_label" class="block text-gray-700 font-semibold">Tên:</label>
-                                    <input type="text" name="manual_item_name" id="manual_item_name" class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="manual_item_name_label">
-                                </div>
-                                <div>
-                                    <label id="manual_quantity_label" class="block text-gray-700 font-semibold">Số lượng:</label>
-                                    <input type="number" name="manual_quantity" id="manual_quantity" value="1" min="1" class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="manual_quantity_label">
-                                </div>
-                                <div>
-                                    <label id="manual_weight_kg_label" class="block text-gray-700 font-semibold">Khối lượng (kg):</label>
-                                    <input type="number" name="manual_weight_kg" id="manual_weight_kg" step="0.01" class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="manual_weight_kg_label">
-                                </div>
-                                <div>
-                                    <label id="manual_volume_m3_label" class="block text-gray-700 font-semibold">Thể tích (m³):</label>
-                                    <input type="number" name="manual_volume_m3" id="manual_volume_m3" step="0.01" class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="manual_volume_m3_label">
-                                </div>
-                                <div>
-                                    <label id="manual_item_note_label" class="block text-gray-700 font-semibold">Ghi chú:</label>
-                                    <input type="text" name="manual_item_note" id="manual_item_note" class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="manual_item_note_label">
-                                </div>
-                                <div class="button-group mt-3">
+                    </div>
+                    <!-- Phần 2: Thông tin dịch vụ và Bảng tính tiền (Cột 2) -->
+                    <div class="section col-span-1 space-y-6">
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-info-circle mr-2"></i> Thông tin dịch vụ
+                        </div>
+                        <div class="mb-6">
+                            <label id="service_type_label" class="block text-gray-700 font-semibold">Loại dịch vụ:</label>
+                            <select name="service_type" id="service_type" required class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="service_type_label">
+                                <option value="">-- Chọn dịch vụ --</option>
+                                <%
+                                    OrderDAO2 orderDAO = OrderDAO2.INSTANCE;
+                                    List<Service> services = orderDAO.getAllServices();
+                                    for (Service service : services) {
+                                        String escapedName = service.getName().replace("\"", "&quot;").replace("'", "&apos;");
+                                %>
+                                <option value="<%= escapedName%>" data-price="<%= service.getBasePrice().setScale(2, BigDecimal.ROUND_HALF_UP)%>" data-rate="<%= service.getRatePerKm() != null ? service.getRatePerKm().setScale(2, BigDecimal.ROUND_HALF_UP) : 0%>">
+                                    <%= service.getName()%> (Giá cơ bản: <%= formatVND(service.getBasePrice())%>, Giá/km: <%= formatVND(service.getRatePerKm())%>)
+                                </option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                            <div id="serviceDetails" class="mt-3 p-3 bg-gray-100 rounded-lg">
+                                <p>Giá cơ bản: <span id="serviceBasePrice">0</span></p>
+                                <p>Phí theo km: <span id="serviceKmFee">0</span></p>
+                                <p>Tổng phí dịch vụ: <span id="serviceTotalFee">0</span></p>
+                                <p>Khoảng cách: <span id="serviceDistance">0</span> km</p>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label id="pickup_time_desired_label" class="block text-gray-700 font-semibold">Thời gian lấy hàng mong muốn:</label>
+                            <input type="datetime-local" name="pickup_time_desired" step="1" required class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="pickup_time_desired_label">
+                        </div>
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-info-circle mr-2"></i> Bảng tính tiền
+                        </div>
+                        <table class="fee-table w-full">
+                            <tr><td class="p-3 font-semibold text-gray-700">Phí vận chuyển:</td><td class="p-3"><span id="transportFee"><%= formatVND(new BigDecimal(request.getAttribute("transportFee") != null ? request.getAttribute("transportFee").toString() : "0"))%></span></td></tr>
+                            <tr><td class="p-3 font-semibold text-gray-700">Phí dịch vụ:</td><td class="p-3"><span id="serviceFee"><%= formatVND(new BigDecimal(request.getAttribute("serviceFee") != null ? request.getAttribute("serviceFee").toString() : "0"))%></span></td></tr>
+                            <tr><td class="p-3 font-semibold text-gray-700">VAT (10%):</td><td class="p-3"><span id="vatAmount"><%= formatVND(new BigDecimal(request.getAttribute("vatAmount") != null ? request.getAttribute("vatAmount").toString() : "0"))%></span></td></tr>
+                            <tr><td class="p-3 font-semibold text-gray-700">Tổng cộng:</td><td class="p-3"><span id="totalFee"><%= formatVND(new BigDecimal(request.getAttribute("totalFee") != null ? request.getAttribute("totalFee").toString() : "0"))%></span></td></tr>
+                        </table>
+                        <div class="mt-4">
+                            <button type="submit" class="submit-btn w-full">Đặt hàng</button>
+                        </div>
+                    </div>
+                    <!-- Phần 3: Thông tin hàng hóa (Cột 1) -->
+                    <div class="section col-span-1">
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-box mr-2"></i> Thông tin hàng hóa
+                        </div>
+                        <div class="mb-6">
+                            <label id="description_label" class="block text-gray-700 font-semibold">Mô tả hàng hóa:</label>
+                            <textarea name="description" rows="2" class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Mô tả chi tiết hàng hóa cần vận chuyển(có thể bỏ qua)" aria-labelledby="description_label"></textarea>
+                        </div>
+                        <div class="mb-6">
+                            <label id="special_note_label" class="block text-gray-700 font-semibold">Ghi chú đặc biệt:</label>
+                            <textarea name="special_note" rows="1" class="form-control mt-2 p-3 w-full border rounded-lg" placeholder="Nhập hướng dẫn đặc biệt (ví dụ: xử lý cẩn thận, giao vào buổi sáng),(có thể bỏ qua)" aria-labelledby="special_note_label"></textarea>
+                        </div>
+                    </div>
+                    <!-- Phần 4: Hàng hóa đề xuất (Cột 2, dưới Bảng tính tiền) -->
+                    <div class="section col-span-1">
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-lightbulb mr-2"></i> Hàng hóa đề xuất
+                        </div>
+                        <div class="suggested-items flex flex-col space-y-2">
+                            <label id="suggestedItems_label" class="block text-gray-700 font-semibold">Hàng hóa đề xuất:</label>
+                            <select id="suggestedItems" class="form-control mt-2 p-2 w-full border rounded-lg" aria-labelledby="suggestedItems_label">
+                                <option value="">-- Chọn hàng hóa --</option>
+                                <%
+                                    List<SuggestedItem> suggestedItems = orderDAO.getSuggestedItems();
+                                    for (SuggestedItem item : suggestedItems) {
+                                        String escapedName = item.getName().replace("\"", "&quot;").replace("'", "&apos;");
+                                %>
+                                <option value='{"name":"<%= escapedName%>","defaultQuantity":<%= item.getDefaultQuantity()%>,"defaultWeightKg":<%= item.getDefaultWeightKg()%>,"defaultVolumeM3":<%= item.getDefaultVolumeM3()%>,"defaultPrice":<%= item.getDefaultPrice().setScale(2, BigDecimal.ROUND_HALF_UP)%>}'>
+                                    <%= item.getName()%> (Khối lượng: <%= formatNumber(item.getDefaultWeightKg())%>kg, Thể tích: <%= formatNumber(item.getDefaultVolumeM3())%>m³, Giá: <%= formatVND(item.getDefaultPrice())%>)
+                                </option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                            <div class="button-group mt-2">
+                                <button type="button" id="addSuggestedItem" class="btn-primary">Thêm</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phần 5: Thêm hàng hóa thủ công (Cột 1 và 2, ngang các cột) -->
+                    <div class="section col-span-2">
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i> Thêm hàng hóa thủ công
+                        </div>
+                        <div class="grid grid-cols-5 gap-2"> <!-- Increased to 5 columns for even distribution -->
+                            <div>
+                                <label id="manual_item_name_label" class="block text-gray-700 font-semibold">Tên:</label>
+                                <input type="text" name="manual_item_name" id="manual_item_name" class="form-control mt-1 p-1 w-full border rounded-lg" aria-labelledby="manual_item_name_label">
+                            </div>
+                            <div>
+                                <label id="manual_quantity_label" class="block text-gray-700 font-semibold">Số lượng:</label>
+                                <input type="number" name="manual_quantity" id="manual_quantity" value="1" min="1" class="form-control mt-1 p-1 w-full border rounded-lg" aria-labelledby="manual_quantity_label">
+                            </div>
+                            <div>
+                                <label id="manual_weight_kg_label" class="block text-gray-700 font-semibold">Khối lượng (kg):</label>
+                                <input type="number" name="manual_weight_kg" id="manual_weight_kg" step="0.01" class="form-control mt-1 p-1 w-full border rounded-lg" aria-labelledby="manual_weight_kg_label">
+                            </div>
+                            <div>
+                                <label id="manual_volume_m3_label" class="block text-gray-700 font-semibold">Thể tích (m³):</label>
+                                <input type="number" name="manual_volume_m3" id="manual_volume_m3" step="0.01" class="form-control mt-1 p-1 w-full border rounded-lg" aria-labelledby="manual_volume_m3_label">
+                            </div>
+                            <div class="col-span-1">
+                                <label id="manual_item_note_label" class="block text-gray-700 font-semibold">Ghi chú:</label>
+                                <input type="text" name="manual_item_note" id="manual_item_note" class="form-control mt-1 p-1 w-full border rounded-lg" aria-labelledby="manual_item_note_label">
+                            </div>
+                            <div class="col-span-5 mt-2 text-center"> <!-- Button centered across all columns -->
+                                <div class="button-group">
                                     <button type="button" id="addManualItem" class="btn-primary">Thêm</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Phần 5: Hàng hóa đã thêm (Cột 1 và 2) -->
-                <div class="section col-span-2">
-                    <div class="section-header flex items-center justify-center">
-                        <i class="fas fa-check mr-2"></i> Hàng hóa đã thêm
-                    </div>
-                    <table id="itemTable" class="table w-full">
-                        <thead>
-                            <tr>
-                                <th class="p-3 text-gray-700 font-semibold">Tên hàng hóa</th>
-                                <th class="p-3 text-gray-700 font-semibold">Số lượng</th>
-                                <th class="p-3 text-gray-700 font-semibold">Khối lượng (kg)</th>
-                                <th class="p-3 text-gray-700 font-semibold">Thể tích (m³)</th>
-                                <th class="p-3 text-gray-700 font-semibold">Giá (VND)</th>
-                                <th class="p-3 text-gray-700 font-semibold">Ghi chú</th>
-                                <th class="p-3 text-gray-700 font-semibold">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="itemTableBody">
-                            <%
-                                List<OrderDetail> orderDetails = (List<OrderDetail>) session.getAttribute("orderDetails");
-                                if (orderDetails != null && !orderDetails.isEmpty()) {
-                                    for (OrderDetail detail : orderDetails) {
-                                        String itemName = detail.getItemName() != null ? detail.getItemName().replace("\"", "&quot;").replace("'", "&apos;") : "";
-                                        int quantity = detail.getQuantity();
-                                        BigDecimal weightKg = detail.getWeightKg() != null ? detail.getWeightKg() : BigDecimal.ZERO;
-                                        BigDecimal volumeM3 = detail.getVolumeM3() != null ? detail.getVolumeM3() : BigDecimal.ZERO;
-                                        BigDecimal itemPrice = detail.getItemPrice() != null ? detail.getItemPrice() : BigDecimal.ZERO;
-                                        String note = detail.getNote() != null ? detail.getNote().replace("\"", "&quot;").replace("'", "&apos;") : "";
-                            %>
-                            <tr>
-                                <td class="p-3"><%= itemName%><input type="hidden" name="item_name" value="<%= itemName%>"></td>
-                                <td class="p-3"><%= quantity%><input type="hidden" name="quantity" value="<%= quantity%>"></td>
-                                <td class="p-3"><%= formatNumber(weightKg)%> kg<input type="hidden" name="weight_kg" value="<%= weightKg.toString()%>"></td>
-                                <td class="p-3"><%= formatNumber(volumeM3)%> m³<input type="hidden" name="volume_m3" value="<%= volumeM3.toString()%>"></td>
-                                <td class="p-3"><%= formatVND(itemPrice)%><input type="hidden" name="item_price" value="<%= itemPrice.toString()%>"></td>
-                                <td class="p-3"><input type="text" name="item_note" value="<%= note%>" class="w-full p-2 border rounded" aria-label="Ghi chú cho hàng hóa"></td>
-                                <td class="p-3"><button type="button" class="remove-item bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Xóa</button></td>
-                            </tr>
-                            <%
-                                }
-                            } else {
-                            %>
-                            <tr><td colspan="7" class="p-3 text-center text-gray-500">Không có hàng hóa nào được thêm.</td></tr>
-                            <%
-                                }
-                            %>
-                        </tbody>
-                    </table>
-                    <div class="mt-4 flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-700 font-medium">Tổng khối lượng: <span id="totalWeight"><%= formatNumber(new BigDecimal(session.getAttribute("totalWeight") != null ? session.getAttribute("totalWeight").toString() : "0"))%> kg</span></p>
-                            <p class="text-gray-700 font-medium">Tổng thể tích: <span id="totalVolume"><%= formatNumber(new BigDecimal(session.getAttribute("totalVolume") != null ? session.getAttribute("totalVolume").toString() : "0"))%> m³</span></p>
-                            <p class="text-gray-700 font-medium">Tổng giá vận chuyển: <span id="totalItemPrice"><%= formatVND(new BigDecimal(session.getAttribute("totalItemPrice") != null ? session.getAttribute("totalItemPrice").toString() : "0"))%></span></p>
+                    <!-- Phần 6: Hàng hóa đã thêm (Cột 1 và 2) -->
+                    <div class="section col-span-2">
+                        <div class="section-header flex items-center justify-center">
+                            <i class="fas fa-check mr-2"></i> Hàng hóa đã thêm
                         </div>
-                        <button type="submit" class="submit-btn">Đặt hàng</button>
+                        <table id="itemTable" class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th class="p-3 text-gray-700 font-semibold">Tên hàng hóa</th>
+                                    <th class="p-3 text-gray-700 font-semibold">Số lượng</th>
+                                    <th class="p-3 text-gray-700 font-semibold">Khối lượng (kg)</th>
+                                    <th class="p-3 text-gray-700 font-semibold">Thể tích (m³)</th>
+                                    <th class="p-3 text-gray-700 font-semibold">Giá (VND)</th>
+                                    <th class="p-3 text-gray-700 font-semibold">Ghi chú</th>
+                                    <th class="p-3 text-gray-700 font-semibold">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemTableBody">
+                                <%
+                                    List<OrderDetail> orderDetails = (List<OrderDetail>) session.getAttribute("orderDetails");
+                                    if (orderDetails != null && !orderDetails.isEmpty()) {
+                                        for (OrderDetail detail : orderDetails) {
+                                            String itemName = detail.getItemName() != null ? detail.getItemName().replace("\"", "&quot;").replace("'", "&apos;") : "";
+                                            int quantity = detail.getQuantity();
+                                            BigDecimal weightKg = detail.getWeightKg() != null ? detail.getWeightKg() : BigDecimal.ZERO;
+                                            BigDecimal volumeM3 = detail.getVolumeM3() != null ? detail.getVolumeM3() : BigDecimal.ZERO;
+                                            BigDecimal itemPrice = detail.getItemPrice() != null ? detail.getItemPrice() : BigDecimal.ZERO;
+                                            String note = detail.getNote() != null ? detail.getNote().replace("\"", "&quot;").replace("'", "&apos;") : "";
+                                %>
+                                <tr>
+                                    <td class="p-3"><%= itemName%><input type="hidden" name="item_name" value="<%= itemName%>"></td>
+                                    <td class="p-3"><%= quantity%><input type="hidden" name="quantity" value="<%= quantity%>"></td>
+                                    <td class="p-3"><%= formatNumber(weightKg)%> kg<input type="hidden" name="weight_kg" value="<%= weightKg.toString()%>"></td>
+                                    <td class="p-3"><%= formatNumber(volumeM3)%> m³<input type="hidden" name="volume_m3" value="<%= volumeM3.toString()%>"></td>
+                                    <td class="p-3"><%= formatVND(itemPrice)%><input type="hidden" name="item_price" value="<%= itemPrice.toString()%>"></td>
+                                    <td class="p-3"><input type="text" name="item_note" value="<%= note%>" class="w-full p-2 border rounded" aria-label="Ghi chú cho hàng hóa"></td>
+                                    <td class="p-3"><button type="button" class="remove-item bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Xóa</button></td>
+                                </tr>
+                                <%
+                                    }
+                                } else {
+                                %>
+                                <tr><td colspan="7" class="p-3 text-center text-gray-500">Không có hàng hóa nào được thêm.</td></tr>
+                                <%
+                                    }
+                                %>
+                            </tbody>
+                        </table>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-gray-700 font-medium">Tổng khối lượng: <span id="totalWeight"><%= formatNumber(new BigDecimal(session.getAttribute("totalWeight") != null ? session.getAttribute("totalWeight").toString() : "0"))%> kg</span></p>
+                                <p class="text-gray-700 font-medium">Tổng thể tích: <span id="totalVolume"><%= formatNumber(new BigDecimal(session.getAttribute("totalVolume") != null ? session.getAttribute("totalVolume").toString() : "0"))%> m³</span></p>
+                                <p class="text-gray-700 font-medium">Tổng giá vận chuyển: <span id="totalItemPrice"><%= formatVND(new BigDecimal(session.getAttribute("totalItemPrice") != null ? session.getAttribute("totalItemPrice").toString() : "0"))%></span></p>
+                            </div>
+                        </div>
+                        <div class="info-box mt-4">
+                            Bạn hãy thêm ít nhất 1 hàng hóa trước khi tạo đơn hàng!
+                        </div>
                     </div>
-                    <div class="info-box mt-4">
-                        Bạn hãy thêm ít nhất 1 hàng hóa trước khi tạo đơn hàng!
-                    </div>
-                </div>
-            </form>
-
+                </form>
+            </div>
         </div>
 
         <script>
