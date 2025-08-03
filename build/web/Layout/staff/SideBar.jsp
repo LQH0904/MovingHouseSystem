@@ -74,7 +74,7 @@
                         </a>
                     </li>
                     
-<!--                    <li class="list">
+                    <li class="list">
                         <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
                             <i class="bx bx-folder-open icon"></i>
                             <span class="link">Câu hỏi</span>
@@ -85,13 +85,13 @@
                             <li><a href="${pageContext.request.contextPath}/staff/chat-bot-log">Câu hỏi của khách hàng</a></li>
                             
                         </ul>
-                    </li>-->
-<li class="list">
+                    </li>
+<!--<li class="list">
                         <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
                             <i class="bx bx-question-mark icon"></i>
                             <span class="link">Câu hỏi thường gặp</span>
                         </a>
-                    </li>
+                    </li>-->
                     <li class="list">
                         <a href="${pageContext.request.contextPath}/staff-leave" class="nav-link">
                             <i class="bx bx-calendar-check icon"></i>

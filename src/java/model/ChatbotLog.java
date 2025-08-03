@@ -9,8 +9,18 @@ public class ChatbotLog {
     private String message;
     private String response;
     private Date createdAt;
+    private String username;
 
     public ChatbotLog() {
+    }
+
+    public ChatbotLog(int logId, int userId, String message, String response, Date createdAt, String username) {
+        this.logId = logId;
+        this.userId = userId;
+        this.message = message;
+        this.response = response;
+        this.createdAt = createdAt;
+        this.username = username;
     }
 
     public ChatbotLog(int logId, int userId, String message, String response, Date createdAt) {
@@ -19,6 +29,14 @@ public class ChatbotLog {
         this.message = message;
         this.response = response;
         this.createdAt = createdAt;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     // Getters and Setters

@@ -42,8 +42,6 @@ public class UserDAO {
         }
         return false;
     }
-    
-    
 
     /**
      * Kiểm tra thông tin đăng nhập theo email và mật khẩu.
@@ -126,37 +124,36 @@ public class UserDAO {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public int signupAccount(Users user) throws SQLException {
-    String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    try (Connection conn = DBConnection.getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
-        ps.setString(1, user.getUsername());
-        ps.setString(2, user.getEmail());
-        ps.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
-        ps.setInt(4, user.getRoleId());
-        ps.setString(5, user.getStatus());
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        ps.setTimestamp(6, now);
-        ps.setTimestamp(7, null);
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPasswordHash() != null ? user.getPasswordHash() : "google_oauth");
+            ps.setInt(4, user.getRoleId());
+            ps.setString(5, user.getStatus());
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            ps.setTimestamp(6, now);
+            ps.setTimestamp(7, null);
 
-        int rows = ps.executeUpdate();
-        if (rows > 0) {
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    int userId = rs.getInt(1);
-                    if (user.getRoleId() == 6) {
-                        LOGGER.log(Level.INFO, "User with role_id=6 created for email: " + user.getEmail() + ", user_id: " + userId + ", trigger should create Customer record with customer_id=" + userId);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int userId = rs.getInt(1);
+                        if (user.getRoleId() == 6) {
+                            LOGGER.log(Level.INFO, "User with role_id=6 created for email: " + user.getEmail() + ", user_id: " + userId + ", trigger should create Customer record with customer_id=" + userId);
+                        }
+                        return userId;
                     }
-                    return userId;
                 }
             }
+            throw new SQLException("Không thể lấy user_id sau khi chèn tài khoản");
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error signing up account for email: " + user.getEmail() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            throw e;
         }
-        throw new SQLException("Không thể lấy user_id sau khi chèn tài khoản");
-    } catch (SQLException e) {
-        LOGGER.log(Level.SEVERE, "Error signing up account for email: " + user.getEmail() + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
-        throw e;
     }
-}
 
     /**
      * Lấy thông tin người dùng dựa trên email và role_id.
@@ -246,59 +243,59 @@ public class UserDAO {
     }
 
     public String checkDuplicate(String email, String username, int roleId) {
-    String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?)"; // Kiểm tra toàn bộ email
-    String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
-    String transportUnitQuery = "SELECT 1 FROM TransportUnits WHERE LOWER(company_name) = LOWER(?)";
-    String roleCheckQuery = "SELECT 1 FROM Roles WHERE role_id = ?";
+        String emailQuery = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?)"; // Kiểm tra toàn bộ email
+        String usernameQuery = "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)";
+        String transportUnitQuery = "SELECT 1 FROM TransportUnits WHERE LOWER(company_name) = LOWER(?)";
+        String roleCheckQuery = "SELECT 1 FROM Roles WHERE role_id = ?";
 
-    try (Connection conn = DBConnection.getConnection()) {
-        if (conn == null) {
-            throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
-        }
-
-        // Kiểm tra roleId hợp lệ
-        try (PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
-            ps.setInt(1, roleId);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                LOGGER.log(Level.SEVERE, "Invalid role_id: " + roleId);
-                throw new SQLException("role_id không hợp lệ: " + roleId);
+        try (Connection conn = DBConnection.getConnection()) {
+            if (conn == null) {
+                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu");
             }
-        }
 
-        // Kiểm tra email (bất kể role_id)
-        try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
-            ps.setString(1, email.toLowerCase());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return "email_exists";
-            }
-        }
-
-        // Kiểm tra username
-        if (roleId == 4) {
-            try (PreparedStatement ps = conn.prepareStatement(transportUnitQuery)) {
-                ps.setString(1, username.toLowerCase());
+            // Kiểm tra roleId hợp lệ
+            try (PreparedStatement ps = conn.prepareStatement(roleCheckQuery)) {
+                ps.setInt(1, roleId);
                 ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    return "username_exists";
+                if (!rs.next()) {
+                    LOGGER.log(Level.SEVERE, "Invalid role_id: " + roleId);
+                    throw new SQLException("role_id không hợp lệ: " + roleId);
                 }
             }
-        } else {
-            try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
-                ps.setString(1, username.toLowerCase());
+
+            // Kiểm tra email (bất kể role_id)
+            try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
+                ps.setString(1, email.toLowerCase());
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
-                    return "username_exists";
+                    return "email_exists";
                 }
             }
+
+            // Kiểm tra username
+            if (roleId == 4) {
+                try (PreparedStatement ps = conn.prepareStatement(transportUnitQuery)) {
+                    ps.setString(1, username.toLowerCase());
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return "username_exists";
+                    }
+                }
+            } else {
+                try (PreparedStatement ps = conn.prepareStatement(usernameQuery)) {
+                    ps.setString(1, username.toLowerCase());
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return "username_exists";
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicate: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
+            throw new RuntimeException("Lỗi kiểm tra trùng lặp: " + e.getMessage(), e);
         }
-    } catch (SQLException e) {
-        LOGGER.log(Level.SEVERE, "Error checking duplicate: SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode() + ", Message=" + e.getMessage(), e);
-        throw new RuntimeException("Lỗi kiểm tra trùng lặp: " + e.getMessage(), e);
+        return "none";
     }
-    return "none";
-}
 
     public UserDAO() {
         try {
@@ -421,15 +418,16 @@ public class UserDAO {
         String query = "DELETE FROM Users WHERE user_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, userId);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
+            // Quan trọng: Nếu không xóa được do ràng buộc khóa ngoại (foreign key),
+            // lỗi chi tiết sẽ được in ra console của server ở đây.
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
-        public int signupAccount2(Users user) {
+    public int signupAccount2(Users user) {
         String query = "INSERT INTO users (username, email, password_hash, role_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
@@ -723,72 +721,111 @@ public class UserDAO {
 
         return userList;
     }
-    
+
     public List<User> searchUsers(Integer roleId, String keyword, int offset, int limit) throws SQLException {
-    List<User> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
 
-    String sql = "SELECT u.*, r.role_name FROM Users u JOIN Roles r ON u.role_id = r.role_id "
-               + "WHERE (u.username LIKE ? OR u.email LIKE ?) "
-               + (roleId != null ? "AND u.role_id = ? " : "")
-               + "ORDER BY u.user_id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        String sql = "SELECT u.*, r.role_name FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+                + "WHERE (u.username LIKE ? OR u.email LIKE ?) "
+                + (roleId != null ? "AND u.role_id = ? " : "")
+                + "ORDER BY u.user_id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        int idx = 1;
-        ps.setString(idx++, "%" + keyword + "%");
-        ps.setString(idx++, "%" + keyword + "%");
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            int idx = 1;
+            ps.setString(idx++, "%" + keyword + "%");
+            ps.setString(idx++, "%" + keyword + "%");
 
-        if (roleId != null) {
-            ps.setInt(idx++, roleId);
+            if (roleId != null) {
+                ps.setInt(idx++, roleId);
+            }
+
+            ps.setInt(idx++, offset);
+            ps.setInt(idx, limit);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPasswordHash(rs.getString("password_hash"));
+                user.setStatus(rs.getString("status"));
+                user.setCreatedAt(rs.getTimestamp("created_at"));
+                user.setUpdatedAt(rs.getTimestamp("updated_at"));
+
+                Role role = new Role();
+                role.setRoleId(rs.getInt("role_id"));
+                role.setRoleName(rs.getString("role_name"));
+                user.setRole(role);
+
+                users.add(user);
+            }
         }
-
-        ps.setInt(idx++, offset);
-        ps.setInt(idx, limit);
-
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            User user = new User();
-            user.setUserId(rs.getInt("user_id"));
-            user.setUsername(rs.getString("username"));
-            user.setEmail(rs.getString("email"));
-            user.setPasswordHash(rs.getString("password_hash"));
-            user.setStatus(rs.getString("status"));
-            user.setCreatedAt(rs.getTimestamp("created_at"));
-            user.setUpdatedAt(rs.getTimestamp("updated_at"));
-
-            Role role = new Role();
-            role.setRoleId(rs.getInt("role_id"));
-            role.setRoleName(rs.getString("role_name"));
-            user.setRole(role);
-
-            users.add(user);
-        }
+        return users;
     }
-    return users;
-}
-    
+
     public int countSearchUsers(Integer roleId, String keyword) throws SQLException {
-    int count = 0;
-    String sql = "SELECT COUNT(*) FROM Users WHERE (username LIKE ? OR email LIKE ?) "
-               + (roleId != null ? "AND role_id = ?" : "");
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE (username LIKE ? OR email LIKE ?) "
+                + (roleId != null ? "AND role_id = ?" : "");
 
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        int idx = 1;
-        ps.setString(idx++, "%" + keyword + "%");
-        ps.setString(idx++, "%" + keyword + "%");
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            int idx = 1;
+            ps.setString(idx++, "%" + keyword + "%");
+            ps.setString(idx++, "%" + keyword + "%");
 
-        if (roleId != null) {
-            ps.setInt(idx, roleId);
+            if (roleId != null) {
+                ps.setInt(idx, roleId);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
         }
+        return count;
+    }
 
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            count = rs.getInt(1);
+    public boolean updateUserStatus(int userId, String newStatus) {
+        // Sử dụng GETDATE() cho SQL Server, hoặc NOW() cho MySQL/PostgreSQL
+        String query = "UPDATE Users SET status = ?, updated_at = GETDATE() WHERE user_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            // Lỗi sẽ được in ra console của server (Tomcat,...)
+            e.printStackTrace();
+            return false;
         }
     }
-    return count;
-}
 
+    public Users getUserById1(int userId) {
+        Users user = null;
+        String query = "SELECT u.user_id, u.username, u.email, u.role_id, u.status, r.role_name "
+                + "FROM Users u JOIN Roles r ON u.role_id = r.role_id "
+                + "WHERE u.user_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    user = new Users();
+                    user.setUserId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setRoleId(rs.getInt("role_id"));
+                    user.setStatus(rs.getString("status"));
 
-    
-    
+                    Role role = new Role();
+                    role.setRoleId(rs.getInt("role_id"));
+                    role.setRoleName(rs.getString("role_name"));
+                    user.setRole(role);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
 }
