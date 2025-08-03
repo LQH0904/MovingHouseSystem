@@ -200,15 +200,16 @@ public class ComplaintDAO {
     }
 
     private IssueReply mapIssueReplyFromResultSet(ResultSet rs) throws SQLException {
-        IssueReply reply = new IssueReply();
-        reply.setReplyId(rs.getInt("reply_id"));
-        reply.setIssueId(rs.getInt("issue_id"));
-        reply.setReplierId(rs.getInt("replier_id"));
-        reply.setReplyContent(rs.getString("reply_content"));
-        reply.setRepliedAt(rs.getTimestamp("replied_at"));
-        reply.setMessage_for_issue(rs.getString("message_for_issue"));
-        return reply;
-    }
+    IssueReply reply = new IssueReply();
+    reply.setReplyId(rs.getInt("reply_id"));
+    reply.setIssueId(rs.getInt("issue_id"));
+    reply.setReplierId(rs.getInt("replier_id"));
+    reply.setReplierName(rs.getString("replier_name")); // Thêm dòng này
+    reply.setReplyContent(rs.getString("reply_content"));
+    reply.setRepliedAt(rs.getTimestamp("replied_at"));
+    reply.setMessage_for_issue(rs.getString("message_for_issue"));
+    return reply;
+}
 
     private void addIdFilterConditions(StringBuilder sql, List<Object> params, String minIdStr, String maxIdStr) {
         if (minIdStr != null && !minIdStr.trim().isEmpty()) {

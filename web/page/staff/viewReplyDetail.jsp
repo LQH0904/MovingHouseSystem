@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
-        
+
         <style>
             /* CSS cho khối div3 - Chi tiết phản hồi */
             .div3 {
@@ -231,22 +231,22 @@
                 .div3 {
                     padding: 1rem;
                 }
-                
+
                 .div3 .container {
                     padding: 1.5rem;
                     border-radius: 15px;
                 }
-                
+
                 .div3 h3 {
                     font-size: 1.5rem;
                 }
-                
+
                 .div3 .table thead th,
                 .div3 .table tbody td {
                     padding: 0.8rem 0.5rem;
                     font-size: 0.85rem;
                 }
-                
+
                 .div3 .btn-secondary {
                     padding: 0.6rem 1.5rem;
                     font-size: 0.9rem;
@@ -267,11 +267,21 @@
                 animation: fadeInUp 0.6s ease forwards;
             }
 
-            .div3 .table tbody tr:nth-child(1) { animation-delay: 0.1s; }
-            .div3 .table tbody tr:nth-child(2) { animation-delay: 0.2s; }
-            .div3 .table tbody tr:nth-child(3) { animation-delay: 0.3s; }
-            .div3 .table tbody tr:nth-child(4) { animation-delay: 0.4s; }
-            .div3 .table tbody tr:nth-child(5) { animation-delay: 0.5s; }
+            .div3 .table tbody tr:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+            .div3 .table tbody tr:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+            .div3 .table tbody tr:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+            .div3 .table tbody tr:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+            .div3 .table tbody tr:nth-child(5) {
+                animation-delay: 0.5s;
+            }
 
             @keyframes fadeInUp {
                 from {
@@ -330,7 +340,7 @@
                                 <thead class="table-primary">
                                     <tr>
                                         <th>#No</th>
-                                        <th>Id người phản hồi</th>
+                                        <th>Người phản hồi</th>  <!-- Đổi tiêu đề cột -->
                                         <th>Nội dung phản hồi</th>
                                         <th>Thời gian phản hồi</th>
                                     </tr>
@@ -339,7 +349,7 @@
                                     <c:forEach items="${reply}" var="i">
                                         <tr>
                                             <td>${i.replyId}</td>
-                                            <td>${i.replierId}</td>
+                                            <td>${i.replierName}</td>  <!-- Hiển thị tên thay vì ID -->
                                             <td>${i.replyContent}</td>
                                             <td><fmt:formatDate value="${i.repliedAt}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
                                         </tr>

@@ -175,10 +175,6 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.poi-ooxml-schemas-4.1.2.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.slf4j-api-2.0.17.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>

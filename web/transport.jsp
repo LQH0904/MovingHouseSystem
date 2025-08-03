@@ -458,8 +458,16 @@
                             <i class="fas fa-info-circle mr-2"></i> Bảng tính tiền
                         </div>
                         <table class="fee-table w-full">
-                            <tr><td class="p-3 font-semibold text-gray-700">Phí vận chuyển:</td><td class="p-3"><span id="transportFee"><%= formatVND(new BigDecimal(request.getAttribute("transportFee") != null ? request.getAttribute("transportFee").toString() : "0"))%></span></td></tr>
-                            <tr><td class="p-3 font-semibold text-gray-700">Phí dịch vụ:</td><td class="p-3"><span id="serviceFee"><%= formatVND(new BigDecimal(request.getAttribute("serviceFee") != null ? request.getAttribute("serviceFee").toString() : "0"))%></span></td></tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-gray-700">
+                                    <a href="#addedGoodsSection" class="hover:text-blue-600 hover:underline cursor-pointer">
+                                        Phí tháo giỡ & lắp đặt :
+                                    </a>
+                                </td>
+                                <td class="p-3">
+                                    <span id="transportFee"><%= formatVND(new BigDecimal(request.getAttribute("transportFee") != null ? request.getAttribute("transportFee").toString() : "0"))%></span>
+                                </td>
+                            </tr>                            <tr><td class="p-3 font-semibold text-gray-700">Phí dịch vụ :</td><td class="p-3"><span id="serviceFee"><%= formatVND(new BigDecimal(request.getAttribute("serviceFee") != null ? request.getAttribute("serviceFee").toString() : "0"))%></span></td></tr>
                             <tr><td class="p-3 font-semibold text-gray-700">VAT (10%):</td><td class="p-3"><span id="vatAmount"><%= formatVND(new BigDecimal(request.getAttribute("vatAmount") != null ? request.getAttribute("vatAmount").toString() : "0"))%></span></td></tr>
                             <tr><td class="p-3 font-semibold text-gray-700">Tổng cộng:</td><td class="p-3"><span id="totalFee"><%= formatVND(new BigDecimal(request.getAttribute("totalFee") != null ? request.getAttribute("totalFee").toString() : "0"))%></span></td></tr>
                         </table>
@@ -541,6 +549,7 @@
                         </div>
                     </div>
                     <!-- Phần 6: Hàng hóa đã thêm (Cột 1 và 2) -->
+                   <div id="addedGoodsSection" class="section col-span-2">
                     <div class="section col-span-2">
                         <div class="section-header flex items-center justify-center">
                             <i class="fas fa-check mr-2"></i> Hàng hóa đã thêm
