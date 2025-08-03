@@ -16,6 +16,7 @@
         <servlet-name>AddUserServlet</servlet-name>
         <url-pattern>/Operator/AddUserServlet</url-pattern>
     </servlet-mapping>
+    
 
     <servlet>
         <servlet-name>DeleteUserServlet</servlet-name>

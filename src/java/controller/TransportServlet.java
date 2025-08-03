@@ -173,6 +173,7 @@ public class TransportServlet extends HttpServlet {
                 BigDecimal vatAmount = taxableAmount.multiply(VAT_RATE).setScale(2, BigDecimal.ROUND_HALF_UP);
                 BigDecimal totalFee = transportFee.add(serviceFee).add(vatAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
 
+
                 LOGGER.info("Returning fees: transportFee=" + transportFee + ", serviceFee=" + serviceFee + ", vatAmount=" + vatAmount + ", totalFee=" + totalFee);
 
                 response.setContentType("application/json");

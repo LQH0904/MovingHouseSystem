@@ -1,142 +1,157 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
 
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
+%>
 <html>
+    
     <head>
         <title>Chi tiết đơn nghỉ phép</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Header.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f4f6f9;
-                margin: 0;
-                padding: 0;
-            }
+    /* Đảm bảo box model hoạt động như mong đợi */
+    .div3 * {
+        box-sizing: border-box;
+    }
 
-            .container {
-                max-width: 750px;
-                margin: 40px auto;
-                background-color: #fff;
-                padding: 35px 40px;
-                border-radius: 14px;
-                box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-                animation: fadeIn 0.4s ease-in-out;
-            }
+    /* Kiểu dáng cho container chính trong div3 */
+    .div3 .container {
+        max-width: 700px;
+        margin: 40px auto; /* Căn giữa và thêm khoảng cách trên/dưới */
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 12px; /* Bo tròn góc */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ nhàng */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font chữ hiện đại */
+        color: #333;
+    }
 
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
+    /* Tiêu đề h2 */
+    .div3 h2 {
+        text-align: center;
+        color: #2c3e50; /* Màu chữ đậm */
+        margin-bottom: 30px;
+        font-size: 2em; /* Kích thước chữ lớn hơn */
+        font-weight: 600; /* Độ đậm vừa phải */
+    }
 
-            h2 {
-                text-align: center;
-                font-size: 26px;
-                margin-bottom: 30px;
-                color: #2d3436;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 12px;
-            }
+    /* Kiểu dáng cho các label */
+    .div3 label {
+        display: block; /* Mỗi label trên một dòng mới */
+        margin-bottom: 8px;
+        font-weight: 500; /* Chữ đậm vừa */
+        color: #555;
+        font-size: 0.95em;
+    }
 
-            label {
-                display: block;
-                margin-top: 20px;
-                font-weight: 600;
-                color: #333;
-            }
+    /* Kiểu dáng cho input và textarea */
+    .div3 input[type="text"],
+    .div3 textarea {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd; /* Viền nhẹ */
+        border-radius: 8px; /* Bo tròn góc */
+        font-size: 1em;
+        color: #333;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+    }
 
-            input[type="text"],
-            textarea {
-                width: 100%;
-                padding: 12px 14px;
-                margin-top: 6px;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                font-size: 15px;
-                background-color: #fcfcfc;
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            }
+    .div3 input[type="text"]:focus,
+    .div3 textarea:focus {
+        border-color: #007bff; /* Viền xanh khi focus */
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Đổ bóng khi focus */
+        outline: none; /* Bỏ outline mặc định của trình duyệt */
+    }
 
-            input[type="text"]:focus,
-            textarea:focus {
-                border-color: #3498db;
-                box-shadow: 0 0 5px rgba(52, 152, 219, 0.25);
-                outline: none;
-            }
+    .div3 textarea {
+        resize: vertical; /* Cho phép thay đổi kích thước theo chiều dọc */
+        min-height: 100px; /* Chiều cao tối thiểu */
+    }
 
-            input:disabled,
-            textarea:disabled {
-                background-color: #f1f1f1;
-                color: #777;
-            }
+    /* Kiểu dáng cho các trường bị disabled */
+    .div3 input[disabled],
+    .div3 textarea[disabled] {
+        background-color: #f0f2f5; /* Nền xám nhạt */
+        cursor: not-allowed; /* Con trỏ không cho phép */
+        color: #777;
+    }
 
-            textarea {
-                resize: vertical;
-                min-height: 100px;
-            }
+    /* Kiểu dáng cho div chứa các nút hành động */
+    .div3 .actions {
+        display: flex; /* Sắp xếp các nút trên cùng một hàng */
+        gap: 15px; /* Khoảng cách giữa các nút */
+        justify-content: flex-end; /* Căn các nút sang phải */
+        margin-top: 30px;
+    }
 
-            .actions {
-                margin-top: 30px;
-                text-align: center;
-            }
+    /* Kiểu dáng chung cho các nút */
+    .div3 .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng chuyển động */
+        color: #fff; /* Màu chữ trắng */
+    }
 
-            .btn {
-                display: inline-block;
-                padding: 11px 24px;
-                font-size: 15px;
-                font-weight: bold;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all 0.25s ease;
-            }
+    .div3 .btn:hover {
+        transform: translateY(-2px); /* Nâng nút lên một chút khi hover */
+    }
 
-            .btn-approve {
-                background-color: #2ecc71;
-                color: white;
-            }
+    /* Kiểu dáng cho nút Duyệt */
+    .div3 .btn-approve {
+        background-color: #28a745; /* Màu xanh lá cây */
+    }
 
-            .btn-approve:hover {
-                background-color: #27ae60;
-                transform: scale(1.03);
-            }
+    .div3 .btn-approve:hover {
+        background-color: #218838; /* Màu xanh lá cây đậm hơn khi hover */
+    }
 
-            .btn-reject {
-                background-color: #e74c3c;
-                color: white;
-                margin-left: 14px;
-            }
+    /* Kiểu dáng cho nút Từ chối */
+    .div3 .btn-reject {
+        background-color: #dc3545; /* Màu đỏ */
+    }
 
-            .btn-reject:hover {
-                background-color: #c0392b;
-                transform: scale(1.03);
-            }
-            button.btn-approve {
-                background-color: #2ecc71 !important;
-                color: white !important;
-            }
+    .div3 .btn-reject:hover {
+        background-color: #c82333; /* Màu đỏ đậm hơn khi hover */
+    }
 
-            button.btn-reject {
-                background-color: #e74c3c !important;
-                color: white !important;
-            }
-
-            button.btn-approve:hover {
-                background-color: #27ae60 !important;
-            }
-
-            button.btn-reject:hover {
-                background-color: #c0392b !important;
-            }
-
-        </style>
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .div3 .container {
+            margin: 20px;
+            padding: 20px;
+        }
+        .div3 h2 {
+            font-size: 1.8em;
+        }
+        .div3 .actions {
+            flex-direction: column; /* Xếp các nút theo cột trên màn hình nhỏ */
+            gap: 10px;
+        }
+        .div3 .btn {
+            width: 100%; /* Nút chiếm toàn bộ chiều rộng */
+        }
+    }
+</style>
     </head>
     <body>
         <div class="parent">

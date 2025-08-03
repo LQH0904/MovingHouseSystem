@@ -45,8 +45,8 @@
                 <jsp:include page="../../Layout/staff/Header.jsp"></jsp:include>
                 </div>
             <% }%>
-                <div class="div3"> 
-                    <h2 class="user-list-title">Danh Sách Người Dùng</h2>
+            <div class="div3"> 
+                <h2 class="user-list-title">Danh Sách Người Dùng</h2>
 
                 <div class="form-container">
                     <form method="post" action="${pageContext.request.contextPath}/UserListServlet" class="role-select-form">

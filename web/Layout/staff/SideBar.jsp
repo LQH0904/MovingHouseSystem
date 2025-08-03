@@ -73,10 +73,35 @@
                             <span class="link">Thử phiếu khảo sát</span>
                         </a>
                     </li>
+                    
+<!--                    <li class="list">
+                        <a href="javascript:void(0);" class="nav-link" onclick="toggleSubMenu('policy-submenu')">
+                            <i class="bx bx-folder-open icon"></i>
+                            <span class="link">Câu hỏi</span>
+                            <i class="bx bx-chevron-down" style="margin-left:auto;"></i>
+                        </a>
+                        <ul class="sub-menu" id="policy-submenu" style="display:none; padding-left: 25px;">
+                            <li><a href="${pageContext.request.contextPath}/staff/faq-list">Câu hỏi thường gặp</a></li>
+                            <li><a href="${pageContext.request.contextPath}/staff/chat-bot-log">Câu hỏi của khách hàng</a></li>
+                            
+                        </ul>
+                    </li>-->
+<li class="list">
+                        <a href="${pageContext.request.contextPath}/staff/faq-list" class="nav-link">
+                            <i class="bx bx-question-mark icon"></i>
+                            <span class="link">Câu hỏi thường gặp</span>
+                        </a>
+                    </li>
                     <li class="list">
-                        <a href="${pageContext.request.contextPath}/staff-promotions" class="nav-link">
-                            <i class="bx bx-gift icon"></i>
-                            <span class="link">Gợi ý khuyến mãi</span>
+                        <a href="${pageContext.request.contextPath}/staff-leave" class="nav-link">
+                            <i class="bx bx-calendar-check icon"></i>
+                            <span class="link">Đơn nghỉ phép</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="http://localhost:9999/HouseMovingSystem/staff/order-approve" class="nav-link">
+                            <i class="bx bx-cart-alt icon"></i>
+                            <span class="link">Quản lý đơn hàng</span>
                         </a>
                     </li>
                     <li class="list">
@@ -107,6 +132,16 @@
                 } else {
                     arrow.style.transform = 'rotate(0deg)';
                     submenu.style.maxHeight = '0px';
+                }
+            }
+        </script>
+        <script>
+            function toggleSubMenu(id) {
+                const submenu = document.getElementById(id);
+                if (submenu.style.display === "none") {
+                    submenu.style.display = "block";
+                } else {
+                    submenu.style.display = "none";
                 }
             }
         </script>

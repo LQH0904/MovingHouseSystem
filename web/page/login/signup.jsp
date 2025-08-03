@@ -160,6 +160,379 @@
                 white-space: pre-wrap;
                 margin-top: 5px;
             }
+            /* ===== CSS CHO MODAL CHÍNH SÁCH ===== */
+
+            /* Overlay */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 999;
+                animation: fadeIn 0.3s ease;
+            }
+
+            /* Modal container */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 700px;
+                max-height: 85vh;
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: modalSlideIn 0.4s ease;
+                overflow: hidden;
+            }
+
+            @keyframes modalSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -60%);
+                    scale: 0.9;
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                    scale: 1;
+                }
+            }
+
+            /* Modal header */
+            .modal::before {
+                content: "Chính Sách & Điều Khoản";
+                display: block;
+                background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+                color: white;
+                padding: 24px 30px;
+                font-size: 20px;
+                font-weight: 600;
+                margin: 0;
+                position: relative;
+            }
+
+            /* Modal close button */
+            .modal-close {
+                position: absolute;
+                top: 20px;
+                right: 25px;
+                font-size: 28px;
+                font-weight: 300;
+                cursor: pointer;
+                color: white;
+                opacity: 0.8;
+                transition: all 0.3s ease;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                z-index: 1001;
+            }
+
+            .modal-close:hover {
+                opacity: 1;
+                background: rgba(255, 255, 255, 0.15);
+                transform: rotate(90deg);
+            }
+
+            /* Modal content area */
+            #modalContent {
+                padding: 30px;
+                max-height: 60vh;
+                overflow-y: auto;
+                background: #fff;
+            }
+
+            /* Custom scrollbar cho modal content */
+            #modalContent::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #modalContent::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+
+            #modalContent::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                border-radius: 4px;
+            }
+
+            #modalContent::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #0056b3, #004085);
+            }
+
+            /* ===== POLICY ITEMS - PHẦN CHÍNH ===== */
+
+            .policy-item {
+                margin-bottom: 28px;
+                padding: 24px;
+                background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+                border-radius: 12px;
+                border-left: 4px solid #007bff;
+                transition: all 0.3s ease;
+                position: relative;
+                box-shadow: 0 2px 8px rgba(0, 123, 255, 0.08);
+            }
+
+            .policy-item:hover {
+                background: linear-gradient(145deg, #e3f2fd 0%, #f8f9fa 100%);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+                border-left-color: #0056b3;
+            }
+
+            .policy-item:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Policy item title */
+            .policy-item .title {
+                font-size: 18px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-top: 0;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                position: relative;
+                line-height: 1.4;
+            }
+
+            .policy-item .title::before {
+                content: "";
+                width: 10px;
+                height: 10px;
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                border-radius: 50%;
+                flex-shrink: 0;
+                box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+            }
+
+            /* Policy item content */
+            .policy-item .content {
+                font-size: 15px;
+                line-height: 1.7;
+                color: #495057;
+                white-space: pre-wrap;
+                margin-top: 5px;
+                margin-left: 22px;
+                text-align: justify;
+                position: relative;
+            }
+
+            .policy-item .content::first-line {
+                font-weight: 500;
+                color: #343a40;
+            }
+
+            /* Màu sắc khác nhau cho từng policy item */
+            .policy-item:nth-child(1) {
+                border-left-color: #dc3545;
+            }
+
+            .policy-item:nth-child(1) .title::before {
+                background: linear-gradient(135deg, #dc3545, #c82333);
+            }
+
+            .policy-item:nth-child(1):hover {
+                background: linear-gradient(145deg, #f8d7da 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+            }
+
+            .policy-item:nth-child(2) {
+                border-left-color: #fd7e14;
+            }
+
+            .policy-item:nth-child(2) .title::before {
+                background: linear-gradient(135deg, #fd7e14, #e8650e);
+            }
+
+            .policy-item:nth-child(2):hover {
+                background: linear-gradient(145deg, #ffeaa7 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(253, 126, 20, 0.15);
+            }
+
+            .policy-item:nth-child(3) {
+                border-left-color: #28a745;
+            }
+
+            .policy-item:nth-child(3) .title::before {
+                background: linear-gradient(135deg, #28a745, #1e7e34);
+            }
+
+            .policy-item:nth-child(3):hover {
+                background: linear-gradient(145deg, #d4edda 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.15);
+            }
+
+            .policy-item:nth-child(4) {
+                border-left-color: #17a2b8;
+            }
+
+            .policy-item:nth-child(4) .title::before {
+                background: linear-gradient(135deg, #17a2b8, #138496);
+            }
+
+            .policy-item:nth-child(4):hover {
+                background: linear-gradient(145deg, #d1ecf1 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(23, 162, 184, 0.15);
+            }
+
+            /* Loading state */
+            .modal-loading {
+                text-align: center;
+                padding: 60px 20px;
+            }
+
+            .modal-loading::before {
+                content: "";
+                display: inline-block;
+                width: 40px;
+                height: 40px;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #007bff;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-bottom: 20px;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* Error state */
+            .modal-error {
+                background: linear-gradient(145deg, #f8d7da 0%, #ffffff 100%);
+                border-left-color: #dc3545;
+                color: #721c24;
+            }
+
+            .modal-error .title {
+                color: #dc3545;
+            }
+
+            /* Responsive cho modal */
+            @media (max-width: 768px) {
+                .modal {
+                    width: 95%;
+                    max-height: 90vh;
+                    margin: 20px;
+                }
+
+                .modal::before {
+                    padding: 20px;
+                    font-size: 18px;
+                }
+
+                .modal-close {
+                    top: 15px;
+                    right: 20px;
+                    font-size: 24px;
+                }
+
+                #modalContent {
+                    padding: 20px;
+                    max-height: 65vh;
+                }
+
+                .policy-item {
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .policy-item .title {
+                    font-size: 16px;
+                    gap: 10px;
+                }
+
+                .policy-item .title::before {
+                    width: 8px;
+                    height: 8px;
+                }
+
+                .policy-item .content {
+                    font-size: 14px;
+                    margin-left: 18px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .modal {
+                    width: 98%;
+                    margin: 10px;
+                }
+
+                .modal::before {
+                    padding: 16px;
+                    font-size: 16px;
+                }
+
+                #modalContent {
+                    padding: 16px;
+                }
+
+                .policy-item {
+                    padding: 16px;
+                }
+
+                .policy-item .title {
+                    font-size: 15px;
+                }
+
+                .policy-item .content {
+                    font-size: 13px;
+                    margin-left: 16px;
+                }
+            }
+
+            /* Animation khi đóng modal */
+            .modal.closing {
+                animation: modalSlideOut 0.3s ease forwards;
+            }
+
+            .overlay.closing {
+                animation: fadeOut 0.3s ease forwards;
+            }
+
+            @keyframes modalSlideOut {
+                from {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                    scale: 1;
+                }
+                to {
+                    opacity: 0;
+                    transform: translate(-50%, -60%);
+                    scale: 0.9;
+                }
+            }
+
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
         </style>
     </head>
     <body>

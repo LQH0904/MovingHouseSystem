@@ -1,7 +1,23 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="model.OperationPolicy"%>
-<!DOCTYPE html>
+<!DOCTYPE html>\
+<%@ page import="model.Users" %>
+<%
+// Kiểm tra session
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
+
+// Lấy thông tin user từ session
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId();
+%>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -9,7 +25,218 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/SideBar.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/HomePage.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/UserList.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/operator/ProPoliFee.css">
+        <style>/* General styling for div3 container */
+.div3 {
+  background-color: hsl(0 0% 98%); /* Light gray background */
+  padding: 2rem;
+  border-radius: 0.75rem; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  margin: 1.5rem; /* Margin around the div3 */
+  flex-grow: 1; /* Allows it to take available space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section title styling */
+.section-title {
+  font-size: 2.25rem; /* Larger font size */
+  font-weight: 700; /* Bold font */
+  color: hsl(240 5.3% 26.1%); /* Dark text color */
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  gap: 1rem; /* Space between buttons */
+  margin-bottom: 1.5rem;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+/* Button base styles */
+.add-btn,
+.excel-btn,
+.edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none; /* Remove underline for links */
+  border: none; /* Remove default button border */
+}
+
+/* Specific styles for "Thêm Quy trình" button */
+.add-btn {
+  background-color: hsl(142.1 76.2% 36.3%); /* Green background */
+  color: hsl(0 0% 98%); /* White text */
+}
+
+.add-btn:hover {
+  background-color: hsl(142.1 70.2% 30.3%); /* Darker green on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+}
+
+/* Specific styles for "Tải Excel" button */
+.excel-btn {
+  background-color: hsl(142.1 76.2% 36.3%); /* Green background */
+  color: hsl(0 0% 98%); /* White text */
+}
+
+.excel-btn:hover {
+  background-color: hsl(142.1 70.2% 30.3%); /* Darker green on hover */
+  transform: translateY(-1px);
+}
+
+/* Table styling */
+.center-table {
+  width: 100%;
+  border-collapse: collapse; /* Collapse borders between cells */
+  margin-top: 1rem;
+  background-color: hsl(0 0% 100%); /* White background for table */
+  border-radius: 0.5rem;
+  overflow: hidden; /* Ensures rounded corners apply to content */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.center-table th,
+.center-table td {
+  padding: 1rem 1.25rem;
+  border: 1px solid hsl(220 13% 91%); /* Light gray border */
+  text-align: left;
+  vertical-align: top; /* Align content to the top */
+}
+
+.center-table th {
+  background-color: hsl(240 4.8% 95.9%); /* Lighter gray for headers */
+  color: hsl(240 5.3% 26.1%); /* Dark text for headers */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+}
+
+.center-table tr:nth-child(even) {
+  background-color: hsl(0 0% 99%); /* Slightly different background for even rows */
+}
+
+.center-table tr:hover {
+  background-color: hsl(240 4.8% 96.9%); /* Highlight row on hover */
+}
+
+/* Text alignment for specific columns */
+.center-text {
+  text-align: center;
+}
+
+/* Description text styling */
+.description-text {
+  white-space: pre-wrap; /* Preserves whitespace and wraps text */
+  font-family: inherit; /* Use inherited font */
+  margin: 0; /* Remove default margin from pre */
+  max-height: 100px; /* Limit height */
+  overflow-y: auto; /* Add scroll if content overflows */
+  padding-right: 5px; /* Space for scrollbar */
+}
+
+/* Action cell styling */
+.action-cell {
+  white-space: nowrap; /* Prevent buttons from wrapping */
+  text-align: center;
+}
+
+/* Specific styles for "Sửa" button */
+.edit-btn {
+  background-color: hsl(217.2 91.2% 59.8%); /* Blue background */
+  color: hsl(0 0% 98%); /* White text */
+  padding: 0.5rem 1rem; /* Smaller padding for in-table button */
+  font-size: 0.875rem;
+}
+
+.edit-btn:hover {
+  background-color: hsl(217.2 80.2% 50.8%); /* Darker blue on hover */
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .div3 {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column; /* Stack buttons vertically on small screens */
+    align-items: stretch; /* Make buttons full width */
+    gap: 0.75rem;
+  }
+
+  .center-table,
+  .center-table tbody,
+  .center-table th,
+  .center-table td,
+  .center-table tr {
+    display: block; /* Make table elements behave like blocks */
+  }
+
+  .center-table thead {
+    display: none; /* Hide table header on small screens */
+  }
+
+  .center-table tr {
+    margin-bottom: 0.75rem;
+    border: 1px solid hsl(220 13% 91%);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .center-table td {
+    border: none; /* Remove individual cell borders */
+    position: relative;
+    padding-left: 50%; /* Space for pseudo-element label */
+    text-align: right;
+  }
+
+  .center-table td::before {
+    content: attr(data-label); /* Use data-label for column names */
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 1rem;
+    font-weight: 600;
+    text-align: left;
+    color: hsl(240 5.3% 26.1%);
+  }
+
+  /* Specific labels for responsive table */
+  .center-table td:nth-of-type(1)::before {
+    content: "STT";
+  }
+  .center-table td:nth-of-type(2)::before {
+    content: "Tiêu đề";
+  }
+  .center-table td:nth-of-type(3)::before {
+    content: "Mô tả";
+  }
+  .center-table td:nth-of-type(4)::before {
+    content: "Hành động";
+  }
+
+  .action-cell {
+    text-align: right; /* Align action buttons to the right */
+    padding-right: 1rem;
+  }
+}
+</style>
     </head>
     <body>
         <div class="parent">
@@ -19,8 +246,7 @@
                 <h2 class="section-title">Chính sách vận hành</h2>
 
                 <div class="action-buttons">
-                    <a href="${pageContext.request.contextPath}/add-policy" class="add-btn">Thêm Chính sách</a>
-                    <form method="post" action="export-policies-to-excel" style="display:inline;">
+<a href="add-policy" class="add-btn">Thêm Chính sách</a>                    <form method="post" action="export-policies-to-excel" style="display:inline;">
                         <button type="submit" class="excel-btn">Tải Excel</button>
                     </form>
 

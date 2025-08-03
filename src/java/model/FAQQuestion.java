@@ -11,6 +11,20 @@ public class FAQQuestion {
     private int staffId;
     private Date createdAt;
     private Date updatedAt;
+    private int logId;       // Thêm vào
+    private int customerId;  // Thêm vào
+
+    public FAQQuestion(int faqId, String question, String reply, String review, int staffId, Date createdAt, Date updatedAt, int logId, int customerId) {
+        this.faqId = faqId;
+        this.question = question;
+        this.reply = reply;
+        this.review = review;
+        this.staffId = staffId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.logId = logId;
+        this.customerId = customerId;
+    }
 
     public FAQQuestion(int faqId, String question, String reply, String review, int staffId, Date createdAt, Date updatedAt) {
         this.faqId = faqId;
@@ -20,6 +34,22 @@ public class FAQQuestion {
         this.staffId = staffId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public int getLogId() {
+        return logId;
+    }
+
+    public void setLogId(int logId) {
+        this.logId = logId;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public FAQQuestion() {

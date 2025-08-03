@@ -125,8 +125,8 @@
                     font-size: 0.9rem;
                 }
             }
-            
-                        .modal {
+
+            .modal {
                 display: none;
                 position: fixed;
                 top: 50%;
@@ -152,14 +152,377 @@
                 cursor: pointer;
             }
 
-            .policy-item .title {
-                font-weight: bold;
-                margin-top: 15px;
+            /* ===== CSS CHO MODAL CHÍNH SÁCH ===== */
+
+            /* Overlay */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 999;
+                animation: fadeIn 0.3s ease;
             }
 
+            /* Modal container */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 700px;
+                max-height: 85vh;
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: modalSlideIn 0.4s ease;
+                overflow: hidden;
+            }
+
+            @keyframes modalSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -60%);
+                    scale: 0.9;
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                    scale: 1;
+                }
+            }
+
+            /* Modal header */
+            .modal::before {
+                content: "Chính Sách & Điều Khoản";
+                display: block;
+                background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+                color: white;
+                padding: 24px 30px;
+                font-size: 20px;
+                font-weight: 600;
+                margin: 0;
+                position: relative;
+            }
+
+            /* Modal close button */
+            .modal-close {
+                position: absolute;
+                top: 20px;
+                right: 25px;
+                font-size: 28px;
+                font-weight: 300;
+                cursor: pointer;
+                color: white;
+                opacity: 0.8;
+                transition: all 0.3s ease;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                z-index: 1001;
+            }
+
+            .modal-close:hover {
+                opacity: 1;
+                background: rgba(255, 255, 255, 0.15);
+                transform: rotate(90deg);
+            }
+
+            /* Modal content area */
+            #modalContent {
+                padding: 30px;
+                max-height: 60vh;
+                overflow-y: auto;
+                background: #fff;
+            }
+
+            /* Custom scrollbar cho modal content */
+            #modalContent::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #modalContent::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+
+            #modalContent::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                border-radius: 4px;
+            }
+
+            #modalContent::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #0056b3, #004085);
+            }
+
+            /* ===== POLICY ITEMS - PHẦN CHÍNH ===== */
+
+            .policy-item {
+                margin-bottom: 28px;
+                padding: 24px;
+                background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+                border-radius: 12px;
+                border-left: 4px solid #007bff;
+                transition: all 0.3s ease;
+                position: relative;
+                box-shadow: 0 2px 8px rgba(0, 123, 255, 0.08);
+            }
+
+            .policy-item:hover {
+                background: linear-gradient(145deg, #e3f2fd 0%, #f8f9fa 100%);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+                border-left-color: #0056b3;
+            }
+
+            .policy-item:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Policy item title */
+            .policy-item .title {
+                font-size: 18px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-top: 0;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                position: relative;
+                line-height: 1.4;
+            }
+
+            .policy-item .title::before {
+                content: "";
+                width: 10px;
+                height: 10px;
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                border-radius: 50%;
+                flex-shrink: 0;
+                box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+            }
+
+            /* Policy item content */
             .policy-item .content {
+                font-size: 15px;
+                line-height: 1.7;
+                color: #495057;
                 white-space: pre-wrap;
                 margin-top: 5px;
+                margin-left: 22px;
+                text-align: justify;
+                position: relative;
+            }
+
+            .policy-item .content::first-line {
+                font-weight: 500;
+                color: #343a40;
+            }
+
+            /* Màu sắc khác nhau cho từng policy item */
+            .policy-item:nth-child(1) {
+                border-left-color: #dc3545;
+            }
+
+            .policy-item:nth-child(1) .title::before {
+                background: linear-gradient(135deg, #dc3545, #c82333);
+            }
+
+            .policy-item:nth-child(1):hover {
+                background: linear-gradient(145deg, #f8d7da 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+            }
+
+            .policy-item:nth-child(2) {
+                border-left-color: #fd7e14;
+            }
+
+            .policy-item:nth-child(2) .title::before {
+                background: linear-gradient(135deg, #fd7e14, #e8650e);
+            }
+
+            .policy-item:nth-child(2):hover {
+                background: linear-gradient(145deg, #ffeaa7 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(253, 126, 20, 0.15);
+            }
+
+            .policy-item:nth-child(3) {
+                border-left-color: #28a745;
+            }
+
+            .policy-item:nth-child(3) .title::before {
+                background: linear-gradient(135deg, #28a745, #1e7e34);
+            }
+
+            .policy-item:nth-child(3):hover {
+                background: linear-gradient(145deg, #d4edda 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.15);
+            }
+
+            .policy-item:nth-child(4) {
+                border-left-color: #17a2b8;
+            }
+
+            .policy-item:nth-child(4) .title::before {
+                background: linear-gradient(135deg, #17a2b8, #138496);
+            }
+
+            .policy-item:nth-child(4):hover {
+                background: linear-gradient(145deg, #d1ecf1 0%, #ffffff 100%);
+                box-shadow: 0 8px 25px rgba(23, 162, 184, 0.15);
+            }
+
+            /* Loading state */
+            .modal-loading {
+                text-align: center;
+                padding: 60px 20px;
+            }
+
+            .modal-loading::before {
+                content: "";
+                display: inline-block;
+                width: 40px;
+                height: 40px;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #007bff;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-bottom: 20px;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* Error state */
+            .modal-error {
+                background: linear-gradient(145deg, #f8d7da 0%, #ffffff 100%);
+                border-left-color: #dc3545;
+                color: #721c24;
+            }
+
+            .modal-error .title {
+                color: #dc3545;
+            }
+
+            /* Responsive cho modal */
+            @media (max-width: 768px) {
+                .modal {
+                    width: 95%;
+                    max-height: 90vh;
+                    margin: 20px;
+                }
+
+                .modal::before {
+                    padding: 20px;
+                    font-size: 18px;
+                }
+
+                .modal-close {
+                    top: 15px;
+                    right: 20px;
+                    font-size: 24px;
+                }
+
+                #modalContent {
+                    padding: 20px;
+                    max-height: 65vh;
+                }
+
+                .policy-item {
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .policy-item .title {
+                    font-size: 16px;
+                    gap: 10px;
+                }
+
+                .policy-item .title::before {
+                    width: 8px;
+                    height: 8px;
+                }
+
+                .policy-item .content {
+                    font-size: 14px;
+                    margin-left: 18px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .modal {
+                    width: 98%;
+                    margin: 10px;
+                }
+
+                .modal::before {
+                    padding: 16px;
+                    font-size: 16px;
+                }
+
+                #modalContent {
+                    padding: 16px;
+                }
+
+                .policy-item {
+                    padding: 16px;
+                }
+
+                .policy-item .title {
+                    font-size: 15px;
+                }
+
+                .policy-item .content {
+                    font-size: 13px;
+                    margin-left: 16px;
+                }
+            }
+
+            /* Animation khi đóng modal */
+            .modal.closing {
+                animation: modalSlideOut 0.3s ease forwards;
+            }
+
+            .overlay.closing {
+                animation: fadeOut 0.3s ease forwards;
+            }
+
+            @keyframes modalSlideOut {
+                from {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                    scale: 1;
+                }
+                to {
+                    opacity: 0;
+                    transform: translate(-50%, -60%);
+                    scale: 0.9;
+                }
+            }
+
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
             }
         </style>
     </head>
@@ -178,9 +541,9 @@
             </ul>
             <h2 class="signup-header">Đăng ký Đơn vị Kho bãi</h2>
             <% String error = (String) request.getAttribute("error"); %>
-            <% if (error != null) { %>
-            <div class="alert alert-danger"><%= error %></div>
-            <% } %>
+            <% if (error != null) {%>
+            <div class="alert alert-danger"><%= error%></div>
+            <% }%>
             <form action="signup_storage" method="post" id="signupForm" enctype="multipart/form-data" novalidate>
                 <div class="mb-3">
                     <label for="warehouse_name" class="form-label">Tên kho bãi</label>
@@ -285,148 +648,148 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function () {
-                const $submitBtn = $('#submitBtn');
-                const originalBtnText = $submitBtn.text();
+                            $(document).ready(function () {
+                                const $submitBtn = $('#submitBtn');
+                                const originalBtnText = $submitBtn.text();
 
-                $('#signupForm').on('submit', function (e) {
-                    let isValid = true;
-                    $('.error-message').hide().text('');
-                    $('.form-control').removeClass('is-invalid');
+                                $('#signupForm').on('submit', function (e) {
+                                    let isValid = true;
+                                    $('.error-message').hide().text('');
+                                    $('.form-control').removeClass('is-invalid');
 
-                    // Validate warehouse_name
-                    const $warehouse_name = $('#warehouse_name');
-                    if (!$warehouse_name.val()) {
-                        $('#warehouse_name_error').text('Vui lòng nhập tên kho bãi.').show();
-                        $warehouse_name.addClass('is-invalid');
-                        isValid = false;
-                    } else if ($warehouse_name.val().length < 3 || $warehouse_name.val().length > 150) {
-                        $('#warehouse_name_error').text('Tên kho bãi phải từ 3 đến 150 ký tự.').show();
-                        $warehouse_name.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate warehouse_name
+                                    const $warehouse_name = $('#warehouse_name');
+                                    if (!$warehouse_name.val()) {
+                                        $('#warehouse_name_error').text('Vui lòng nhập tên kho bãi.').show();
+                                        $warehouse_name.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if ($warehouse_name.val().length < 3 || $warehouse_name.val().length > 150) {
+                                        $('#warehouse_name_error').text('Tên kho bãi phải từ 3 đến 150 ký tự.').show();
+                                        $warehouse_name.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate phone_number
-                    const $phone_number = $('#phone_number');
-                    const phoneRegex = /^[0-9]{10,15}$/;
-                    if (!$phone_number.val()) {
-                        $('#phone_number_error').text('Vui lòng nhập số điện thoại.').show();
-                        $phone_number.addClass('is-invalid');
-                        isValid = false;
-                    } else if (!phoneRegex.test($phone_number.val())) {
-                        $('#phone_number_error').text('Số điện thoại phải từ 10 đến 15 chữ số.').show();
-                        $phone_number.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate phone_number
+                                    const $phone_number = $('#phone_number');
+                                    const phoneRegex = /^[0-9]{10,15}$/;
+                                    if (!$phone_number.val()) {
+                                        $('#phone_number_error').text('Vui lòng nhập số điện thoại.').show();
+                                        $phone_number.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if (!phoneRegex.test($phone_number.val())) {
+                                        $('#phone_number_error').text('Số điện thoại phải từ 10 đến 15 chữ số.').show();
+                                        $phone_number.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate business_certificate
-                    const $business_certificate = $('#business_certificate');
-                    if (!$business_certificate.val()) {
-                        $('#business_certificate_error').text('Vui lòng chọn file giấy phép kinh doanh.').show();
-                        $business_certificate.addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-                        if (!allowedExtensions.test($business_certificate.val())) {
-                            $('#business_certificate_error').text('File phải có định dạng .jpg, .jpeg hoặc .png.').show();
-                            $business_certificate.addClass('is-invalid');
-                            isValid = false;
-                        }
-                    }
+                                    // Validate business_certificate
+                                    const $business_certificate = $('#business_certificate');
+                                    if (!$business_certificate.val()) {
+                                        $('#business_certificate_error').text('Vui lòng chọn file giấy phép kinh doanh.').show();
+                                        $business_certificate.addClass('is-invalid');
+                                        isValid = false;
+                                    } else {
+                                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                                        if (!allowedExtensions.test($business_certificate.val())) {
+                                            $('#business_certificate_error').text('File phải có định dạng .jpg, .jpeg hoặc .png.').show();
+                                            $business_certificate.addClass('is-invalid');
+                                            isValid = false;
+                                        }
+                                    }
 
-                    // Validate floor_plan
-                    const $floor_plan = $('#floor_plan');
-                    if (!$floor_plan.val()) {
-                        $('#floor_plan_error').text('Vui lòng chọn file ảnh mặt bằng kho.').show();
-                        $floor_plan.addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-                        if (!allowedExtensions.test($floor_plan.val())) {
-                            $('#floor_plan_error').text('File mặt bằng kho phải có định dạng .jpg, .jpeg hoặc .png.').show();
-                            $floor_plan.addClass('is-invalid');
-                            isValid = false;
-                        }
-                    }
+                                    // Validate floor_plan
+                                    const $floor_plan = $('#floor_plan');
+                                    if (!$floor_plan.val()) {
+                                        $('#floor_plan_error').text('Vui lòng chọn file ảnh mặt bằng kho.').show();
+                                        $floor_plan.addClass('is-invalid');
+                                        isValid = false;
+                                    } else {
+                                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                                        if (!allowedExtensions.test($floor_plan.val())) {
+                                            $('#floor_plan_error').text('File mặt bằng kho phải có định dạng .jpg, .jpeg hoặc .png.').show();
+                                            $floor_plan.addClass('is-invalid');
+                                            isValid = false;
+                                        }
+                                    }
 
-                    // Validate insurance
-                    const $insurance = $('#insurance');
-                    if (!$insurance.val()) {
-                        $('#insurance_error').text('Vui lòng chọn file giấy tờ bảo hiểm.').show();
-                        $insurance.addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-                        if (!allowedExtensions.test($insurance.val())) {
-                            $('#insurance_error').text('File bảo hiểm phải có định dạng .jpg, .jpeg hoặc .png.').show();
-                            $insurance.addClass('is-invalid');
-                            isValid = false;
-                        }
-                    }
+                                    // Validate insurance
+                                    const $insurance = $('#insurance');
+                                    if (!$insurance.val()) {
+                                        $('#insurance_error').text('Vui lòng chọn file giấy tờ bảo hiểm.').show();
+                                        $insurance.addClass('is-invalid');
+                                        isValid = false;
+                                    } else {
+                                        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                                        if (!allowedExtensions.test($insurance.val())) {
+                                            $('#insurance_error').text('File bảo hiểm phải có định dạng .jpg, .jpeg hoặc .png.').show();
+                                            $insurance.addClass('is-invalid');
+                                            isValid = false;
+                                        }
+                                    }
 
-                    // Validate location
-                    const $location = $('#location');
-                    if ($location.val() && ($location.val().length < 5 || $location.val().length > 255)) {
-                        $('#location_error').text('Địa điểm phải từ 5 đến 255 ký tự.').show();
-                        $location.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate location
+                                    const $location = $('#location');
+                                    if ($location.val() && ($location.val().length < 5 || $location.val().length > 255)) {
+                                        $('#location_error').text('Địa điểm phải từ 5 đến 255 ký tự.').show();
+                                        $location.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate area
-                    const $area = $('#area');
-                    const areaRegex = /^\d+(\.\d{1,2})?$/;
-                    if ($area.val() && ($area.val().length > 200 || !areaRegex.test($area.val()))) {
-                        $('#area_error').text('Diện tích phải là số với tối đa 2 chữ số thập phân.').show();
-                        $area.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate area
+                                    const $area = $('#area');
+                                    const areaRegex = /^\d+(\.\d{1,2})?$/;
+                                    if ($area.val() && ($area.val().length > 200 || !areaRegex.test($area.val()))) {
+                                        $('#area_error').text('Diện tích phải là số với tối đa 2 chữ số thập phân.').show();
+                                        $area.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate employee
-                    const $employee = $('#employee');
-                    if (!$employee.val()) {
-                        $('#employee_error').text('Vui lòng nhập số lượng nhân viên.').show();
-                        $employee.addClass('is-invalid');
-                        isValid = false;
-                    } else if ($employee.val() < 0) {
-                        $('#employee_error').text('Số lượng nhân viên không được âm.').show();
-                        $employee.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate employee
+                                    const $employee = $('#employee');
+                                    if (!$employee.val()) {
+                                        $('#employee_error').text('Vui lòng nhập số lượng nhân viên.').show();
+                                        $employee.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if ($employee.val() < 0) {
+                                        $('#employee_error').text('Số lượng nhân viên không được âm.').show();
+                                        $employee.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate email
-                    const $email = $('#email');
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!$email.val()) {
-                        $('#email_error').text('Vui lòng nhập email.').show();
-                        $email.addClass('is-invalid');
-                        isValid = false;
-                    } else if (!emailRegex.test($email.val())) {
-                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
-                        $email.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate email
+                                    const $email = $('#email');
+                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    if (!$email.val()) {
+                                        $('#email_error').text('Vui lòng nhập email.').show();
+                                        $email.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if (!emailRegex.test($email.val())) {
+                                        $('#email_error').text('Vui lòng nhập email hợp lệ.').show();
+                                        $email.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    // Validate password
-                    const $password = $('#password');
-                    if (!$password.val()) {
-                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
-                        $password.addClass('is-invalid');
-                        isValid = false;
-                    } else if ($password.val().length < 6) {
-                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
-                        $password.addClass('is-invalid');
-                        isValid = false;
-                    }
+                                    // Validate password
+                                    const $password = $('#password');
+                                    if (!$password.val()) {
+                                        $('#password_error').text('Vui lòng nhập mật khẩu.').show();
+                                        $password.addClass('is-invalid');
+                                        isValid = false;
+                                    } else if ($password.val().length < 6) {
+                                        $('#password_error').text('Mật khẩu phải có ít nhất 6 ký tự.').show();
+                                        $password.addClass('is-invalid');
+                                        isValid = false;
+                                    }
 
-                    if (!isValid) {
-                        e.preventDefault();
-                    } else {
-                        $submitBtn.text('Đang xử lý...').prop('disabled', true);
-                    }
-                });
-            });
-            
-             function toggleButton() {
+                                    if (!isValid) {
+                                        e.preventDefault();
+                                    } else {
+                                        $submitBtn.text('Đang xử lý...').prop('disabled', true);
+                                    }
+                                });
+                            });
+
+                            function toggleButton() {
                                 const checkbox = document.getElementById("agreeCheck");
                                 const button = document.getElementById("confirmBtn");
                                 if (button) {

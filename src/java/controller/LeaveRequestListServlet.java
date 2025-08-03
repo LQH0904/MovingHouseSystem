@@ -20,7 +20,7 @@ public class LeaveRequestListServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("acc") == null) {
-            resp.sendRedirect("login.jsp");
+            resp.sendRedirect("login");
             return;
         }
 
