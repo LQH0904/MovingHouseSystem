@@ -416,6 +416,10 @@
                                 <label id="distance_km_label" class="block text-gray-700 font-semibold">Quãng đường dự tính (km):</label>
                                 <input type="text" name="distance_km" id="distance_km" value="${distanceKm != null ? distanceKm : 0}" readonly class="form-control mt-2 p-3 w-full border rounded-lg bg-gray-100" aria-labelledby="distance_km_label">
                             </div>
+                            <div class="mb-6">
+                                <label id="pickup_time_desired_label" class="block text-gray-700 font-semibold">Thời gian lấy hàng mong muốn:</label>
+                                <input type="datetime-local" name="pickup_time_desired" step="1" required class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="pickup_time_desired_label">
+                            </div>
                         </div>
                         <div class="col-span-1 flex items-center">
                             <div id="map" class="w-full"></div>
@@ -452,10 +456,7 @@
                             <p>Khoảng cách: <span id="serviceDistance">0</span> km</p>
                         </div>
                     </div>
-                    <div class="mb-6">
-                        <label id="pickup_time_desired_label" class="block text-gray-700 font-semibold">Thời gian lấy hàng mong muốn:</label>
-                        <input type="datetime-local" name="pickup_time_desired" step="1" required class="form-control mt-2 p-3 w-full border rounded-lg" aria-labelledby="pickup_time_desired_label">
-                    </div>
+
                     <div class="section-header flex items-center justify-center">
                         <i class="fas fa-info-circle mr-2"></i> Bảng tính tiền
                     </div>

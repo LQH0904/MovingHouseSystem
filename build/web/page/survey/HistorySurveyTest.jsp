@@ -433,7 +433,7 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
 
                             <% if (survey.getFeedback() != null && !survey.getFeedback().trim().isEmpty()) { %>
                             <div class="feedback-section">
-                                <h4>Phản hồi từ khách hàng</h4>
+                                <h4>Nhận xét phiếu khảo sát từ nhân viên</h4>
                                 <div class="feedback-text">
                                     "<%= survey.getFeedback() %>"
                                 </div>

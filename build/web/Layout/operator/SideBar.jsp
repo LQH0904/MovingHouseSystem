@@ -70,7 +70,7 @@
                     <li class="list">
                         <a href="http://localhost:9999/HouseMovingSystem/customer-survey" class="nav-link">
                             <i class="bx bx-clipboard icon"></i>
-                            <span class="link">Mẫu P.khảo sát</span>
+                            <span class="link">Chỉnh sửa khảo sát</span>
                         </a>
                     </li>
                     <li class="list">

@@ -2,18 +2,18 @@
 <%@ page import="model.Users" %>
 <%
 // Kiểm tra session
-String redirectURL = null;
-if (session.getAttribute("acc") == null) {
-    redirectURL = "/login";
-    response.sendRedirect(request.getContextPath() + redirectURL);
-    return;
-}
+    String redirectURL = null;
+    if (session.getAttribute("acc") == null) {
+        redirectURL = "/login";
+        response.sendRedirect(request.getContextPath() + redirectURL);
+        return;
+    }
 
 // Lấy thông tin user từ session
-Users userAccount = (Users) session.getAttribute("acc");
-int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
-String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
-int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
+    Users userAccount = (Users) session.getAttribute("acc");
+    int currentUserId = userAccount.getUserId(); // Dùng getUserId() từ Users class
+    String currentUsername = userAccount.getUsername(); // Lấy thêm username để hiển thị
+    int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy role_id
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -29,7 +29,7 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
             <div class="survey-header">
                 <h1>🏠 Khảo Sát Khách Hàng</h1>
                 <p>Chia sẻ trải nghiệm của bạn về dịch vụ vận chuyển nhà và nội thất</p>
-                <p style="color: black; ">Test phiếu khảo sát khách hàng</p>
+                <p style="color: black; ">Thử phiếu khảo sát khách hàng</p>
             </div>
 
             <div class="survey-form">
@@ -64,7 +64,7 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
                                 </div>
                                 <div>
                                     <h4 style="margin: 0; font-size: 18px; font-weight: 600;">
-                                        <%= currentUsername %>
+                                        <%= currentUsername%>
                                     </h4>
                                     <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;">
                                         Khách hàng đã đăng nhập
@@ -87,14 +87,14 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
                                           font-weight: 600;
                                           font-size: 16px;
                                           ">
-                                        <%= currentUserId %>
+                                        <%= currentUserId%>
                                     </span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Hidden Input (for form submission) -->
-                        <input type="hidden" name="user_id" value="<%= currentUserId %>">
+                        <input type="hidden" name="user_id" value="<%= currentUserId%>">
 
                         <!-- Info Note -->
                         <div style="
@@ -411,17 +411,17 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
 
                     <!-- Hiển thị thông báo lỗi -->
                     <% String error = (String) request.getAttribute("error"); %>
-                    <% if (error != null) { %>
+                    <% if (error != null) {%>
                     <div class="error-message" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 5px;">
-                        ❌ <%= error %>
+                        ❌ <%= error%>
                     </div>
                     <% } %>
 
                     <!-- Hiển thị thông báo thành công -->
                     <% String success = (String) request.getAttribute("success"); %>
-                    <% if (success != null) { %>
+                    <% if (success != null) {%>
                     <div class="success-message" style="background-color: #d4edda; color: #155724; padding: 15px; margin: 10px 0; border: 1px solid #c3e6cb; border-radius: 5px;">
-                        <h3>✅ <%= success %></h3>
+                        <h3>✅ <%= success%></h3>
                         <p>Ý kiến của bạn rất quan trọng và sẽ giúp chúng tôi cải thiện dịch vụ tốt hơn.</p>
                     </div>
                     <% } %>
@@ -518,11 +518,11 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
         </script>
         <script>
 // Kiểm tra nếu có thông báo thành công và user có role_id = 6
-<% if (success != null && currentUserRoleId == 6) { %>
-    // Hiển thị countdown
-    let countdown = 5;
-    const countdownElement = document.createElement('div');
-    countdownElement.style.cssText = `
+            <% if (success != null && currentUserRoleId == 6) { %>
+            // Hiển thị countdown
+            let countdown = 5;
+            const countdownElement = document.createElement('div');
+            countdownElement.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -535,20 +535,20 @@ int currentUserRoleId = userAccount.getRoleId(); // Thêm dòng này để lấy
         font-weight: bold;
         text-align: center;
     `;
-    countdownElement.innerHTML = `Tự động chuyển về trang đặt hàng sau: <span id="countdown">${countdown}</span>s`;
-    document.body.appendChild(countdownElement);
-    
-    // Cập nhật countdown mỗi giây
-    const timer = setInterval(() => {
-        countdown--;
-        document.getElementById('countdown').textContent = countdown;
-        
-        if (countdown <= 0) {
-            clearInterval(timer);
-            window.location.href = 'http://localhost:9999/HouseMovingSystem/transport';
-        }
-    }, 1000);
-<% } %>
-</script>
+            countdownElement.innerHTML = `Tự động chuyển về trang đặt hàng sau: <span id="countdown">${countdown}</span>s`;
+            document.body.appendChild(countdownElement);
+
+            // Cập nhật countdown mỗi giây
+            const timer = setInterval(() => {
+                countdown--;
+                document.getElementById('countdown').textContent = countdown;
+
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    window.location.href = 'http://localhost:9999/HouseMovingSystem/transport';
+                }
+            }, 1000);
+            <% }%>
+        </script>
     </body>
 </html>
