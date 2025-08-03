@@ -98,18 +98,6 @@
                             <span class="link">Đơn nghỉ phép</span>
                         </a>
                     </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/staff/order-approve" class="nav-link">
-                            <i class="bx bx-cart-alt icon"></i>
-                            <span class="link">Quản lý đơn hàng</span>
-                        </a>
-                    </li>
-                    <li class="list">
-                        <a href="http://localhost:9999/HouseMovingSystem/staff/order-approve" class="nav-link">
-                            <i class="bx bx-cart-alt icon"></i>
-                            <span class="link">Quản lý đơn hàng</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
