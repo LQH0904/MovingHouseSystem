@@ -415,6 +415,66 @@
                     width: calc(100% - 200px);
                 }
             }
+            .survey-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .survey-link::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .survey-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            }
+
+            .survey-link:hover::before {
+                left: 100%;
+            }
+
+            .survey-link:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Thêm icon sao */
+            .survey-link::after {
+                content: '⭐';
+                margin-left: 0.25rem;
+                animation: sparkle 2s ease-in-out infinite;
+            }
+
+            @keyframes sparkle {
+                0%, 100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.7;
+                    transform: scale(1.1);
+                }
+            }
         </style>
         <script>
             function showConfirmModal(orderId) {
@@ -489,6 +549,7 @@
                     closeDetailsModal();
                 }
             };
+
         </script>
     </head>
     <body class="bg-gray-100">
@@ -540,7 +601,7 @@
                                         <button type="submit" class="btn-primary" onclick="showQrModal(<%= order.getTotalFee()%>)">Chuyển khoản</button>
                                     </form>
                                     <% } else if ("delivered".equals(order.getOrderStatus())) { %>
-                                    <button class="btn-primary" disabled>Đánh giá chất lượng</button>
+                                    <a href="http://localhost:9999/HouseMovingSystem/SurveyTestController" class="survey-link">Đánh giá chất lượng</a>
                                     <% } %>
                                 </td>
                             </tr>
@@ -656,7 +717,7 @@
                     <p style="margin-top: 15px; font-style: italic; color: #777;">
                         Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
                     </p>
-                    
+
 
                 </div>
             </div>
