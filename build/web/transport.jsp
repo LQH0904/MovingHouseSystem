@@ -371,6 +371,7 @@
             <div class="sidebar-item">Customer</div>
             <a href="${pageContext.request.contextPath}/transport" class="sidebar-item">Dashboard</a>
             <a href="${pageContext.request.contextPath}/orderHistory" class="sidebar-item">Đơn hàng vận chuyển</a>
+             <a href="${pageContext.request.contextPath}/customer/ask-question" class="sidebar-item active">Đặt câu hỏi</a>
             <a href="${pageContext.request.contextPath}/logout" class="sidebar-item active">Đăng xuất</a>
         </div>
         <div class="main-content">
