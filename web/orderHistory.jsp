@@ -18,6 +18,7 @@
         }
         return new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(timestamp);
     }
+
     private String formatVND(BigDecimal amount) {
         if (amount == null) {
             return "0 VND";
@@ -25,6 +26,7 @@
         java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
         return df.format(amount) + " VND";
     }
+
     private String getStatusIcon(String status) {
         switch (status != null ? status.toLowerCase() : "") {
             case "pending":
@@ -429,50 +431,50 @@
             }
             function showOrderDetails(orderId) {
                 fetch('${pageContext.request.contextPath}/orderDetails?orderId=' + orderId)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok: ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const modal = document.getElementById('orderDetailsModal');
-                        const orderIdSpan = document.getElementById('orderDetailsId');
-                        const contentDiv = document.getElementById('orderDetailsContent');
-                        orderIdSpan.textContent = orderId;
-                        if (!data || data.length === 0) {
-                            contentDiv.innerHTML = '<p class="text-gray-500">Không có chi tiết đơn hàng nào.</p>';
-                        } else {
-                            let totalPrice = 0;
-                            let html = '<table class="table"><thead><tr><th>Tên mặt hàng</th><th>Số lượng</th><th>Khối lượng (kg)</th><th>Thể tích (m³)</th><th>Ghi chú</th><th>Giá</th></tr></thead><tbody>';
-                            data.forEach(detail => {
-                                const quantity = detail.quantity !== null && detail.quantity !== undefined ? detail.quantity : 0;
-                                const weightKg = detail.weightKg !== null && detail.weightKg !== undefined ? Number(detail.weightKg) : '0';
-                                const volumeM3 = detail.volumeM3 !== null && detail.volumeM3 !== undefined ? Number(detail.volumeM3) : '0';
-                                const note = detail.note !== null && detail.note !== undefined ? detail.note : 'N/A';
-                                const itemPrice = detail.itemPrice !== null && detail.itemPrice !== undefined ? Number(detail.itemPrice) : '0';
-                                totalPrice += parseFloat(itemPrice);
-                                html += '<tr>' +
-                                        '<td>' + (detail.itemName || 'N/A') + '</td>' +
-                                        '<td>' + quantity + '</td>' +
-                                        '<td>' + weightKg + '</td>' +
-                                        '<td>' + volumeM3 + '</td>' +
-                                        '<td>' + note + '</td>' +
-                                        '<td>' + itemPrice + ' VND</td>' +
-                                        '</tr>';
-                            });
-                            html += '</tbody></table>';
-                            html += '<div class="total-row">Tổng cộng: ' + totalPrice + ' VND</div>';
-                            contentDiv.innerHTML = html;
-                        }
-                        modal.style.display = 'flex';
-                    })
-                    .catch(error => {
-                        console.error('Error fetching order details:', error);
-                        const contentDiv = document.getElementById('orderDetailsContent');
-                        contentDiv.innerHTML = '<p class="text-red-500">Không thể tải chi tiết đơn hàng: ' + error.message + '</p>';
-                        document.getElementById('orderDetailsModal').style.display = 'flex';
-                    });
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok: ' + response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const modal = document.getElementById('orderDetailsModal');
+                            const orderIdSpan = document.getElementById('orderDetailsId');
+                            const contentDiv = document.getElementById('orderDetailsContent');
+                            orderIdSpan.textContent = orderId;
+                            if (!data || data.length === 0) {
+                                contentDiv.innerHTML = '<p class="text-gray-500">Không có chi tiết đơn hàng nào.</p>';
+                            } else {
+                                let totalPrice = 0;
+                                let html = '<table class="table"><thead><tr><th>Tên mặt hàng</th><th>Số lượng</th><th>Khối lượng (kg)</th><th>Thể tích (m³)</th><th>Ghi chú</th><th>Giá</th></tr></thead><tbody>';
+                                data.forEach(detail => {
+                                    const quantity = detail.quantity !== null && detail.quantity !== undefined ? detail.quantity : 0;
+                                    const weightKg = detail.weightKg !== null && detail.weightKg !== undefined ? Number(detail.weightKg) : '0';
+                                    const volumeM3 = detail.volumeM3 !== null && detail.volumeM3 !== undefined ? Number(detail.volumeM3) : '0';
+                                    const note = detail.note !== null && detail.note !== undefined ? detail.note : 'N/A';
+                                    const itemPrice = detail.itemPrice !== null && detail.itemPrice !== undefined ? Number(detail.itemPrice) : '0';
+                                    totalPrice += parseFloat(itemPrice);
+                                    html += '<tr>' +
+                                            '<td>' + (detail.itemName || 'N/A') + '</td>' +
+                                            '<td>' + quantity + '</td>' +
+                                            '<td>' + weightKg + '</td>' +
+                                            '<td>' + volumeM3 + '</td>' +
+                                            '<td>' + note + '</td>' +
+                                            '<td>' + itemPrice + ' VND</td>' +
+                                            '</tr>';
+                                });
+                                html += '</tbody></table>';
+                                html += '<div class="total-row">Tổng cộng: ' + totalPrice + ' VND</div>';
+                                contentDiv.innerHTML = html;
+                            }
+                            modal.style.display = 'flex';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching order details:', error);
+                            const contentDiv = document.getElementById('orderDetailsContent');
+                            contentDiv.innerHTML = '<p class="text-red-500">Không thể tải chi tiết đơn hàng: ' + error.message + '</p>';
+                            document.getElementById('orderDetailsModal').style.display = 'flex';
+                        });
             }
             function closeDetailsModal() {
                 document.getElementById('orderDetailsModal').style.display = 'none';
@@ -535,7 +537,7 @@
                                     <% if ("in_progress".equals(order.getOrderStatus())) {%>
                                     <form id="form-<%= order.getOrderId()%>" action="${pageContext.request.contextPath}/orderHistory?page=<%= currentPage%>" method="post">
                                         <input type="hidden" name="orderId" value="<%= order.getOrderId()%>">
-                                        <button type="button" class="btn-primary" onclick="showConfirmModal(<%= order.getOrderId()%>)">Đã nhận</button>
+                                        <button type="submit" class="btn-primary" onclick="showQrModal(<%= order.getTotalFee()%>)">Chuyển khoản</button>
                                     </form>
                                     <% } else if ("delivered".equals(order.getOrderStatus())) { %>
                                     <button class="btn-primary" disabled>Đánh giá chất lượng</button>
@@ -611,5 +613,146 @@
                 </div>
             </div>
         </div>
+        <style>
+            .qr-modal-overlay {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                justify-content: center;
+                align-items: center;
+            }
+            .qr-modal-content {
+                background: white;
+                padding: 20px 30px;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 450px;
+                text-align: center;
+                position: relative;
+            }
+            .qr-modal-close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                color: #888;
+                cursor: pointer;
+            }
+        </style>
+        <div id="depositQrModal" class="qr-modal-overlay">
+            <div class="qr-modal-content">
+                <span class="qr-modal-close-btn">&times;</span>
+                <h2>Vui lòng đặt cọc để hoàn tất đơn hàng</h2>
+                <div class="qr-modal-body">
+                    <p id="modalTotalInfo"></p>
+                    <p id="modalDepositInfo" style="font-weight: bold; color: #d9534f;"></p>
+                    <img id="modalQrImage" src="" alt="QR code" style="width: 100%; max-width: 280px; margin: 15px auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
+
+                    <p style="margin-top: 15px; font-style: italic; color: #777;">
+                        Cửa sổ này sẽ tự đóng sau <span id="countdownTimer">15</span> giây.
+                    </p>
+                    
+
+                </div>
+            </div>
+        </div>
+        <script>
+            // ✅ Global utility function
+            function formatVND(n) {
+                return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(n);
+            }
+
+// ✅ Global function được gọi từ HTML onclick
+            function showQrModal(totalFee) {
+                // Ngăn form submit ngay lập tức
+                if (event) {
+                    event.preventDefault();
+                }
+
+                if (isNaN(totalFee) || totalFee <= 0) {
+                    alert("Không lấy được tổng số tiền.");
+                    return;
+                }
+
+                // Tính tiền đặt cọc 30%
+                const deposit = Math.round(totalFee * 0.7); // ✅ Sửa thành 30% thay vì 70%
+
+                // Tạo QR URL
+                const qrUrl = 'https://img.vietqr.io/image/BIDV-3600816496-compact2.png?amount=' + deposit + '&addInfo=Dat%20coc%20truoc%2030%25';
+
+                // Cập nhật thông tin modal
+                document.getElementById('modalTotalInfo').textContent = 'Tổng đơn hàng: ' + formatVND(totalFee);
+                document.getElementById('modalDepositInfo').textContent = 'Bạn cần hoàn thành số tiền còn thiếu 70%: ' + formatVND(deposit);
+                document.getElementById('modalQrImage').src = qrUrl;
+
+                // Lấy modal và hiển thị
+                const modal = document.getElementById('depositQrModal');
+                if (modal) {
+                    modal.style.display = 'flex';
+
+                    // Lấy form hiện tại từ button được click
+                    const currentForm = event ? event.target.closest('form') : null;
+
+                    // Bắt đầu countdown
+                    startCountdown(10, () => {
+                        modal.style.display = 'none';
+                        if (currentForm) {
+                            currentForm.submit();
+                        }
+                    });
+                }
+            }
+
+// ✅ Global countdown function
+            function startCountdown(seconds, callback) {
+                let counter = seconds;
+                const timerElement = document.getElementById('countdownTimer');
+
+                if (timerElement) {
+                    timerElement.textContent = counter;
+                }
+
+                const countdownInterval = setInterval(() => {
+                    counter--;
+                    if (timerElement) {
+                        timerElement.textContent = counter;
+                    }
+
+                    if (counter <= 0) {
+                        clearInterval(countdownInterval);
+                        callback();
+                    }
+                }, 1000);
+
+                return countdownInterval;
+            }
+
+// ✅ DOM ready event listener
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('depositQrModal');
+                const closeModalBtn = document.querySelector('.qr-modal-close-btn');
+
+                // Đóng modal khi click nút X
+                if (closeModalBtn && modal) {
+                    closeModalBtn.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+                }
+
+                // Đóng modal khi click outside
+                if (modal) {
+                    window.addEventListener('click', function (event) {
+                        if (event.target === modal) {
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

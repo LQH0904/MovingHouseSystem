@@ -86,12 +86,6 @@
                         </a>
                     </li>
                     <li class="list">
-                        <a href="${pageContext.request.contextPath}/promotion-review" class="nav-link">
-                            <i class="bx bx-gift icon"></i>
-                            <span class="link">Duyệt khuyến mãi</span>
-                        </a>
-                    </li>
-                    <li class="list">
     <a href="${pageContext.request.contextPath}/operator/leave-requests" class="nav-link">
         <i class="bx bx-calendar-check icon"></i>
         <span class="link">Xét duyệt đơn nghỉ</span>
